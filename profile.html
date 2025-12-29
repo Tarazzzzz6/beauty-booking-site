@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Beauty Booking · Profile</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#07070b; --bg2:#0b0b11;
+      --text:#f4f3f8; --muted:rgba(244,243,248,.68);
+      --pink:#ff4fd8; --gold:#ffd27a; --violet:#8b5cf6;
+      --r:22px; --r2:28px;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+      --max:1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),
+        radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),
+        radial-gradient(900px 700px at 70% 90%, rgba(255,210,122,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px 18px 90px}
+    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px}
+    .back{display:inline-flex; gap:10px; align-items:center; padding:10px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05);}
+    .card{
+      border-radius: var(--r2);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .hero{height:320px; position:relative; background:rgba(255,255,255,.06)}
+    .hero img{width:100%; height:100%; object-fit:cover; filter:saturate(1.05) contrast(1.02)}
+    .hero:after{content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.75));}
+    .heroInner{position:absolute; left:16px; right:16px; bottom:16px; z-index:2}
+    h1{margin:0; font-family:"Playfair Display",serif; font-size:34px; letter-spacing:-.3px}
+    .addr{margin-top:6px; color:rgba(244,243,248,.78)}
+    .badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .tag{font-size:12px; font-weight:800; padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.25)}
+    .tag.partner{border-color: rgba(255,79,216,.32); background: rgba(255,79,216,.12)}
+    .tag.good{border-color: rgba(32,227,165,.28); background: rgba(32,227,165,.10)}
+    .tag.today{border-color: rgba(255,210,122,.32); background: rgba(255,210,122,.10)}
+    .content{padding:16px}
+    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px}
+    .glass{
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .pad{padding:14px}
+    .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,243,248,.62)}
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{
+      border:0; cursor:pointer;
+      padding:12px 14px; border-radius:14px; font-weight:900;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
+      box-shadow: 0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4);
+    }
+    .btn.secondary{
+      background: rgba(255,255,255,.08);
+      color: rgba(244,243,248,.92);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:none;
+    }
+    .svc{display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08)}
+    .svc:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+    iframe{width:100%; height:320px; border:0}
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} .hero{height:280px} }
+
+    /* ===========================
+       BOOKING MODAL (DROP-IN)
+       =========================== */
+    .bbModal{
+      position:fixed; inset:0; z-index:9999;
+      display:none;
+      align-items:flex-end; justify-content:center;
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding:14px;
+    }
+    .bbModal.isOpen{display:flex}
+    .bbSheet{
+      width:min(980px, 100%);
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(700px 500px at 85% 10%, rgba(139,92,246,.14), transparent 60%),
+        linear-gradient(180deg, rgba(20,20,28,.96), rgba(10,10,14,.98));
+      box-shadow: 0 30px 120px rgba(0,0,0,.70);
+      overflow:hidden;
+      transform: translateY(12px);
+      animation: bbUp .18s ease-out forwards;
+    }
+    @keyframes bbUp{to{transform:translateY(0)}}
+    .bbTopbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .bbTopbar .t{
+      display:flex; flex-direction:column; gap:3px;
+    }
+    .bbTopbar .t .h{
+      font-family:"Playfair Display",serif;
+      font-size:18px; letter-spacing:-.2px;
+    }
+    .bbTopbar .t .s{font-size:12.5px; opacity:.75}
+    .bbX{
+      width:40px;height:40px;border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(244,243,248,.92);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .bbX:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbBody{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .bbBody{grid-template-columns:1fr}
+    }
+    .bbPane{
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
+    }
+    .bbPane .pad{padding:12px}
+    .bbLabel{
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(244,243,248,.62);
+    }
+
+    /* services cards */
+    .bbSvcGrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px}
+    @media (min-width:720px){.bbSvcGrid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+    .bbSvc{
+      text-align:left;
+      position:relative;
+      overflow:hidden;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding:12px;
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .bbSvc:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.18); background:rgba(255,255,255,.075)}
+    .bbSvc.isActive{border-color:rgba(214,169,255,.55); box-shadow:0 0 0 1px rgba(214,169,255,.20) inset}
+    .bbSvc .n{font-weight:800}
+    .bbSvc .m{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; font-size:12px; opacity:.88}
+    .bbPill{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:5px 8px; border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:11px;
+    }
+    .bbPill.hot{
+      background:linear-gradient(135deg,rgba(255,79,216,.18),rgba(214,169,255,.10));
+      border-color:rgba(255,79,216,.25);
+    }
+    .bbPill.value{
+      background:linear-gradient(135deg,rgba(255,210,122,.16),rgba(214,169,255,.10));
+      border-color:rgba(255,210,122,.22);
+    }
+
+    /* chips */
+    .bbChips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .bbChip{
+      border-radius:999px;
+      padding:7px 10px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px;
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      color:rgba(244,243,248,.92);
+    }
+    .bbChip:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbChip.isActive{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+
+    /* calendar */
+    .bbCal{
+      margin-top:10px;
+      border-radius:18px;
+      background:rgba(0,0,0,.14);
+      border:1px solid rgba(255,255,255,.10);
+      padding:10px;
+    }
+    .bbCalBar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+    .bbCalMonth{font-weight:800; opacity:.92}
+    .bbCalNav{
+      width:34px; height:34px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(244,243,248,.92);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .bbCalNav:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbDow{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; padding:0 2px; margin-bottom:6px; opacity:.6; font-size:11px}
+    .bbGrid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+    .bbDay{
+      height:38px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+      user-select:none;
+      color:rgba(244,243,248,.92);
+    }
+    .bbDay:hover{transform:translateY(-1px); background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.14)}
+    .bbDay.out{opacity:.32; cursor:default}
+    .bbDay.disabled{opacity:.26; cursor:not-allowed}
+    .bbDay.today{border-color:rgba(255,210,122,.18)}
+    .bbDay.active{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+
+    /* time grid */
+    .bbTimeGroup{margin-top:12px}
+    .bbTimeH{
+      font-size:12px; opacity:.72;
+      letter-spacing:.12em; text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .bbSlots{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+    @media (min-width:720px){.bbSlots{grid-template-columns:repeat(4,minmax(0,1fr));}}
+    .bbSlot{
+      padding:10px 10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      font-size:13px;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+      color:rgba(244,243,248,.92);
+    }
+    .bbSlot:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbSlot.disabled{opacity:.35; cursor:not-allowed}
+    .bbSlot.active{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+
+    /* hold */
+    .bbHold{display:flex; align-items:center; gap:8px; margin-top:8px}
+    .bbHoldP{
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:11px;
+      background:rgba(214,169,255,.10);
+      border:1px solid rgba(214,169,255,.30);
+    }
+    .bbHoldT{font-variant-numeric:tabular-nums; opacity:.9; font-size:12px}
+
+    /* receipt + client */
+    .bbReceipt{
+      margin-top:10px;
+      border-radius:18px;
+      padding:12px;
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bbRRow{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0}
+    .bbRK{opacity:.72; font-size:12px}
+    .bbRV{font-weight:800}
+    .bbRNote{margin-top:6px; opacity:.7; font-size:12px}
+    .bbMini{
+      margin-top:10px; width:100%;
+      border-radius:14px; padding:10px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      color:rgba(244,243,248,.92);
+      font-weight:800;
+    }
+    .bbMini:hover{transform:translateY(-1px); background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.16)}
+
+    .bbForm{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px}
+    @media (min-width:720px){.bbForm{grid-template-columns:1fr 1fr 1fr}}
+    .bbField{display:flex; flex-direction:column; gap:6px}
+    .bbField span{font-size:12px; opacity:.7}
+    .bbField input{
+      height:44px;
+      border-radius:14px;
+      padding:0 12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:inherit;
+      outline:none;
+    }
+    .bbField input:focus{border-color:rgba(214,169,255,.45); box-shadow:0 0 0 2px rgba(214,169,255,.12)}
+
+    .bbActions{display:flex; gap:10px; justify-content:space-between; margin-top:12px}
+    .bbBtn{
+      height:46px; border-radius:16px;
+      padding:0 14px;
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      color:rgba(244,243,248,.92);
+      font-weight:900;
+      background:rgba(255,255,255,.06);
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+    }
+    .bbBtn:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbBtn.primary{
+      flex:1;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
+      border-color:rgba(255,255,255,.0);
+      box-shadow: 0 18px 50px rgba(255,210,122,.12), 0 12px 34px rgba(0,0,0,.35);
+    }
+    .bbHint{margin-top:10px; opacity:.74; font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="./index.html">← Back</a>
+      <a class="back" href="./index.html" style="opacity:.85">Beauty Booking</a>
+    </div>
+
+    <div id="main" class="card" style="display:none">
+      <div class="hero">
+        <img id="heroImg" alt="">
+        <div class="heroInner">
+          <h1 id="name">—</h1>
+          <div class="addr" id="address">—</div>
+          <div class="badges" id="badges"></div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid">
+          <div class="glass">
+            <div class="pad">
+              <div class="kicker">Services</div>
+              <div id="services" style="margin-top:10px"></div>
+
+              <div class="row">
+                <a id="callBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Call</a>
+                <a id="mapsBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Maps</a>
+                <a id="igBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Instagram</a>
+                <!-- CHANGED: Book now opens modal -->
+                <button id="bookBtn" class="btn" type="button">Book</button>
+              </div>
+
+              <div id="bio" class="muted" style="margin-top:14px; white-space:pre-line"></div>
+            </div>
+          </div>
+
+          <div class="glass">
+            <div class="pad">
+              <div class="kicker">Location</div>
+              <div style="margin-top:10px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.10)">
+                <iframe id="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+              <div class="muted" style="margin-top:10px; font-size:12.5px">
+                Tip: можеш відкрити Maps і одразу прокласти маршрут.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="err" class="glass" style="display:none">
+      <div class="pad">
+        <div class="kicker">Error</div>
+        <div style="margin-top:8px" id="errText">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================
+       BOOKING MODAL (HTML)
+       =========================== -->
+  <div class="bbModal" id="bbModal" aria-hidden="true">
+    <div class="bbSheet" role="dialog" aria-modal="true" aria-label="Booking">
+      <div class="bbTopbar">
+        <div class="t">
+          <div class="h" id="bbTitle">Book</div>
+          <div class="s" id="bbSub">Pick a service, then choose a date & time.</div>
+        </div>
+        <button class="bbX" id="bbClose" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="bbBody">
+        <!-- LEFT: Service + Date -->
+        <div class="bbPane">
+          <div class="pad">
+            <div class="bbLabel">Service</div>
+            <div class="bbSvcGrid" id="bbSvcGrid"></div>
+
+            <div style="margin-top:14px">
+              <div class="bbLabel">Date</div>
+              <div class="bbChips" id="bbChips">
+                <button class="bbChip" data-chip="soonest" type="button">Soonest</button>
+                <button class="bbChip" data-chip="weekend" type="button">Weekend</button>
+                <button class="bbChip" data-chip="evening" type="button">Evening</button>
+              </div>
+
+              <div class="bbCal" id="bbCal">
+                <div class="bbCalBar">
+                  <button class="bbCalNav" id="bbPrev" type="button" aria-label="Previous month">‹</button>
+                  <div class="bbCalMonth" id="bbMonth">—</div>
+                  <button class="bbCalNav" id="bbNext" type="button" aria-label="Next month">›</button>
+                </div>
+                <div class="bbDow">
+                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+                <div class="bbGrid" id="bbGrid"></div>
+              </div>
+
+              <div class="bbHint" id="bbNoSlotsHint" style="display:none">No online slots yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Time + receipt + client -->
+        <div class="bbPane">
+          <div class="pad">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+              <div class="bbLabel">Time</div>
+              <div class="bbHold" id="bbHold" style="display:none">
+                <span class="bbHoldP">Held</span>
+                <span class="bbHoldT" id="bbHoldT">02:00</span>
+              </div>
+            </div>
+
+            <div class="bbTimeGroup">
+              <div class="bbTimeH">Morning</div>
+              <div class="bbSlots" id="bbMorning"></div>
+            </div>
+            <div class="bbTimeGroup">
+              <div class="bbTimeH">Afternoon</div>
+              <div class="bbSlots" id="bbAfternoon"></div>
+            </div>
+            <div class="bbTimeGroup">
+              <div class="bbTimeH">Evening</div>
+              <div class="bbSlots" id="bbEvening"></div>
+            </div>
+
+            <div class="bbReceipt" id="bbReceipt" style="display:none">
+              <div class="bbRRow"><div class="bbRK">Service</div><div class="bbRV" id="bbRService">—</div></div>
+              <div class="bbRRow"><div class="bbRK">Date & time</div><div class="bbRV" id="bbRWhen">—</div></div>
+              <div class="bbRRow"><div class="bbRK">Duration</div><div class="bbRV" id="bbRDur">—</div></div>
+              <div class="bbRRow"><div class="bbRK">Price</div><div class="bbRV" id="bbRPrice">—</div></div>
+              <div class="bbRNote">No hidden fees</div>
+              <button class="bbMini" id="bbEdit" type="button">Edit selection</button>
+            </div>
+
+            <div style="margin-top:14px">
+              <div class="bbLabel">Your details</div>
+              <div class="bbForm">
+                <label class="bbField"><span>Name</span><input id="bbName" autocomplete="name" placeholder="Your name"></label>
+                <label class="bbField"><span>Email</span><input id="bbEmail" autocomplete="email" placeholder="you@email.com"></label>
+                <label class="bbField"><span>Phone</span><input id="bbPhone" autocomplete="tel" placeholder="+1 (___) ___-____"></label>
+              </div>
+
+              <div class="bbActions">
+                <button class="bbBtn" id="bbCancel" type="button">Cancel</button>
+                <button class="bbBtn primary" id="bbConfirm" type="button">Confirm booking</button>
+              </div>
+            </div>
+
+            <input type="hidden" id="bbChosenServiceId">
+            <input type="hidden" id="bbChosenISO">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost";
+    const VERSION = "1.0.0";
+    const DATA_URL = "./data.js" + (isLocal ? ("?v=" + Date.now()) : ("?v=" + VERSION));
+
+    function qs(name){
+      return new URLSearchParams(location.search).get(name);
+    }
+    function safeImg(url){
+      return url || "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80";
+    }
+    function showErr(msg){
+      document.getElementById("err").style.display = "block";
+      document.getElementById("errText").textContent = msg;
+    }
+    function esc(s){
+      return String(s).replace(/[&<>"']/g, m => (
+        m==='&'?'&amp;': m==='<'?'&lt;': m==='>'?'&gt;': m==='"'?'&quot;':'&#039;'
+      ));
+    }
+    const pad = n => (n<10 ? "0"+n : ""+n);
+    const toDayISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const startOfMonth = d => new Date(d.getFullYear(), d.getMonth(), 1);
+    const addMonths = (d,m) => new Date(d.getFullYear(), d.getMonth()+m, 1);
+    const parseISO = s => new Date(s);
+    const isSameDay = (a,b)=> a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+
+    function fmtWhen(iso){
+      const d = parseISO(iso);
+      const dd = pad(d.getDate()), mm = pad(d.getMonth()+1), yy = d.getFullYear();
+      const hh = pad(d.getHours()), mi = pad(d.getMinutes());
+      return `${dd}.${mm}.${yy} ${hh}:${mi}`;
+    }
+    function fmtTime(iso){
+      const d = parseISO(iso);
+      const h = d.getHours();
+      const m = pad(d.getMinutes());
+      const hh = (h%12)||12;
+      const ap = h<12?'AM':'PM';
+      return `${hh}:${m} ${ap}`;
+    }
+    function bucket(iso){
+      const h = parseISO(iso).getHours();
+      if (h < 12) return "morning";
+      if (h < 17) return "afternoon";
+      return "evening";
+    }
+
+    // Booking state
+    const st = {
+      listing: null,
+      month: startOfMonth(new Date()),
+      serviceId: null,
+      dayISO: null,
+      slotISO: null,
+      dayMap: new Map(),  // dayISO -> [slotISO...]
+      enabledDays: new Set(),
+      holdUntil: 0,
+      holdTimer: null
+    };
+
+    function getSvcMeta(serviceId){
+      return (window.SERVICES||[]).find(x=>String(x.id)===String(serviceId)) || null;
+    }
+
+    // listing availability: supports l.availability[serviceId] OR l.slots
+   function getSlotsForService(l, serviceId){
+  if (!l) return [];
+  // NEW: правильний формат для service-filter
+  if (l.availabilityByService && l.availabilityByService[serviceId]) return l.availabilityByService[serviceId].slice();
+  // fallback: загальні слоти
+  if (Array.isArray(l.slots)) return l.slots.slice();
+  return [];
+}
+
+
+    function splitByDay(slots){
+      const map = new Map();
+      for (const iso of slots){
+        const d = parseISO(iso);
+        if (isNaN(d)) continue;
+        const k = toDayISO(d);
+        if (!map.has(k)) map.set(k, []);
+        map.get(k).push(iso);
+      }
+      for (const [k, arr] of map.entries()){
+        arr.sort((a,b)=>parseISO(a)-parseISO(b));
+      }
+      // sort by day key asc
+      return new Map([...map.entries()].sort((a,b)=>a[0].localeCompare(b[0])));
+    }
+
+    // modal
+    const bbModal = document.getElementById("bbModal");
+    const bbClose = document.getElementById("bbClose");
+    const bbCancel = document.getElementById("bbCancel");
+    function openModal(){
+      bbModal.classList.add("isOpen");
+      bbModal.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+      // focus
+      setTimeout(()=>document.getElementById("bbName")?.focus(), 60);
+    }
+    function closeModal(){
+      bbModal.classList.remove("isOpen");
+      bbModal.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+    bbClose.addEventListener("click", closeModal);
+    bbCancel.addEventListener("click", closeModal);
+    bbModal.addEventListener("click", (e)=>{
+      if (e.target === bbModal) closeModal();
+    });
+    document.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape" && bbModal.classList.contains("isOpen")) closeModal();
+    });
+
+    function shake(el){
+      if (!el) return;
+      el.animate([
+        {transform:'translateX(0)'},
+        {transform:'translateX(-6px)'},
+        {transform:'translateX(6px)'},
+        {transform:'translateX(-4px)'},
+        {transform:'translateX(4px)'},
+        {transform:'translateX(0)'}
+      ], {duration:320, easing:'ease-out'});
+    }
+
+    function loadClientPrefill(){
+      try{
+        const raw = localStorage.getItem("bb.lastClient");
+        if(!raw) return;
+        const c = JSON.parse(raw);
+        if (c?.name) document.getElementById("bbName").value = c.name;
+        if (c?.email) document.getElementById("bbEmail").value = c.email;
+        if (c?.phone) document.getElementById("bbPhone").value = c.phone;
+      }catch(_){}
+    }
+    function saveClientPrefill(){
+      const c = {
+        name: (document.getElementById("bbName").value||"").trim(),
+        email: (document.getElementById("bbEmail").value||"").trim(),
+        phone: (document.getElementById("bbPhone").value||"").trim()
+      };
+      try{ localStorage.setItem("bb.lastClient", JSON.stringify(c)); }catch(_){}
+    }
+
+    function stopHold(){
+      if (st.holdTimer) clearInterval(st.holdTimer);
+      st.holdTimer = null;
+      st.holdUntil = 0;
+      document.getElementById("bbHold").style.display = "none";
+      try{ localStorage.removeItem(holdKey()); }catch(_){}
+    }
+    function holdKey(){
+      return `bb.hold.${st.listing ? st.listing.id : "unknown"}`;
+    }
+    function tickHold(){
+      const left = Math.max(0, st.holdUntil - Date.now());
+      const mm = pad(Math.floor(left/60000));
+      const ss = pad(Math.floor((left%60000)/1000));
+      document.getElementById("bbHoldT").textContent = `${mm}:${ss}`;
+      if (left<=0) stopHold();
+    }
+    function startHold(slotISO){
+      stopHold();
+      st.holdUntil = Date.now() + 2*60*1000;
+      try{
+        localStorage.setItem(holdKey(), JSON.stringify({iso: slotISO, until: st.holdUntil}));
+      }catch(_){}
+      document.getElementById("bbHold").style.display = "flex";
+      tickHold();
+      st.holdTimer = setInterval(tickHold, 500);
+    }
+
+    function restoreHoldIfValid(){
+      try{
+        const raw = localStorage.getItem(holdKey());
+        if(!raw) return;
+        const obj = JSON.parse(raw);
+        if(!obj?.iso || !obj?.until) return;
+        if(Date.now() > obj.until) return;
+        st.slotISO = obj.iso;
+        st.holdUntil = obj.until;
+        document.getElementById("bbChosenISO").value = obj.iso;
+        document.getElementById("bbHold").style.display = "flex";
+        tickHold();
+        st.holdTimer = setInterval(tickHold, 500);
+        const d = parseISO(obj.iso);
+        st.month = startOfMonth(d);
+        st.dayISO = toDayISO(d);
+      }catch(_){}
+    }
+
+    function renderServicesForBooking(){
+      const grid = document.getElementById("bbSvcGrid");
+      grid.innerHTML = "";
+
+      const l = st.listing;
+      const svcList = (l?.services || []).slice();
+
+      if (!svcList.length){
+        grid.innerHTML = `<div class="muted" style="padding:6px 2px">No services</div>`;
+        return;
+      }
+
+      // Determine "best value" = lowest from
+      let cheapest = null;
+      for (const s of svcList){
+        if (cheapest === null || Number(s.from) < Number(cheapest.from)) cheapest = s;
+      }
+
+      // Auto pick last service or first
+      if (!st.serviceId){
+        try{
+          const last = localStorage.getItem("bb.lastServiceId");
+          const ok = svcList.find(x=>String(x.serviceId)===String(last));
+          st.serviceId = ok ? ok.serviceId : svcList[0].serviceId;
+        }catch(_){
+          st.serviceId = svcList[0].serviceId;
+        }
+      }
+
+      svcList.forEach((s, idx)=>{
+        const meta = getSvcMeta(s.serviceId);
+        const name = meta ? (meta.ua || meta.en || meta.name || s.serviceId) : s.serviceId;
+        const price = `$${s.from}${s.to?`–$${s.to}`:""}`;
+        const dur = `${s.durationMin} min`;
+
+        const isHot = idx === 0;
+        const isValue = cheapest && String(cheapest.serviceId)===String(s.serviceId);
+
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "bbSvc" + (String(st.serviceId)===String(s.serviceId) ? " isActive" : "");
+        b.innerHTML = `
+          <div class="n">${esc(name)}</div>
+          <div class="m">
+            <span class="bbPill">from ${esc(price)}</span>
+            <span class="bbPill">${esc(dur)}</span>
+            ${isHot ? `<span class="bbPill hot">popular</span>` : ``}
+            ${isValue ? `<span class="bbPill value">best value</span>` : ``}
+          </div>
+        `;
+        b.addEventListener("click", ()=>{
+          st.serviceId = s.serviceId;
+          document.getElementById("bbChosenServiceId").value = String(st.serviceId);
+          // reset date/time
+          st.dayISO = null;
+          st.slotISO = null;
+          document.getElementById("bbChosenISO").value = "";
+          stopHold();
+          renderServicesForBooking();
+          buildAvailability();
+          renderCalendar();
+          renderTimes();
+          renderReceipt();
+        });
+        grid.appendChild(b);
+      });
+
+      document.getElementById("bbChosenServiceId").value = String(st.serviceId);
+    }
+
+    function buildAvailability(){
+      const l = st.listing;
+      const slots = getSlotsForService(l, st.serviceId);
+
+      st.dayMap = splitByDay(slots);
+      st.enabledDays = new Set(st.dayMap.keys());
+
+      const hint = document.getElementById("bbNoSlotsHint");
+      hint.style.display = (slots.length ? "none" : "block");
+    }
+
+    function renderCalendar(){
+      const monthEl = document.getElementById("bbMonth");
+      const grid = document.getElementById("bbGrid");
+      grid.innerHTML = "";
+
+      const m = st.month || startOfMonth(new Date());
+      monthEl.textContent = m.toLocaleString(undefined, {month:"long", year:"numeric"});
+
+      // Monday-first grid
+      const first = new Date(m.getFullYear(), m.getMonth(), 1);
+      const last = new Date(m.getFullYear(), m.getMonth()+1, 0);
+      const firstDow = (first.getDay()+6)%7; // 0=Mon
+      const totalDays = last.getDate();
+
+      // prev month trailing
+      const prevLast = new Date(m.getFullYear(), m.getMonth(), 0).getDate();
+      for (let i=0;i<firstDow;i++){
+        const dayNum = prevLast - (firstDow-1-i);
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay out disabled";
+        cell.textContent=String(dayNum);
+        cell.disabled=true;
+        grid.appendChild(cell);
+      }
+
+      const today = new Date();
+      for (let d=1; d<=totalDays; d++){
+        const date = new Date(m.getFullYear(), m.getMonth(), d);
+        const dISO = toDayISO(date);
+        const enabled = st.enabledDays.has(dISO);
+
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay" + (!enabled ? " disabled" : "") + (isSameDay(date,today) ? " today" : "") + (st.dayISO===dISO ? " active" : "");
+        cell.textContent=String(d);
+        if (!enabled){
+          cell.disabled = true;
+        } else {
+          cell.addEventListener("click", ()=>{
+            st.dayISO = dISO;
+            st.slotISO = null;
+            document.getElementById("bbChosenISO").value = "";
+            stopHold();
+            renderCalendar();
+            renderTimes();
+            renderReceipt();
+          });
+        }
+        grid.appendChild(cell);
+      }
+
+      while (grid.children.length % 7 !== 0){
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay out disabled";
+        cell.textContent=" ";
+        cell.disabled=true;
+        grid.appendChild(cell);
+      }
+      while (grid.children.length < 42){
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay out disabled";
+        cell.textContent=" ";
+        cell.disabled=true;
+        grid.appendChild(cell);
+      }
+    }
+
+    function renderTimes(){
+      const m = document.getElementById("bbMorning");
+      const a = document.getElementById("bbAfternoon");
+      const e = document.getElementById("bbEvening");
+      m.innerHTML = ""; a.innerHTML=""; e.innerHTML="";
+
+      if (!st.dayISO){
+        m.innerHTML = `<div class="muted" style="padding:6px 2px">Choose a date to see times.</div>`;
+        return;
+      }
+
+      const slots = st.dayMap.get(st.dayISO) || [];
+      if (!slots.length){
+        m.innerHTML = `<div class="muted" style="padding:6px 2px">No times available.</div>`;
+        return;
+      }
+
+      for (const iso of slots){
+        const b = document.createElement("button");
+        b.type="button";
+        b.className = "bbSlot" + (st.slotISO===iso ? " active" : "");
+        b.textContent = fmtTime(iso);
+        b.addEventListener("click", ()=>{
+          st.slotISO = iso;
+          document.getElementById("bbChosenISO").value = iso;
+          renderTimes();
+          startHold(iso);
+          renderReceipt();
+        });
+
+        const g = bucket(iso);
+        if (g==="morning") m.appendChild(b);
+        else if (g==="afternoon") a.appendChild(b);
+        else e.appendChild(b);
+      }
+
+      if (!m.children.length) m.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
+      if (!a.children.length) a.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
+      if (!e.children.length) e.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
+    }
+
+    function renderReceipt(){
+      const r = document.getElementById("bbReceipt");
+      if (!st.serviceId || !st.slotISO){
+        r.style.display = "none";
+        return;
+      }
+
+      const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
+      const meta = getSvcMeta(st.serviceId);
+      const name = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+
+      document.getElementById("bbRService").textContent = name;
+      document.getElementById("bbRWhen").textContent = fmtWhen(st.slotISO);
+      document.getElementById("bbRDur").textContent = `${svc?.durationMin ?? "—"} min`;
+      document.getElementById("bbRPrice").textContent = `$${svc?.from ?? "—"}`;
+
+      r.style.display = "block";
+    }
+
+    function pickSoonest(){
+      const now = new Date();
+      let best = null;
+
+      for (const [dISO, arr] of st.dayMap.entries()){
+        for (const iso of arr){
+          const dt = parseISO(iso);
+          if (dt >= now){ best = iso; break; }
+        }
+        if (best) break;
+      }
+      if (!best) return;
+
+      const d = parseISO(best);
+      st.month = startOfMonth(d);
+      st.dayISO = toDayISO(d);
+      st.slotISO = best;
+      document.getElementById("bbChosenISO").value = best;
+
+      renderCalendar();
+      renderTimes();
+      startHold(best);
+      renderReceipt();
+    }
+
+    function pickWeekend(){
+      for (const [dISO, arr] of st.dayMap.entries()){
+        const d = new Date(dISO+"T12:00:00");
+        const dow = d.getDay(); // 0 Sun, 6 Sat
+        if (dow===0 || dow===6){
+          st.month = startOfMonth(d);
+          st.dayISO = dISO;
+          st.slotISO = arr[0];
+          document.getElementById("bbChosenISO").value = arr[0];
+
+          renderCalendar();
+          renderTimes();
+          startHold(arr[0]);
+          renderReceipt();
+          return;
+        }
+      }
+    }
+
+    function pickEvening(){
+      for (const [dISO, arr] of st.dayMap.entries()){
+        const evening = arr.find(x=>parseISO(x).getHours()>=17);
+        if (evening){
+          const d = new Date(dISO+"T12:00:00");
+          st.month = startOfMonth(d);
+          st.dayISO = dISO;
+          st.slotISO = evening;
+          document.getElementById("bbChosenISO").value = evening;
+
+          renderCalendar();
+          renderTimes();
+          startHold(evening);
+          renderReceipt();
+          return;
+        }
+      }
+    }
+
+    function setChipActive(btn){
+      document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
+      btn.classList.add("isActive");
+    }
+
+    function bindBookingUI(){
+      document.getElementById("bbPrev").addEventListener("click", ()=>{
+        st.month = addMonths(st.month, -1);
+        renderCalendar();
+      });
+      document.getElementById("bbNext").addEventListener("click", ()=>{
+        st.month = addMonths(st.month, +1);
+        renderCalendar();
+      });
+
+      document.getElementById("bbChips").addEventListener("click", (e)=>{
+        const b = e.target.closest(".bbChip");
+        if (!b) return;
+        setChipActive(b);
+        const t = b.getAttribute("data-chip");
+        if (t==="soonest") pickSoonest();
+        if (t==="weekend") pickWeekend();
+        if (t==="evening") pickEvening();
+      });
+
+      document.getElementById("bbEdit").addEventListener("click", ()=>{
+        st.dayISO = null;
+        st.slotISO = null;
+        document.getElementById("bbChosenISO").value = "";
+        stopHold();
+        renderCalendar();
+        renderTimes();
+        renderReceipt();
+      });
+
+      document.getElementById("bbConfirm").addEventListener("click", async ()=>{
+        const name = (document.getElementById("bbName").value||"").trim();
+        const email = (document.getElementById("bbEmail").value||"").trim();
+        const phone = (document.getElementById("bbPhone").value||"").trim();
+
+        if (!st.serviceId || !st.slotISO){
+          shake(document.getElementById("bbConfirm"));
+          return;
+        }
+        if (!name || !phone){
+          shake(document.querySelector(".bbForm"));
+          return;
+        }
+
+        saveClientPrefill();
+        try{ localStorage.setItem("bb.lastServiceId", String(st.serviceId)); }catch(_){}
+
+        const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
+        const meta = getSvcMeta(st.serviceId);
+        const svcName = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+
+        // Worker URL: use window.WORKER_URL if defined in data.js; else fallback to your saved endpoint
+        const WORKER_URL = (window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev").replace(/\/$/,"");
+
+        const payload = {
+          name, email, phone,
+          serviceId: st.serviceId,
+          serviceName: svcName,
+          durationMin: svc?.durationMin ?? null,
+          priceFrom: svc?.from ?? null,
+          priceTo: svc?.to ?? null,
+          datetimeISO: st.slotISO,
+          listingId: st.listing.id,
+          listingName: st.listing.name,
+          address: st.listing.address,
+          profileUrl: location.href
+        };
+
+        const btn = document.getElementById("bbConfirm");
+        const prev = btn.textContent;
+        btn.textContent = "Booking…";
+        btn.style.opacity = ".9";
+        btn.disabled = true;
+
+        try{
+          const res = await fetch(WORKER_URL + "/book", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error("Booking failed");
+
+          stopHold();
+          document.getElementById("bbSub").textContent = "You're all set. We'll see you soon ✨";
+          btn.textContent = "Booked ✓";
+          setTimeout(()=>{ closeModal(); }, 900);
+
+        }catch(err){
+          console.error(err);
+          shake(btn);
+          btn.textContent = "Try again";
+          setTimeout(()=>{ btn.textContent = prev; }, 1200);
+        }finally{
+          btn.disabled = false;
+          btn.style.opacity = "1";
+        }
+      });
+    }
+
+    function initBookingForListing(l){
+      st.listing = l;
+      st.month = startOfMonth(new Date());
+      st.dayISO = null;
+      st.slotISO = null;
+      stopHold();
+
+      document.getElementById("bbTitle").textContent = `Book · ${l.name || "Profile"}`;
+      document.getElementById("bbSub").textContent = "Pick a service, then choose a date & time.";
+
+      loadClientPrefill();
+      renderServicesForBooking();
+      buildAvailability();
+      restoreHoldIfValid();
+      renderCalendar();
+      renderTimes();
+      renderReceipt();
+
+      // default chip none
+      document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
+    }
+
+    // Load data.js + render profile
+    const s = document.createElement("script");
+    s.src = DATA_URL;
+
+    s.onload = () => {
+      try{
+        const id = qs("id");
+        const l = (window.LISTINGS||[]).find(x=>x.id===id) || window.LISTINGS?.[0];
+        if(!l){ showErr("No listing found"); return; }
+
+        // expose for booking
+        window.bb = window.bb || {};
+        window.bb.profileId = l.id;
+        window.bb.currentListing = l;
+
+        document.getElementById("main").style.display = "block";
+        document.getElementById("heroImg").src = safeImg((l.images||[])[0]);
+        document.getElementById("name").textContent = l.name;
+        document.getElementById("address").textContent = l.address;
+
+        const badges = [];
+        if(l.partner) badges.push(`<span class="tag partner">💎 Partner</span>`);
+        if(l.verified) badges.push(`<span class="tag good">Verified</span>`);
+        if(l.sterile) badges.push(`<span class="tag good">Sterile</span>`);
+        document.getElementById("badges").innerHTML = badges.join("");
+
+        // services list (unchanged)
+        const svcBox = document.getElementById("services");
+        const services = (l.services||[]).map(svc=>{
+          const meta = (window.SERVICES||[]).find(x=>x.id===svc.serviceId);
+          const label = meta ? (meta.ua || meta.en || meta.name || svc.serviceId) : svc.serviceId;
+          const price = `$${svc.from}${svc.to?`–$${svc.to}`:""}`;
+          return `<div class="svc"><div><b>${esc(label)}</b><div class="muted" style="margin-top:3px">${esc(String(svc.durationMin))} min</div></div><div><b>${esc(price)}</b></div></div>`;
+        }).join("");
+        svcBox.innerHTML = services || `<div class="muted">No services</div>`;
+
+        // bio
+        document.getElementById("bio").textContent = l.bio_ua || "";
+
+        // actions
+        const phone = (l.phone||"").replace(/[^\d+]/g,"");
+        const call = document.getElementById("callBtn");
+        call.href = phone ? `tel:${phone}` : "#";
+        call.style.opacity = phone ? "1" : ".5";
+
+        const maps = document.getElementById("mapsBtn");
+        const q = encodeURIComponent(l.address || "");
+        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+
+        const ig = document.getElementById("igBtn");
+        ig.href = l.instagram || "#";
+        ig.style.opacity = l.instagram ? "1" : ".5";
+
+        // map embed
+        document.getElementById("map").src = `https://www.google.com/maps?q=${q}&output=embed`;
+
+       // ✅ Book -> redirect to index with auto-open booking modal
+// book button -> go to index and auto-open booking modal there
+const bookBtn = document.getElementById("bookBtn");
+bookBtn.addEventListener("click", () => {
+  // choose a valid service id for this listing
+  const svcId =
+    (l.services && l.services[0] && l.services[0].serviceId)
+      ? l.services[0].serviceId
+      : "";
+
+  const url =
+    `./index.html?book=1&id=${encodeURIComponent(l.id)}` +
+    (svcId ? `&service=${encodeURIComponent(svcId)}` : "");
+
+  // open in same tab (reliable)
+  location.href = url;
+});
+
+
+        // bind booking UI once
+        bindBookingUI();
+
+      }catch(e){
+        showErr(e.message || String(e));
+      }
+    };
+
+    s.onerror = ()=> showErr("Failed to load data.js");
+    document.head.appendChild(s);
+  </script>
+</body>
+</html>
