@@ -968,9 +968,18 @@
       <div class="sheetHead">
         <h3 id="modalTitle">Booking</h3>
         <button class="x" id="closeModal">✕</button>
-      </div>
+      </div><div id="bkWhere" style="margin:10px 0 14px; display:flex; gap:10px; align-items:center; justify-content:space-between;">
+  <div style="min-width:0">
+    <div id="bkWhereName" style="font-weight:700; font-size:14px; opacity:.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+    <div id="bkWhereAddr" style="font-size:12px; opacity:.7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+  </div>
 
-      <div class="sheetBody">
+  <a id="bkWhereProfile" href="#"
+     style="flex:0 0 auto; padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); text-decoration:none; color:inherit;">
+     Profile
+  </a>
+</div>
+        <div class="sheetBody">
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
           <div class="tag partner" id="mPartner" style="display:none">Partner</div>
           <div class="tag good" id="mVerified" style="display:none">Verified</div>
@@ -1381,7 +1390,25 @@
     function matchesService(listing, serviceId){
       if(!serviceId) return true;
       return !!window.bb.util.listingService(listing, serviceId);
-    }
+    }function renderBookingWhere(listing){
+  const box = document.getElementById("bkWhere");
+  const name = document.getElementById("bkWhereName");
+  const addr = document.getElementById("bkWhereAddr");
+  const link = document.getElementById("bkWhereProfile");
+  if (!box || !name || !addr || !link) return;
+
+  if (!listing){
+    box.style.display = "none";
+    return;
+  }
+
+  box.style.display = "flex";
+  name.textContent = listing.name || "";
+  addr.textContent = listing.address || "";
+  link.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+  link.target = "_blank";
+}
+
 
     function filteredListings(){
       const all = window.LISTINGS.slice();
@@ -2425,5 +2452,6 @@
   </script>
 </body>
 </html>
+
 
 
