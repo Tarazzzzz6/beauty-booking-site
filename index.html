@@ -218,7 +218,17 @@
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
     .heroDesc{margin:0 0 14px; color:var(--muted); max-width:56ch}
-    .chips{display:flex; gap:10px; flex-wrap:wrap}
+    .chips{display:flex; gap:10px; flex-wrap:wrap}.chips{
+  display:flex; gap:10px;
+  flex-wrap:nowrap;
+  overflow:auto;
+  padding-bottom:6px;
+  -webkit-overflow-scrolling:touch;
+}
+.chips::-webkit-scrollbar{height:8px}
+.chips::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
+.chip{white-space:nowrap; flex:0 0 auto;}
+
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px;
@@ -2600,5 +2610,6 @@ input, select, textarea, button { font-size: 16px; }
   </script>
 </body>
 </html>
+
 
 
