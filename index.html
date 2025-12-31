@@ -1448,7 +1448,10 @@ input, select, textarea, button { font-size: 16px; }
       renderLastBookingCard();
     }
 
-    function renderTexts(){
+    function renderTexts(){  const $id = (id) => document.getElementById(id);
+  const setText = (id, txt) => { const el = $id(id); if (el) el.textContent = txt; };
+  const setHTML = (id, html) => { const el = $id(id); if (el) el.innerHTML = html; };
+
       const t = T[state.lang];
       if($(".sub")) $(".sub").style.display = "none";
 
@@ -2611,6 +2614,7 @@ input, select, textarea, button { font-size: 16px; }
   </script>
 </body>
 </html>
+
 
 
 
