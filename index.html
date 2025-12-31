@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="uk">
 <head>
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0b0f" />
@@ -12,16 +11,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
 
-  <link rel="manifest" href="./manifest.webmanifest" /><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="BookingClub">
-
-<link rel="apple-touch-startup-image" href="/apple-splash-1179x2556.png"
-      media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)">
-
-<link rel="apple-touch-startup-image" href="/apple-splash-1290x2796.png"
-      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
-
+  <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -759,7 +749,143 @@
       .formGrid{grid-template-columns: 1fr;}
       .heroTitle{font-size:32px}
       .timeGrid{grid-template-columns: repeat(2, 1fr);}
-    }
+    }/* ===== Mobile polish (iPhone app-feel) ===== */
+:root{
+  --safeB: env(safe-area-inset-bottom, 0px);
+  --safeT: env(safe-area-inset-top, 0px);
+}
+
+@media (max-width: 620px){
+  /* легше для очей */
+  body{ -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  .wrap{ padding: 14px 14px 120px; }
+
+  /* topbar виглядає як app */
+  .topbar{ padding-top: var(--safeT); }
+
+  /* hero компактніший */
+  .hero{ padding: 14px 0 8px; }
+  .heroInner{ padding: 18px 16px; gap:12px; }
+  .heroTitle{ font-size: 30px; }
+  .heroDesc{ font-size: 13.5px; line-height: 1.35; }
+  .chips{ gap:8px; }
+  .chip{ padding: 9px 11px; font-size: 13px; }
+
+  /* справа картка “Next available” не виглядає гігантом */
+  .heroSide{ gap:10px; }
+  .glass .pad{ padding: 12px 12px; }
+  .bigLine{ font-size: 13.5px; line-height:1.25; }
+  .smallLine{ font-size: 12.5px; }
+
+  /* cards: більше повітря + кращий тап */
+  .media{ height: 200px; }
+  .name{ font-size: 15px; }
+  .addr{ font-size: 13px; }
+
+  /* найважливіше: на мобілці Quick book має бути ВИДИМИЙ, бо hover нема */
+  .miniCTA{
+    opacity:1 !important;
+    transform:none !important;
+    pointer-events:auto !important;
+  }
+  .card .miniCTA{
+    position: static;
+    padding: 0 12px 12px;
+    margin-top: -6px;
+  }
+  .stripCard .miniCTA{
+    position: static;
+    margin-top: 10px;
+  }
+
+  /* floatbar з урахуванням iPhone home-indicator */
+  .floatbar{ bottom: calc(12px + var(--safeB)); }
+  .toast{ bottom: calc(88px + var(--safeB)); }
+
+  /* модалка як справжній bottom-sheet */
+  .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
+  .sheet{
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 24px;
+  }
+  .sheetBody{
+    max-height: calc(92vh - 140px);
+    overflow:auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* time picker теж норм по висоті */
+  .timeOverlay{ padding: 12px 12px calc(12px + var(--safeB)); }
+  .timeSheet{ width: 100%; max-height: 70vh; }
+  .timeBody{ max-height: calc(70vh - 70px); overflow:auto; -webkit-overflow-scrolling: touch; }
+}/* === Mobile polish (PWA feel) === */
+:root{
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+html, body { overflow-x: hidden; }
+img { max-width: 100%; height: auto; }
+
+/* Prevent iOS input zoom */
+input, select, textarea, button { font-size: 16px; }
+
+/* Bigger tap targets on mobile */
+@media (max-width: 720px){
+  body{
+    padding-left: max(0px, var(--safe-l));
+    padding-right: max(0px, var(--safe-r));
+  }
+
+  /* якщо є верхні контейнери/секції — не даємо їм вилізти */
+  .container, .wrap, main, header, .page { max-width: 100%; }
+
+  /* cards/listings: одна колонка, більше повітря */
+  .grid, .cards, .listings{
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* кнопки/чіпси — більші */
+  button, .btn, .chip, .pill{
+    min-height: 44px;
+    border-radius: 16px;
+  }
+
+  /* модалка/booking bottom-sheet — повна висота + safe area */
+  .modal, .sheet, .bookingModal, #modal, #bookingModal{
+    padding-bottom: var(--safe-b);
+  }
+
+  .modal__panel, .sheet__panel, .modalPanel, .bookingPanel, .modal-content, .modalContent{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
+  /* якщо у тебе є внутрішній скролл модалки */
+  .modal__body, .sheet__body, .modalBody, .bookingBody, .modal-inner, .modalInner{
+    max-height: calc(100vh - 72px - var(--safe-b));
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* нижня кнопка Confirm — не прилипає до краю */
+  .modal__footer, .sheet__footer, .modalFooter, .bookingFooter{
+    padding-bottom: calc(12px + var(--safe-b));
+  }
+
+  /* легше читати на мобільному */
+  h1{ font-size: 26px; line-height: 1.1; }
+  h2{ font-size: 18px; }
+  .muted, .sub, .small { font-size: 14px; }
+}
+
   </style>
 </head>
 
@@ -770,7 +896,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Beauty Booking</h1>
-          <div class="sub">Marketplace · Montréal</div>
+          <div class="sub" style="display:none"></div>
         </div>
       </a>
 
@@ -844,15 +970,6 @@
                 <div class="smallLine" id="lastSub">Tap to book again</div>
               </div>
             </div>
-
-            <div class="glass">
-              <div class="pad">
-                <div class="kicker">Trust</div>
-                <div class="bigLine">Telegram confirmation · spam-free</div>
-                <div class="smallLine">No accounts needed. Clear pricing. стерильність.</div>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
@@ -967,19 +1084,24 @@
     <div class="sheet" role="dialog" aria-modal="true">
       <div class="sheetHead">
         <h3 id="modalTitle">Booking</h3>
-        <button class="x" id="closeModal">✕</button>
-      </div><div id="bkWhere" style="margin:10px 0 14px; display:flex; gap:10px; align-items:center; justify-content:space-between;">
-  <div style="min-width:0">
-    <div id="bkWhereName" style="font-weight:700; font-size:14px; opacity:.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
-    <div id="bkWhereAddr" style="font-size:12px; opacity:.7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
-  </div>
-
-  <a id="bkWhereProfile" href="#"
-     style="flex:0 0 auto; padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); text-decoration:none; color:inherit;">
-     Profile
+        <button class="x" id="closeModal">✕</button><div id="bkWhere" style="
+  display:none;
+  gap:8px;
+  flex-direction:column;
+  padding:10px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+">
+  <div style="font-weight:800" id="bkWhereName"></div>
+  <div style="font-size:12px; opacity:.75" id="bkWhereAddr"></div>
+  <a id="bkWhereProfile"
+     style="font-size:12px; color:#ffd27a; font-weight:700">
+     Open profile →
   </a>
 </div>
-        <div class="sheetBody">
+
+      </div>
+
+      <div class="sheetBody">
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
           <div class="tag partner" id="mPartner" style="display:none">Partner</div>
           <div class="tag good" id="mVerified" style="display:none">Verified</div>
@@ -1305,7 +1427,8 @@
 
     function renderTexts(){
       const t = T[state.lang];
-      $(".sub").textContent = t.marketplace;
+      if($(".sub")) $(".sub").style.display = "none";
+
       $("#q").placeholder = t.searchPh;
       $("#heroDesc").textContent = t.heroDesc;
       $("#openQuick").childNodes[0].textContent = t.quick + " ";
@@ -1390,25 +1513,7 @@
     function matchesService(listing, serviceId){
       if(!serviceId) return true;
       return !!window.bb.util.listingService(listing, serviceId);
-    }function renderBookingWhere(listing){
-  const box = document.getElementById("bkWhere");
-  const name = document.getElementById("bkWhereName");
-  const addr = document.getElementById("bkWhereAddr");
-  const link = document.getElementById("bkWhereProfile");
-  if (!box || !name || !addr || !link) return;
-
-  if (!listing){
-    box.style.display = "none";
-    return;
-  }
-
-  box.style.display = "flex";
-  name.textContent = listing.name || "";
-  addr.textContent = listing.address || "";
-  link.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-  link.target = "_blank";
-}
-
+    }
 
     function filteredListings(){
       const all = window.LISTINGS.slice();
@@ -1507,7 +1612,8 @@
       div.addEventListener("click", (e)=>{
         const act = e.target?.dataset?.action;
         if(act === "fav" || act === "book") return;
-        window.open(`./profile.html?id=${encodeURIComponent(listing.id)}`, "_blank", "noopener");
+        location.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+
       });
 
       div.querySelectorAll('[data-action="fav"]').forEach(btn=>{
@@ -1766,7 +1872,8 @@
     }
 
     function openBooking(listingId, serviceId, presetSlot=null){
-      const listing = window.LISTINGS.find(l=>l.id===listingId);
+      const listing = window.LISTINGS.find(l=>l.id===listingId);renderBookingWhere(listing);
+
       if(!listing) return;
 
       booking.listingId = listingId;
@@ -1806,7 +1913,7 @@
       const label = serviceLabel(booking.serviceId);
       $("#priceLine").textContent = svcObj ? T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin) : "—";
 
-      $("#openProfileBtn").onclick = ()=> window.open(`./profile.html?id=${encodeURIComponent(listingId)}`, "_blank", "noopener");
+      $("#openProfileBtn").onclick = ()=> { location.href = `./profile.html?id=${encodeURIComponent(listingId)}`; };
 
       $("#svcPick").onclick = ()=>{
         if(!svcList.length) return;
@@ -2448,10 +2555,35 @@
         navigator.serviceWorker.register("./worker.js").catch(()=>{});
       }
     }
-    init();
+    init();function renderBookingWhere(listing){
+  const box = document.getElementById("bkWhere");
+  const name = document.getElementById("bkWhereName");
+  const addr = document.getElementById("bkWhereAddr");
+  const link = document.getElementById("bkWhereProfile");
+  if (!box || !name || !addr || !link) return;
+
+  if (!listing){
+    box.style.display = "none";
+    return;
+  }
+
+  box.style.display = "flex";
+  name.textContent = listing.name || "";
+  addr.textContent = listing.address || "";
+  link.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+  link.target = "_blank";
+}function renderBookingWhere(listing){
+  const box = document.getElementById("bkWhere");
+  const name = document.getElementById("bkWhereName");
+  const addr = document.getElementById("bkWhereAddr");
+  const link = document.getElementById("bkWhereProfile");
+  if(!box || !listing) return;
+
+  box.style.display = "flex";
+  name.textContent = listing.name || "";
+  addr.textContent = listing.address || "";
+  link.href = `./profile.html?id=${listing.id}`;
+}
   </script>
 </body>
 </html>
-
-
-
