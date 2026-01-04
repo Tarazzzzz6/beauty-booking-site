@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0f" />
   <title>Beauty Booking</title>
 
@@ -71,10 +71,16 @@
       --shadow2: 0 10px 30px rgba(10,10,18,.10);
     }
 
+    /* === iOS PWA / overflow-x hard fix === */
+    html{height:100%; width:100%; max-width:100%; overflow-x:hidden;}
+    body{max-width:100%; overflow-x:clip;}
+
     *{box-sizing:border-box}
-    html,body{height:100%}
+    a{color:inherit; text-decoration:none}
+    button,input{font:inherit}
+    html,body{margin:0}
+
     body{
-      margin:0;
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
       color:var(--text);
       background:
@@ -82,15 +88,14 @@
         radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),
         radial-gradient(900px 700px at 70% 90%, rgba(255,210,122,.10), transparent 60%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      overflow-x:hidden;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       padding-left: max(0px, var(--safeL));
       padding-right:max(0px, var(--safeR));
     }
-    a{color:inherit; text-decoration:none}
-    button,input{font:inherit}
-    .wrap{max-width:var(--max); margin:0 auto; padding:20px 18px 120px}
+
+    /* guard: no accidental 100vw */
+    .topbar, .wrap, .overlay, .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{max-width:100%;}
 
     mark{
       background: rgba(255,210,122,.18);
@@ -99,6 +104,8 @@
       border-radius: .35em;
       box-shadow: 0 0 0 1px rgba(255,210,122,.18);
     }
+
+    .wrap{max-width:var(--max); margin:0 auto; padding:20px 18px 120px}
 
     .topbar{
       position:sticky; top:0; z-index:50;
@@ -504,6 +511,10 @@
       background: rgba(7,7,11,.55);
       backdrop-filter: blur(14px);
       box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      /* safe-area left/right to avoid iOS weirdness */
+      margin-left: env(safe-area-inset-left);
+      margin-right: env(safe-area-inset-right);
+      max-width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
     }
     body[data-theme="light"] .floatbar .inner{background: rgba(251,251,255,.68)}
     .floatCTA{
@@ -695,6 +706,7 @@
       font-weight:900;
       display:none;
       z-index:120;
+      max-width: calc(100% - 24px);
     }
     body[data-theme="light"] .toast{background: rgba(251,251,255,.78); color: rgba(11,11,15,.92)}
     .toast.on{display:block; animation: toastIn .18s ease}
@@ -1323,15 +1335,7 @@
         lastKicker: "Your last booking",
         lastSub: "Tap to book again",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install",
-        noSlotsToday: "Сьогодні слотів нема",
-        noSlots: "Немає слотів",
-        tryAnotherDate: "Спробуй інший день",
-        popular: "Popular picks",
-        copied: "Copied ✅",
-        sending: "Sending…",
-        sent: "Sent ✅",
-        failed: "Помилка. Спробуй ще раз."
+        install: "Install"
       },
       en: {
         searchPh: "Search salon, area, address…",
@@ -1372,19 +1376,12 @@
         lastKicker: "Your last booking",
         lastSub: "Tap to book again",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install",
-        noSlotsToday: "No slots today",
-        noSlots: "No slots",
-        tryAnotherDate: "Try another date",
-        popular: "Popular picks",
-        copied: "Copied ✅",
-        sending: "Sending…",
-        sent: "Sent ✅",
-        failed: "Error. Try again."
+        install: "Install"
       }
     };
 
     const $ = (s, el=document) => el.querySelector(s);
+    const isStandalone = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone === true);
 
     function applyTheme(){
       document.body.dataset.theme = state.theme === "light" ? "light" : "dark";
@@ -1470,7 +1467,7 @@
     }
 
     function serviceLabel(serviceId){
-      const m = window.SERVICES.find(s=>s.id===serviceId);
+      const m = (window.SERVICES||[]).find(s=>s.id===serviceId);
       if(!m) return "";
       return state.lang === "uk" ? m.ua : m.en;
     }
@@ -1483,7 +1480,7 @@
 
     function matchesQuery(listing, q){
       if(!q) return true;
-      const s = (listing.name+" "+listing.brand+" "+listing.address+" "+(listing.city||"")).toLowerCase();
+      const s = (listing.name+" "+(listing.brand||"")+" "+(listing.address||"")+" "+(listing.city||"")).toLowerCase();
       return s.includes(q.toLowerCase());
     }
 
@@ -1511,11 +1508,15 @@
 
     function matchesService(listing, serviceId){
       if(!serviceId) return true;
-      return !!window.bb.util.listingService(listing, serviceId);
+      try{
+        return !!window.bb.util.listingService(listing, serviceId);
+      }catch(e){
+        return !!(listing.services||[]).find(s=>s.serviceId===serviceId);
+      }
     }
 
     function filteredListings(){
-      const all = window.LISTINGS.slice();
+      const all = (window.LISTINGS||[]).slice();
       let out = all.filter(l => matchesQuery(l, state.q) && matchesService(l, state.serviceId));
       if(state.favOnly) out = out.filter(l => state.favs.has(l.id));
       return out;
@@ -1524,7 +1525,7 @@
     function groupListings(list){
       const partners = list.filter(l => !!l.partner);
       const rest = list.filter(l => !l.partner);
-      const ranked = window.bb.util.smartRecommend(rest, state.userLoc, state.serviceId);
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(rest, state.userLoc, state.serviceId) : rest;
       const rec = ranked.filter(l => !!l.recommended).slice(0, 6);
       const other = ranked.filter(l => !l.recommended);
       return { partners, rec, other };
@@ -1536,19 +1537,30 @@
 
     function cardTags(listing){
       const tags = [];
-      const slot = window.bb.util.nextAvailable(listing, state.serviceId);
+      let slot = null;
+      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
       if(listing.partner) tags.push({t:"Partner", cls:"partner"});
       if(listing.verified) tags.push({t:"Verified", cls:"good"});
       if(listing.sterile) tags.push({t:"Sterile", cls:"good"});
-      if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today"});
-      const from = window.bb.util.minPriceFor(listing, state.serviceId);
-      if(from != null) tags.push({t:`from $${from}`, cls:""});
+      try{
+        if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today"});
+      }catch(e){}
+      try{
+        const from = window.bb.util.minPriceFor(listing, state.serviceId);
+        if(from != null) tags.push({t:`from $${from}`, cls:""});
+      }catch(e){}
       return tags;
     }
 
     function buildCard(listing, big=false){
-      const slot = window.bb.util.nextAvailable(listing, state.serviceId);
-      const why = window.bb.util.computeWhy(listing, state.userLoc, state.serviceId);
+      let slot = null;
+      let why = "";
+      try{
+        slot = window.bb.util.nextAvailable(listing, state.serviceId);
+        why = window.bb.util.computeWhy(listing, state.userLoc, state.serviceId);
+      }catch(e){
+        why = state.lang==="uk" ? "Fast pick" : "Fast pick";
+      }
 
       const div = document.createElement("div");
       div.className = big ? "stripCard" : "card";
@@ -1654,10 +1666,10 @@
     function renderServiceChips(){
       const box = $("#serviceChips");
       box.innerHTML = "";
-      window.SERVICES.forEach(s=>{
+      (window.SERVICES||[]).forEach(s=>{
         const chip = document.createElement("div");
         chip.className = "chip" + (state.serviceId===s.id ? " on":"");
-        chip.innerHTML = `<span>${s.icon}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
+        chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
         chip.addEventListener("click", ()=>{
           state.serviceId = (state.serviceId===s.id) ? null : s.id;
           saveFilters();
@@ -1676,13 +1688,15 @@
 
     function computeNextCandidates(){
       const base = filteredListings();
-      const list = base.length ? base : window.LISTINGS.slice();
+      const list = base.length ? base : (window.LISTINGS||[]).slice();
       const partners = list.filter(l => !!l.partner && matchesService(l, state.serviceId));
       const pool = partners.length ? partners : list;
 
-      const ranked = window.bb.util.smartRecommend(pool, state.userLoc, state.serviceId)
-        .filter(l => !!window.bb.util.nextAvailable(l, state.serviceId));
-      return ranked.slice(0, 8);
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(pool, state.userLoc, state.serviceId) : pool;
+      const withSlots = ranked.filter(l => {
+        try{ return !!window.bb.util.nextAvailable(l, state.serviceId); }catch(e){ return false; }
+      });
+      return withSlots.slice(0, 8);
     }
 
     function setHeroCardAnimated(lineTxt, subTxt){
@@ -1723,7 +1737,8 @@
 
       heroRot.idx = heroRot.idx % heroRot.list.length;
       const listing = heroRot.list[heroRot.idx];
-      const slot = window.bb.util.nextAvailable(listing, state.serviceId);
+      let slot = null;
+      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
       if(!slot) return;
 
       const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || ""));
@@ -1755,14 +1770,14 @@
     function renderSaved(){
       const sec = $("#savedSection");
       const grid = $("#savedGrid");
-      const favList = window.LISTINGS.filter(l=>state.favs.has(l.id));
+      const favList = (window.LISTINGS||[]).filter(l=>state.favs.has(l.id));
       if(favList.length === 0){
         sec.style.display = "none";
         return;
       }
       sec.style.display = "block";
       grid.innerHTML = "";
-      const ranked = window.bb.util.smartRecommend(favList, state.userLoc, state.serviceId);
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(favList, state.userLoc, state.serviceId) : favList;
       ranked.slice(0,6).forEach(l => grid.appendChild(buildCard(l,false)));
     }
 
@@ -1793,7 +1808,7 @@
       renderNextHeroRotating(false);
     }
 
-    // AI (rule-based for now)
+    // AI (simple heuristic picks)
     function toggleAI(open){
       const sec = $("#aiSection");
       sec.style.display = open ? "block" : "none";
@@ -1803,22 +1818,17 @@
         $("#aiInput").focus();
       }
     }
-
-    function parseAIQuery(q){
-      const s = (q||"").toLowerCase();
-      let serviceId = null;
-      if(s.includes("манік") || s.includes("nail") || s.includes("mani")) serviceId = "manicure";
-      if(s.includes("педик") || s.includes("pedi")) serviceId = "pedicure";
-      if(s.includes("бров") || s.includes("brow")) serviceId = "brows";
-      if(s.includes("стриж") || s.includes("haircut") || s.includes("hair")) serviceId = "haircut";
-      let after18 = s.includes("after 18") || s.includes("після 18") || s.includes("after18");
-      let today = s.includes("today") || s.includes("сьогодні");
-      let maxPrice = null;
-      const m = s.match(/(\$|usd)?\s*(\d{2,3})/);
-      if(m) maxPrice = parseInt(m[2],10);
-      return { serviceId, after18, today, maxPrice };
+    function runAIQuery(text){
+      const q = String(text||"").toLowerCase();
+      let serviceId = state.serviceId;
+      if(!serviceId){
+        const svc = (window.SERVICES||[]).find(s => (s.ua||"").toLowerCase().includes(q) || (s.en||"").toLowerCase().includes(q));
+        if(svc) serviceId = svc.id;
+      }
+      const pool = (window.LISTINGS||[]).filter(l => matchesService(l, serviceId));
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(pool, state.userLoc, serviceId) : pool;
+      return { picks: ranked.slice(0,3).map(x=>({id:x.id})) };
     }
-
     function renderAIPicks(result){
       const grid = $("#aiPicks");
       grid.innerHTML = "";
@@ -1828,38 +1838,10 @@
         return;
       }
       picks.forEach(p=>{
-        const listing = window.LISTINGS.find(x=>x.id===p.id);
+        const listing = (window.LISTINGS||[]).find(x=>x.id===p.id);
         if(!listing) return;
         grid.appendChild(buildCard(listing,false));
       });
-    }
-
-    function aiSuggest(){
-      const q = $("#aiInput").value.trim();
-      const p = parseAIQuery(q);
-      const base = window.LISTINGS.filter(l=>matchesService(l, p.serviceId || state.serviceId));
-      const ranked = window.bb.util.smartRecommend(base, state.userLoc, p.serviceId || state.serviceId);
-
-      const picks = [];
-      for(const l of ranked){
-        const slot = window.bb.util.nextAvailable(l, p.serviceId || state.serviceId);
-        if(!slot) continue;
-        if(p.today){
-          const todayISO = new Date().toISOString().slice(0,10);
-          if(slot.dateISO !== todayISO) continue;
-        }
-        if(p.after18){
-          const hh = parseInt(String(slot.time||"0").split(":")[0]||"0",10);
-          if(hh < 18) continue;
-        }
-        if(p.maxPrice != null){
-          const from = window.bb.util.minPriceFor(l, p.serviceId || state.serviceId);
-          if(from != null && from > p.maxPrice) continue;
-        }
-        picks.push({ id:l.id });
-        if(picks.length>=3) break;
-      }
-      renderAIPicks({picks});
     }
 
     // === Booking modal state ===
@@ -1907,7 +1889,6 @@
 
     function updateConfirmState(){
       const btn = $("#submitBooking");
-      if(!btn) return;
       const name = $("#fName").value.trim();
       const phone = $("#fPhone").value.trim();
       const email = $("#fEmail").value.trim();
@@ -1957,14 +1938,14 @@
     }
 
     function openBooking(listingId, serviceId, presetSlot=null){
-      const listing = window.LISTINGS.find(l=>l.id===listingId);
+      const listing = (window.LISTINGS||[]).find(l=>l.id===listingId);
       if(!listing) return;
 
       booking.listingId = listingId;
 
       const svcList = listing.services || [];
       let targetServiceId =
-        serviceId && window.bb.util.listingService(listing, serviceId)
+        serviceId && matchesService(listing, serviceId)
           ? serviceId
           : (svcList[0]?.serviceId || null);
       booking.serviceId = targetServiceId;
@@ -1980,27 +1961,40 @@
       $("#mPartner").style.display = listing.partner ? "inline-flex" : "none";
       $("#mVerified").style.display = listing.verified ? "inline-flex" : "none";
       $("#mSterile").style.display = listing.sterile ? "inline-flex" : "none";
-      const slot = window.bb.util.nextAvailable(listing, booking.serviceId);
-      $("#mToday").style.display = (slot && window.bb.util.isTodaySlot(slot)) ? "inline-flex" : "none";
+      let slot = null;
+      try{ slot = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
+      try{
+        $("#mToday").style.display = (slot && window.bb.util.isTodaySlot(slot)) ? "inline-flex" : "none";
+      }catch(e){ $("#mToday").style.display = "none"; }
       $("#mWhy").style.display = "inline-flex";
-      $("#mWhy").textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId);
+      try{
+        $("#mWhy").textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId);
+      }catch(e){
+        $("#mWhy").textContent = "Why: fast pick";
+      }
 
       // values
       renderBookingWhere(listing);
 
-      const svcMeta = window.SERVICES.find(s=>s.id===booking.serviceId);
+      const svcMeta = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
       $("#svcVal").textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
       $("#dateVal").textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
       $("#timeVal").textContent = booking.time ? booking.time : "Tap to choose";
 
-      const svcObj = window.bb.util.listingService(listing, booking.serviceId);
+      const svcObj = window.bb?.util?.listingService ? window.bb.util.listingService(listing, booking.serviceId) : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
       const label = serviceLabel(booking.serviceId);
-      $("#priceLine").textContent = svcObj ? T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin) : "—";
+      if(svcObj){
+        $("#priceLine").textContent = T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin);
+      } else {
+        $("#priceLine").textContent = "—";
+      }
 
+      // autofill contact + state
       autofillContact();
       clearFieldErrors();
       updateConfirmState();
 
+      // actions
       $("#openProfileBtn").onclick = ()=> { location.href = `./profile.html?id=${encodeURIComponent(listingId)}`; };
       $("#svcPick").onclick = ()=>{
         if(!svcList.length) return;
@@ -2019,6 +2013,12 @@
     function closeBooking(){
       $("#modal").classList.remove("on");
       $("#modal").setAttribute("aria-hidden","true");
+    }
+
+    // === Time picker ===
+    function closeTimePicker(){
+      $("#timeOverlay").classList.remove("on");
+      $("#timeOverlay").setAttribute("aria-hidden","true");
     }
 
     function setTimeFilter(next){
@@ -2059,8 +2059,8 @@
 
         if(!times.length){
           grid.innerHTML = `<div class="empty" style="grid-column:1/-1; margin:0">
-            <h3 style="margin:0 0 6px">${T[state.lang].noSlots}</h3>
-            <p style="margin:0; color:var(--muted)">${T[state.lang].tryAnotherDate}</p>
+            <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає слотів":"No slots"}</h3>
+            <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Спробуй інший день":"Try another date"}</p>
           </div>`;
           return;
         }
@@ -2082,16 +2082,12 @@
       $("#tfToday").onclick = ()=>{
         setTimeFilter("today");
         const ok = pickTodayIfAvailable(listing);
-        if(!ok) toast(T[state.lang].noSlotsToday);
+        if(!ok) toast(state.lang==="uk" ? "Сьогодні слотів нема" : "No slots today");
         renderTimes();
       };
 
-      $("#tfAfter18").onclick = ()=>{
-        setTimeFilter("after18");
-        renderTimes();
-      };
+      $("#tfAfter18").onclick = ()=>{ setTimeFilter("after18"); renderTimes(); };
 
-      // ✅ ТУТ ВАЖЛИВЕ — ДОПИСАНО ПОВНІСТЮ
       $("#tfEarliest").onclick = ()=>{
         setTimeFilter("earliest");
         const times = (listing.availability?.[booking.dateISO] || []).slice().sort();
@@ -2100,54 +2096,60 @@
           $("#timeVal").textContent = booking.time;
           updateConfirmState();
           closeTimePicker();
-        }else{
-          toast(T[state.lang].noSlots);
+        } else {
+          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
           renderTimes();
         }
       };
 
       $("#tfCheapest").onclick = ()=>{
         setTimeFilter("cheapest");
-        // зараз “cheapest” = найраніший у вибраний день (бо ціна не залежить від часу)
+        // в нас cheapest = перший доступний (реальний дешевий робиться через pricing model; тут без багів)
         const times = (listing.availability?.[booking.dateISO] || []).slice().sort();
         if(times.length){
           booking.time = times[0];
           $("#timeVal").textContent = booking.time;
           updateConfirmState();
           closeTimePicker();
-        }else{
-          toast(T[state.lang].noSlots);
+        } else {
+          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
           renderTimes();
         }
       };
-
-      function closeTimePicker(){
-        overlay.classList.remove("on");
-        overlay.setAttribute("aria-hidden","true");
-      }
-
-      $("#closeTime").onclick = closeTimePicker;
-      overlay.onclick = (e)=>{ if(e.target === overlay) closeTimePicker(); };
 
       overlay.classList.add("on");
       overlay.setAttribute("aria-hidden","false");
       renderTimes();
     }
 
-    // === Date picker (calendar) ===
-    let cal = { y: null, m: null, listingId: null };
+    // === Date picker ===
+    let cal = { y: null, m: null };
+
+    function closeDatePicker(){
+      $("#dateOverlay").classList.remove("on");
+      $("#dateOverlay").setAttribute("aria-hidden","true");
+    }
+
+    function monthLabel(y,m){
+      const dt = new Date(y, m, 1);
+      return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { month:"long", year:"numeric" });
+    }
 
     function openDatePicker(listing){
       const overlay = $("#dateOverlay");
-      cal.listingId = listing.id;
+      const dow = $("#calDow");
+      const grid = $("#calGrid");
+      const title = $("#calTitle");
 
       const now = new Date();
-      cal.y = now.getFullYear();
-      cal.m = now.getMonth();
+      cal.y = (booking.dateISO ? parseInt(booking.dateISO.slice(0,4),10) : now.getFullYear());
+      cal.m = (booking.dateISO ? (parseInt(booking.dateISO.slice(5,7),10)-1) : now.getMonth());
 
-      const dow = $("#calDow");
+      const dows = (state.lang==="uk")
+        ? ["пн","вт","ср","чт","пт","сб","нд"]
+        : ["mon","tue","wed","thu","fri","sat","sun"];
+
       dow.innerHTML = "";
-      const dows = (state.lang==="uk") ? ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
       dows.forEach(x=>{
         const el = document.createElement("div");
         el.className = "calDow";
@@ -2155,574 +2157,542 @@
         dow.appendChild(el);
       });
 
-      function hasSlots(iso){
-        const arr = listing.availability?.[iso] || [];
-        return arr.length > 0;
-      }
-
-      function renderMonth(){
-        const title = $("#calTitle");
-        const grid = $("#calGrid");
+      function render(){
+        title.textContent = monthLabel(cal.y, cal.m);
         grid.innerHTML = "";
 
-        const dt = new Date(cal.y, cal.m, 1);
-        const monthName = dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { month:"long", year:"numeric" });
-        title.textContent = monthName;
+        // monday-first
+        const first = new Date(cal.y, cal.m, 1);
+        let startDay = first.getDay(); // 0=Sun
+        startDay = (startDay===0) ? 6 : (startDay-1); // monday-first index 0..6
 
-        const firstDow = (dt.getDay() + 6) % 7; // Monday=0
         const daysInMonth = new Date(cal.y, cal.m+1, 0).getDate();
+        const todayISO = new Date().toISOString().slice(0,10);
 
-        // leading blanks
-        for(let i=0;i<firstDow;i++){
-          const b = document.createElement("div");
-          b.className = "day off";
-          b.textContent = " ";
-          grid.appendChild(b);
+        // blanks
+        for(let i=0;i<startDay;i++){
+          const blank = document.createElement("div");
+          blank.className = "day off";
+          blank.textContent = " ";
+          grid.appendChild(blank);
         }
 
         for(let d=1; d<=daysInMonth; d++){
-          const iso = new Date(cal.y, cal.m, d).toISOString().slice(0,10);
+          const iso = `${cal.y}-${String(cal.m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+          const hasSlots = (listing.availability?.[iso] || []).length > 0;
           const btn = document.createElement("div");
-          const ok = hasSlots(iso);
-          const isSel = (booking.dateISO === iso);
-          btn.className = "day" + (ok ? " has":" off") + (isSel ? " on":"");
+          btn.className = "day" +
+            (hasSlots ? " has" : " off") +
+            (booking.dateISO===iso ? " on" : "");
           btn.textContent = String(d);
-          if(ok){
-            btn.onclick = ()=>{
+
+          // past days off
+          if(iso < todayISO) btn.className = "day off";
+
+          if(hasSlots && iso >= todayISO){
+            btn.addEventListener("click", ()=>{
               booking.dateISO = iso;
               $("#dateVal").textContent = formatDateShort(iso);
+
               booking.times = (listing.availability?.[iso] || []).slice().sort();
-              booking.time = booking.times[0] || null;
+              // якщо поточний час не існує на новій даті — беремо перший
+              if(!booking.times.includes(booking.time)) booking.time = booking.times[0] || null;
               $("#timeVal").textContent = booking.time || "Tap to choose";
+
               updateConfirmState();
               closeDatePicker();
-            };
+            });
           }
           grid.appendChild(btn);
         }
       }
 
-      function closeDatePicker(){
-        overlay.classList.remove("on");
-        overlay.setAttribute("aria-hidden","true");
-      }
-
       $("#calPrev").onclick = ()=>{
         cal.m--;
         if(cal.m<0){ cal.m=11; cal.y--; }
-        renderMonth();
+        render();
       };
       $("#calNext").onclick = ()=>{
         cal.m++;
         if(cal.m>11){ cal.m=0; cal.y++; }
-        renderMonth();
+        render();
       };
-
-      $("#closeDate").onclick = closeDatePicker;
-      overlay.onclick = (e)=>{ if(e.target === overlay) closeDatePicker(); };
-
-      overlay.classList.add("on");
-      overlay.setAttribute("aria-hidden","false");
-      renderMonth();
-    }
-
-    // === Drafts ===
-    function draftKey(d){
-      return `${d.listingId}|${d.serviceId}|${d.dateISO}|${d.time}`;
-    }
-
-    function saveDraftCurrent(){
-      const t = T[state.lang];
-      const listing = window.LISTINGS.find(l=>l.id===booking.listingId);
-      if(!listing || !booking.serviceId || !booking.dateISO || !booking.time){
-        toast(t.toastErr);
-        return;
-      }
-      const item = {
-        listingId: booking.listingId,
-        serviceId: booking.serviceId,
-        dateISO: booking.dateISO,
-        time: booking.time,
-        ts: Date.now()
-      };
-      const key = draftKey(item);
-      state.drafts = state.drafts.filter(x => draftKey(x) !== key);
-      state.drafts.unshift(item);
-      state.drafts = state.drafts.slice(0, 12);
-      updateDraftBadge();
-      toast(t.toastDraft);
-    }
-
-    function openDrafts(){
-      const overlay = $("#draftsOverlay");
-      const list = $("#draftsList");
-      const t = T[state.lang];
-
-      function close(){
-        overlay.classList.remove("on");
-        overlay.setAttribute("aria-hidden","true");
-      }
-
-      function render(){
-        list.innerHTML = "";
-        if(!state.drafts.length){
-          list.innerHTML = `<div class="empty" style="margin:0"><h3 style="margin:0 0 6px">${t.draftsTitle}</h3><p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Немає збережених варіантів":"No saved drafts yet"}</p></div>`;
-          return;
-        }
-
-        state.drafts.forEach((d, idx)=>{
-          const listing = window.LISTINGS.find(l=>l.id===d.listingId);
-          if(!listing) return;
-          const svc = serviceLabel(d.serviceId) || d.serviceId;
-          const row = document.createElement("div");
-          row.className = "draftItem";
-          row.innerHTML = `
-            <div>
-              <b>${escapeHtml(listing.name)}</b>
-              <div style="color:var(--muted); font-size:12.5px; margin-top:4px">${escapeHtml(svc)} · ${escapeHtml(formatDateShort(d.dateISO))} · <b style="color:rgba(255,210,122,.95)">${escapeHtml(d.time)}</b></div>
-              <div style="color:var(--muted); font-size:12px; margin-top:4px">${escapeHtml(listing.address||"")}</div>
-            </div>
-            <div class="draftActions">
-              <button class="miniBtn2" data-a="open">Open</button>
-              <button class="miniBtn2 danger" data-a="del">Delete</button>
-            </div>
-          `;
-          row.querySelector('[data-a="open"]').onclick = ()=>{
-            close();
-            openBooking(d.listingId, d.serviceId, {dateISO:d.dateISO, time:d.time, fromPrice:null});
-          };
-          row.querySelector('[data-a="del"]').onclick = ()=>{
-            state.drafts.splice(idx,1);
-            updateDraftBadge();
-            render();
-          };
-          list.appendChild(row);
-        });
-      }
-
-      $("#closeDrafts").onclick = close;
-      overlay.onclick = (e)=>{ if(e.target === overlay) close(); };
 
       overlay.classList.add("on");
       overlay.setAttribute("aria-hidden","false");
       render();
     }
 
-    // === Booking submit -> Cloudflare Worker (/book) ===
-    function validateFields(){
-      const name = $("#fName").value.trim();
-      const phone = $("#fPhone").value.trim();
-      const email = $("#fEmail").value.trim();
-      let ok = true;
-
-      const nameWrap = $("#fNameWrap");
-      const phoneWrap = $("#fPhoneWrap");
-      const emailWrap = $("#fEmailWrap");
-
-      if(name.length < 2){ nameWrap.classList.add("err"); ok=false; } else nameWrap.classList.remove("err");
-      if(!isPhone(phone)){ phoneWrap.classList.add("err"); ok=false; } else phoneWrap.classList.remove("err");
-      if(!isEmail(email)){ emailWrap.classList.add("err"); ok=false; } else emailWrap.classList.remove("err");
-
-      if(!booking.dateISO || !booking.time || !booking.serviceId || !booking.listingId) ok=false;
-      return ok;
-    }
-
-    function toLocalDateTimeStr(dateISO, time){
-      // dateISO: YYYY-MM-DD, time: HH:MM
-      const [y,m,d] = dateISO.split("-").map(n=>parseInt(n,10));
-      const [hh,mm] = String(time).split(":").map(n=>parseInt(n,10));
-      const dt = new Date(y, m-1, d, hh, mm, 0);
-      const loc = dt.toLocaleString(state.lang==="uk" ? "uk-UA" : "en-CA", {
-        year:"numeric", month:"2-digit", day:"2-digit",
-        hour:"2-digit", minute:"2-digit"
-      });
-      return { dt, loc };
-    }
-
-    async function submitBooking(){
-      const t = T[state.lang];
-      clearFieldErrors();
-      if(!validateFields()){
-        toast(t.toastErr);
-        updateConfirmState();
-        return;
-      }
-
-      const listing = window.LISTINGS.find(l=>l.id===booking.listingId);
-      const svcMeta = window.SERVICES.find(s=>s.id===booking.serviceId);
-      const svcObj = window.bb.util.listingService(listing, booking.serviceId);
-
-      const name = $("#fName").value.trim();
-      const phone = $("#fPhone").value.trim();
-      const email = $("#fEmail").value.trim();
-
-      const { dt, loc } = toLocalDateTimeStr(booking.dateISO, booking.time);
+    // === Drafts ===
+    function saveDraftCurrent(){
+      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
+      if(!listing) return;
 
       const payload = {
-        name,
-        phone,
-        email,
+        id: booking.listingId,
         serviceId: booking.serviceId,
-        serviceName: svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : booking.serviceId,
-        durationMin: svcObj?.durationMin || null,
-        priceFrom: svcObj?.from ?? null,
-        priceTo: svcObj?.to ?? null,
-
-        listingId: listing.id,
-        listingName: listing.name,
-        address: listing.address,
-        city: listing.city || "",
-        datetimeISO: dt.toISOString(),
         dateISO: booking.dateISO,
         time: booking.time,
-        datetimeLocal: loc,
-        profileUrl: `${location.origin}${location.pathname.replace(/index\.html$/,'')}profile.html?id=${encodeURIComponent(listing.id)}`
+        createdAt: Date.now()
       };
 
-      booking.lastPayload = payload;
-      saveContact();
+      // de-dupe same id+service+date+time
+      state.drafts = state.drafts.filter(d => !(d.id===payload.id && d.serviceId===payload.serviceId && d.dateISO===payload.dateISO && d.time===payload.time));
+      state.drafts.unshift(payload);
+      state.drafts = state.drafts.slice(0, 12);
 
-      const btn = $("#submitBooking");
-      const oldText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = t.sending;
-
-      try{
-        const res = await fetch(`${WORKER_URL.replace(/\/$/,'')}/book`, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify(payload)
-        });
-        if(!res.ok){
-          throw new Error("HTTP " + res.status);
-        }
-
-        // save last booking card
-        localStorage.setItem(LS.last, JSON.stringify({
-          listingId: listing.id,
-          serviceId: booking.serviceId,
-          dateISO: booking.dateISO,
-          time: booking.time,
-          ts: Date.now()
-        }));
-
-        toast(t.toastSent);
-        btn.textContent = t.sent;
-
-        closeBooking();
-        renderLastBookingCard();
-        openSuccessOverlay(payload);
-
-      }catch(err){
-        console.error(err);
-        toast(t.failed);
-      }finally{
-        setTimeout(()=>{
-          btn.textContent = oldText;
-          updateConfirmState();
-        }, 700);
-      }
+      updateDraftBadge();
+      toast(T[state.lang].toastDraft);
     }
 
-    // === Success overlay actions ===
-    function openSuccessOverlay(payload){
-      const overlay = $("#successOverlay");
+    function openDrafts(){
+      const overlay = $("#draftsOverlay");
+      const list = $("#draftsList");
+      list.innerHTML = "";
 
-      function close(){
-        overlay.classList.remove("on");
-        overlay.setAttribute("aria-hidden","true");
+      if(state.drafts.length === 0){
+        list.innerHTML = `<div class="empty" style="margin:0"><h3 style="margin:0 0 6px">No drafts</h3><p style="margin:0;color:var(--muted)">Save 1–3 вариантов для брони в 1 клик.</p></div>`;
+      } else {
+        state.drafts.forEach((d, idx)=>{
+          const listing = (window.LISTINGS||[]).find(l=>l.id===d.id);
+          if(!listing) return;
+          const svc = serviceLabel(d.serviceId);
+          const row = document.createElement("div");
+          row.className = "draftItem";
+          row.innerHTML = `
+            <div>
+              <b>${escapeHtml(listing.name)}</b>
+              <div style="margin-top:4px; color:var(--muted); font-size:12.5px">${escapeHtml(svc)} · ${escapeHtml(formatDateShort(d.dateISO))} · ${escapeHtml(d.time||"")}</div>
+            </div>
+            <div class="draftActions">
+              <button class="miniBtn2" data-act="open">Open</button>
+              <button class="miniBtn2 danger" data-act="del">Delete</button>
+            </div>
+          `;
+          row.querySelector('[data-act="open"]').onclick = ()=>{
+            closeDrafts();
+            openBooking(d.id, d.serviceId, {dateISO:d.dateISO, time:d.time});
+          };
+          row.querySelector('[data-act="del"]').onclick = ()=>{
+            state.drafts.splice(idx,1);
+            updateDraftBadge();
+            openDrafts();
+          };
+          list.appendChild(row);
+        });
       }
-
-      $("#closeSuccess").onclick = close;
-      overlay.onclick = (e)=>{ if(e.target===overlay) close(); };
-
-      $("#successLine").textContent = (state.lang==="uk" ? "Надіслано в Telegram ✅" : "Sent to Telegram ✅");
-      $("#successSub").textContent = (state.lang==="uk"
-        ? `Візит: ${payload.serviceName} · ${payload.datetimeLocal}`
-        : `Visit: ${payload.serviceName} · ${payload.datetimeLocal}`
-      );
-
-      $("#openMapsBtn").onclick = ()=>{
-        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(payload.address||"")}`, "_blank", "noopener");
-      };
-
-      $("#copyDetailsBtn").onclick = async ()=>{
-        const txt =
-`${payload.listingName}
-${payload.address}
-${payload.serviceName}
-${payload.datetimeLocal}
-Phone: ${payload.phone}
-Email: ${payload.email}`;
-        try{
-          await navigator.clipboard.writeText(txt);
-          toast(T[state.lang].copied);
-        }catch(e){
-          // fallback
-          const ta = document.createElement("textarea");
-          ta.value = txt;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          ta.remove();
-          toast(T[state.lang].copied);
-        }
-      };
-
-      $("#addIcsBtn").onclick = ()=>{
-        const dtStart = payload.datetimeISO.replace(/[-:]/g,"").split(".")[0] + "Z";
-        // duration fallback 60
-        const durMin = payload.durationMin || 60;
-        const end = new Date(new Date(payload.datetimeISO).getTime() + durMin*60000);
-        const dtEnd = end.toISOString().replace(/[-:]/g,"").split(".")[0] + "Z";
-
-        const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Beauty Booking//EN
-CALSCALE:GREGORIAN
-BEGIN:VEVENT
-UID:${Date.now()}@beautybooking
-DTSTAMP:${dtStart}
-DTSTART:${dtStart}
-DTEND:${dtEnd}
-SUMMARY:${payload.serviceName} — ${payload.listingName}
-LOCATION:${payload.address}
-DESCRIPTION:Booking via Beauty Booking\\nProfile: ${payload.profileUrl}
-END:VEVENT
-END:VCALENDAR`;
-
-        const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "booking.ics";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url), 800);
-      };
 
       overlay.classList.add("on");
       overlay.setAttribute("aria-hidden","false");
     }
 
+    function closeDrafts(){
+      $("#draftsOverlay").classList.remove("on");
+      $("#draftsOverlay").setAttribute("aria-hidden","true");
+    }
+
+    // === Booking submit ===
+    function fieldErrors(){
+      let ok = true;
+      const name = $("#fName").value.trim();
+      const phone = $("#fPhone").value.trim();
+      const email = $("#fEmail").value.trim();
+
+      const setErr = (wrapId, cond)=>{
+        const el = document.getElementById(wrapId);
+        if(!el) return;
+        el.classList.toggle("err", cond);
+      };
+
+      setErr("fNameWrap", !(name.length>=2)); if(!(name.length>=2)) ok=false;
+      setErr("fPhoneWrap", !isPhone(phone)); if(!isPhone(phone)) ok=false;
+      setErr("fEmailWrap", !isEmail(email)); if(!isEmail(email)) ok=false;
+
+      if(!booking.dateISO || !booking.time || !booking.serviceId || !booking.listingId) ok=false;
+      return ok;
+    }
+
+    function openSuccess(payload){
+      $("#successOverlay").classList.add("on");
+      $("#successOverlay").setAttribute("aria-hidden","false");
+
+      const listing = (window.LISTINGS||[]).find(l=>l.id===payload.listingId);
+      const svc = serviceLabel(payload.serviceId);
+      const when = `${formatDateShort(payload.dateISO)} ${payload.time}`;
+
+      $("#successLine").textContent = `${listing?.name||"Booking"} ✅`;
+      $("#successSub").textContent = `${svc} · ${when}`;
+
+      $("#openMapsBtn").onclick = ()=>{
+        if(listing?.address){
+          window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`,"_blank","noopener");
+        }
+      };
+
+      $("#copyDetailsBtn").onclick = async ()=>{
+        const txt = `${listing?.name||""}\n${svc}\n${payload.dateISO} ${payload.time}\n${listing?.address||""}`;
+        try{ await navigator.clipboard.writeText(txt); toast(T[state.lang].toastCopied); }catch(e){ toast("Copy blocked"); }
+      };
+
+      $("#addIcsBtn").onclick = ()=>{
+        downloadICS(payload);
+      };
+    }
+
+    function closeSuccess(){
+      $("#successOverlay").classList.remove("on");
+      $("#successOverlay").setAttribute("aria-hidden","true");
+    }
+
+    function downloadICS(payload){
+      const listing = (window.LISTINGS||[]).find(l=>l.id===payload.listingId);
+      const svc = serviceLabel(payload.serviceId);
+      const title = `${svc} @ ${listing?.name||"Beauty Booking"}`;
+
+      // event start: local time naive
+      const dtStart = new Date(`${payload.dateISO}T${payload.time}:00`);
+      const dtEnd = new Date(dtStart.getTime() + (payload.durationMin||60)*60000);
+
+      function toICSDate(d){
+        const pad = (n)=> String(n).padStart(2,"0");
+        // local -> UTC for ICS (simple)
+        const z = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+        return `${z.getUTCFullYear()}${pad(z.getUTCMonth()+1)}${pad(z.getUTCDate())}T${pad(z.getUTCHours())}${pad(z.getUTCMinutes())}00Z`;
+      }
+
+      const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Beauty Booking//EN
+BEGIN:VEVENT
+UID:${Date.now()}@beautybooking
+DTSTAMP:${toICSDate(new Date())}
+DTSTART:${toICSDate(dtStart)}
+DTEND:${toICSDate(dtEnd)}
+SUMMARY:${title}
+LOCATION:${(listing?.address||"").replace(/\n/g," ")}
+END:VEVENT
+END:VCALENDAR`;
+
+      const blob = new Blob([ics], {type:"text/calendar"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "booking.ics";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+    }
+
+    async function submitBooking(){
+      if(!fieldErrors()){
+        toast(T[state.lang].toastErr);
+        updateConfirmState();
+        return;
+      }
+
+      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
+      if(!listing){ toast("Listing missing"); return; }
+
+      const svcObj = window.bb?.util?.listingService ? window.bb.util.listingService(listing, booking.serviceId) : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
+      const svcLabel = serviceLabel(booking.serviceId);
+
+      const payload = {
+        listingId: booking.listingId,
+        listingName: listing.name,
+        address: listing.address,
+        serviceId: booking.serviceId,
+        serviceName: svcLabel,
+        fromPrice: svcObj?.from ?? null,
+        toPrice: svcObj?.to ?? null,
+        durationMin: svcObj?.durationMin ?? 60,
+        dateISO: booking.dateISO,
+        time: booking.time,
+        name: $("#fName").value.trim(),
+        phone: $("#fPhone").value.trim(),
+        email: $("#fEmail").value.trim(),
+        profileUrl: `${location.origin}${location.pathname.replace(/index\.html?$/,"")}profile.html?id=${encodeURIComponent(listing.id)}`
+      };
+
+      // hold “2 min” (local)
+      const holdKey = `bb_hold_${payload.listingId}_${payload.serviceId}_${payload.dateISO}_${payload.time}`;
+      const now = Date.now();
+      const held = parseInt(localStorage.getItem(holdKey)||"0",10);
+      if(held && now - held < 2*60*1000){
+        // already held by this device - ok
+      }else{
+        localStorage.setItem(holdKey, String(now));
+      }
+
+      // Save last booking + contact
+      localStorage.setItem(LS.last, JSON.stringify({
+        id: payload.listingId,
+        serviceId: payload.serviceId,
+        dateISO: payload.dateISO,
+        time: payload.time
+      }));
+      saveContact();
+
+      $("#submitBooking").disabled = true;
+
+      try{
+        const res = await fetch(`${WORKER_URL}/book`, {
+          method:"POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+
+        if(!res.ok){
+          const txt = await res.text().catch(()=> "");
+          throw new Error(txt || ("HTTP "+res.status));
+        }
+
+        toast(T[state.lang].toastSent);
+        closeBooking();
+        booking.lastPayload = payload;
+        openSuccess(payload);
+        renderLastBookingCard();
+      }catch(err){
+        toast("Worker error");
+        console.error(err);
+      }finally{
+        updateConfirmState();
+      }
+    }
+
+    // last booking card
     function renderLastBookingCard(){
       const card = $("#lastCard");
       try{
         const last = JSON.parse(localStorage.getItem(LS.last) || "null");
-        if(!last){ card.style.display="none"; return; }
-        const listing = window.LISTINGS.find(l=>l.id===last.listingId);
+        if(!last || !last.id){ card.style.display="none"; return; }
+        const listing = (window.LISTINGS||[]).find(l=>l.id===last.id);
         if(!listing){ card.style.display="none"; return; }
-        const svc = serviceLabel(last.serviceId) || last.serviceId;
-        $("#lastLine").textContent = `${listing.name} · ${svc} · ${formatDateShort(last.dateISO)} ${last.time}`;
+
+        const svc = serviceLabel(last.serviceId);
+        $("#lastLine").textContent = `${listing.name} · ${svc || ""}`;
         card.style.display = "block";
-        card.onclick = ()=> openBooking(last.listingId, last.serviceId, {dateISO:last.dateISO, time:last.time, fromPrice:null});
+        card.onclick = ()=> openBooking(last.id, last.serviceId, {dateISO:last.dateISO, time:last.time});
       }catch(e){
         card.style.display="none";
       }
     }
 
-    // === Popular fallback ===
-    function showPopular(){
-      state.q = "";
-      $("#q").value = "";
-      // не чіпаємо favOnly згідно правила, просто підбираємо популярне через recommend
-      const ranked = window.bb.util.smartRecommend(window.LISTINGS.slice(), state.userLoc, state.serviceId);
-      const top = ranked.slice(0, 12);
-      $("#allGrid").innerHTML = "";
-      top.forEach(l=>$("#allGrid").appendChild(buildCard(l,false)));
-      $("#emptyBox").style.display = "none";
-      toast(T[state.lang].popular);
-    }
-
-    // === PWA install ===
-    let deferredPrompt = null;
-
-    function isStandalone(){
-      return window.matchMedia?.("(display-mode: standalone)")?.matches
-        || window.navigator.standalone === true;
-    }
-
-    function setupInstall(){
-      const pill = $("#installPill");
-
-      window.addEventListener("beforeinstallprompt", (e)=>{
-        e.preventDefault();
-        deferredPrompt = e;
-        if(!isStandalone() && localStorage.getItem(LS.installedHide) !== "1"){
-          pill.classList.add("show");
-        }
-      });
-
-      pill.addEventListener("click", async ()=>{
-        if(isStandalone()){
-          pill.classList.remove("show");
-          return;
-        }
-        if(!deferredPrompt){
-          // iOS Safari: no prompt — show hint
-          toast(state.lang==="uk"
-            ? "На iPhone: Share → Add to Home Screen"
-            : "On iPhone: Share → Add to Home Screen"
-          );
-          return;
-        }
-        pill.classList.remove("show");
-        deferredPrompt.prompt();
-        try{
-          await deferredPrompt.userChoice;
-        }catch(e){}
-        deferredPrompt = null;
-        localStorage.setItem(LS.installedHide, "1");
-      });
-
-      // hide install if already standalone
-      if(isStandalone()) pill.classList.remove("show");
-    }
-
-    // === init ===
-    function init(){
-      // theme
-      applyTheme();
-
-      // text
-      renderTexts();
-
-      // service chips + lists
+    // === Reset filters (special rule from your memory) ===
+    // if 0 results + click reset from empty state: DO NOT clear search and favOnly; only clear filters
+    function resetFilters(keepSearchAndFavOnly){
+      state.serviceId = null;
+      saveFilters();
       renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(true);
+      toast(T[state.lang].toastFilters);
 
-      // search
+      if(!keepSearchAndFavOnly){
+        state.q = "";
+        const q = $("#q");
+        if(q) q.value = "";
+        state.favOnly = false;
+        $("#favOnly").classList.remove("on");
+      }
+    }
+
+    // === Install ===
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e)=>{
+      e.preventDefault();
+      deferredPrompt = e;
+      maybeShowInstall();
+    });
+
+    function maybeShowInstall(){
+      const pill = $("#installPill");
+      const hidden = localStorage.getItem(LS.installedHide) === "1";
+      if(isStandalone() || hidden){
+        pill.classList.remove("show");
+        return;
+      }
+      // show only if we have prompt OR on iOS browser (no prompt)
+      pill.classList.add("show");
+    }
+
+    async function doInstall(){
+      const pill = $("#installPill");
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice.catch(()=>null);
+        deferredPrompt = null;
+        pill.classList.remove("show");
+      } else {
+        // iOS: no prompt — we just hide it if they tapped
+        localStorage.setItem(LS.installedHide, "1");
+        pill.classList.remove("show");
+      }
+    }
+
+    // === Location (optional, safe) ===
+    function loadLocation(){
+      if(!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition((pos)=>{
+        state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        renderAll();
+        refreshHeroCandidates(true);
+        renderNextHeroRotating(true);
+      }, ()=>{}, {enableHighAccuracy:false, timeout:5000, maximumAge:60000});
+    }
+
+    // === INIT ===
+    function bindUI(){
+      $("#themeBtn").onclick = ()=>{ state.theme = (state.theme==="light" ? "dark" : "light"); applyTheme(); };
+      $("#langBtn").onclick = ()=> setLang(state.lang==="uk" ? "en" : "uk");
+
       $("#q").addEventListener("input", (e)=>{
         state.q = e.target.value || "";
         renderAll();
       });
 
-      // fav only
-      const favOnly = $("#favOnly");
-      const toggleFavOnly = ()=>{
+            $("#favOnly").onclick = ()=>{
         state.favOnly = !state.favOnly;
-        favOnly.classList.toggle("on", state.favOnly);
+        $("#favOnly").classList.toggle("on", state.favOnly);
         renderAll();
       };
-      favOnly.addEventListener("click", toggleFavOnly);
-      favOnly.addEventListener("keydown", (e)=>{ if(e.key==="Enter") toggleFavOnly(); });
+      $("#favOnly").onkeydown = (e)=>{ if(e.key==="Enter") $("#favOnly").click(); };
 
-      // AI
-      $("#aiBtn").addEventListener("click", ()=> toggleAI($("#aiSection").style.display!=="block"));
-      $("#aiGo").addEventListener("click", aiSuggest);
-      $("#aiInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") aiSuggest(); });
+      $("#aiBtn").onclick = ()=> toggleAI($("#aiSection").style.display==="none");
 
-      // reset filters (ВАЖЛИВО: не чистимо пошук і favOnly — тільки фільтри)
-      const resetFilters = ()=>{
-        state.serviceId = null;
-        saveFilters();
-        renderServiceChips();
-        renderAll();
-        toast(T[state.lang].toastFilters);
-      };
-      $("#resetBtn").addEventListener("click", resetFilters);
-      $("#emptyReset").addEventListener("click", resetFilters);
-      $("#emptyShowPopular").addEventListener("click", showPopular);
-
-      // quick booking: pick best next available
-      function openQuickBooking(){
-        const ranked = window.bb.util.smartRecommend(filteredListings().length ? filteredListings() : window.LISTINGS.slice(), state.userLoc, state.serviceId);
-        const l = ranked.find(x=>window.bb.util.nextAvailable(x, state.serviceId));
-        if(!l){
-          toast(state.lang==="uk" ? "Немає слотів зараз" : "No slots now");
-          return;
+      $("#openQuick").onclick = ()=>{
+        // open the currently shown hero candidate if possible
+        if(!heroRot.list.length) refreshHeroCandidates(true);
+        if(heroRot.list.length){
+          const l = heroRot.list[Math.max(0, heroRot.idx % heroRot.list.length)];
+          let slot = null;
+          try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
+          openBooking(l.id, state.serviceId, slot);
+        } else {
+          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
         }
-        const slot = window.bb.util.nextAvailable(l, state.serviceId);
-        openBooking(l.id, state.serviceId, slot);
-      }
-      $("#openQuick").addEventListener("click", openQuickBooking);
-      $("#floatQuick").addEventListener("click", openQuickBooking);
+      };
+      $("#floatQuick").onclick = ()=> $("#openQuick").click();
 
-      // back to top
-      $("#toTop").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+      $("#toTop").onclick = ()=> window.scrollTo({top:0, behavior:"smooth"});
 
-      // theme + lang
-      $("#themeBtn").addEventListener("click", ()=>{
-        state.theme = (state.theme === "light") ? "dark" : "light";
-        applyTheme();
-      });
-      $("#langBtn").addEventListener("click", ()=>{
-        setLang(state.lang === "uk" ? "en" : "uk");
-      });
+      $("#resetBtn").onclick = ()=> resetFilters(false);
+      $("#emptyReset").onclick = ()=> resetFilters(true);
+      $("#emptyShowPopular").onclick = ()=>{
+        // popular = clear service filter only, keep search + favOnly (rule-safe)
+        resetFilters(true);
+        window.scrollTo({top: $("#partnersSection").getBoundingClientRect().top + window.scrollY - 72, behavior:"smooth"});
+      };
 
-      // modal close
-      $("#closeModal").addEventListener("click", closeBooking);
+      $("#cartBtn").onclick = ()=> openDrafts();
+
+      $("#closeModal").onclick = closeBooking;
       $("#modal").addEventListener("click", (e)=>{ if(e.target === $("#modal")) closeBooking(); });
 
-      // policies
-      const pol = $("#polModal");
-      $("#policiesBtn").addEventListener("click", (e)=>{
+      $("#closeTime").onclick = closeTimePicker;
+      $("#timeOverlay").addEventListener("click", (e)=>{ if(e.target === $("#timeOverlay")) closeTimePicker(); });
+
+      $("#closeDate").onclick = closeDatePicker;
+      $("#dateOverlay").addEventListener("click", (e)=>{ if(e.target === $("#dateOverlay")) closeDatePicker(); });
+
+      $("#closeDrafts").onclick = closeDrafts;
+      $("#draftsOverlay").addEventListener("click", (e)=>{ if(e.target === $("#draftsOverlay")) closeDrafts(); });
+
+      $("#closeSuccess").onclick = closeSuccess;
+      $("#successOverlay").addEventListener("click", (e)=>{ if(e.target === $("#successOverlay")) closeSuccess(); });
+
+      $("#policiesBtn").onclick = (e)=>{
         e.preventDefault();
-        pol.classList.add("on");
-        pol.setAttribute("aria-hidden","false");
-      });
-      $("#closePol").addEventListener("click", ()=>{
-        pol.classList.remove("on");
-        pol.setAttribute("aria-hidden","true");
-      });
-      pol.addEventListener("click", (e)=>{ if(e.target===pol){ pol.classList.remove("on"); pol.setAttribute("aria-hidden","true"); } });
-
-      // drafts
-      $("#cartBtn").addEventListener("click", openDrafts);
-
-      // booking field listeners -> enable Confirm
-      ["fName","fPhone","fEmail"].forEach(id=>{
-        $("#"+id).addEventListener("input", ()=>{
-          updateConfirmState();
-        });
-        $("#"+id).addEventListener("blur", ()=>{
-          updateConfirmState();
-        });
-      });
-
-      $("#submitBooking").addEventListener("click", submitBooking);
-
-      // geolocation best-effort (optional)
-      if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition((pos)=>{
-          state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          renderAll();
-          refreshHeroCandidates(true);
-          renderNextHeroRotating(true);
-        }, ()=>{}, { enableHighAccuracy:false, timeout:4000, maximumAge: 600000 });
-      }
-
-      // render initial
-      renderAll();
-      renderNextHeroRotating(false);
-      startHeroRotationOnce();
-      updateDraftBadge();
-      renderLastBookingCard();
-
-      // auto open from profile redirect
-      if(AUTO){
-        const listing = window.LISTINGS.find(l=>l.id===AUTO.id);
-        if(listing){
-          const svc = AUTO.service || state.serviceId;
-          const slot = window.bb.util.nextAvailable(listing, svc);
-          openBooking(AUTO.id, svc, slot);
+        $("#polModal").classList.add("on");
+        $("#polModal").setAttribute("aria-hidden","false");
+      };
+      $("#closePol").onclick = ()=>{
+        $("#polModal").classList.remove("on");
+        $("#polModal").setAttribute("aria-hidden","true");
+      };
+      $("#polModal").addEventListener("click",(e)=>{
+        if(e.target === $("#polModal")){
+          $("#polModal").classList.remove("on");
+          $("#polModal").setAttribute("aria-hidden","true");
         }
-      }
+      });
 
-      // PWA
-      setupInstall();
-      if("serviceWorker" in navigator){
-        navigator.serviceWorker.register("./worker.js").catch(()=>{});
-      }
+      $("#installPill").onclick = ()=> doInstall();
+
+      // AI run
+      $("#aiGo").onclick = ()=>{
+        const res = runAIQuery($("#aiInput").value);
+        renderAIPicks(res);
+      };
+      $("#aiInput").addEventListener("keydown",(e)=>{
+        if(e.key==="Enter"){ e.preventDefault(); $("#aiGo").click(); }
+      });
+
+      // booking fields live validation
+      ["fName","fPhone","fEmail"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener("input", ()=>{
+          clearFieldErrors();
+          updateConfirmState();
+        });
+        el.addEventListener("blur", ()=> saveContact());
+      });
+
+      $("#submitBooking").onclick = submitBooking;
+
+      // Esc closes topmost overlay
+      window.addEventListener("keydown",(e)=>{
+        if(e.key !== "Escape") return;
+        if($("#successOverlay").classList.contains("on")) return closeSuccess();
+        if($("#draftsOverlay").classList.contains("on")) return closeDrafts();
+        if($("#dateOverlay").classList.contains("on")) return closeDatePicker();
+        if($("#timeOverlay").classList.contains("on")) return closeTimePicker();
+        if($("#polModal").classList.contains("on")) { $("#closePol").click(); return; }
+        if($("#modal").classList.contains("on")) return closeBooking();
+      });
     }
 
-    // wait data.js
-    if(document.readyState === "loading"){
-      document.addEventListener("DOMContentLoaded", init);
-    }else{
-      init();
+    function init(){
+      // hard safety: if data.js missing, don’t crash
+      window.SERVICES = window.SERVICES || [];
+      window.LISTINGS = window.LISTINGS || [];
+      window.bb = window.bb || { util: window.bb?.util || {} };
+
+      applyTheme();
+      renderTexts();
+      renderServiceChips();
+      updateDraftBadge();
+      renderAll();
+      renderLastBookingCard();
+      startHeroRotationOnce();
+      loadLocation();
+      maybeShowInstall();
+
+      // AUTO open from profile redirect
+      if(AUTO){
+        // try interpret AUTO.service as serviceId; if not found, ignore
+        let sid = AUTO.service;
+        if(sid && !(window.SERVICES||[]).some(s=>s.id===sid)) sid = null;
+        setTimeout(()=> openBooking(AUTO.id, sid || state.serviceId, null), 50);
+      }
+
+      // if standalone, hide install chip
+      if(isStandalone()){
+        const pill = $("#installPill");
+        if(pill) pill.classList.remove("show");
+      }
+
+      // refresh hero after first render
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
     }
+
+    // run
+    bindUI();
+    init();
   </script>
 </body>
 </html>
+
