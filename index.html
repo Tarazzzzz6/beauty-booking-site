@@ -895,6 +895,34 @@ body{ position:relative; }
       .floatbar{ bottom: calc(12px + var(--safeB)); }
       .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
     }
+    /* === FIX: topbar actions not visible in iOS/PWA (no horizontal pan) === */
+@media (max-width: 720px){
+  .topbar .inner{
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* first row: logo + grow */
+  .brand{
+    min-width: 0 !important;
+    flex: 1 1 auto;
+  }
+  .grow{ flex: 0 0 auto; }
+
+  /* second row: actions take full width and align right */
+  .top-actions{
+    width: 100%;
+    flex: 0 0 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* pills can shrink a bit so everything fits */
+  .pill{ padding: 9px 10px; }
+  .iconbtn{ width: 40px; height: 40px; }
+}
+
   </style>
 </head>
 
@@ -2718,5 +2746,6 @@ END:VCALENDAR`;
   </script>
 </body>
 </html>
+
 
 
