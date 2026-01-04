@@ -1,31 +1,14 @@
 {
   "name": "Beauty Booking",
-  "short_name": "Beauty Booking",
-  "start_url": "./index.html",
-  "scope": "./",
+  "short_name": "Beauty",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#07070b",
+  "background_color": "#0b0b0f",
   "theme_color": "#0b0b0f",
   "icons": [
-    {
-      "src": "./icons/icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-180.png", "sizes": "180x180", "type": "image/png" }
   ]
 }
-
