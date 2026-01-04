@@ -14,6 +14,12 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 
+  <!-- PWA / iOS standalone (IMPORTANT) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Beauty Booking">
+  <link rel="apple-touch-icon" href="./icons/icon-180.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -155,8 +161,6 @@
     body[data-theme="light"] .pill{color:rgba(11,11,15,.92)}
     .pill:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
     .pill:active{transform: translateY(0px) scale(.98)}
-    .pill .dot{width:8px; height:8px; border-radius:99px; background:rgba(255,255,255,.22)}
-    body[data-theme="light"] .pill .dot{background:rgba(10,10,18,.22)}
     .pill.on{
       border-color: rgba(255,79,216,.35);
       background: rgba(255,79,216,.12);
@@ -218,16 +222,18 @@
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
     .heroDesc{margin:0 0 14px; color:var(--muted); max-width:56ch}
-    .chips{display:flex; gap:10px; flex-wrap:wrap}.chips{
-  display:flex; gap:10px;
-  flex-wrap:nowrap;
-  overflow:auto;
-  padding-bottom:6px;
-  -webkit-overflow-scrolling:touch;
-}
-.chips::-webkit-scrollbar{height:8px}
-.chips::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
-.chip{white-space:nowrap; flex:0 0 auto;}
+
+    .chips{display:flex; gap:10px; flex-wrap:wrap}
+    .chips{
+      display:flex; gap:10px;
+      flex-wrap:nowrap;
+      overflow:auto;
+      padding-bottom:6px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .chips::-webkit-scrollbar{height:8px}
+    .chips::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
+    .chip{white-space:nowrap; flex:0 0 auto;}
 
     .chip{
       display:inline-flex; align-items:center; gap:8px;
@@ -416,9 +422,9 @@
       cursor:pointer;
       transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
     }
-    .stripCard:hover{transform: translateY(-2px); border-color: var(--stroke2); background: var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45)}
+    .stripCard:hover{transform: translateY(-2px); border-color:var(--stroke2); background:var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45)}
     .stripMedia{height:190px; position:relative; overflow:hidden}
-    .stripMedia img{width:100%; height:100%; object-fit:cover; transform: scale(1.03); transition: transform .55s cubic-bezier(.2,.9,.2,1)}
+    .stripMedia img{width:100%; height:100%; object-fit:cover; transform:scale(1.03); transition: transform .55s cubic-bezier(.2,.9,.2,1)}
     .stripCard:hover .stripMedia img{transform: scale(1.10)}
     .stripMedia:after{content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.60)); pointer-events:none;}
     .partnerBadge{
@@ -759,155 +765,78 @@
       .formGrid{grid-template-columns: 1fr;}
       .heroTitle{font-size:32px}
       .timeGrid{grid-template-columns: repeat(2, 1fr);}
-    }/* ===== Mobile polish (iPhone app-feel) ===== */
-:root{
-  --safeB: env(safe-area-inset-bottom, 0px);
-  --safeT: env(safe-area-inset-top, 0px);
-}
+    }
 
-@media (max-width: 620px){
-  .wrap{padding:14px 14px 120px;}
-  .hero{padding:14px 0 6px;}
-  .heroInner{padding:16px 14px;}
-  .heroTitle{font-size:28px;}
-  .heroDesc{display:none;} /* менше шуму на першому екрані */
-  .ctaRow{margin-top:10px;}
-  .chip{padding:9px 10px; font-size:13px;}
-  .chips{gap:8px;}
-  .topbar .inner{padding:10px 14px;}
-  .iconbtn{width:40px; height:40px;}
-}
+    /* ===== Mobile polish (iPhone app-feel) ===== */
+    :root{
+      --safeB: env(safe-area-inset-bottom, 0px);
+      --safeT: env(safe-area-inset-top, 0px);
+    }
 
-  /* легше для очей */
-  body{ -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  .wrap{ padding: 14px 14px 120px; }
+    @media (max-width: 620px){
+      .wrap{padding:14px 14px 120px;}
+      .hero{padding:14px 0 6px;}
+      .heroInner{padding:16px 14px;}
+      .heroTitle{font-size:28px;}
+      .heroDesc{display:none;}
+      .ctaRow{margin-top:10px;}
+      .chip{padding:9px 10px; font-size:13px;}
+      .chips{gap:8px;}
+      .topbar .inner{padding:10px 14px;}
+      .iconbtn{width:40px; height:40px;}
+    }
 
-  /* topbar виглядає як app */
-  .topbar{ padding-top: var(--safeT); }
+    body{ -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    .wrap{ padding: 14px 14px 120px; }
 
-  /* hero компактніший */
-  .hero{ padding: 14px 0 8px; }
-  .heroInner{ padding: 18px 16px; gap:12px; }
-  .heroTitle{ font-size: 30px; }
-  .heroDesc{ font-size: 13.5px; line-height: 1.35; }
-  .chips{ gap:8px; }
-  .chip{ padding: 9px 11px; font-size: 13px; }
+    .topbar{ padding-top: var(--safeT); }
+    .hero{ padding: 14px 0 8px; }
+    .heroInner{ padding: 18px 16px; gap:12px; }
+    .heroTitle{ font-size: 30px; }
+    .heroDesc{ font-size: 13.5px; line-height: 1.35; }
+    .chips{ gap:8px; }
+    .chip{ padding: 9px 11px; font-size: 13px; }
 
-  /* справа картка “Next available” не виглядає гігантом */
-  .heroSide{ gap:10px; }
-  .glass .pad{ padding: 12px 12px; }
-  .bigLine{ font-size: 13.5px; line-height:1.25; }
-  .smallLine{ font-size: 12.5px; }
+    .heroSide{ gap:10px; }
+    .glass .pad{ padding: 12px 12px; }
+    .bigLine{ font-size: 13.5px; line-height:1.25; }
+    .smallLine{ font-size: 12.5px; }
 
-  /* cards: більше повітря + кращий тап */
-  .media{ height: 200px; }
-  .name{ font-size: 15px; }
-  .addr{ font-size: 13px; }
+    .media{ height: 200px; }
+    .name{ font-size: 15px; }
+    .addr{ font-size: 13px; }
 
-  /* найважливіше: на мобілці Quick book має бути ВИДИМИЙ, бо hover нема */
-  .miniCTA{
-    opacity:1 !important;
-    transform:none !important;
-    pointer-events:auto !important;
-  }
-  .card .miniCTA{
-    position: static;
-    padding: 0 12px 12px;
-    margin-top: -6px;
-  }
-  .stripCard .miniCTA{
-    position: static;
-    margin-top: 10px;
-  }
+    .miniCTA{
+      opacity:1 !important;
+      transform:none !important;
+      pointer-events:auto !important;
+    }
+    .card .miniCTA{
+      position: static;
+      padding: 0 12px 12px;
+      margin-top: -6px;
+    }
+    .stripCard .miniCTA{
+      position: static;
+      margin-top: 10px;
+    }
 
-  /* floatbar з урахуванням iPhone home-indicator */
-  .floatbar{ bottom: calc(12px + var(--safeB)); }
-  .toast{ bottom: calc(88px + var(--safeB)); }
+    .floatbar{ bottom: calc(12px + var(--safeB)); }
+    .toast{ bottom: calc(88px + var(--safeB)); }
 
-  /* модалка як справжній bottom-sheet */
-  .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
-  .sheet{
-    width: 100%;
-    max-height: 92vh;
-    border-radius: 24px;
-  }
-  .sheetBody{
-    max-height: calc(92vh - 140px);
-    overflow:auto;
-    -webkit-overflow-scrolling: touch;
-  }
+    .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
+    .sheet{
+      width: 100%;
+      max-height: 92vh;
+      border-radius: 24px;
+    }
+    .sheetBody{
+      max-height: calc(92vh - 140px);
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
-  /* time picker теж норм по висоті */
-  .timeOverlay{ padding: 12px 12px calc(12px + var(--safeB)); }
-  .timeSheet{ width: 100%; max-height: 70vh; }
-  .timeBody{ max-height: calc(70vh - 70px); overflow:auto; -webkit-overflow-scrolling: touch; }
-}/* === Mobile polish (PWA feel) === */
-:root{
-  --safe-b: env(safe-area-inset-bottom, 0px);
-  --safe-t: env(safe-area-inset-top, 0px);
-  --safe-l: env(safe-area-inset-left, 0px);
-  --safe-r: env(safe-area-inset-right, 0px);
-}
-
-html, body { overflow-x: hidden; }
-img { max-width: 100%; height: auto; }
-
-/* Prevent iOS input zoom */
-input, select, textarea, button { font-size: 16px; }
-
-/* Bigger tap targets on mobile */
-@media (max-width: 720px){
-  body{
-    padding-left: max(0px, var(--safe-l));
-    padding-right: max(0px, var(--safe-r));
-  }
-
-  /* якщо є верхні контейнери/секції — не даємо їм вилізти */
-  .container, .wrap, main, header, .page { max-width: 100%; }
-
-  /* cards/listings: одна колонка, більше повітря */
-  .grid, .cards, .listings{
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  /* кнопки/чіпси — більші */
-  button, .btn, .chip, .pill{
-    min-height: 44px;
-    border-radius: 16px;
-  }
-
-  /* модалка/booking bottom-sheet — повна висота + safe area */
-  .modal, .sheet, .bookingModal, #modal, #bookingModal{
-    padding-bottom: var(--safe-b);
-  }
-
-  .modal__panel, .sheet__panel, .modalPanel, .bookingPanel, .modal-content, .modalContent{
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-  }
-
-  /* якщо у тебе є внутрішній скролл модалки */
-  .modal__body, .sheet__body, .modalBody, .bookingBody, .modal-inner, .modalInner{
-    max-height: calc(100vh - 72px - var(--safe-b));
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* нижня кнопка Confirm — не прилипає до краю */
-  .modal__footer, .sheet__footer, .modalFooter, .bookingFooter{
-    padding-bottom: calc(12px + var(--safe-b));
-  }
-
-  /* легше читати на мобільному */
-  h1{ font-size: 26px; line-height: 1.1; }
-  h2{ font-size: 18px; }
-  .muted, .sub, .small { font-size: 14px; }
-}
-
+    .timeOverlay{ padding: 12px 12px calc(12px + var(--safeB)); }
   </style>
 </head>
 
@@ -930,11 +859,10 @@ input, select, textarea, button { font-size: 16px; }
       </div>
 
       <div class="top-actions">
+        <!-- Only ❤️ (no duplicate heart) -->
         <div id="favOnly" class="pill" role="button" tabindex="0" title="Only favorites">
-  <span style="font-weight:900">Only</span>
-  <span class="dot"></span>
-</div>
-
+          <span id="favOnlyLabel" style="font-weight:900">Only ❤️</span>
+        </div>
 
         <button id="aiBtn" class="pill" title="AI help" style="border-color:rgba(255,210,122,.22); background:rgba(255,210,122,.08)">
           <span>✨</span><span style="font-weight:900">AI help</span>
@@ -1107,21 +1035,26 @@ input, select, textarea, button { font-size: 16px; }
     <div class="sheet" role="dialog" aria-modal="true">
       <div class="sheetHead">
         <h3 id="modalTitle">Booking</h3>
-        <button class="x" id="closeModal">✕</button><div id="bkWhere" style="
-  display:none;
-  gap:8px;
-  flex-direction:column;
-  padding:10px 14px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-">
-  <div style="font-weight:800" id="bkWhereName"></div>
-  <div style="font-size:12px; opacity:.75" id="bkWhereAddr"></div>
-  <a id="bkWhereProfile"
-     style="font-size:12px; color:#ffd27a; font-weight:700">
-     Open profile →
-  </a>
-</div>
+        <button class="x" id="closeModal">✕</button>
+      </div>
 
+      <!-- WHERE (salon/address) -->
+      <div id="bkWhere" style="
+        display:none;
+        gap:8px;
+        flex-direction:column;
+        padding:10px 14px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+      ">
+        <div style="font-weight:900" id="bkWhereName"></div>
+        <div style="font-size:12px; opacity:.78" id="bkWhereAddr"></div>
+        <a id="bkWhereProfile"
+           href="#"
+           target="_blank"
+           rel="noopener"
+           style="font-size:12px; color:#ffd27a; font-weight:800">
+           Open profile →
+        </a>
       </div>
 
       <div class="sheetBody">
@@ -1448,52 +1381,70 @@ input, select, textarea, button { font-size: 16px; }
       renderLastBookingCard();
     }
 
-    function renderTexts(){  const $id = (id) => document.getElementById(id);
-  const setText = (id, txt) => { const el = $id(id); if (el) el.textContent = txt; };
-  const setHTML = (id, html) => { const el = $id(id); if (el) el.innerHTML = html; };
+    // === Anti-crash renderTexts (safeSet*) ===
+    function renderTexts(){
+      const get = (id)=> document.getElementById(id);
+      const safeSetText = (id, txt)=>{
+        const el = get(id);
+        if(el) el.textContent = (txt ?? "");
+      };
+      const safeSetHTML = (id, html)=>{
+        const el = get(id);
+        if(el) el.innerHTML = (html ?? "");
+      };
+      const safeSetAttr = (id, name, value)=>{
+        const el = get(id);
+        if(el) el.setAttribute(name, value);
+      };
 
       const t = T[state.lang];
-      if($(".sub")) $(".sub").style.display = "none";
 
-      $("#q").placeholder = t.searchPh;
-      $("#heroDesc").textContent = t.heroDesc;
-      $("#openQuick").childNodes[0].textContent = t.quick + " ";
-      $("#resetBtn").textContent = t.reset;
-      $("#nextKicker").textContent = t.nextNear;
-      $("#nextSub").textContent = t.tapBook;
+      const sub = document.querySelector(".sub");
+      if(sub) sub.style.display = "none";
 
-      $("#aiTitle").textContent = t.aiTitle;
-      $("#aiNote").textContent = t.aiNote;
-      $("#aiInput").placeholder = t.aiPh;
-      $("#aiGo").textContent = t.aiGo;
+      safeSetAttr("q", "placeholder", t.searchPh);
+      safeSetText("heroDesc", t.heroDesc);
 
-      $("#savedTitle").textContent = t.savedTitle;
-      $("#savedNote").textContent = t.savedNote;
+      // safer: replace whole button HTML
+      safeSetHTML("openQuick", `${t.quick} <span style="opacity:.85; font-weight:800">today</span>`);
+      safeSetText("resetBtn", t.reset);
 
-      $("#partnersTitle").textContent = t.partnersTitle;
-      $("#partnersNote").textContent = t.partnersNote;
+      safeSetText("nextKicker", t.nextNear);
+      safeSetText("nextSub", t.tapBook);
 
-      $("#recTitle").textContent = t.recTitle;
-      $("#recNote").textContent = t.recNote;
+      safeSetText("aiTitle", t.aiTitle);
+      safeSetText("aiNote", t.aiNote);
+      safeSetAttr("aiInput", "placeholder", t.aiPh);
+      safeSetText("aiGo", t.aiGo);
 
-      $("#allTitle").textContent = t.allTitle;
-      $("#allNote").textContent = t.allNote;
+      safeSetText("savedTitle", t.savedTitle);
+      safeSetText("savedNote", t.savedNote);
 
-      $("#emptyTitle").textContent = t.emptyTitle;
-      $("#emptyText").textContent = t.emptyText;
-      $("#emptyReset").textContent = t.emptyReset;
-      $("#emptyShowPopular").textContent = t.emptyPopular;
+      safeSetText("partnersTitle", t.partnersTitle);
+      safeSetText("partnersNote", t.partnersNote);
 
-      $("#modalTitle").textContent = t.booking;
-      $("#submitBooking").textContent = t.confirm;
-      $("#openProfileBtn").textContent = t.profile;
-      $("#timeTitle").textContent = t.chooseTime;
-      $("#dateTitle").textContent = t.chooseDate;
-      $("#favOnlyLabel").textContent = t.only;
+      safeSetText("recTitle", t.recTitle);
+      safeSetText("recNote", t.recNote);
 
-      $("#draftsTitle").textContent = t.draftsTitle;
-      $("#lastKicker").textContent = t.lastKicker;
-      $("#lastSub").textContent = t.lastSub;
+      safeSetText("allTitle", t.allTitle);
+      safeSetText("allNote", t.allNote);
+
+      safeSetText("emptyTitle", t.emptyTitle);
+      safeSetText("emptyText", t.emptyText);
+      safeSetText("emptyReset", t.emptyReset);
+      safeSetText("emptyShowPopular", t.emptyPopular);
+
+      safeSetText("modalTitle", t.booking);
+      safeSetText("submitBooking", t.confirm);
+      safeSetText("openProfileBtn", t.profile);
+      safeSetText("timeTitle", t.chooseTime);
+      safeSetText("dateTitle", t.chooseDate);
+
+      safeSetText("favOnlyLabel", t.only);
+
+      safeSetText("draftsTitle", t.draftsTitle);
+      safeSetText("lastKicker", t.lastKicker);
+      safeSetText("lastSub", t.lastSub);
     }
 
     function serviceLabel(serviceId){
@@ -1639,7 +1590,6 @@ input, select, textarea, button { font-size: 16px; }
         const act = e.target?.dataset?.action;
         if(act === "fav" || act === "book") return;
         location.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-
       });
 
       div.querySelectorAll('[data-action="fav"]').forEach(btn=>{
@@ -1864,9 +1814,27 @@ input, select, textarea, button { font-size: 16px; }
       times: [],
       holdUntil: null,
       holdTimer: null,
-      timeFilter: null, // "today" | "after18" | "earliest" | "cheapest"
+      timeFilter: null,
       lastPayload: null
     };
+
+    function renderBookingWhere(listing){
+      const box  = document.getElementById("bkWhere");
+      const name = document.getElementById("bkWhereName");
+      const addr = document.getElementById("bkWhereAddr");
+      const link = document.getElementById("bkWhereProfile");
+      if(!box || !name || !addr || !link) return;
+
+      if(!listing){
+        box.style.display = "none";
+        return;
+      }
+
+      box.style.display = "flex";
+      name.textContent = listing.name || "";
+      addr.textContent = listing.address || "";
+      link.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+    }
 
     function setHold(on){
       clearInterval(booking.holdTimer);
@@ -1898,9 +1866,10 @@ input, select, textarea, button { font-size: 16px; }
     }
 
     function openBooking(listingId, serviceId, presetSlot=null){
-      const listing = window.LISTINGS.find(l=>l.id===listingId);renderBookingWhere(listing);
-
+      const listing = window.LISTINGS.find(l=>l.id===listingId);
       if(!listing) return;
+
+      renderBookingWhere(listing);
 
       booking.listingId = listingId;
 
@@ -1915,7 +1884,6 @@ input, select, textarea, button { font-size: 16px; }
       booking.times = booking.dateISO ? (av[booking.dateISO] || []).slice().sort() : [];
       booking.time = presetSlot?.time || booking.times[0] || null;
 
-      // reset time filter each open (safe)
       booking.timeFilter = null;
       setHold(false);
 
@@ -1949,9 +1917,7 @@ input, select, textarea, button { font-size: 16px; }
       };
 
       $("#datePick").onclick = ()=> openDatePicker(listing);
-
       $("#timePick").onclick = ()=> openTimePicker(listing);
-
       $("#saveDraftBtn").onclick = ()=> saveDraftCurrent();
 
       $("#modal").classList.add("on");
@@ -1996,12 +1962,10 @@ input, select, textarea, button { font-size: 16px; }
         grid.innerHTML = "";
         let times = (listing.availability?.[booking.dateISO] || []).slice().sort();
 
-        // filter after 18
         if(booking.timeFilter === "after18"){
           times = times.filter(t => parseInt(t.split(":")[0]||"0",10) >= 18);
         }
 
-        // choose earliest / cheapest just selects a recommended time
         if(booking.timeFilter === "earliest" && times.length){
           booking.time = times[0];
           $("#timeVal").textContent = booking.time;
@@ -2009,7 +1973,6 @@ input, select, textarea, button { font-size: 16px; }
         }
 
         if(booking.timeFilter === "cheapest"){
-          // cheapest is per service -> time doesn't change much; we treat as "earliest" but with a UX hint
           if(times.length){
             booking.time = times[0];
             $("#timeVal").textContent = booking.time;
@@ -2039,7 +2002,6 @@ input, select, textarea, button { font-size: 16px; }
         });
       }
 
-      // quick chips events
       $("#tfToday").onclick = ()=>{
         setTimeFilter("today");
         const ok = pickTodayIfAvailable(listing);
@@ -2050,7 +2012,6 @@ input, select, textarea, button { font-size: 16px; }
       $("#tfEarliest").onclick = ()=>{ setTimeFilter("earliest"); renderTimes(); };
       $("#tfCheapest").onclick = ()=>{ setTimeFilter("cheapest"); renderTimes(); };
 
-      // reset chips UI
       setTimeFilter(null);
 
       renderTimes();
@@ -2065,7 +2026,7 @@ input, select, textarea, button { font-size: 16px; }
     }
 
     // === Date calendar (only available days clickable) ===
-    const cal = { ym: null }; // "YYYY-MM"
+    const cal = { ym: null };
 
     function isoParts(iso){
       const [y,m,d] = iso.split("-").map(n=>parseInt(n,10));
@@ -2079,7 +2040,6 @@ input, select, textarea, button { font-size: 16px; }
       const av = listing.availability || {};
       const available = new Set(Object.keys(av).filter(k => (av[k]||[]).length>0));
 
-      // start month = selected date or today
       const base = booking.dateISO ? isoParts(booking.dateISO) : isoParts(new Date().toISOString().slice(0,10));
       cal.ym = ymKey(base.y, base.m);
 
@@ -2108,8 +2068,7 @@ input, select, textarea, button { font-size: 16px; }
         const monthName = first.toLocaleDateString(state.lang==="uk"?"uk-UA":"en-CA", { month:"long", year:"numeric" });
         $("#calTitle").textContent = monthName;
 
-        // Monday-based index
-        const dow = (first.getDay() + 6) % 7; // 0..6 where 0=Mon
+        const dow = (first.getDay() + 6) % 7;
         for(let i=0;i<dow;i++){
           const ph = document.createElement("div");
           ph.className = "day off";
@@ -2187,7 +2146,6 @@ input, select, textarea, button { font-size: 16px; }
         savedAt: Date.now()
       };
 
-      // keep max 6 drafts
       state.drafts = [item, ...(state.drafts||[])].slice(0,6);
       updateDraftBadge();
       toast(T[state.lang].toastDraft);
@@ -2289,13 +2247,11 @@ input, select, textarea, button { font-size: 16px; }
     }
 
     function makeICS(payload){
-      // payload.datetime: "YYYY-MM-DD HH:MM"
       const [dateISO, time] = payload.datetime.split(" ");
       const {y,m,d} = isoParts(dateISO);
       const [hh,mm] = time.split(":").map(n=>parseInt(n,10));
       const start = new Date(y, m-1, d, hh, mm, 0);
 
-      // duration from payload if available
       const durMin = payload.durationMin ? parseInt(payload.durationMin,10) : 60;
       const end = new Date(start.getTime() + durMin*60000);
 
@@ -2571,46 +2527,15 @@ input, select, textarea, button { font-size: 16px; }
           const slot = window.bb.util.nextAvailable(listing, svcOk || state.serviceId);
           openBooking(listing.id, svcOk || state.serviceId, slot || null);
 
-          // clear URL so it won't open on refresh
           history.replaceState({}, "", location.pathname);
         }
       }
 
-      // IMPORTANT: do not cache on localhost (avoid “злети”)
       if("serviceWorker" in navigator && location.hostname !== "127.0.0.1" && location.hostname !== "localhost"){
-        navigator.serviceWorker.register("./worker.js?v=2025-12-30-2")
-.catch(()=>{});
+        navigator.serviceWorker.register("./worker.js?v=2026-01-04-1").catch(()=>{});
       }
     }
-    init();function renderBookingWhere(listing){
-  const box = document.getElementById("bkWhere");
-  const name = document.getElementById("bkWhereName");
-  const addr = document.getElementById("bkWhereAddr");
-  const link = document.getElementById("bkWhereProfile");
-  if (!box || !name || !addr || !link) return;
-
-  if (!listing){
-    box.style.display = "none";
-    return;
-  }
-
-  box.style.display = "flex";
-  name.textContent = listing.name || "";
-  addr.textContent = listing.address || "";
-  link.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-  link.target = "_blank";
-}function renderBookingWhere(listing){
-  const box = document.getElementById("bkWhere");
-  const name = document.getElementById("bkWhereName");
-  const addr = document.getElementById("bkWhereAddr");
-  const link = document.getElementById("bkWhereProfile");
-  if(!box || !listing) return;
-
-  box.style.display = "flex";
-  name.textContent = listing.name || "";
-  addr.textContent = listing.address || "";
-  link.href = `./profile.html?id=${listing.id}`;
-}
+    init();
   </script>
 </body>
 </html>
