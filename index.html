@@ -71,32 +71,9 @@
       --shadow2: 0 10px 30px rgba(10,10,18,.10);
     }
 
-    /* === iOS / in-app browser horizontal pan FIX === */
-html, body{
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden !important;
-}
-body{ position:relative; }
-
-/* if supported, clip is nicer than hidden */
-@supports (overflow: clip){
-  body{ overflow-x:clip !important; }
-}
-
-/* prevent accidental sideways panning on iOS */
-.wrap,
-.topbar,
-.floatbar,
-.overlay,
-.timeOverlay,
-.dateOverlay,
-.draftsOverlay,
-.successOverlay{
-  width:100%;
-  max-width:100%;
-}
-
+    /* iOS PWA / overflow-x hard fix */
+    html{height:100%; width:100%; max-width:100%; overflow-x:hidden;}
+    body{max-width:100%; overflow-x:clip;}
 
     *{box-sizing:border-box}
     a{color:inherit; text-decoration:none}
@@ -115,16 +92,6 @@ body{ position:relative; }
       text-rendering: optimizeLegibility;
       padding-left: max(0px, var(--safeL));
       padding-right:max(0px, var(--safeR));
-      body{
-  margin:0;
-  background: radial-gradient(...);
-  color:#fff;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
-
-  min-height: 100vh;
-  min-height: 100dvh;
-}
-
     }
 
     /* guard: no accidental 100vw */
@@ -138,7 +105,11 @@ body{ position:relative; }
       box-shadow: 0 0 0 1px rgba(255,210,122,.18);
     }
 
-    .wrap{max-width:var(--max); margin:0 auto; padding: 20px 18px calc(190px + var(--safeB));
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:20px 18px calc(120px + var(--safeB));
+    }
 
     .topbar{
       position:sticky; top:0; z-index:50;
@@ -152,8 +123,21 @@ body{ position:relative; }
       border-bottom:1px solid rgba(10,10,18,.08);
     }
 
-    .topbar .inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:12px}
-    .brand{display:flex; align-items:center; gap:10px; min-width:180px}
+    .topbar .inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:180px;
+    }
     .logo{
       width:36px; height:36px; border-radius:14px;
       background:
@@ -163,6 +147,7 @@ body{ position:relative; }
       box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 12px 40px rgba(0,0,0,.35);
       position:relative;
       overflow:hidden;
+      flex:0 0 auto;
     }
     .logo:after{
       content:"";
@@ -178,9 +163,11 @@ body{ position:relative; }
       font-family:"Playfair Display",serif;
       font-size:18px; line-height:1.1; margin:0;
       letter-spacing:.2px;
+      white-space:nowrap;
     }
     .brand .sub{font-size:12px; color:var(--muted); margin-top:2px}
     .grow{flex:1}
+
     .search{
       flex:1;
       display:flex; gap:10px; align-items:center;
@@ -189,6 +176,7 @@ body{ position:relative; }
       border-radius:999px;
       padding:10px 12px;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+      min-width: 240px;
     }
     body[data-theme="light"] .search{box-shadow: inset 0 0 0 1px rgba(10,10,18,.06)}
     .search input{
@@ -196,6 +184,7 @@ body{ position:relative; }
       width:100%;
       font-size:14px;
     }
+
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--stroke);
@@ -216,7 +205,9 @@ body{ position:relative; }
       background: rgba(255,79,216,.12);
       box-shadow: 0 0 0 1px rgba(255,79,216,.14);
     }
+
     .top-actions{display:flex; gap:10px; align-items:center}
+
     .iconbtn{
       width:42px; height:42px; border-radius:14px;
       border:1px solid var(--stroke);
@@ -226,6 +217,7 @@ body{ position:relative; }
       display:grid; place-items:center;
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
       position:relative;
+      flex:0 0 auto;
     }
     .iconbtn:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
     .iconbtn:active{transform: translateY(0px) scale(.98)}
@@ -292,6 +284,7 @@ body{ position:relative; }
     }
     .chips::-webkit-scrollbar{height:8px}
     .chips::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
+    body[data-theme="light"] .chips::-webkit-scrollbar-thumb{background: rgba(10,10,18,.10)}
     .chip{white-space:nowrap; flex:0 0 auto;}
 
     .chip{
@@ -329,6 +322,7 @@ body{ position:relative; }
     .bigLine{font-weight:900; margin-top:6px; font-size:14px}
     .smallLine{margin-top:6px; color:var(--muted); font-size:12.5px}
     .ctaRow{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+
     .btn{
       border:0;
       color:#0b0b0f;
@@ -350,12 +344,7 @@ body{ position:relative; }
       box-shadow:none;
     }
     body[data-theme="light"] .btn.secondary{color: rgba(11,11,15,.92)}
-    .btn:disabled{
-      opacity:.45;
-      cursor:not-allowed;
-      transform:none !important;
-      filter:none !important;
-    }
+    .btn:disabled{opacity:.45; cursor:not-allowed; transform:none !important; filter:none !important;}
 
     /* Sections */
     .section{margin-top:18px}
@@ -544,7 +533,6 @@ body{ position:relative; }
       background: rgba(7,7,11,.55);
       backdrop-filter: blur(14px);
       box-shadow: 0 18px 60px rgba(0,0,0,.45);
-      /* safe-area left/right to avoid iOS weirdness */
       margin-left: env(safe-area-inset-left);
       margin-right: env(safe-area-inset-right);
       max-width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
@@ -575,7 +563,7 @@ body{ position:relative; }
     .topBtn:hover{transform: translateY(-1px)}
     .topBtn:active{transform: translateY(0px) scale(.98)}
 
-    /* Modal */
+    /* Modal overlays */
     .overlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.62);
@@ -588,6 +576,7 @@ body{ position:relative; }
     }
     body[data-theme="light"] .overlay{background: rgba(10,10,18,.35)}
     .overlay.on{display:flex}
+
     .sheet{
       width:min(760px, 100%);
       border-radius: 26px;
@@ -657,6 +646,7 @@ body{ position:relative; }
       -webkit-overflow-scrolling: touch;
       flex:1 1 auto;
     }
+
     .formGrid{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
     .field{
       border-radius: 18px;
@@ -678,7 +668,7 @@ body{ position:relative; }
       border:0; outline:0;
       background: transparent;
       color: rgba(244,243,248,.95);
-      font-size:16px; /* prevent iOS zoom */
+      font-size:16px;
     }
     body[data-theme="light"] .field input{color: rgba(11,11,15,.95)}
 
@@ -707,7 +697,7 @@ body{ position:relative; }
     .selectLike .hint{color:var(--muted); font-size:12px}
     .timeGlow{box-shadow: 0 0 0 1px rgba(255,210,122,.12), 0 16px 50px rgba(255,210,122,.08);}
 
-    /* Sticky footer inside modal (ALWAYS visible Confirm) */
+    /* Sticky footer inside modal */
     .sheetFoot{
       padding:12px 14px calc(12px + var(--safeB));
       border-top:1px solid rgba(255,255,255,.08);
@@ -745,7 +735,7 @@ body{ position:relative; }
     .toast.on{display:block; animation: toastIn .18s ease}
     @keyframes toastIn{from{transform:translateX(-50%) translateY(8px); opacity:0}to{transform:translateX(-50%) translateY(0); opacity:1}}
 
-    /* Time picker overlays */
+    /* Time/date/drafts/success overlays */
     .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.55);
@@ -785,6 +775,7 @@ body{ position:relative; }
     body[data-theme="light"] .miniHead{border-bottom:1px solid rgba(10,10,18,.08)}
     .miniHead h4{margin:0; font-size:13px; letter-spacing:.2px}
     .miniBody{padding:12px; overflow:auto; -webkit-overflow-scrolling:touch; flex:1 1 auto;}
+
     .timeGrid{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;}
     .timeBtn{
       border-radius: 16px;
@@ -884,8 +875,9 @@ body{ position:relative; }
       .search{display:none;}
       .brand{min-width:auto}
     }
+
     @media (max-width: 720px){
-      .wrap{padding:14px 14px 120px;}
+      .wrap{padding:14px 14px calc(140px + var(--safeB));}
       .hero{padding:14px 0 6px;}
       .heroInner{padding:16px 14px;}
       .heroTitle{font-size:30px;}
@@ -903,50 +895,22 @@ body{ position:relative; }
       .card .miniCTA{position: static; padding: 0 12px 12px; margin-top:-6px;}
       .stripCard .miniCTA{position: static; margin-top:10px;}
       .floatbar{ bottom: calc(12px + var(--safeB)); }
-      .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }/* mobile topbar centering fix */
-.grow{display:none;}
-.topbar .inner{justify-content:space-between;}
+      .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
 
-.brand{
-  flex:1;
-  min-width:0;
-  justify-content:center;
-}
-.brand h1{text-align:center;}
-
-.top-actions{
-  flex:1;
-  justify-content:flex-end;
-}
+      /* mobile topbar centering fix */
+      .grow{display:none;}
+      .topbar .inner{justify-content:space-between;}
+      .brand{
+        flex:1;
+        min-width:0;
+        justify-content:center;
+      }
+      .brand h1{text-align:center;}
+      .top-actions{
+        flex:1;
+        justify-content:flex-end;
+      }
     }
-    /* === FIX: topbar actions not visible in iOS/PWA (no horizontal pan) === */
-@media (max-width: 720px){
-  .topbar .inner{
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  /* first row: logo + grow */
-  .brand{
-    min-width: 0 !important;
-    flex: 1 1 auto;
-  }
-  .grow{ flex: 0 0 auto; }
-
-  /* second row: actions take full width and align right */
-  .top-actions{
-    width: 100%;
-    flex: 0 0 100%;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  /* pills can shrink a bit so everything fits */
-  .pill{ padding: 9px 10px; }
-  .iconbtn{ width: 40px; height: 40px; }
-}
-
   </style>
 </head>
 
@@ -1456,16 +1420,20 @@ body{ position:relative; }
     };
 
     const $ = (s, el=document) => el.querySelector(s);
-    const isStandalone = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone === true);
+    const isStandalone = () =>
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      (window.navigator.standalone === true);
 
     function applyTheme(){
       document.body.dataset.theme = state.theme === "light" ? "light" : "dark";
-      $("#themeBtn").textContent = (state.theme === "light") ? "☀️" : "🌙";
+      const btn = $("#themeBtn");
+      if(btn) btn.textContent = (state.theme === "light") ? "☀️" : "🌙";
       localStorage.setItem(LS.theme, state.theme);
     }
 
     function toast(msg){
       const t = $("#toast");
+      if(!t) return;
       t.textContent = msg;
       t.classList.add("on");
       clearTimeout(toast._t);
@@ -1483,7 +1451,7 @@ body{ position:relative; }
       const safeSetHTML = (id, html)=>{ const el=get(id); if(el) el.innerHTML = (html ?? ""); };
       const safeSetAttr = (id, name, v)=>{ const el=get(id); if(el) el.setAttribute(name, v); };
 
-      const t = T[state.lang];
+      const t = T[state.lang] || T.uk;
       const sub = document.querySelector(".sub");
       if(sub) sub.style.display = "none";
 
@@ -1721,10 +1689,11 @@ body{ position:relative; }
       if(state.favs.has(id)) state.favs.delete(id);
       else state.favs.add(id);
       localStorage.setItem(LS.favs, JSON.stringify(Array.from(state.favs)));
-      el.classList.toggle("on", state.favs.has(id));
-      el.classList.add("favPop");
-      setTimeout(()=>el.classList.remove("favPop"), 260);
-
+      if(el){
+        el.classList.toggle("on", state.favs.has(id));
+        el.classList.add("favPop");
+        setTimeout(()=>el.classList.remove("favPop"), 260);
+      }
       toast(T[state.lang].toastSaved);
       renderSaved();
       if(state.favOnly) renderAll();
@@ -1733,13 +1702,16 @@ body{ position:relative; }
     function updateDraftBadge(){
       const n = state.drafts.length;
       const b = $("#cartBadge");
-      if(n>0){ b.style.display="grid"; b.textContent = String(n); }
-      else b.style.display="none";
+      if(b){
+        if(n>0){ b.style.display="grid"; b.textContent = String(n); }
+        else b.style.display="none";
+      }
       localStorage.setItem(LS.cart, JSON.stringify(state.drafts));
     }
 
     function renderServiceChips(){
       const box = $("#serviceChips");
+      if(!box) return;
       box.innerHTML = "";
       (window.SERVICES||[]).forEach(s=>{
         const chip = document.createElement("div");
@@ -1751,8 +1723,11 @@ body{ position:relative; }
           renderServiceChips();
           renderAll();
           refreshHeroCandidates(true);
-          const y = $("#partnersSection").getBoundingClientRect().top + window.scrollY - 72;
-          window.scrollTo({top:y, behavior:"smooth"});
+          const sec = $("#partnersSection");
+          if(sec){
+            const y = sec.getBoundingClientRect().top + window.scrollY - 72;
+            window.scrollTo({top:y, behavior:"smooth"});
+          }
         });
         box.appendChild(chip);
       });
@@ -1777,6 +1752,7 @@ body{ position:relative; }
     function setHeroCardAnimated(lineTxt, subTxt){
       const line = $("#nextLine");
       const sub = $("#nextSub");
+      if(!line || !sub) return;
       line.style.transition = "opacity .25s ease, transform .25s ease";
       sub.style.transition  = "opacity .25s ease, transform .25s ease";
       line.style.opacity = "0";
@@ -1804,9 +1780,12 @@ body{ position:relative; }
     function renderNextHeroRotating(animate=false){
       if(!heroRot.list.length) refreshHeroCandidates(true);
 
+      const lineEl = $("#nextLine");
+      const card = $("#nextAvailCard");
+
       if(!heroRot.list.length){
-        $("#nextLine").textContent = state.lang==="uk" ? "Немає слотів поруч" : "No nearby slots";
-        $("#nextAvailCard").onclick = null;
+        if(lineEl) lineEl.textContent = state.lang==="uk" ? "Немає слотів поруч" : "No nearby slots";
+        if(card){ card.onclick = null; card.onkeydown = null; }
         return;
       }
 
@@ -1817,19 +1796,24 @@ body{ position:relative; }
       if(!slot) return;
 
       const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || ""));
-      const from = slot.fromPrice != null ? `$${slot.fromPrice}` : "";
+      const from = (slot.fromPrice != null) ? `${slot.fromPrice}` : "";
       const todayISO = new Date().toISOString().slice(0,10);
       const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today") : formatDateShort(slot.dateISO);
 
-      const lineTxt = `${listing.name} · ${day} ${slot.time} · from ${from}`;
+      const lineTxt = `${listing.name} · ${day} ${slot.time} · from $${from}`;
       const subTxt  = state.lang==="uk" ? `Tap to book · ${svc || "service"}` : `Tap to book · ${svc || "service"}`;
 
       if(animate) setHeroCardAnimated(lineTxt, subTxt);
-      else { $("#nextLine").textContent = lineTxt; $("#nextSub").textContent = subTxt; }
+      else {
+        const subEl = $("#nextSub");
+        if(lineEl) lineEl.textContent = lineTxt;
+        if(subEl) subEl.textContent = subTxt;
+      }
 
-      const card = $("#nextAvailCard");
-      card.onclick = ()=> openBooking(listing.id, state.serviceId, slot);
-      card.onkeydown = (e)=>{ if(e.key==="Enter") openBooking(listing.id, state.serviceId, slot); };
+      if(card){
+        card.onclick = ()=> openBooking(listing.id, state.serviceId, slot);
+        card.onkeydown = (e)=>{ if(e.key==="Enter") openBooking(listing.id, state.serviceId, slot); };
+      }
     }
 
     function startHeroRotationOnce(){
@@ -1845,6 +1829,7 @@ body{ position:relative; }
     function renderSaved(){
       const sec = $("#savedSection");
       const grid = $("#savedGrid");
+      if(!sec || !grid) return;
       const favList = (window.LISTINGS||[]).filter(l=>state.favs.has(l.id));
       if(favList.length === 0){
         sec.style.display = "none";
@@ -1860,22 +1845,22 @@ body{ position:relative; }
       const list = filteredListings();
       const { partners, rec, other } = groupListings(list);
 
-      $("#partnerStrip").innerHTML = "";
-      partners.forEach(l => $("#partnerStrip").appendChild(buildCard(l,true)));
+      const p = $("#partnerStrip"), r = $("#recGrid"), a = $("#allGrid");
+      if(p) p.innerHTML = "";
+      if(r) r.innerHTML = "";
+      if(a) a.innerHTML = "";
 
-      $("#recGrid").innerHTML = "";
-      rec.forEach(l => $("#recGrid").appendChild(buildCard(l,false)));
-
-      $("#allGrid").innerHTML = "";
-      other.forEach(l => $("#allGrid").appendChild(buildCard(l,false)));
+      if(p) partners.forEach(l => p.appendChild(buildCard(l,true)));
+      if(r) rec.forEach(l => r.appendChild(buildCard(l,false)));
+      if(a) other.forEach(l => a.appendChild(buildCard(l,false)));
 
       const empty = $("#emptyBox");
       const noRes = list.length === 0;
-      empty.style.display = noRes ? "block" : "none";
+      if(empty) empty.style.display = noRes ? "block" : "none";
       if(noRes){
-        $("#partnerStrip").innerHTML = "";
-        $("#recGrid").innerHTML = "";
-        $("#allGrid").innerHTML = "";
+        if(p) p.innerHTML = "";
+        if(r) r.innerHTML = "";
+        if(a) a.innerHTML = "";
       }
 
       renderSaved();
@@ -1886,11 +1871,13 @@ body{ position:relative; }
     // AI (simple heuristic picks)
     function toggleAI(open){
       const sec = $("#aiSection");
+      if(!sec) return;
       sec.style.display = open ? "block" : "none";
       if(open){
         const y = sec.getBoundingClientRect().top + window.scrollY - 72;
         window.scrollTo({top:y, behavior:"smooth"});
-        $("#aiInput").focus();
+        const inp = $("#aiInput");
+        if(inp) inp.focus();
       }
     }
     function runAIQuery(text){
@@ -1906,6 +1893,7 @@ body{ position:relative; }
     }
     function renderAIPicks(result){
       const grid = $("#aiPicks");
+      if(!grid) return;
       grid.innerHTML = "";
       const picks = result?.picks || [];
       if(picks.length === 0){
@@ -1935,11 +1923,9 @@ body{ position:relative; }
       try{ return JSON.parse(localStorage.getItem(LS.contact) || "null"); }catch(e){ return null; }
     }
     function saveContact(){
-      const payload = {
-        name: $("#fName").value.trim(),
-        phone: $("#fPhone").value.trim(),
-        email: $("#fEmail").value.trim()
-      };
+      const n = $("#fName"), p = $("#fPhone"), e = $("#fEmail");
+      if(!n || !p || !e) return;
+      const payload = { name: n.value.trim(), phone: p.value.trim(), email: e.value.trim() };
       if(payload.name || payload.phone || payload.email){
         localStorage.setItem(LS.contact, JSON.stringify(payload));
       }
@@ -1947,9 +1933,10 @@ body{ position:relative; }
     function autofillContact(){
       const c = getSavedContact();
       if(!c) return;
-      if($("#fName").value.trim()==="") $("#fName").value = c.name || "";
-      if($("#fPhone").value.trim()==="") $("#fPhone").value = c.phone || "";
-      if($("#fEmail").value.trim()==="") $("#fEmail").value = c.email || "";
+      const n = $("#fName"), p = $("#fPhone"), e = $("#fEmail");
+      if(n && n.value.trim()==="") n.value = c.name || "";
+      if(p && p.value.trim()==="") p.value = c.phone || "";
+      if(e && e.value.trim()==="") e.value = c.email || "";
     }
 
     function clearFieldErrors(){
@@ -1964,14 +1951,23 @@ body{ position:relative; }
 
     function updateConfirmState(){
       const btn = $("#submitBooking");
-      const name = $("#fName").value.trim();
-      const phone = $("#fPhone").value.trim();
-      const email = $("#fEmail").value.trim();
+      const name = $("#fName")?.value?.trim() || "";
+      const phone = $("#fPhone")?.value?.trim() || "";
+      const email = $("#fEmail")?.value?.trim() || "";
 
       const ok = !!booking.listingId && !!booking.serviceId && !!booking.dateISO && !!booking.time
         && name.length>=2 && isPhone(phone) && isEmail(email);
 
-      btn.disabled = !ok;
+      if(btn) btn.disabled = !ok;
+    }
+
+    function haversineKm(lat1, lon1, lat2, lon2){
+      const toRad = (x)=> x * Math.PI / 180;
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+      return 2*R*Math.asin(Math.sqrt(a));
     }
 
     function renderBookingWhere(listing){
@@ -2003,15 +1999,6 @@ body{ position:relative; }
       }
     }
 
-    function haversineKm(lat1, lon1, lat2, lon2){
-      const toRad = (x)=> x * Math.PI / 180;
-      const R = 6371;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return 2*R*Math.asin(Math.sqrt(a));
-    }
-
     function openBooking(listingId, serviceId, presetSlot=null){
       const listing = (window.LISTINGS||[]).find(l=>l.id===listingId);
       if(!listing) return;
@@ -2033,72 +2020,91 @@ body{ position:relative; }
       booking.time = presetSlot?.time || booking.times[0] || null;
 
       // tags
-      $("#mPartner").style.display = listing.partner ? "inline-flex" : "none";
-      $("#mVerified").style.display = listing.verified ? "inline-flex" : "none";
-      $("#mSterile").style.display = listing.sterile ? "inline-flex" : "none";
+      const mPartner = $("#mPartner"), mVerified = $("#mVerified"), mSterile = $("#mSterile"), mToday = $("#mToday"), mWhy = $("#mWhy");
+      if(mPartner) mPartner.style.display = listing.partner ? "inline-flex" : "none";
+      if(mVerified) mVerified.style.display = listing.verified ? "inline-flex" : "none";
+      if(mSterile) mSterile.style.display = listing.sterile ? "inline-flex" : "none";
+
       let slot = null;
       try{ slot = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
       try{
-        $("#mToday").style.display = (slot && window.bb.util.isTodaySlot(slot)) ? "inline-flex" : "none";
-      }catch(e){ $("#mToday").style.display = "none"; }
-      $("#mWhy").style.display = "inline-flex";
-      try{
-        $("#mWhy").textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId);
-      }catch(e){
-        $("#mWhy").textContent = "Why: fast pick";
+        if(mToday) mToday.style.display = (slot && window.bb.util.isTodaySlot(slot)) ? "inline-flex" : "none";
+      }catch(e){ if(mToday) mToday.style.display = "none"; }
+
+      if(mWhy){
+        mWhy.style.display = "inline-flex";
+        try{ mWhy.textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId); }
+        catch(e){ mWhy.textContent = "Why: fast pick"; }
       }
 
-      // values
       renderBookingWhere(listing);
 
       const svcMeta = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      $("#svcVal").textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
-      $("#dateVal").textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
-      $("#timeVal").textContent = booking.time ? booking.time : "Tap to choose";
+      const svcVal = $("#svcVal"), dateVal = $("#dateVal"), timeVal = $("#timeVal");
+      if(svcVal) svcVal.textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
+      if(dateVal) dateVal.textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
+      if(timeVal) timeVal.textContent = booking.time ? booking.time : "Tap to choose";
 
-      const svcObj = window.bb?.util?.listingService ? window.bb.util.listingService(listing, booking.serviceId) : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
+      const svcObj = window.bb?.util?.listingService
+        ? window.bb.util.listingService(listing, booking.serviceId)
+        : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
+
       const label = serviceLabel(booking.serviceId);
-      if(svcObj){
-        $("#priceLine").textContent = T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin);
-      } else {
-        $("#priceLine").textContent = "—";
+      const priceLine = $("#priceLine");
+      if(priceLine){
+        if(svcObj) priceLine.textContent = T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin);
+        else priceLine.textContent = "—";
       }
 
-      // autofill contact + state
       autofillContact();
       clearFieldErrors();
       updateConfirmState();
 
-      // actions
-      $("#openProfileBtn").onclick = ()=> { location.href = `./profile.html?id=${encodeURIComponent(listingId)}`; };
-      $("#svcPick").onclick = ()=>{
+      const openProfileBtn = $("#openProfileBtn");
+      if(openProfileBtn) openProfileBtn.onclick = ()=> { location.href = `./profile.html?id=${encodeURIComponent(listingId)}`; };
+
+      const svcPick = $("#svcPick");
+      if(svcPick) svcPick.onclick = ()=>{
         if(!svcList.length) return;
         const idx = Math.max(0, svcList.findIndex(s=>s.serviceId===booking.serviceId));
         const next = svcList[(idx+1) % svcList.length];
         openBooking(listingId, next.serviceId, null);
       };
-      $("#datePick").onclick = ()=> openDatePicker(listing);
-      $("#timePick").onclick = ()=> openTimePicker(listing);
-      $("#saveDraftBtn").onclick = ()=> saveDraftCurrent();
 
-      $("#modal").classList.add("on");
-      $("#modal").setAttribute("aria-hidden","false");
+      const datePick = $("#datePick");
+      if(datePick) datePick.onclick = ()=> openDatePicker(listing);
+
+      const timePick = $("#timePick");
+      if(timePick) timePick.onclick = ()=> openTimePicker(listing);
+
+      const saveDraftBtn = $("#saveDraftBtn");
+      if(saveDraftBtn) saveDraftBtn.onclick = ()=> saveDraftCurrent();
+
+      const modal = $("#modal");
+      if(modal){
+        modal.classList.add("on");
+        modal.setAttribute("aria-hidden","false");
+      }
     }
 
     function closeBooking(){
-      $("#modal").classList.remove("on");
-      $("#modal").setAttribute("aria-hidden","true");
+      const m = $("#modal");
+      if(!m) return;
+      m.classList.remove("on");
+      m.setAttribute("aria-hidden","true");
     }
 
     // === Time picker ===
     function closeTimePicker(){
-      $("#timeOverlay").classList.remove("on");
-      $("#timeOverlay").setAttribute("aria-hidden","true");
+      const o = $("#timeOverlay");
+      if(!o) return;
+      o.classList.remove("on");
+      o.setAttribute("aria-hidden","true");
     }
 
     function setTimeFilter(next){
       booking.timeFilter = (booking.timeFilter === next) ? null : next;
-      const on = (id, v)=> $(id).classList.toggle("on", booking.timeFilter === v);
+      const on = (id, v)=> { const el=$(id); if(el) el.classList.toggle("on", booking.timeFilter === v); };
       on("#tfToday","today");
       on("#tfAfter18","after18");
       on("#tfEarliest","earliest");
@@ -2110,10 +2116,10 @@ body{ position:relative; }
       const times = (listing.availability?.[todayISO] || []).slice().sort();
       if(times.length){
         booking.dateISO = todayISO;
-        $("#dateVal").textContent = formatDateShort(todayISO);
+        const dateVal = $("#dateVal"); if(dateVal) dateVal.textContent = formatDateShort(todayISO);
         booking.times = times;
         booking.time = times[0] || null;
-        $("#timeVal").textContent = booking.time || "Tap to choose";
+        const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = booking.time || "Tap to choose";
         updateConfirmState();
         return true;
       }
@@ -2123,6 +2129,7 @@ body{ position:relative; }
     function openTimePicker(listing){
       const overlay = $("#timeOverlay");
       const grid = $("#timeGrid");
+      if(!overlay || !grid) return;
 
       function renderTimes(){
         grid.innerHTML = "";
@@ -2142,11 +2149,12 @@ body{ position:relative; }
 
         times.forEach(t=>{
           const b = document.createElement("button");
-          b.className = "timeBtn" + (booking.time===t ? " on":"");
+                    b.className = "timeBtn" + (booking.time === t ? " on" : "");
           b.textContent = t;
           b.addEventListener("click", ()=>{
             booking.time = t;
-            $("#timeVal").textContent = t;
+            const timeVal = $("#timeVal");
+            if(timeVal) timeVal.textContent = t;
             updateConfirmState();
             closeTimePicker();
           });
@@ -2154,624 +2162,743 @@ body{ position:relative; }
         });
       }
 
-      $("#tfToday").onclick = ()=>{
-        setTimeFilter("today");
-        const ok = pickTodayIfAvailable(listing);
-        if(!ok) toast(state.lang==="uk" ? "Сьогодні слотів нема" : "No slots today");
-        renderTimes();
-      };
+      // Quick chips
+      const todayBtn   = $("#tfToday");
+      const after18Btn = $("#tfAfter18");
+      const earlyBtn   = $("#tfEarliest");
+      const cheapBtn   = $("#tfCheapest");
 
-      $("#tfAfter18").onclick = ()=>{ setTimeFilter("after18"); renderTimes(); };
-
-      $("#tfEarliest").onclick = ()=>{
-        setTimeFilter("earliest");
-        const times = (listing.availability?.[booking.dateISO] || []).slice().sort();
-        if(times.length){
-          booking.time = times[0];
-          $("#timeVal").textContent = booking.time;
-          updateConfirmState();
-          closeTimePicker();
-        } else {
-          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
+      if(todayBtn){
+        todayBtn.onclick = ()=>{
+          // "Today" = jump to today if possible
+          setTimeFilter("today");
+          const ok = pickTodayIfAvailable(listing);
+          if(!ok) toast(state.lang==="uk" ? "Сьогодні слотів немає" : "No slots today");
           renderTimes();
-        }
-      };
+        };
+      }
 
-      $("#tfCheapest").onclick = ()=>{
-        setTimeFilter("cheapest");
-        // в нас cheapest = перший доступний (реальний дешевий робиться через pricing model; тут без багів)
-        const times = (listing.availability?.[booking.dateISO] || []).slice().sort();
-        if(times.length){
-          booking.time = times[0];
-          $("#timeVal").textContent = booking.time;
-          updateConfirmState();
-          closeTimePicker();
-        } else {
-          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
+      if(after18Btn){
+        after18Btn.onclick = ()=>{
+          setTimeFilter("after18");
           renderTimes();
-        }
-      };
+        };
+      }
 
+      if(earlyBtn){
+        earlyBtn.onclick = ()=>{
+          // Pick earliest available in current date (respecting after18 if on)
+          setTimeFilter("earliest");
+          renderTimes();
+          const times = (listing.availability?.[booking.dateISO] || []).slice().sort()
+            .filter(t => booking.timeFilter === "after18" ? parseInt(t.split(":")[0]||"0",10) >= 18 : true);
+          if(times.length){
+            booking.time = times[0];
+            const timeVal = $("#timeVal");
+            if(timeVal) timeVal.textContent = booking.time;
+            updateConfirmState();
+            closeTimePicker();
+          }
+        };
+      }
+
+      if(cheapBtn){
+        cheapBtn.onclick = ()=>{
+          // Choose cheapest service for this listing (by "from")
+          setTimeFilter("cheapest");
+          const svcList = listing.services || [];
+          if(!svcList.length){ toast("—"); return; }
+
+          let best = svcList[0];
+          for(const s of svcList){
+            const a = (s.from ?? 999999);
+            const b = (best.from ?? 999999);
+            if(a < b) best = s;
+          }
+          booking.serviceId = best.serviceId;
+
+          const svcMeta = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+          const svcVal = $("#svcVal");
+          if(svcVal) svcVal.textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
+
+          const label = serviceLabel(booking.serviceId);
+          const priceLine = $("#priceLine");
+          if(priceLine) priceLine.textContent = T[state.lang].priceLine(label, best.from, best.to, best.durationMin);
+
+          updateConfirmState();
+          toast(state.lang==="uk" ? "Вибрано найдешевшу послугу" : "Cheapest service selected");
+          renderTimes();
+        };
+      }
+
+      // open
+      renderTimes();
       overlay.classList.add("on");
       overlay.setAttribute("aria-hidden","false");
-      renderTimes();
+
+      // close handlers
+      const closeBtn = $("#closeTime");
+      if(closeBtn) closeBtn.onclick = closeTimePicker;
+
+      overlay.onclick = (e)=>{ if(e.target === overlay) closeTimePicker(); };
     }
 
     // === Date picker ===
-    let cal = { y: null, m: null };
-
     function closeDatePicker(){
-      $("#dateOverlay").classList.remove("on");
-      $("#dateOverlay").setAttribute("aria-hidden","true");
-    }
-
-    function monthLabel(y,m){
-      const dt = new Date(y, m, 1);
-      return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { month:"long", year:"numeric" });
+      const o = $("#dateOverlay");
+      if(!o) return;
+      o.classList.remove("on");
+      o.setAttribute("aria-hidden","true");
     }
 
     function openDatePicker(listing){
       const overlay = $("#dateOverlay");
-      const dow = $("#calDow");
       const grid = $("#calGrid");
+      const dow = $("#calDow");
       const title = $("#calTitle");
+      if(!overlay || !grid || !dow || !title) return;
 
-      const now = new Date();
-      cal.y = (booking.dateISO ? parseInt(booking.dateISO.slice(0,4),10) : now.getFullYear());
-      cal.m = (booking.dateISO ? (parseInt(booking.dateISO.slice(5,7),10)-1) : now.getMonth());
-
-      const dows = (state.lang==="uk")
-        ? ["пн","вт","ср","чт","пт","сб","нд"]
-        : ["mon","tue","wed","thu","fri","sat","sun"];
+      const t = state.lang === "uk"
+        ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
+        : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
       dow.innerHTML = "";
-      dows.forEach(x=>{
-        const el = document.createElement("div");
-        el.className = "calDow";
-        el.textContent = x;
-        dow.appendChild(el);
+      t.forEach(x=>{
+        const d = document.createElement("div");
+        d.className = "calDow";
+        d.textContent = x;
+        dow.appendChild(d);
       });
 
+      const todayISO = new Date().toISOString().slice(0,10);
+
+      // start month = selected date or today
+      let view = new Date();
+      if(booking.dateISO){
+        const [y,m,d] = booking.dateISO.split("-").map(n=>parseInt(n,10));
+        view = new Date(y, m-1, 1);
+      }else{
+        view = new Date(view.getFullYear(), view.getMonth(), 1);
+      }
+
+      function fmtMonth(dt){
+        return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { month:"long", year:"numeric" });
+      }
+
+      function iso(y,m,d){
+        const mm = String(m).padStart(2,"0");
+        const dd = String(d).padStart(2,"0");
+        return `${y}-${mm}-${dd}`;
+      }
+
       function render(){
-        title.textContent = monthLabel(cal.y, cal.m);
+        title.textContent = fmtMonth(view);
         grid.innerHTML = "";
 
-        // monday-first
-        const first = new Date(cal.y, cal.m, 1);
-        let startDay = first.getDay(); // 0=Sun
-        startDay = (startDay===0) ? 6 : (startDay-1); // monday-first index 0..6
-
-        const daysInMonth = new Date(cal.y, cal.m+1, 0).getDate();
-        const todayISO = new Date().toISOString().slice(0,10);
+        const y = view.getFullYear();
+        const m = view.getMonth(); // 0..11
+        const first = new Date(y, m, 1);
+        // monday-based
+        const firstDow = (first.getDay() + 6) % 7; // 0=Mon
+        const daysInMonth = new Date(y, m+1, 0).getDate();
 
         // blanks
-        for(let i=0;i<startDay;i++){
-          const blank = document.createElement("div");
-          blank.className = "day off";
-          blank.textContent = " ";
-          grid.appendChild(blank);
+        for(let i=0;i<firstDow;i++){
+          const b = document.createElement("div");
+          b.className = "day off";
+          b.textContent = "";
+          grid.appendChild(b);
         }
 
         for(let d=1; d<=daysInMonth; d++){
-          const iso = `${cal.y}-${String(cal.m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-          const hasSlots = (listing.availability?.[iso] || []).length > 0;
+          const i = iso(y, m+1, d);
+          const times = (listing.availability?.[i] || []);
+          const has = times.length > 0;
+          const past = i < todayISO;
+
           const btn = document.createElement("div");
           btn.className = "day" +
-            (hasSlots ? " has" : " off") +
-            (booking.dateISO===iso ? " on" : "");
+            (has ? " has" : "") +
+            (i === booking.dateISO ? " on" : "") +
+            (!has || past ? " off" : "");
           btn.textContent = String(d);
 
-          // past days off
-          if(iso < todayISO) btn.className = "day off";
+          if(has && !past){
+            btn.onclick = ()=>{
+              booking.dateISO = i;
+              booking.times = (listing.availability?.[booking.dateISO] || []).slice().sort();
+              booking.time = booking.times[0] || null;
 
-          if(hasSlots && iso >= todayISO){
-            btn.addEventListener("click", ()=>{
-              booking.dateISO = iso;
-              $("#dateVal").textContent = formatDateShort(iso);
-
-              booking.times = (listing.availability?.[iso] || []).slice().sort();
-              // якщо поточний час не існує на новій даті — беремо перший
-              if(!booking.times.includes(booking.time)) booking.time = booking.times[0] || null;
-              $("#timeVal").textContent = booking.time || "Tap to choose";
+              const dateVal = $("#dateVal"); if(dateVal) dateVal.textContent = formatDateShort(booking.dateISO);
+              const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = booking.time || "Tap to choose";
 
               updateConfirmState();
               closeDatePicker();
-            });
+            };
           }
+
           grid.appendChild(btn);
         }
       }
 
-      $("#calPrev").onclick = ()=>{
-        cal.m--;
-        if(cal.m<0){ cal.m=11; cal.y--; }
-        render();
-      };
-      $("#calNext").onclick = ()=>{
-        cal.m++;
-        if(cal.m>11){ cal.m=0; cal.y++; }
-        render();
-      };
+      // nav
+      const prev = $("#calPrev");
+      const next = $("#calNext");
+      if(prev) prev.onclick = ()=>{ view = new Date(view.getFullYear(), view.getMonth()-1, 1); render(); };
+      if(next) next.onclick = ()=>{ view = new Date(view.getFullYear(), view.getMonth()+1, 1); render(); };
 
+      const closeBtn = $("#closeDate");
+      if(closeBtn) closeBtn.onclick = closeDatePicker;
+
+      overlay.onclick = (e)=>{ if(e.target === overlay) closeDatePicker(); };
+
+      render();
       overlay.classList.add("on");
       overlay.setAttribute("aria-hidden","false");
-      render();
     }
 
     // === Drafts ===
-    function saveDraftCurrent(){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
-      if(!listing) return;
+    function closeDrafts(){
+      const o = $("#draftsOverlay");
+      if(!o) return;
+      o.classList.remove("on");
+      o.setAttribute("aria-hidden","true");
+    }
 
-      const payload = {
-        id: booking.listingId,
+    function openDrafts(){
+      const o = $("#draftsOverlay");
+      const list = $("#draftsList");
+      if(!o || !list) return;
+
+      list.innerHTML = "";
+      if(!state.drafts.length){
+        list.innerHTML = `<div class="empty" style="margin:0">
+          <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає чернеток":"No drafts"}</h3>
+          <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Збережи 1–3 варіанти в модалці":"Save 1–3 options in booking"}</p>
+        </div>`;
+      } else {
+        state.drafts.slice().reverse().forEach((d, idxRev)=>{
+          const idx = state.drafts.length - 1 - idxRev;
+          const listing = (window.LISTINGS||[]).find(x=>x.id===d.listingId);
+          const svc = serviceLabel(d.serviceId);
+          const when = d.dateISO ? `${formatDateShort(d.dateISO)} ${d.time||""}` : "—";
+          const box = document.createElement("div");
+          box.className = "draftItem";
+          box.innerHTML = `
+            <div style="min-width:0">
+              <b>${escapeHtml(listing?.name || d.listingId || "—")}</b>
+              <div style="margin-top:4px; color:var(--muted); font-size:12.5px">${escapeHtml(svc)} · ${escapeHtml(when)}</div>
+            </div>
+            <div class="draftActions">
+              <button class="miniBtn2" data-act="use">Use</button>
+              <button class="miniBtn2" data-act="copy">Copy</button>
+              <button class="miniBtn2 danger" data-act="del">Delete</button>
+            </div>
+          `;
+
+          box.querySelector('[data-act="use"]').onclick = ()=>{
+            closeDrafts();
+            openBooking(d.listingId, d.serviceId, {dateISO:d.dateISO, time:d.time, fromPrice:d.fromPrice});
+            // restore contact if present
+            if(d.contact){
+              const n=$("#fName"), p=$("#fPhone"), e=$("#fEmail");
+              if(n) n.value = d.contact.name || n.value;
+              if(p) p.value = d.contact.phone || p.value;
+              if(e) e.value = d.contact.email || e.value;
+              updateConfirmState();
+            }
+          };
+
+          box.querySelector('[data-act="copy"]').onclick = async ()=>{
+            const txt = `${listing?.name||d.listingId}\n${svc}\n${when}`;
+            try{
+              await navigator.clipboard.writeText(txt);
+              toast(T[state.lang].toastCopied);
+            }catch(e){
+              toast("Copy failed");
+            }
+          };
+
+          box.querySelector('[data-act="del"]').onclick = ()=>{
+            state.drafts.splice(idx,1);
+            updateDraftBadge();
+            openDrafts();
+          };
+
+          list.appendChild(box);
+        });
+      }
+
+      const closeBtn = $("#closeDrafts");
+      if(closeBtn) closeBtn.onclick = closeDrafts;
+
+      o.classList.add("on");
+      o.setAttribute("aria-hidden","false");
+      o.onclick = (e)=>{ if(e.target === o) closeDrafts(); };
+    }
+
+    function saveDraftCurrent(){
+      if(!booking.listingId || !booking.serviceId || !booking.dateISO || !booking.time){
+        toast(T[state.lang].toastErr);
+        return;
+      }
+
+      const contact = {
+        name: $("#fName")?.value?.trim() || "",
+        phone: $("#fPhone")?.value?.trim() || "",
+        email: $("#fEmail")?.value?.trim() || ""
+      };
+
+      const listing = (window.LISTINGS||[]).find(x=>x.id===booking.listingId);
+      const svcObj = listing?.services?.find(s=>s.serviceId===booking.serviceId) || null;
+
+      const draft = {
+        listingId: booking.listingId,
         serviceId: booking.serviceId,
         dateISO: booking.dateISO,
         time: booking.time,
-        createdAt: Date.now()
+        fromPrice: svcObj?.from ?? null,
+        toPrice: svcObj?.to ?? null,
+        durationMin: svcObj?.durationMin ?? null,
+        contact,
+        ts: Date.now()
       };
 
-      // de-dupe same id+service+date+time
-      state.drafts = state.drafts.filter(d => !(d.id===payload.id && d.serviceId===payload.serviceId && d.dateISO===payload.dateISO && d.time===payload.time));
-      state.drafts.unshift(payload);
-      state.drafts = state.drafts.slice(0, 12);
+      // dedupe
+      state.drafts = state.drafts.filter(d =>
+        !(d.listingId===draft.listingId && d.serviceId===draft.serviceId && d.dateISO===draft.dateISO && d.time===draft.time)
+      );
+      state.drafts.push(draft);
+      // limit
+      if(state.drafts.length > 10) state.drafts = state.drafts.slice(-10);
 
       updateDraftBadge();
       toast(T[state.lang].toastDraft);
     }
 
-    function openDrafts(){
-      const overlay = $("#draftsOverlay");
-      const list = $("#draftsList");
-      list.innerHTML = "";
-
-      if(state.drafts.length === 0){
-        list.innerHTML = `<div class="empty" style="margin:0"><h3 style="margin:0 0 6px">No drafts</h3><p style="margin:0;color:var(--muted)">Save 1–3 вариантов для брони в 1 клик.</p></div>`;
-      } else {
-        state.drafts.forEach((d, idx)=>{
-          const listing = (window.LISTINGS||[]).find(l=>l.id===d.id);
-          if(!listing) return;
-          const svc = serviceLabel(d.serviceId);
-          const row = document.createElement("div");
-          row.className = "draftItem";
-          row.innerHTML = `
-            <div>
-              <b>${escapeHtml(listing.name)}</b>
-              <div style="margin-top:4px; color:var(--muted); font-size:12.5px">${escapeHtml(svc)} · ${escapeHtml(formatDateShort(d.dateISO))} · ${escapeHtml(d.time||"")}</div>
-            </div>
-            <div class="draftActions">
-              <button class="miniBtn2" data-act="open">Open</button>
-              <button class="miniBtn2 danger" data-act="del">Delete</button>
-            </div>
-          `;
-          row.querySelector('[data-act="open"]').onclick = ()=>{
-            closeDrafts();
-            openBooking(d.id, d.serviceId, {dateISO:d.dateISO, time:d.time});
-          };
-          row.querySelector('[data-act="del"]').onclick = ()=>{
-            state.drafts.splice(idx,1);
-            updateDraftBadge();
-            openDrafts();
-          };
-          list.appendChild(row);
-        });
-      }
-
-      overlay.classList.add("on");
-      overlay.setAttribute("aria-hidden","false");
-    }
-
-    function closeDrafts(){
-      $("#draftsOverlay").classList.remove("on");
-      $("#draftsOverlay").setAttribute("aria-hidden","true");
-    }
-
-    // === Booking submit ===
-    function fieldErrors(){
-      let ok = true;
-      const name = $("#fName").value.trim();
-      const phone = $("#fPhone").value.trim();
-      const email = $("#fEmail").value.trim();
-
-      const setErr = (wrapId, cond)=>{
-        const el = document.getElementById(wrapId);
-        if(!el) return;
-        el.classList.toggle("err", cond);
-      };
-
-      setErr("fNameWrap", !(name.length>=2)); if(!(name.length>=2)) ok=false;
-      setErr("fPhoneWrap", !isPhone(phone)); if(!isPhone(phone)) ok=false;
-      setErr("fEmailWrap", !isEmail(email)); if(!isEmail(email)) ok=false;
-
-      if(!booking.dateISO || !booking.time || !booking.serviceId || !booking.listingId) ok=false;
-      return ok;
+    // === Success overlay ===
+    function closeSuccess(){
+      const o = $("#successOverlay");
+      if(!o) return;
+      o.classList.remove("on");
+      o.setAttribute("aria-hidden","true");
     }
 
     function openSuccess(payload){
-      $("#successOverlay").classList.add("on");
-      $("#successOverlay").setAttribute("aria-hidden","false");
+      const o = $("#successOverlay");
+      if(!o) return;
 
-      const listing = (window.LISTINGS||[]).find(l=>l.id===payload.listingId);
-      const svc = serviceLabel(payload.serviceId);
-      const when = `${formatDateShort(payload.dateISO)} ${payload.time}`;
+      $("#successLine").textContent = T[state.lang].toastSent;
+      $("#successSub").textContent = state.lang==="uk"
+        ? "Далі: відкрити мапу або додати в календар."
+        : "Next: open map or add to calendar.";
 
-      $("#successLine").textContent = `${listing?.name||"Booking"} ✅`;
-      $("#successSub").textContent = `${svc} · ${when}`;
+      const listing = (window.LISTINGS||[]).find(x=>x.id===payload.listingId);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing?.address || payload.address || "")}`;
 
-      $("#openMapsBtn").onclick = ()=>{
-        if(listing?.address){
-          window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`,"_blank","noopener");
-        }
+      const mapsBtn = $("#openMapsBtn");
+      if(mapsBtn) mapsBtn.onclick = ()=> window.open(mapsUrl, "_blank");
+
+      const copyBtn = $("#copyDetailsBtn");
+      if(copyBtn) copyBtn.onclick = async ()=>{
+        const txt =
+`${payload.service}
+${payload.place}
+${payload.address}
+${payload.date} ${payload.time}
+${payload.priceLine || ""}`.trim();
+        try{ await navigator.clipboard.writeText(txt); toast(T[state.lang].toastCopied); }
+        catch(e){ toast("Copy failed"); }
       };
 
-      $("#copyDetailsBtn").onclick = async ()=>{
-        const txt = `${listing?.name||""}\n${svc}\n${payload.dateISO} ${payload.time}\n${listing?.address||""}`;
-        try{ await navigator.clipboard.writeText(txt); toast(T[state.lang].toastCopied); }catch(e){ toast("Copy blocked"); }
-      };
+      const addIcsBtn = $("#addIcsBtn");
+      if(addIcsBtn) addIcsBtn.onclick = ()=>{
+        // minimal ICS (floating local time)
+        const [Y,M,D] = payload.dateISO.split("-").map(n=>parseInt(n,10));
+        const [hh,mm] = payload.time.split(":").map(n=>parseInt(n,10));
+        const pad = (n)=>String(n).padStart(2,"0");
+        const dtStart = `${Y}${pad(M)}${pad(D)}T${pad(hh)}${pad(mm)}00`;
+        const dur = payload.durationMin || 60;
+        const end = new Date(Y, M-1, D, hh, mm + dur, 0);
+        const dtEnd = `${end.getFullYear()}${pad(end.getMonth()+1)}${pad(end.getDate())}T${pad(end.getHours())}${pad(end.getMinutes())}00`;
 
-      $("#addIcsBtn").onclick = ()=>{
-        downloadICS(payload);
-      };
-    }
-
-    function closeSuccess(){
-      $("#successOverlay").classList.remove("on");
-      $("#successOverlay").setAttribute("aria-hidden","true");
-    }
-
-    function downloadICS(payload){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===payload.listingId);
-      const svc = serviceLabel(payload.serviceId);
-      const title = `${svc} @ ${listing?.name||"Beauty Booking"}`;
-
-      // event start: local time naive
-      const dtStart = new Date(`${payload.dateISO}T${payload.time}:00`);
-      const dtEnd = new Date(dtStart.getTime() + (payload.durationMin||60)*60000);
-
-      function toICSDate(d){
-        const pad = (n)=> String(n).padStart(2,"0");
-        // local -> UTC for ICS (simple)
-        const z = new Date(d.getTime() - d.getTimezoneOffset()*60000);
-        return `${z.getUTCFullYear()}${pad(z.getUTCMonth()+1)}${pad(z.getUTCDate())}T${pad(z.getUTCHours())}${pad(z.getUTCMinutes())}00Z`;
-      }
-
-      const ics =
+        const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Beauty Booking//EN
+CALSCALE:GREGORIAN
 BEGIN:VEVENT
-UID:${Date.now()}@beautybooking
-DTSTAMP:${toICSDate(new Date())}
-DTSTART:${toICSDate(dtStart)}
-DTEND:${toICSDate(dtEnd)}
-SUMMARY:${title}
-LOCATION:${(listing?.address||"").replace(/\n/g," ")}
+DTSTART:${dtStart}
+DTEND:${dtEnd}
+SUMMARY:${payload.service} — Beauty Booking
+LOCATION:${payload.address}
+DESCRIPTION:${payload.place} • ${payload.priceLine || ""}
 END:VEVENT
 END:VCALENDAR`;
 
-      const blob = new Blob([ics], {type:"text/calendar"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "booking.ics";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+        const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "booking.ics";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 1500);
+      };
+
+      const closeBtn = $("#closeSuccess");
+      if(closeBtn) closeBtn.onclick = closeSuccess;
+
+      o.classList.add("on");
+      o.setAttribute("aria-hidden","false");
+      o.onclick = (e)=>{ if(e.target === o) closeSuccess(); };
     }
 
-    async function submitBooking(){
-      if(!fieldErrors()){
+    // === Policies ===
+    function openPolicies(){
+      const o = $("#polModal");
+      if(!o) return;
+      o.classList.add("on");
+      o.setAttribute("aria-hidden","false");
+    }
+    function closePolicies(){
+      const o = $("#polModal");
+      if(!o) return;
+      o.classList.remove("on");
+      o.setAttribute("aria-hidden","true");
+    }
+
+    // === Quick booking action ===
+    function openQuickBooking(){
+      // Prefer hero current listing
+      if(heroRot.list.length){
+        const listing = heroRot.list[heroRot.idx % heroRot.list.length];
+        let slot = null;
+        try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
+        openBooking(listing.id, state.serviceId, slot);
+        return;
+      }
+      // fallback first filtered
+      const list = filteredListings();
+      const first = list[0] || (window.LISTINGS||[])[0];
+      if(first) openBooking(first.id, state.serviceId, null);
+    }
+
+    // === Reset rules ===
+    function resetFiltersSoft(){
+      // only active filters (service) — keep query & favOnly
+      state.serviceId = null;
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      toast(T[state.lang].toastFilters);
+    }
+
+    function resetFiltersHard(){
+      state.serviceId = null;
+      state.q = "";
+      state.favOnly = false;
+
+      const q = $("#q"); if(q) q.value = "";
+      const fav = $("#favOnly"); if(fav) fav.classList.remove("on");
+
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      toast(T[state.lang].toastFilters);
+    }
+
+    // === Telegram booking (send to worker) ===
+    async function sendBooking(){
+      clearFieldErrors();
+
+      const name = $("#fName")?.value?.trim() || "";
+      const phone = $("#fPhone")?.value?.trim() || "";
+      const email = $("#fEmail")?.value?.trim() || "";
+
+      let ok = true;
+      if(name.length < 2){ $("#fNameWrap")?.classList.add("err"); ok=false; }
+      if(!isPhone(phone)){ $("#fPhoneWrap")?.classList.add("err"); ok=false; }
+      if(!isEmail(email)){ $("#fEmailWrap")?.classList.add("err"); ok=false; }
+      if(!booking.time || !booking.dateISO){ ok=false; }
+
+      if(!ok){
         toast(T[state.lang].toastErr);
         updateConfirmState();
         return;
       }
 
       const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
-      if(!listing){ toast("Listing missing"); return; }
+      const svcMeta = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+      const svcObj = listing?.services?.find(s=>s.serviceId===booking.serviceId) || null;
 
-      const svcObj = window.bb?.util?.listingService ? window.bb.util.listingService(listing, booking.serviceId) : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
-      const svcLabel = serviceLabel(booking.serviceId);
+      const serviceName = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "Service";
+      const place = listing?.name || "—";
+      const address = listing?.address || "";
+      const durationMin = svcObj?.durationMin ?? 60;
+
+      const priceLine = svcObj
+        ? T[state.lang].priceLine(serviceName, svcObj.from, svcObj.to, svcObj.durationMin)
+        : "";
 
       const payload = {
+        lang: state.lang,
+        name, phone, email,
         listingId: booking.listingId,
-        listingName: listing.name,
-        address: listing.address,
+        place,
+        address,
+        service: serviceName,
         serviceId: booking.serviceId,
-        serviceName: svcLabel,
-        fromPrice: svcObj?.from ?? null,
-        toPrice: svcObj?.to ?? null,
-        durationMin: svcObj?.durationMin ?? 60,
         dateISO: booking.dateISO,
+        date: formatDateShort(booking.dateISO),
         time: booking.time,
-        name: $("#fName").value.trim(),
-        phone: $("#fPhone").value.trim(),
-        email: $("#fEmail").value.trim(),
-        profileUrl: `${location.origin}${location.pathname.replace(/index\.html?$/,"")}profile.html?id=${encodeURIComponent(listing.id)}`
+        durationMin,
+        priceLine,
+        profileUrl: `${location.origin}${location.pathname.replace(/index\.html?$/,"")}profile.html?id=${encodeURIComponent(booking.listingId)}`
       };
 
-      // hold “2 min” (local)
-      const holdKey = `bb_hold_${payload.listingId}_${payload.serviceId}_${payload.dateISO}_${payload.time}`;
-      const now = Date.now();
-      const held = parseInt(localStorage.getItem(holdKey)||"0",10);
-      if(held && now - held < 2*60*1000){
-        // already held by this device - ok
-      }else{
-        localStorage.setItem(holdKey, String(now));
-      }
-
-      // Save last booking + contact
-      localStorage.setItem(LS.last, JSON.stringify({
-        id: payload.listingId,
-        serviceId: payload.serviceId,
-        dateISO: payload.dateISO,
-        time: payload.time
-      }));
-      saveContact();
-
-      $("#submitBooking").disabled = true;
-
       try{
+        $("#submitBooking").disabled = true;
+        saveContact();
+
         const res = await fetch(`${WORKER_URL}/book`, {
-          method:"POST",
-          headers: {"Content-Type":"application/json"},
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
           body: JSON.stringify(payload)
         });
 
-        if(!res.ok){
-          const txt = await res.text().catch(()=> "");
-          throw new Error(txt || ("HTTP "+res.status));
-        }
+        if(!res.ok) throw new Error("bad status");
+
+        // save last booking
+        localStorage.setItem(LS.last, JSON.stringify(payload));
 
         toast(T[state.lang].toastSent);
         closeBooking();
-        booking.lastPayload = payload;
-        openSuccess(payload);
         renderLastBookingCard();
-      }catch(err){
-        toast("Worker error");
-        console.error(err);
+        openSuccess(payload);
+      }catch(e){
+        toast("Error. Check Worker/CORS");
       }finally{
         updateConfirmState();
       }
     }
 
-    // last booking card
     function renderLastBookingCard(){
       const card = $("#lastCard");
-      try{
-        const last = JSON.parse(localStorage.getItem(LS.last) || "null");
-        if(!last || !last.id){ card.style.display="none"; return; }
-        const listing = (window.LISTINGS||[]).find(l=>l.id===last.id);
-        if(!listing){ card.style.display="none"; return; }
+      const line = $("#lastLine");
+      if(!card || !line) return;
 
-        const svc = serviceLabel(last.serviceId);
-        $("#lastLine").textContent = `${listing.name} · ${svc || ""}`;
-        card.style.display = "block";
-        card.onclick = ()=> openBooking(last.id, last.serviceId, {dateISO:last.dateISO, time:last.time});
-      }catch(e){
-        card.style.display="none";
+      let last = null;
+      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
+      if(!last || !last.listingId){
+        card.style.display = "none";
+        return;
       }
+
+      card.style.display = "block";
+      const svc = last.service || serviceLabel(last.serviceId) || "";
+      line.textContent = `${last.place} · ${svc}`;
+
+      card.onclick = ()=>{
+        const preset = last.dateISO && last.time ? {dateISO:last.dateISO, time:last.time, fromPrice:last.fromPrice} : null;
+        openBooking(last.listingId, last.serviceId || state.serviceId, preset);
+      };
     }
 
-    // === Reset filters (special rule from your memory) ===
-    // if 0 results + click reset from empty state: DO NOT clear search and favOnly; only clear filters
-    function resetFilters(keepSearchAndFavOnly){
-      state.serviceId = null;
-      saveFilters();
-      renderServiceChips();
-      renderAll();
-      refreshHeroCandidates(true);
-      renderNextHeroRotating(true);
-      toast(T[state.lang].toastFilters);
-
-      if(!keepSearchAndFavOnly){
-        state.q = "";
-        const q = $("#q");
-        if(q) q.value = "";
-        state.favOnly = false;
-        $("#favOnly").classList.remove("on");
-      }
-    }
-
-    // === Install ===
+    // === PWA install ===
     let deferredPrompt = null;
     window.addEventListener("beforeinstallprompt", (e)=>{
       e.preventDefault();
       deferredPrompt = e;
-      maybeShowInstall();
+      const pill = $("#installPill");
+      const hidden = localStorage.getItem(LS.installedHide)==="1";
+      if(pill && !hidden && !isStandalone()){
+        pill.classList.add("show");
+      }
     });
 
-    function maybeShowInstall(){
+    async function onInstall(){
       const pill = $("#installPill");
-      const hidden = localStorage.getItem(LS.installedHide) === "1";
-      if(isStandalone() || hidden){
-        pill.classList.remove("show");
+      if(!deferredPrompt){
+        // hide if standalone already
+        if(pill) pill.classList.remove("show");
         return;
       }
-      // show only if we have prompt OR on iOS browser (no prompt)
-      pill.classList.add("show");
+      deferredPrompt.prompt();
+      try{ await deferredPrompt.userChoice; }catch(e){}
+      deferredPrompt = null;
+      if(pill) pill.classList.remove("show");
+      localStorage.setItem(LS.installedHide,"1");
     }
 
-    async function doInstall(){
-      const pill = $("#installPill");
-      if(deferredPrompt){
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice.catch(()=>null);
-        deferredPrompt = null;
-        pill.classList.remove("show");
-      } else {
-        // iOS: no prompt — we just hide it if they tapped
-        localStorage.setItem(LS.installedHide, "1");
-        pill.classList.remove("show");
-      }
-    }
-
-    // === Location (optional, safe) ===
-    function loadLocation(){
-      if(!navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition((pos)=>{
-        state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        renderAll();
-        refreshHeroCandidates(true);
-        renderNextHeroRotating(true);
-      }, ()=>{}, {enableHighAccuracy:false, timeout:5000, maximumAge:60000});
-    }
-
-    // === INIT ===
-    function bindUI(){
-      $("#themeBtn").onclick = ()=>{ state.theme = (state.theme==="light" ? "dark" : "light"); applyTheme(); };
-      $("#langBtn").onclick = ()=> setLang(state.lang==="uk" ? "en" : "uk");
-
-      $("#q").addEventListener("input", (e)=>{
-        state.q = e.target.value || "";
-        renderAll();
-      });
-
-            $("#favOnly").onclick = ()=>{
-        state.favOnly = !state.favOnly;
-        $("#favOnly").classList.toggle("on", state.favOnly);
-        renderAll();
-      };
-      $("#favOnly").onkeydown = (e)=>{ if(e.key==="Enter") $("#favOnly").click(); };
-
-      $("#aiBtn").onclick = ()=> toggleAI($("#aiSection").style.display==="none");
-
-      $("#openQuick").onclick = ()=>{
-        // open the currently shown hero candidate if possible
-        if(!heroRot.list.length) refreshHeroCandidates(true);
-        if(heroRot.list.length){
-          const l = heroRot.list[Math.max(0, heroRot.idx % heroRot.list.length)];
-          let slot = null;
-          try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
-          openBooking(l.id, state.serviceId, slot);
-        } else {
-          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
-        }
-      };
-      $("#floatQuick").onclick = ()=> $("#openQuick").click();
-
-      $("#toTop").onclick = ()=> window.scrollTo({top:0, behavior:"smooth"});
-
-      $("#resetBtn").onclick = ()=> resetFilters(false);
-      $("#emptyReset").onclick = ()=> resetFilters(true);
-      $("#emptyShowPopular").onclick = ()=>{
-        // popular = clear service filter only, keep search + favOnly (rule-safe)
-        resetFilters(true);
-        window.scrollTo({top: $("#partnersSection").getBoundingClientRect().top + window.scrollY - 72, behavior:"smooth"});
-      };
-
-      $("#cartBtn").onclick = ()=> openDrafts();
-
-      $("#closeModal").onclick = closeBooking;
-      $("#modal").addEventListener("click", (e)=>{ if(e.target === $("#modal")) closeBooking(); });
-
-      $("#closeTime").onclick = closeTimePicker;
-      $("#timeOverlay").addEventListener("click", (e)=>{ if(e.target === $("#timeOverlay")) closeTimePicker(); });
-
-      $("#closeDate").onclick = closeDatePicker;
-      $("#dateOverlay").addEventListener("click", (e)=>{ if(e.target === $("#dateOverlay")) closeDatePicker(); });
-
-      $("#closeDrafts").onclick = closeDrafts;
-      $("#draftsOverlay").addEventListener("click", (e)=>{ if(e.target === $("#draftsOverlay")) closeDrafts(); });
-
-      $("#closeSuccess").onclick = closeSuccess;
-      $("#successOverlay").addEventListener("click", (e)=>{ if(e.target === $("#successOverlay")) closeSuccess(); });
-
-      $("#policiesBtn").onclick = (e)=>{
-        e.preventDefault();
-        $("#polModal").classList.add("on");
-        $("#polModal").setAttribute("aria-hidden","false");
-      };
-      $("#closePol").onclick = ()=>{
-        $("#polModal").classList.remove("on");
-        $("#polModal").setAttribute("aria-hidden","true");
-      };
-      $("#polModal").addEventListener("click",(e)=>{
-        if(e.target === $("#polModal")){
-          $("#polModal").classList.remove("on");
-          $("#polModal").setAttribute("aria-hidden","true");
-        }
-      });
-
-      $("#installPill").onclick = ()=> doInstall();
-
-      // AI run
-      $("#aiGo").onclick = ()=>{
-        const res = runAIQuery($("#aiInput").value);
-        renderAIPicks(res);
-      };
-      $("#aiInput").addEventListener("keydown",(e)=>{
-        if(e.key==="Enter"){ e.preventDefault(); $("#aiGo").click(); }
-      });
-
-      // booking fields live validation
-      ["fName","fPhone","fEmail"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.addEventListener("input", ()=>{
-          clearFieldErrors();
-          updateConfirmState();
-        });
-        el.addEventListener("blur", ()=> saveContact());
-      });
-
-      $("#submitBooking").onclick = submitBooking;
-
-      // Esc closes topmost overlay
-      window.addEventListener("keydown",(e)=>{
-        if(e.key !== "Escape") return;
-        if($("#successOverlay").classList.contains("on")) return closeSuccess();
-        if($("#draftsOverlay").classList.contains("on")) return closeDrafts();
-        if($("#dateOverlay").classList.contains("on")) return closeDatePicker();
-        if($("#timeOverlay").classList.contains("on")) return closeTimePicker();
-        if($("#polModal").classList.contains("on")) { $("#closePol").click(); return; }
-        if($("#modal").classList.contains("on")) return closeBooking();
-      });
-    }
-
+    // === Init ===
     function init(){
-      // hard safety: if data.js missing, don’t crash
-      window.SERVICES = window.SERVICES || [];
-      window.LISTINGS = window.LISTINGS || [];
-      window.bb = window.bb || { util: window.bb?.util || {} };
-
       applyTheme();
       renderTexts();
+
+      // UI handlers
+      const q = $("#q");
+      if(q){
+        q.addEventListener("input", (e)=>{
+          state.q = e.target.value || "";
+          renderAll();
+        });
+      }
+
+      const themeBtn = $("#themeBtn");
+      if(themeBtn) themeBtn.onclick = ()=>{
+        state.theme = (state.theme === "light") ? "dark" : "light";
+        applyTheme();
+      };
+
+      const langBtn = $("#langBtn");
+      if(langBtn) langBtn.onclick = ()=> setLang(state.lang==="uk" ? "en" : "uk");
+
+      const favOnly = $("#favOnly");
+      if(favOnly) favOnly.onclick = ()=>{
+        state.favOnly = !state.favOnly;
+        favOnly.classList.toggle("on", state.favOnly);
+        renderAll();
+      };
+
+      const aiBtn = $("#aiBtn");
+      if(aiBtn) aiBtn.onclick = ()=>{
+        const sec = $("#aiSection");
+        toggleAI(!(sec && sec.style.display==="block"));
+      };
+
+      const aiGo = $("#aiGo");
+      if(aiGo) aiGo.onclick = ()=>{
+        const txt = $("#aiInput")?.value || "";
+        const res = runAIQuery(txt);
+        renderAIPicks(res);
+      };
+
+      const openQuick = $("#openQuick");
+      if(openQuick) openQuick.onclick = openQuickBooking;
+
+      const floatQuick = $("#floatQuick");
+      if(floatQuick) floatQuick.onclick = openQuickBooking;
+
+      const toTop = $("#toTop");
+      if(toTop) toTop.onclick = ()=> window.scrollTo({top:0, behavior:"smooth"});
+
+      const resetBtn = $("#resetBtn");
+      if(resetBtn) resetBtn.onclick = resetFiltersHard;
+
+      const emptyReset = $("#emptyReset");
+      if(emptyReset) emptyReset.onclick = resetFiltersSoft;
+
+      const emptyPopular = $("#emptyShowPopular");
+      if(emptyPopular) emptyPopular.onclick = ()=>{
+        state.serviceId = null;
+        saveFilters();
+        renderServiceChips();
+        state.q = "";
+        const q = $("#q"); if(q) q.value = "";
+        state.favOnly = false; $("#favOnly")?.classList.remove("on");
+        renderAll();
+      };
+
+      const policiesBtn = $("#policiesBtn");
+      if(policiesBtn) policiesBtn.onclick = (e)=>{ e.preventDefault(); openPolicies(); };
+      const closePol = $("#closePol");
+      if(closePol) closePol.onclick = closePolicies;
+      const polModal = $("#polModal");
+      if(polModal) polModal.onclick = (e)=>{ if(e.target===polModal) closePolicies(); };
+
+      const cartBtn = $("#cartBtn");
+      if(cartBtn) cartBtn.onclick = openDrafts;
+
+      const installPill = $("#installPill");
+      if(installPill) installPill.onclick = onInstall;
+
+      // Booking modal close
+      const modal = $("#modal");
+      if(modal) modal.onclick = (e)=>{ if(e.target===modal) closeBooking(); };
+      const closeModal = $("#closeModal");
+      if(closeModal) closeModal.onclick = closeBooking;
+
+      // confirm
+      const submit = $("#submitBooking");
+      if(submit) submit.onclick = sendBooking;
+
+      // save draft from modal
+      const saveDraftBtn = $("#saveDraftBtn");
+      if(saveDraftBtn) saveDraftBtn.onclick = saveDraftCurrent;
+
+      // field change
+      ["fName","fPhone","fEmail"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.addEventListener("input", ()=>{
+          updateConfirmState();
+          saveContact();
+        });
+      });
+
+      // drafts close
+      const closeDraftsBtn = $("#closeDrafts");
+      if(closeDraftsBtn) closeDraftsBtn.onclick = closeDrafts;
+
+      // ESC
+      document.addEventListener("keydown", (e)=>{
+        if(e.key !== "Escape") return;
+        closeBooking();
+        closeTimePicker();
+        closeDatePicker();
+        closeDrafts();
+        closeSuccess();
+        closePolicies();
+      });
+
+      // render
       renderServiceChips();
       updateDraftBadge();
       renderAll();
-      renderLastBookingCard();
-      startHeroRotationOnce();
-      loadLocation();
-      maybeShowInstall();
-
-      // AUTO open from profile redirect
-      if(AUTO){
-        // try interpret AUTO.service as serviceId; if not found, ignore
-        let sid = AUTO.service;
-        if(sid && !(window.SERVICES||[]).some(s=>s.id===sid)) sid = null;
-        setTimeout(()=> openBooking(AUTO.id, sid || state.serviceId, null), 50);
-      }
-
-      // if standalone, hide install chip
-      if(isStandalone()){
-        const pill = $("#installPill");
-        if(pill) pill.classList.remove("show");
-      }
-
-      // refresh hero after first render
       refreshHeroCandidates(true);
       renderNextHeroRotating(false);
+      startHeroRotationOnce();
+      renderLastBookingCard();
+
+      // get location (best effort)
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+          (pos)=>{
+            state.userLoc = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+            renderAll();
+            refreshHeroCandidates(true);
+            renderNextHeroRotating(false);
+            renderSaved();
+          },
+          ()=>{},
+          {enableHighAccuracy:false, maximumAge: 120000, timeout: 4500}
+        );
+      }
+
+      // AUTO open booking from profile redirect
+      if(AUTO && AUTO.id){
+        setTimeout(()=>{
+          openBooking(AUTO.id, AUTO.service || state.serviceId, null);
+          try{
+            const url = new URL(location.href);
+            url.searchParams.delete("book");
+            url.searchParams.delete("id");
+            url.searchParams.delete("service");
+            history.replaceState({}, "", url.toString());
+          }catch(e){}
+        }, 180);
+      }
     }
 
-    // run
-    bindUI();
-    init();
+    // Boot
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+    else init();
   </script>
 </body>
 </html>
-
-
 
 
 
