@@ -136,7 +136,7 @@
       display:flex;
       align-items:center;
       gap:10px;
-      min-width:180px;
+      min-width:0;
     }
     .logo{
       width:36px; height:36px; border-radius:14px;
@@ -876,41 +876,50 @@
       .brand{min-width:auto}
     }
 
-    @media (max-width: 720px){
-      .wrap{padding:14px 14px calc(140px + var(--safeB));}
-      .hero{padding:14px 0 6px;}
-      .heroInner{padding:16px 14px;}
-      .heroTitle{font-size:30px;}
-      .heroDesc{display:none;}
-      .ctaRow{margin-top:10px;}
-      .chip{padding:9px 10px; font-size:13px;}
-      .chips{gap:8px;}
-      .topbar .inner{padding:10px 14px;}
-      .iconbtn{width:40px; height:40px;}
-      .grid{grid-template-columns: 1fr !important; gap:12px !important;}
-      .card{grid-column: span 12;}
-      .formGrid{grid-template-columns: 1fr;}
-      .timeGrid{grid-template-columns: repeat(2, 1fr);}
-      .miniCTA{opacity:1 !important; transform:none !important; pointer-events:auto !important;}
-      .card .miniCTA{position: static; padding: 0 12px 12px; margin-top:-6px;}
-      .stripCard .miniCTA{position: static; margin-top:10px;}
-      .floatbar{ bottom: calc(12px + var(--safeB)); }
-      .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
+   @media (max-width: 720px){
+  .wrap{padding:14px 14px calc(140px + var(--safeB));}
+  .hero{padding:14px 0 6px;}
+  .heroInner{padding:16px 14px;}
+  .heroTitle{font-size:30px;}
+  .heroDesc{display:none;}
+  .ctaRow{margin-top:10px;}
+  .chip{padding:9px 10px; font-size:13px;}
+  .chips{gap:8px;}
+  .topbar .inner{padding:10px 14px;}
+  .iconbtn{width:40px; height:40px;}
+  .grid{grid-template-columns: 1fr !important; gap:12px !important;}
+  .card{grid-column: span 12;}
+  .formGrid{grid-template-columns: 1fr;}
+  .timeGrid{grid-template-columns: repeat(2, 1fr);}
+  .miniCTA{opacity:1 !important; transform:none !important; pointer-events:auto !important;}
+  .card .miniCTA{position: static; padding: 0 12px 12px; margin-top:-6px;}
+  .stripCard .miniCTA{position: static; margin-top:10px;}
+  .floatbar{ bottom: calc(12px + var(--safeB)); }
+  .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
 
-      /* mobile topbar centering fix */
-      .grow{display:none;}
-      .topbar .inner{justify-content:space-between;}
-      .brand{
-        flex:1;
-        min-width:0;
-        justify-content:center;
-      }
-      .brand h1{text-align:center;}
-      .top-actions{
-        flex:1;
-        justify-content:flex-end;
-      }
-    }
+  /* ✅ iPhone/Safari fix: topbar in 2 rows (no overlap) */
+  .grow{display:none;}
+  .topbar .inner{
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .brand{
+    width:100%;
+    min-width:0;
+    justify-content:center;
+  }
+  .brand h1{text-align:center;}
+  .top-actions{
+    width:100%;
+    justify-content:center;
+    gap:10px;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:2px;
+  }
+  .top-actions::-webkit-scrollbar{height:0}
+}
+
   </style>
 </head>
 
@@ -2899,6 +2908,7 @@ END:VCALENDAR`;
   </script>
 </body>
 </html>
+
 
 
 
