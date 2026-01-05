@@ -6,12 +6,10 @@
   <meta name="theme-color" content="#0b0b0f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
   <title>Beauty Booking</title>
 
-  <!-- OG -->
   <meta property="og:title" content="Beauty Booking" />
-  <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
+  <meta property="og:description" content="Book in seconds — verified salons & masters." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
 
@@ -34,15 +32,19 @@
       --accent:#ff5ea8;
       --violet:#7b6bff;
       --gold:#f6d17a;
+
       --radius:18px;
       --radius2:22px;
+
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --shadow2: 0 14px 40px rgba(0,0,0,.45);
+
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBottom: env(safe-area-inset-bottom, 0px);
       --safeLeft: env(safe-area-inset-left, 0px);
       --safeRight: env(safe-area-inset-right, 0px);
     }
+
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
@@ -57,16 +59,17 @@
       overflow-x:hidden;
       padding-left: var(--safeLeft);
       padding-right: var(--safeRight);
+      -webkit-text-size-adjust: 100%;
     }
     a{ color:inherit; text-decoration:none; }
     button,input,select,textarea{ font: inherit; color:inherit; }
     .wrap{ max-width: 1180px; margin:0 auto; padding: 16px 16px calc(18px + var(--safeBottom)); }
 
-    /* ===== Header ===== */
+    /* ===== Header (bigger + lower) ===== */
     .topbar{
       position: sticky; top:0; z-index: 30;
       backdrop-filter: blur(18px);
-      background: linear-gradient(180deg, rgba(11,11,15,.78), rgba(11,11,15,.45));
+      background: linear-gradient(180deg, rgba(11,11,15,.82), rgba(11,11,15,.46));
       border-bottom: 1px solid var(--hair);
     }
     .topbarInner{
@@ -82,8 +85,8 @@
       display:flex; align-items:flex-end; gap: 10px;
       min-width: 210px;
       cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .logo{
       width: 42px; height: 42px;
@@ -186,7 +189,6 @@
       font-size: 14px;
       max-width: 60ch;
     }
-
     .chips{
       display:flex;
       flex-wrap: wrap;
@@ -212,7 +214,6 @@
       background: rgba(255,94,168,.12);
       box-shadow: 0 0 0 4px rgba(255,94,168,.10);
     }
-
     .heroCTA{
       display:flex; gap:10px; flex-wrap: wrap;
       margin-top: 14px;
@@ -274,22 +275,8 @@
       color: var(--text);
       font-size: 14px;
     }
-    .pill{
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--hair2);
-      background: rgba(255,255,255,.04);
-      cursor:pointer;
-      font-size: 13px;
-      -webkit-tap-highlight-color: transparent;
-      user-select:none;
-    }
-    .pill.active{
-      border-color: rgba(246,209,122,.60);
-      background: rgba(246,209,122,.12);
-      box-shadow: 0 0 0 4px rgba(246,209,122,.08);
-    }
 
+    /* ===== Sections ===== */
     .sectionTitle{
       display:flex;
       align-items:flex-end;
@@ -305,7 +292,6 @@
     }
     .sectionTitle .note{ color: var(--muted); font-size: 12px; }
 
-    /* ===== Grid ===== */
     .grid{
       display:grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
@@ -378,6 +364,7 @@
       user-select:none;
     }
     .miniBtn.primary{ border-color: rgba(255,94,168,.55); background: rgba(255,94,168,.12); }
+
     .heart{
       width: 44px; height: 44px;
       border-radius: 16px;
@@ -390,14 +377,23 @@
     }
     .heart.active{ border-color: rgba(255,94,168,.55); background: rgba(255,94,168,.12); }
 
-    /* ===== Floating quick book ===== */
+    .empty{
+      border-radius: var(--radius2);
+      border: 1px dashed rgba(255,255,255,.16);
+      background: rgba(255,255,255,.03);
+      padding: 18px;
+      color: rgba(243,241,255,.84);
+      margin-top: 10px;
+    }
+
+    /* ===== Floating bar ===== */
     .floatBar{
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
       bottom: calc(14px + var(--safeBottom));
       z-index: 35;
-      display:flex;
+      display:none;
       gap: 10px;
       align-items:center;
       background: rgba(12,12,18,.66);
@@ -406,7 +402,7 @@
       border-radius: 999px;
       padding: 10px 10px;
       box-shadow: var(--shadow);
-      max-width: min(680px, calc(100vw - 22px));
+      max-width: min(720px, calc(100vw - 22px));
     }
     .floatText{
       font-size: 13px;
@@ -417,9 +413,20 @@
       text-overflow: ellipsis;
       max-width: 46vw;
     }
+    .iconTiny{
+      width:18px;height:18px;opacity:.9
+    }
 
-    /* ===== Modal (NO JUMP / NO ZOOM) ===== */
-    .modalOverlay{
+    /* ===== Modal + iOS no-zoom / no-jump ===== */
+    .lock{
+      overflow: hidden !important;
+      touch-action: none;
+      overscroll-behavior: contain;
+      position: fixed;
+      width: 100%;
+    }
+
+    .overlay{
       position: fixed;
       inset: 0;
       z-index: 60;
@@ -431,32 +438,30 @@
       overscroll-behavior: contain;
       touch-action: none;
     }
-    .modalOverlay.open{ display:flex; }
+    .overlay.open{ display:flex; }
 
-    .modal{
-      width: min(720px, 100%);
+    .sheet{
+      width: min(760px, 100%);
       border-radius: 24px;
       border: 1px solid rgba(255,255,255,.14);
       background: linear-gradient(180deg, rgba(20,20,30,.96), rgba(14,14,20,.96));
       box-shadow: 0 28px 90px rgba(0,0,0,.7);
-
-      overflow: auto;
+      overflow: hidden;
       max-height: calc(100vh - (24px + var(--safeTop) + var(--safeBottom)));
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      display:flex;
+      flex-direction:column;
 
+      /* stop “zoom/transform” weirdness */
       transform: none !important;
       transition: none !important;
       animation: none !important;
       -webkit-text-size-adjust: 100%;
     }
-    .modal *{
-      transform: none !important;
-      transition: none !important;
-      animation: none !important;
+    .sheet *{
       -webkit-text-size-adjust: 100%;
     }
-    .modalHead{
+
+    .sheetHead{
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -464,7 +469,7 @@
       padding: 14px;
       border-bottom: 1px solid rgba(255,255,255,.10);
     }
-    .modalTitle{ font-weight: 700; font-size: 15px; }
+    .sheetTitle{ font-weight: 700; font-size: 15px; }
     .closeBtn{
       width: 46px; height: 46px;
       border-radius: 16px;
@@ -472,8 +477,13 @@
       background: rgba(255,255,255,.06);
       cursor:pointer;
     }
-    .modalBody{
+    .sheetBody{
       padding: 14px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+    .grid2{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
@@ -489,14 +499,123 @@
       font-size: 16px; /* iOS no-zoom */
     }
     .full{ grid-column: 1 / -1; }
-    .timeList{ display:flex; flex-wrap:wrap; gap: 8px; }
-    .timeBtn{
-      padding: 10px 12px;
+
+    .timeRow{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+    .timePickBtn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .timePickBtn span{ color: rgba(243,241,255,.92); }
+    .timePickBtn em{ font-style: normal; color: var(--muted); }
+
+    .quickPicks{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .trustLine{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size: 12px;
+      color: rgba(243,241,255,.82);
+      margin-top: 10px;
+    }
+    .trustLine .dot{
+      opacity:.9;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      padding: 7px 10px;
       border-radius: 999px;
+    }
+
+    .sheetFoot{
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      gap: 10px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap: wrap;
+      background: linear-gradient(180deg, rgba(20,20,30,.0), rgba(20,20,30,.35));
+    }
+    .summary{
+      font-size: 12px;
+      color: rgba(243,241,255,.82);
+      max-width: 62ch;
+    }
+
+    /* sticky confirm (app-like) */
+    .stickyConfirm{
+      position: sticky;
+      bottom: calc(10px + var(--safeBottom));
+      z-index: 2;
+      padding-top: 10px;
+    }
+
+    /* Time picker sheet */
+    .timeOverlay{
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(0,0,0,.62);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 12px 12px calc(12px + var(--safeBottom));
+      overscroll-behavior: contain;
+      touch-action: none;
+    }
+    .timeOverlay.open{ display:flex; }
+    .timeSheet{
+      width: min(560px, 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(20,20,30,.98), rgba(14,14,20,.98));
+      box-shadow: 0 28px 90px rgba(0,0,0,.7);
+      overflow:hidden;
+      max-height: 70vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .timeSheetHead{
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .timeList{
+      padding: 14px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .timeBtn{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.05);
       cursor:pointer;
-      font-size: 13px;
+      text-align:left;
+      margin-bottom: 10px;
       -webkit-tap-highlight-color: transparent;
       user-select:none;
     }
@@ -505,27 +624,30 @@
       background: rgba(255,94,168,.12);
       box-shadow: 0 0 0 4px rgba(255,94,168,.10);
     }
-    .modalFoot{
-      padding: 14px;
-      border-top: 1px solid rgba(255,255,255,.10);
-      display:flex;
-      gap: 10px;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-    .summary{
-      font-size: 12px;
-      color: rgba(243,241,255,.82);
-      max-width: 62ch;
-    }
+    .timeBtn small{ display:block; color: var(--muted); margin-top: 2px; }
 
-    .empty{
-      border-radius: var(--radius2);
-      border: 1px dashed rgba(255,255,255,.16);
-      background: rgba(255,255,255,.03);
-      padding: 18px;
-      color: rgba(243,241,255,.84);
+    /* Success */
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(84px + var(--safeBottom));
+      z-index: 120;
+      display:none;
+      min-width: min(680px, calc(100vw - 22px));
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(12,12,18,.72);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .toast.open{ display:block; }
+    .toast b{ display:block; margin-bottom: 6px; }
+    .toast .row{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
       margin-top: 10px;
     }
 
@@ -543,23 +665,13 @@
       .heroH{ font-size: 28px; }
       .heroCard{ padding: 16px; }
       .grid{ grid-template-columns: 1fr; }
-      .modalBody{ grid-template-columns: 1fr; }
+      .grid2{ grid-template-columns: 1fr; }
       .floatText{ max-width: 48vw; }
 
-      /* chips layout */
       .chips{ gap: 8px; }
       .chip.row1{ flex: 1 1 calc(33.333% - 6px); }
       .chip.row2{ flex: 1 1 calc(50% - 6px); }
       .heroCTA{ margin-top: 12px; }
-    }
-
-    /* body lock */
-    .lock{
-      overflow: hidden !important;
-      touch-action: none;
-      overscroll-behavior: contain;
-      position: fixed;
-      width: 100%;
     }
   </style>
 </head>
@@ -570,13 +682,13 @@
       <div class="brand" role="button" tabindex="0" id="brandHome">
         <div class="logo" aria-hidden="true"></div>
         <div class="brandText">
-          <div class="title" id="t_brand">Beauty Booking</div>
-          <div class="sub" id="t_sub">bookingclub.beauty • Montréal</div>
+          <div class="title" id="brandTitle">Beauty Booking</div>
+          <div class="sub" id="brandSub">Book in seconds • Verified salons</div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="iconBtn" id="btnOnlyFav" title="Only favorites" aria-label="Only favorites">
+        <button class="iconBtn" id="btnOnlyFav" title="Only ❤️" aria-label="Only favorites">
           <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.8 4.6c-1.7-1.8-4.6-1.8-6.3 0L12 7.1 9.5 4.6c-1.7-1.8-4.6-1.8-6.3 0-1.8 1.8-1.8 4.7 0 6.5l8.8 9.1 8.8-9.1c1.8-1.8 1.8-4.7 0-6.5z"/>
           </svg>
@@ -632,7 +744,7 @@
       </div>
 
       <div class="heroSide">
-        <div class="panel" id="nextPanel">
+        <div class="panel">
           <div class="kicker">Next available near you</div>
           <div class="big" id="nextBig">—</div>
           <div class="mini" id="nextMini">—</div>
@@ -657,314 +769,399 @@
         </svg>
         <input id="q" type="search" placeholder="Пошук салону, району, майстра..." autocomplete="off" />
       </div>
+    </section>
 
-      <button class="pill" id="pillTop">Top partners</button>
-      <button class="pill" id="pillRec">Recommended</button>
-      <button class="pill" id="pillAll">All</button>
+    <!-- Top → Recommended → Others -->
+    <section>
+      <div class="sectionTitle">
+        <h2>Top salons / partners</h2>
+        <div class="note" id="noteTop">—</div>
+      </div>
+      <div class="grid" id="gridTop"></div>
+      <div class="empty" id="emptyTop" style="display:none"></div>
     </section>
 
     <section>
       <div class="sectionTitle">
-        <h2>Top salons / partners</h2>
-        <div class="note" id="countNote">—</div>
+        <h2>Recommended</h2>
+        <div class="note" id="noteRec">—</div>
       </div>
-      <div class="grid" id="grid"></div>
-      <div class="empty" id="empty" style="display:none"></div>
+      <div class="grid" id="gridRec"></div>
+      <div class="empty" id="emptyRec" style="display:none"></div>
+    </section>
+
+    <section>
+      <div class="sectionTitle">
+        <h2>All others</h2>
+        <div class="note" id="noteAll">—</div>
+      </div>
+      <div class="grid" id="gridAll"></div>
+      <div class="empty" id="emptyAll" style="display:none"></div>
     </section>
   </main>
 
-  <div class="floatBar" id="floatBar" style="display:none">
+  <div class="floatBar" id="floatBar">
     <button class="btn primary" id="floatBook">Book now</button>
     <div class="floatText" id="floatText">—</div>
     <button class="btn" id="floatTop">Up</button>
   </div>
 
-  <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modalHead">
-        <div class="modalTitle" id="modalTitle">Бронювання</div>
-        <button class="closeBtn" id="modalClose" aria-label="Close">✕</button>
-      </div>
-      <div class="modalBody">
-        <div class="field full">
-          <label>Салон / Майстер</label>
-          <input id="m_listing" type="text" readonly />
-        </div>
-
-        <div class="field full">
-          <label>Де салон / адреса</label>
-          <input id="m_address" type="text" readonly />
-        </div>
-
-        <div class="field">
-          <label>Послуга</label>
-          <select id="m_service"></select>
-        </div>
-
-        <div class="field">
-          <label>Час</label>
-          <div class="timeList" id="m_times"></div>
-        </div>
-
-        <div class="field">
-          <label>Імʼя</label>
-          <input id="m_name" type="text" placeholder="Твоє імʼя" />
-        </div>
-
-        <div class="field">
-          <label>Телефон</label>
-          <input id="m_phone" type="tel" placeholder="+1 ..." />
-        </div>
-
-        <div class="field full">
-          <label>Email</label>
-          <input id="m_email" type="email" placeholder="you@email.com" />
-        </div>
+  <!-- Booking sheet -->
+  <div class="overlay" id="bookingOverlay" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+      <div class="sheetHead">
+        <div class="sheetTitle" id="bookingTitle">Бронювання</div>
+        <button class="closeBtn" id="bookingClose" aria-label="Close">✕</button>
       </div>
 
-      <div class="modalFoot">
-        <div class="summary" id="m_summary">—</div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn" id="m_cancel">Cancel</button>
-          <button class="btn primary" id="m_submit">Confirm booking</button>
+      <div class="sheetBody" id="bookingBody">
+        <div class="grid2">
+          <div class="field full">
+            <label>Салон / Майстер</label>
+            <input id="b_listing" type="text" readonly />
+          </div>
+
+          <div class="field full">
+            <label>Де салон / адреса</label>
+            <input id="b_address" type="text" readonly />
+          </div>
+
+          <div class="field">
+            <label>Послуга</label>
+            <select id="b_service"></select>
+          </div>
+
+          <div class="field">
+            <label>Час</label>
+            <button class="timePickBtn" id="b_timeBtn" type="button">
+              <span id="b_timeLabel">Вибрати час</span>
+              <em>Open</em>
+            </button>
+            <div class="quickPicks" id="b_quickPicks" style="display:none"></div>
+          </div>
+
+          <div class="field">
+            <label>Імʼя</label>
+            <input id="b_name" type="text" placeholder="Твоє імʼя" />
+          </div>
+          <div class="field">
+            <label>Телефон</label>
+            <input id="b_phone" type="tel" placeholder="+1 ..." />
+          </div>
+          <div class="field full">
+            <label>Email</label>
+            <input id="b_email" type="email" placeholder="you@email.com" />
+          </div>
+        </div>
+
+        <div class="trustLine">
+          <div class="dot">🔒 Secure</div>
+          <div class="dot">💸 No hidden fees</div>
+          <div class="dot">✅ Verified partners</div>
+        </div>
+
+        <div class="stickyConfirm">
+          <div class="sheetFoot">
+            <div class="summary" id="b_summary">—</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn" id="b_cancel" type="button">Cancel</button>
+              <button class="btn primary" id="b_submit" type="button">Confirm booking</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Time picker -->
+  <div class="timeOverlay" id="timeOverlay" aria-hidden="true">
+    <div class="timeSheet" role="dialog" aria-modal="true">
+      <div class="timeSheetHead">
+        <div class="sheetTitle">Choose time</div>
+        <button class="closeBtn" id="timeClose" aria-label="Close">✕</button>
+      </div>
+      <div class="timeList" id="timeList"></div>
+    </div>
+  </div>
+
+  <!-- Success toast -->
+  <div class="toast" id="toast">
+    <b id="toastTitle">✅ Booking sent</b>
+    <div id="toastText" style="color:rgba(243,241,255,.82); font-size:12px;">—</div>
+    <div class="row">
+      <button class="btn" id="toastClose">OK</button>
+      <button class="btn primary" id="toastTop">Back to top</button>
+    </div>
+  </div>
+
+  <!-- Your existing data -->
   <script src="./data.js"></script>
 
   <script>
+    /***************** SAFE HELPERS *****************/
     const safe = {
-      setText(el, v){ if(!el) return; el.textContent = (v ?? "").toString(); },
-      setHTML(el, html){
+      text(el, v){ if(el) el.textContent = (v ?? "").toString(); },
+      html(el, v){
         if(!el) return;
-        const s = (html ?? "").toString().replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi,"");
+        const s = (v ?? "").toString().replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi,"");
         el.innerHTML = s;
       }
     };
 
-    const modalLock = {
-      _y: 0,
-      lock(){
-        this._y = window.scrollY || document.documentElement.scrollTop || 0;
-        document.body.classList.add('lock');
-        document.body.style.top = `-${this._y}px`;
-      },
-      unlock(){
-        document.body.classList.remove('lock');
-        const y = this._y;
-        document.body.style.top = '';
-        window.scrollTo(0, y);
-      }
-    };
-
-    const LS = { fav:"bb_fav_v1", cart:"bb_cart_v1", filters:"bb_filters_v2" };
-    const state = {
-      q:"", section:"top", service:"", onlyFav:false,
-      fav:new Set(), cart:[],
-      activeListing:null, activeTime:"",
-      nextRotationTimer:null, nextIndex:0
-    };
-
-    const els = {};
-
     function norm(s){ return (s || "").toString().trim().toLowerCase(); }
-    function getServices(){ const svc = (window.SERVICES || []); return Array.isArray(svc) ? svc : []; }
-    function getListings(){ const l = (window.LISTINGS || []); return Array.isArray(l) ? l : []; }
 
-    function loadLS(){
-      try{ state.fav = new Set(JSON.parse(localStorage.getItem(LS.fav) || "[]") || []); }catch{}
-      try{ state.cart = JSON.parse(localStorage.getItem(LS.cart) || "[]") || []; }catch{}
-      try{
-        const fil = JSON.parse(localStorage.getItem(LS.filters) || "{}");
-        if(fil && typeof fil==="object"){
-          state.q = fil.q || "";
-          state.section = fil.section || "top";
-          state.service = fil.service || "";
-          state.onlyFav = !!fil.onlyFav;
-        }
-      }catch{}
+    function getServices(){
+      const s = window.SERVICES || [];
+      return Array.isArray(s) ? s : [];
     }
-    function saveLS(){
-      localStorage.setItem(LS.fav, JSON.stringify([...state.fav]));
-      localStorage.setItem(LS.cart, JSON.stringify(state.cart));
-      localStorage.setItem(LS.filters, JSON.stringify({
-        q: state.q, section: state.section, service: state.service, onlyFav: state.onlyFav
-      }));
+    function getListings(){
+      const l = window.LISTINGS || [];
+      return Array.isArray(l) ? l : [];
     }
 
-    function listingSupportsService(listing, serviceKey){
+    function isPartner(x){ return !!(x?.isPartner || x?.partner); }
+    function isRec(x){ return !!(x?.isRecommended || x?.recommended); }
+
+    function supportsService(listing, serviceKey){
       if(!serviceKey) return true;
       const arr = listing?.services || listing?.serviceKeys || listing?.tags || [];
       if(Array.isArray(arr)) return arr.map(norm).includes(norm(serviceKey));
       return false;
     }
-    function computeSection(listing){
-      if(listing?.isPartner || listing?.partner) return "top";
-      if(listing?.isRecommended || listing?.recommended) return "rec";
-      return "all";
-    }
-    function formatPriceFrom(listing, serviceKey){
+
+    function priceFrom(listing, serviceKey){
       const prices = listing?.prices || {};
       const v = prices?.[serviceKey] ?? prices?.[norm(serviceKey)];
       if(typeof v === "number") return `$${v}`;
-      if(typeof v === "string" && v.trim()) return v;
+      if(typeof v === "string" && v.trim()) return v.trim();
       if(typeof listing?.fromPrice === "number") return `$${listing.fromPrice}`;
       return "—";
     }
-    function getTimesFor(listing, serviceKey){
+
+    function rawTimes(listing, serviceKey){
       const all = listing?.slots || listing?.times || listing?.availability || {};
       let arr = [];
       if(Array.isArray(all)) arr = all;
       else if(serviceKey && Array.isArray(all?.[serviceKey])) arr = all[serviceKey];
       else if(Array.isArray(all?.default)) arr = all.default;
-      arr = (arr || []).map(x => (x ?? "").toString()).filter(Boolean);
-      return arr.slice(0, 6);
+      return (arr || []).map(x => (x ?? "").toString()).filter(Boolean);
     }
 
-    function pickNextAvailable(){
-      const list = getListings()
-        .filter(x => listingSupportsService(x, state.service || ""))
-        .filter(x => !state.onlyFav || state.fav.has(x.id))
-        .filter(x => {
-          const q = norm(state.q);
-          if(!q) return true;
-          const blob = norm([x.name, x.title, x.address, x.city, x.area, (x.tags||[]).join(" ")].join(" "));
-          return blob.includes(q);
-        });
-      if(list.length === 0) return null;
-
-      const withTimes = list.filter(x => getTimesFor(x, state.service || "").length > 0);
-      const arr = withTimes.length ? withTimes : list;
-
-      state.nextIndex = (state.nextIndex + 1) % arr.length;
-      return arr[state.nextIndex];
+    function fmtTime(t){
+      // Accept ISO or plain "HH:MM"
+      if(!t) return "—";
+      // If ISO-like
+      if(/\d{4}-\d{2}-\d{2}T/.test(t)){
+        const d = new Date(t);
+        if(!isFinite(d.getTime())) return t;
+        const now = new Date();
+        const same =
+          d.getFullYear()===now.getFullYear() &&
+          d.getMonth()===now.getMonth() &&
+          d.getDate()===now.getDate();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        if(same) return `Today ${hh}:${mm}`;
+        const dd = String(d.getDate()).padStart(2,'0');
+        const mo = String(d.getMonth()+1).padStart(2,'0');
+        return `${dd}.${mo} ${hh}:${mm}`;
+      }
+      return t;
     }
 
+    function firstSlot(listing, serviceKey){
+      const arr = rawTimes(listing, serviceKey);
+      return arr[0] || "";
+    }
+
+    /***************** STATE *****************/
+    const LS = {
+      fav: "bb_fav_v1",
+      cart: "bb_cart_v1",
+      filters: "bb_filters_v2",
+      profile: "bb_profile_v1",
+      recent: "bb_recent_v1"
+    };
+
+    const state = {
+      q: "",
+      service: "",
+      onlyFav: false,
+      fav: new Set(),
+      cart: [],
+      recent: [],
+      nextIndex: 0,
+      nextTimer: null,
+
+      activeListing: null,
+      activeService: "",
+      activeTime: "",
+      holdUntil: 0,
+      holdTimer: null
+    };
+
+    function loadState(){
+      try{
+        const f = JSON.parse(localStorage.getItem(LS.fav) || "[]");
+        state.fav = new Set(Array.isArray(f) ? f : []);
+      }catch{}
+      try{
+        const c = JSON.parse(localStorage.getItem(LS.cart) || "[]");
+        state.cart = Array.isArray(c) ? c : [];
+      }catch{}
+      try{
+        const fil = JSON.parse(localStorage.getItem(LS.filters) || "{}");
+        if(fil && typeof fil === "object"){
+          state.q = fil.q || "";
+          state.service = fil.service || "";
+          state.onlyFav = !!fil.onlyFav;
+        }
+      }catch{}
+      try{
+        const r = JSON.parse(localStorage.getItem(LS.recent) || "[]");
+        state.recent = Array.isArray(r) ? r.slice(0,10) : [];
+      }catch{}
+      try{
+        const p = JSON.parse(localStorage.getItem(LS.profile) || "{}");
+        if(p && typeof p === "object"){
+          const n = document.getElementById("b_name");
+          const ph = document.getElementById("b_phone");
+          const em = document.getElementById("b_email");
+          if(n && p.name) n.value = p.name;
+          if(ph && p.phone) ph.value = p.phone;
+          if(em && p.email) em.value = p.email;
+        }
+      }catch{}
+    }
+
+    function saveState(){
+      localStorage.setItem(LS.fav, JSON.stringify([...state.fav]));
+      localStorage.setItem(LS.cart, JSON.stringify(state.cart));
+      localStorage.setItem(LS.filters, JSON.stringify({ q: state.q, service: state.service, onlyFav: state.onlyFav }));
+      localStorage.setItem(LS.recent, JSON.stringify(state.recent.slice(0,10)));
+      // profile saved on submit
+    }
+
+    /***************** ELEMENTS *****************/
+    const el = {};
     function bindEls(){
-      els.q = document.getElementById("q");
-      els.grid = document.getElementById("grid");
-      els.empty = document.getElementById("empty");
-      els.countNote = document.getElementById("countNote");
+      el.q = document.getElementById("q");
+      el.serviceChips = document.getElementById("serviceChips");
 
-      els.pillTop = document.getElementById("pillTop");
-      els.pillRec = document.getElementById("pillRec");
-      els.pillAll = document.getElementById("pillAll");
+      el.btnOnlyFav = document.getElementById("btnOnlyFav");
+      el.btnAI = document.getElementById("btnAI");
+      el.btnTheme = document.getElementById("btnTheme");
+      el.btnCart = document.getElementById("btnCart");
+      el.cartDot = document.getElementById("cartDot");
 
-      els.btnOnlyFav = document.getElementById("btnOnlyFav");
-      els.btnResetFilters = document.getElementById("btnResetFilters");
-      els.btnQuickBook = document.getElementById("btnQuickBook");
-      els.brandHome = document.getElementById("brandHome");
+      el.btnQuickBook = document.getElementById("btnQuickBook");
+      el.btnResetFilters = document.getElementById("btnResetFilters");
+      el.btnHow = document.getElementById("btnHow");
+      el.brandHome = document.getElementById("brandHome");
 
-      els.btnCart = document.getElementById("btnCart");
-      els.cartDot = document.getElementById("cartDot");
+      el.nextBig = document.getElementById("nextBig");
+      el.nextMini = document.getElementById("nextMini");
+      el.btnNextBook = document.getElementById("btnNextBook");
+      el.btnWhy = document.getElementById("btnWhy");
 
-      els.nextBig = document.getElementById("nextBig");
-      els.nextMini = document.getElementById("nextMini");
-      els.btnNextBook = document.getElementById("btnNextBook");
-      els.btnWhy = document.getElementById("btnWhy");
-      els.btnAI = document.getElementById("btnAI");
-      els.btnTheme = document.getElementById("btnTheme");
-      els.btnHow = document.getElementById("btnHow");
+      el.gridTop = document.getElementById("gridTop");
+      el.gridRec = document.getElementById("gridRec");
+      el.gridAll = document.getElementById("gridAll");
 
-      els.floatBar = document.getElementById("floatBar");
-      els.floatBook = document.getElementById("floatBook");
-      els.floatText = document.getElementById("floatText");
-      els.floatTop = document.getElementById("floatTop");
+      el.noteTop = document.getElementById("noteTop");
+      el.noteRec = document.getElementById("noteRec");
+      el.noteAll = document.getElementById("noteAll");
 
-      els.modalOverlay = document.getElementById("modalOverlay");
-      els.modalClose = document.getElementById("modalClose");
-      els.m_cancel = document.getElementById("m_cancel");
-      els.m_submit = document.getElementById("m_submit");
-      els.m_listing = document.getElementById("m_listing");
-      els.m_address = document.getElementById("m_address");
-      els.m_service = document.getElementById("m_service");
-      els.m_times = document.getElementById("m_times");
-      els.m_name = document.getElementById("m_name");
-      els.m_phone = document.getElementById("m_phone");
-      els.m_email = document.getElementById("m_email");
-      els.m_summary = document.getElementById("m_summary");
+      el.emptyTop = document.getElementById("emptyTop");
+      el.emptyRec = document.getElementById("emptyRec");
+      el.emptyAll = document.getElementById("emptyAll");
 
-      els.serviceChips = document.getElementById("serviceChips");
+      el.floatBar = document.getElementById("floatBar");
+      el.floatBook = document.getElementById("floatBook");
+      el.floatText = document.getElementById("floatText");
+      el.floatTop = document.getElementById("floatTop");
+
+      // booking
+      el.bookingOverlay = document.getElementById("bookingOverlay");
+      el.bookingClose = document.getElementById("bookingClose");
+      el.b_listing = document.getElementById("b_listing");
+      el.b_address = document.getElementById("b_address");
+      el.b_service = document.getElementById("b_service");
+      el.b_timeBtn = document.getElementById("b_timeBtn");
+      el.b_timeLabel = document.getElementById("b_timeLabel");
+      el.b_quickPicks = document.getElementById("b_quickPicks");
+      el.b_name = document.getElementById("b_name");
+      el.b_phone = document.getElementById("b_phone");
+      el.b_email = document.getElementById("b_email");
+      el.b_summary = document.getElementById("b_summary");
+      el.b_cancel = document.getElementById("b_cancel");
+      el.b_submit = document.getElementById("b_submit");
+
+      // time
+      el.timeOverlay = document.getElementById("timeOverlay");
+      el.timeClose = document.getElementById("timeClose");
+      el.timeList = document.getElementById("timeList");
+
+      // toast
+      el.toast = document.getElementById("toast");
+      el.toastTitle = document.getElementById("toastTitle");
+      el.toastText = document.getElementById("toastText");
+      el.toastClose = document.getElementById("toastClose");
+      el.toastTop = document.getElementById("toastTop");
     }
 
-    function renderHeader(){
-      els.cartDot.style.display = (state.cart?.length ? "inline-block" : "none");
-      els.pillTop.classList.toggle("active", state.section === "top");
-      els.pillRec.classList.toggle("active", state.section === "rec");
-      els.pillAll.classList.toggle("active", state.section === "all");
-      els.btnOnlyFav.classList.toggle("active", state.onlyFav);
+    /***************** BODY LOCK (NO JUMP) *****************/
+    const lock = {
+      y: 0,
+      on(){
+        this.y = window.scrollY || 0;
+        document.body.classList.add("lock");
+        document.body.style.top = `-${this.y}px`;
+      },
+      off(){
+        document.body.classList.remove("lock");
+        const y = this.y;
+        document.body.style.top = "";
+        window.scrollTo(0, y);
+      }
+    };
 
-      [...els.serviceChips.querySelectorAll(".chip")].forEach(ch => {
+    /***************** RENDER *****************/
+    function renderHeader(){
+      el.btnOnlyFav.classList.toggle("active", state.onlyFav);
+      el.cartDot.style.display = (state.cart && state.cart.length) ? "inline-block" : "none";
+
+      [...el.serviceChips.querySelectorAll(".chip")].forEach(ch => {
         ch.classList.toggle("active", norm(ch.dataset.service) === norm(state.service));
       });
     }
 
-    function renderNext(){
-      const nxt = pickNextAvailable();
-      state._next = nxt;
-
-      if(!nxt){
-        safe.setText(els.nextBig, "Немає підходящих варіантів 😕");
-        safe.setText(els.nextMini, "Спробуй інший сервіс або очисти фільтри.");
-        els.btnNextBook.disabled = true;
-        els.floatBar.style.display = "none";
-        return;
-      }
-
-      const times = getTimesFor(nxt, state.service || "");
-      const t = times[0] || "Today";
-      const from = formatPriceFrom(nxt, state.service || "");
-      safe.setText(els.nextBig, `${nxt.name || nxt.title || "Salon"} — ${t}`);
-      safe.setText(els.nextMini, `${from} • ${nxt.address || nxt.area || ""}`);
-      els.btnNextBook.disabled = false;
-
-      els.floatBar.style.display = "flex";
-      safe.setText(els.floatText, `${nxt.name || "Salon"} • ${t} • ${from}`);
-    }
-
-    function applyFilters(list){
-      let out = [...list];
-
-      if(state.section !== "all"){
-        out = out.filter(x => computeSection(x) === state.section);
-      }
-      out = out.filter(x => listingSupportsService(x, state.service));
-      if(state.onlyFav){
-        out = out.filter(x => state.fav.has(x.id));
-      }
+    function filteredListings(){
       const q = norm(state.q);
-      if(q){
-        out = out.filter(x => {
+      return getListings()
+        .filter(x => supportsService(x, state.service))
+        .filter(x => !state.onlyFav || state.fav.has(x.id))
+        .filter(x => {
+          if(!q) return true;
           const blob = norm([x.name, x.title, x.address, x.city, x.area, (x.tags||[]).join(" ")].join(" "));
           return blob.includes(q);
         });
-      }
-      return out;
-    }
-
-    function sortDefault(list){
-      const rank = (x) => (x?.isPartner || x?.partner) ? 0 : (x?.isRecommended || x?.recommended) ? 1 : 2;
-      return list.sort((a,b) => rank(a) - rank(b));
     }
 
     function cardHTML(x){
       const img = x.image || x.img || x.photo || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
       const name = x.name || x.title || "Salon";
       const address = x.address || x.location || x.area || "";
-      const sec = computeSection(x);
-      const times = getTimesFor(x, state.service || "");
-      const t0 = times[0] || "—";
-      const from = formatPriceFrom(x, state.service || "");
       const favOn = state.fav.has(x.id);
+      const t0 = fmtTime(firstSlot(x, state.service || ""));
+      const from = priceFrom(x, state.service || "");
 
       const tags = [];
-      if(sec === "top") tags.push(`<span class="tag good">Partner</span>`);
+      if(isPartner(x)) tags.push(`<span class="tag good">Partner</span>`);
       if(x.verified) tags.push(`<span class="tag pink">Verified</span>`);
       if(x.sterile) tags.push(`<span class="tag violet">Sterile</span>`);
       tags.push(`<span class="tag">From ${from}</span>`);
-      if(t0 && t0 !== "—") tags.push(`<span class="tag">Today ${t0}</span>`);
+      if(t0 && t0 !== "—") tags.push(`<span class="tag">${t0}</span>`);
 
       return `
         <article class="card" data-id="${x.id}">
@@ -991,116 +1188,247 @@
       `;
     }
 
-    function renderGrid(){
-      let list = getListings();
-      list = sortDefault(list);
-      list = applyFilters(list);
+    function renderSections(){
+      const list = filteredListings();
+      const top = list.filter(isPartner);
+      const rec = list.filter(x => !isPartner(x) && isRec(x));
+      const oth = list.filter(x => !isPartner(x) && !isRec(x));
 
-      safe.setText(els.countNote, `${list.length} results`);
+      safe.text(el.noteTop, `${top.length} results`);
+      safe.text(el.noteRec, `${rec.length} results`);
+      safe.text(el.noteAll, `${oth.length} results`);
 
-      if(list.length === 0){
-        els.grid.innerHTML = "";
-        els.empty.style.display = "block";
-        safe.setHTML(els.empty, `
-          <b>Нічого не знайдено.</b><br/>
-          Спробуй змінити сервіс або пошук.<br/>
-          <span style="color:rgba(243,241,255,.72)">“Скинути фільтри” скидає тільки фільтри, а пошук/Only ❤️ як і було.</span>
-        `);
+      el.gridTop.innerHTML = top.map(cardHTML).join("");
+      el.gridRec.innerHTML = rec.map(cardHTML).join("");
+      el.gridAll.innerHTML = oth.map(cardHTML).join("");
+
+      el.emptyTop.style.display = top.length ? "none" : "block";
+      el.emptyRec.style.display = rec.length ? "none" : "block";
+      el.emptyAll.style.display = oth.length ? "none" : "block";
+
+      if(!top.length) safe.html(el.emptyTop, `<b>No partners found.</b><br/>Try another service or search.`);
+      if(!rec.length) safe.html(el.emptyRec, `<b>No recommendations.</b><br/>Try another service or search.`);
+      if(!oth.length) safe.html(el.emptyAll, `<b>No other salons found.</b><br/>Try another service or search.`);
+    }
+
+    function pickNext(){
+      const list = filteredListings();
+      if(!list.length) return null;
+      const with = list.filter(x => rawTimes(x, state.service || "").length > 0);
+      const arr = with.length ? with : list;
+      state.nextIndex = (state.nextIndex + 1) % arr.length;
+      return arr[state.nextIndex];
+    }
+
+    function renderNext(){
+      const nxt = pickNext();
+      state._next = nxt;
+
+      if(!nxt){
+        safe.text(el.nextBig, "Немає підходящих варіантів 😕");
+        safe.text(el.nextMini, "Спробуй інший сервіс або очисти фільтри.");
+        el.btnNextBook.disabled = true;
+        el.floatBar.style.display = "none";
         return;
       }
 
-      els.empty.style.display = "none";
-      els.grid.innerHTML = list.map(cardHTML).join("");
+      const t0 = fmtTime(firstSlot(nxt, state.service || "")) || "Today";
+      const from = priceFrom(nxt, state.service || "");
+      safe.text(el.nextBig, `${nxt.name || nxt.title || "Salon"} — ${t0}`);
+      safe.text(el.nextMini, `${from} • ${nxt.address || nxt.area || ""}`);
+      el.btnNextBook.disabled = false;
+
+      el.floatBar.style.display = "flex";
+      safe.text(el.floatText, `${nxt.name || "Salon"} • ${t0} • ${from}`);
     }
 
-    function openModal(listing, preferredServiceKey){
+    function startNextRotation(){
+      if(state.nextTimer) clearInterval(state.nextTimer);
+      state.nextTimer = setInterval(() => {
+        renderNext();
+      }, 10000);
+    }
+
+    /***************** BOOKING FLOW *****************/
+    function pushRecent(id){
+      state.recent = [id, ...state.recent.filter(x => String(x) !== String(id))].slice(0,10);
+      saveState();
+    }
+
+    function openBooking(listing, preferredService){
       state.activeListing = listing;
       state.activeTime = "";
+      state.holdUntil = 0;
 
-      safe.setText(els.m_listing, listing?.name || listing?.title || "Salon");
-      safe.setText(els.m_address, listing?.address || listing?.location || listing?.area || "—");
+      pushRecent(listing.id);
 
+      safe.text(el.b_listing, listing?.name || listing?.title || "Salon");
+      safe.text(el.b_address, listing?.address || listing?.location || listing?.area || "—");
+
+      // services
       const services = getServices();
       const options = services
         .map(s => ({ key: s.key || s.id || s.slug || "", name: s.name || s.title || s.label || s.key || "" }))
         .filter(x => x.key && x.name);
 
-      els.m_service.innerHTML = options.map(o => `<option value="${o.key}">${o.name}</option>`).join("");
+      el.b_service.innerHTML = options.map(o => `<option value="${o.key}">${o.name}</option>`).join("");
+      const want = preferredService || state.service || options[0]?.key || "";
+      if(want) el.b_service.value = want;
 
-      const want = preferredServiceKey || state.service || options[0]?.key || "";
-      if(want) els.m_service.value = want;
+      // reset time label
+      safe.text(el.b_timeLabel, "Вибрати час");
+      el.b_quickPicks.style.display = "none";
+      updateBookingSummary();
 
-      renderTimes();
+      el.bookingOverlay.classList.add("open");
+      el.bookingOverlay.setAttribute("aria-hidden","false");
+      lock.on();
 
-      els.modalOverlay.classList.add("open");
-      els.modalOverlay.setAttribute("aria-hidden","false");
-      modalLock.lock();
-      updateSummary();
-
-      // стабільність: не фокусимо нічого автоматично (щоб не було zoom/jump)
+      // IMPORTANT: no autofocus (prevents iOS zoom/jump)
       setTimeout(() => {}, 260);
     }
 
-    function closeModal(){
-      els.modalOverlay.classList.remove("open");
-      els.modalOverlay.setAttribute("aria-hidden","true");
-      modalLock.unlock();
+    function closeBooking(){
+      el.bookingOverlay.classList.remove("open");
+      el.bookingOverlay.setAttribute("aria-hidden","true");
+      lock.off();
       state.activeListing = null;
       state.activeTime = "";
+      clearInterval(state.holdTimer);
+      state.holdTimer = null;
+      state.holdUntil = 0;
     }
 
-    function renderTimes(){
+    function openTimePicker(){
       const l = state.activeListing;
       if(!l) return;
 
-      const svcKey = els.m_service.value;
-      const times = getTimesFor(l, svcKey);
+      const svc = el.b_service.value || "";
+      const times = rawTimes(l, svc);
+      if(!times.length){
+        el.timeList.innerHTML = `<div style="color:rgba(243,241,255,.82);padding:6px 2px;">No times available.</div>`;
+      }else{
+        el.timeList.innerHTML = times.slice(0,12).map(t => {
+          const nice = fmtTime(t);
+          return `<button class="timeBtn" type="button" data-time="${t}">${nice}<small>Select</small></button>`;
+        }).join("");
+      }
 
-      els.m_times.innerHTML = times.map(t => `<button class="timeBtn" type="button" data-time="${t}">${t}</button>`).join("");
-      updateSummary();
+      el.timeOverlay.classList.add("open");
+      el.timeOverlay.setAttribute("aria-hidden","false");
     }
 
-    function updateSummary(){
+    function closeTimePicker(){
+      el.timeOverlay.classList.remove("open");
+      el.timeOverlay.setAttribute("aria-hidden","true");
+    }
+
+    function setActiveTime(t){
+      state.activeTime = t || "";
+      safe.text(el.b_timeLabel, state.activeTime ? fmtTime(state.activeTime) : "Вибрати час");
+
+      // Hold slot 2 min (local)
+      state.holdUntil = Date.now() + 2 * 60 * 1000;
+      clearInterval(state.holdTimer);
+      state.holdTimer = setInterval(() => {
+        if(Date.now() >= state.holdUntil){
+          clearInterval(state.holdTimer);
+          state.holdTimer = null;
+          state.holdUntil = 0;
+          // do not force clear time; just stop showing hold
+          updateBookingSummary();
+        }else{
+          updateBookingSummary();
+        }
+      }, 500);
+
+      updateBookingSummary();
+    }
+
+    function renderQuickPicks(){
       const l = state.activeListing;
-      if(!l){ safe.setText(els.m_summary, "—"); return; }
-      const svcKey = els.m_service.value || state.service || "";
-      const svcName = (() => {
-        const s = getServices().find(x => norm(x.key||x.id||x.slug) === norm(svcKey));
-        return s?.name || s?.title || s?.label || svcKey || "Service";
-      })();
-      const from = formatPriceFrom(l, svcKey);
-      const t = state.activeTime || "Select time";
-      const addr = l.address || l.area || "";
-      safe.setText(els.m_summary, `${svcName} • ${t} • From ${from} • ${addr}`);
+      if(!l) return;
+      const svc = el.b_service.value || "";
+      const times = rawTimes(l, svc);
+      const first = times[0] || "";
+
+      const from = priceFrom(l, svc);
+
+      // quick picks: fastest = first
+      const picks = [];
+      if(first) picks.push({ key:"fast", label:"⚡ Найшвидше", time:first });
+      // cheapest is UI hint only (price from)
+      if(from && from !== "—") picks.push({ key:"cheap", label:"💰 Найдешевше", time:first });
+      // closest is placeholder (if you have distance)
+      picks.push({ key:"near", label:"📍 Найближче", time:first });
+
+      el.b_quickPicks.style.display = "flex";
+      el.b_quickPicks.innerHTML = picks.map(p => `<button class="btn" type="button" data-pick="${p.key}" data-time="${p.time}">${p.label}</button>`).join("");
     }
+
+    function updateBookingSummary(){
+      const l = state.activeListing;
+      if(!l){ safe.text(el.b_summary, "—"); return; }
+
+      const svcKey = el.b_service.value || state.service || "";
+      const sObj = getServices().find(x => norm(x.key||x.id||x.slug) === norm(svcKey));
+      const svcName = sObj?.name || sObj?.title || sObj?.label || svcKey || "Service";
+      const from = priceFrom(l, svcKey);
+      const timeNice = state.activeTime ? fmtTime(state.activeTime) : "Select time";
+      const addr = l.address || l.area || "";
+
+      let hold = "";
+      if(state.holdUntil && Date.now() < state.holdUntil){
+        const left = Math.max(0, state.holdUntil - Date.now());
+        const mm = String(Math.floor(left/60000)).padStart(2,'0');
+        const ss = String(Math.floor((left%60000)/1000)).padStart(2,'0');
+        hold = ` • Held ${mm}:${ss}`;
+      }
+
+      safe.text(el.b_summary, `${svcName} • ${timeNice}${hold} • From ${from} • ${addr}`);
+    }
+
+    function showToast(title, text){
+      safe.text(el.toastTitle, title);
+      safe.text(el.toastText, text);
+      el.toast.classList.add("open");
+    }
+    function hideToast(){ el.toast.classList.remove("open"); }
 
     async function submitBooking(){
       const l = state.activeListing;
       if(!l) return;
 
+      const name = (el.b_name.value || "").trim();
+      const phone = (el.b_phone.value || "").trim();
+      const email = (el.b_email.value || "").trim();
+      const serviceKey = el.b_service.value || "";
+      const time = state.activeTime || "";
+
+      if(!name || !phone || !email || !serviceKey || !time){
+        showToast("⚠️ Fill required", "Заповни імʼя, телефон, email, послугу і вибери час.");
+        return;
+      }
+
+      // save client profile (lite)
+      localStorage.setItem(LS.profile, JSON.stringify({ name, phone, email }));
+
       const payload = {
         listingId: l.id,
         listingName: l.name || l.title || "Salon",
         address: l.address || l.area || "",
-        serviceKey: els.m_service.value,
-        time: state.activeTime,
-        name: els.m_name.value.trim(),
-        phone: els.m_phone.value.trim(),
-        email: els.m_email.value.trim(),
+        serviceKey,
+        time,
+        name, phone, email,
         profileUrl: `./profile.html?id=${encodeURIComponent(l.id)}`
       };
-
-      if(!payload.name || !payload.phone || !payload.email || !payload.time){
-        alert("Заповни імʼя, телефон, email і вибери час.");
-        return;
-      }
 
       const worker = (window.WORKER_URL || (window.bb && window.bb.util && window.bb.util.WORKER_URL)) || "";
       const endpoint = (worker ? worker.replace(/\/$/,"") : "") + "/book";
 
       try{
-        els.m_submit.disabled = true;
-        els.m_submit.textContent = "Sending…";
+        el.b_submit.disabled = true;
+        el.b_submit.textContent = "Sending…";
 
         const res = await fetch(endpoint, {
           method: "POST",
@@ -1113,169 +1441,238 @@
           throw new Error(txt || ("HTTP " + res.status));
         }
 
-        state.cart.push({ id: l.id, t: Date.now(), service: payload.serviceKey, time: payload.time });
-        saveLS();
+        state.cart.push({ id: l.id, t: Date.now(), service: serviceKey, time });
+        saveState();
         renderHeader();
 
-        alert("Готово ✅ Бронювання відправлено в Telegram.");
-        closeModal();
+        closeTimePicker();
+        closeBooking();
+
+        showToast("✅ Booking sent", `${payload.listingName} • ${fmtTime(payload.time)} • ${payload.address}`);
       }catch(e){
         console.error(e);
-        alert("Помилка відправки. Перевір WORKER_URL / CORS у Worker.");
+        showToast("❌ Send failed", "Перевір WORKER_URL / Worker CORS. (Або Worker не задеплоєний)");
       }finally{
-        els.m_submit.disabled = false;
-        els.m_submit.textContent = "Confirm booking";
+        el.b_submit.disabled = false;
+        el.b_submit.textContent = "Confirm booking";
+      }
+    }
+
+    /***************** EVENTS *****************/
+    function onGridClick(e){
+      const card = e.target.closest(".card");
+      if(!card) return;
+
+      const id = card.dataset.id;
+      const l = getListings().find(x => String(x.id) === String(id));
+      if(!l) return;
+
+      const act = e.target.closest("[data-action]")?.dataset?.action;
+
+      if(act === "fav"){
+        if(state.fav.has(l.id)) state.fav.delete(l.id); else state.fav.add(l.id);
+        saveState();
+        renderHeader();
+        renderSections();
+        renderNext();
+        return;
+      }
+
+      if(act === "profile"){
+        // IMPORTANT: no window.open (keeps PWA inside app)
+        location.href = `./profile.html?id=${encodeURIComponent(l.id)}`;
+        return;
+      }
+
+      if(act === "book"){
+        openBooking(l, state.service || "");
+        return;
       }
     }
 
     function bindEvents(){
-      els.q.addEventListener("input", (e) => {
-        state.q = e.target.value;
-        saveLS();
-        renderGrid();
+      el.q.addEventListener("input", (ev) => {
+        state.q = ev.target.value;
+        saveState();
+        renderSections();
         renderNext();
       });
 
-      els.pillTop.addEventListener("click", ()=>{ state.section="top"; saveLS(); renderHeader(); renderGrid(); });
-      els.pillRec.addEventListener("click", ()=>{ state.section="rec"; saveLS(); renderHeader(); renderGrid(); });
-      els.pillAll.addEventListener("click", ()=>{ state.section="all"; saveLS(); renderHeader(); renderGrid(); });
-
-      els.btnOnlyFav.addEventListener("click", ()=>{
-        state.onlyFav = !state.onlyFav;
-        saveLS();
-        renderHeader();
-        renderGrid();
-        renderNext();
-      });
-
-      // reset only filters (service+section), keep search + onlyFav (per spec)
-      els.btnResetFilters.addEventListener("click", ()=>{
-        state.service = "";
-        state.section = "top";
-        saveLS();
-        renderHeader();
-        renderGrid();
-        renderNext();
-      });
-
-      els.serviceChips.addEventListener("click", (e)=>{
+      el.serviceChips.addEventListener("click", (e) => {
         const ch = e.target.closest(".chip");
         if(!ch) return;
         const k = ch.dataset.service || "";
         state.service = (norm(state.service) === norm(k)) ? "" : k;
-        saveLS();
+        saveState();
         renderHeader();
-        renderGrid();
+        renderSections();
         renderNext();
       });
 
-      els.grid.addEventListener("click", (e)=>{
-        const card = e.target.closest(".card");
-        if(!card) return;
-        const id = card.dataset.id;
-        const l = getListings().find(x => String(x.id) === String(id));
-        if(!l) return;
-
-        const act = e.target.closest("[data-action]")?.dataset?.action;
-        if(act === "fav"){
-          if(state.fav.has(l.id)) state.fav.delete(l.id); else state.fav.add(l.id);
-          saveLS();
-          renderHeader();
-          renderGrid();
-          renderNext();
-          return;
-        }
-        if(act === "profile"){
-          window.open(`./profile.html?id=${encodeURIComponent(l.id)}`, "_blank");
-          return;
-        }
-        if(act === "book"){
-          openModal(l, state.service || "");
-          return;
-        }
+      el.btnOnlyFav.addEventListener("click", () => {
+        state.onlyFav = !state.onlyFav;
+        saveState();
+        renderHeader();
+        renderSections();
+        renderNext();
       });
 
-      els.brandHome.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+      // reset filters ONLY: service; keep search + onlyFav (per spec)
+      el.btnResetFilters.addEventListener("click", () => {
+        state.service = "";
+        saveState();
+        renderHeader();
+        renderSections();
+        renderNext();
+      });
 
-      els.floatTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-      els.floatBook.addEventListener("click", ()=>{ if(state._next) openModal(state._next, state.service || ""); });
+      el.brandHome.addEventListener("click", ()=> window.scrollTo({ top:0, behavior:"smooth" }));
+      el.floatTop.addEventListener("click", ()=> window.scrollTo({ top:0, behavior:"smooth" }));
 
-      els.btnNextBook.addEventListener("click", ()=>{ if(state._next) openModal(state._next, state.service || ""); });
+      el.btnHow.addEventListener("click", ()=>{
+        showToast("How it works", "1) Choose service  2) Pick salon  3) Choose time  4) Confirm — Telegram receives booking");
+      });
 
-      els.btnWhy.addEventListener("click", ()=>{
+      el.btnAI.addEventListener("click", ()=>{
+        showToast("AI help (lite)", "Вибери сервіс (chips) або введи район у пошук. Пізніше підключимо справжній AI через Worker.");
+      });
+
+      el.btnTheme.addEventListener("click", ()=>{
+        showToast("Theme", "Theme toggle — демо (щоб нічого не ламати). Якщо треба — зробимо 2 теми наступним кроком.");
+      });
+
+      el.btnCart.addEventListener("click", ()=>{
+        showToast("Cart", `Saved bookings: ${state.cart.length}`);
+      });
+
+      el.btnQuickBook.addEventListener("click", ()=>{
+        if(state._next) openBooking(state._next, state.service || "");
+        else showToast("No options", "Спробуй інший сервіс або очисти фільтри.");
+      });
+
+      el.btnNextBook.addEventListener("click", ()=>{
+        if(state._next) openBooking(state._next, state.service || "");
+      });
+
+      el.floatBook.addEventListener("click", ()=>{
+        if(state._next) openBooking(state._next, state.service || "");
+      });
+
+      el.btnWhy.addEventListener("click", ()=>{
         const l = state._next;
-        if(!l){ alert("Немає варіанту."); return; }
+        if(!l){ showToast("Why this one?", "No current suggestion."); return; }
         const reasons = [];
-        if(l.isPartner || l.partner) reasons.push("Partner pick");
+        if(isPartner(l)) reasons.push("Partner pick");
         if(l.verified) reasons.push("Verified");
         if(l.sterile) reasons.push("Sterile");
         if(state.service) reasons.push("Matches your service");
-        if(state.onlyFav) reasons.push("You’re viewing favorites");
-        const t = getTimesFor(l, state.service || "")[0];
-        if(t) reasons.push("Has a near slot");
-        alert("Why this one:\n• " + (reasons.length ? reasons.join("\n• ") : "Best match by availability."));
+        const t = firstSlot(l, state.service || "");
+        if(t) reasons.push("Near slot available");
+        showToast("Why this one?", "• " + (reasons.length ? reasons.join(" • ") : "Best match by availability"));
       });
 
-      els.btnAI.addEventListener("click", ()=>{ alert("AI help (lite): вибери chips або пошук. Пізніше підключимо справжній AI через Worker."); });
-      els.btnTheme.addEventListener("click", ()=>{ alert("Theme toggle — демо (щоб нічого не ламати)."); });
-      els.btnHow.addEventListener("click", ()=>{ alert("How it works:\n1) Choose a service\n2) Pick a salon\n3) Select time\n4) Confirm — Telegram gets the booking"); });
+      // grids
+      el.gridTop.addEventListener("click", onGridClick);
+      el.gridRec.addEventListener("click", onGridClick);
+      el.gridAll.addEventListener("click", onGridClick);
 
-      els.btnQuickBook.addEventListener("click", ()=>{
-        if(state._next) openModal(state._next, state.service || "");
-        else alert("Немає варіантів. Спробуй змінити фільтри.");
+      // booking overlay close
+      el.bookingClose.addEventListener("click", closeBooking);
+      el.b_cancel.addEventListener("click", closeBooking);
+
+      el.bookingOverlay.addEventListener("click", (e) => {
+        if(e.target === el.bookingOverlay) closeBooking();
+      });
+      el.bookingOverlay.addEventListener("touchmove", (e) => {
+        if(e.target === el.bookingOverlay) e.preventDefault();
+      }, { passive:false });
+
+      // booking service change
+      el.b_service.addEventListener("change", ()=>{
+        state.activeTime = "";
+        safe.text(el.b_timeLabel, "Вибрати час");
+        renderQuickPicks();
+        updateBookingSummary();
       });
 
-      els.modalClose.addEventListener("click", closeModal);
-      els.m_cancel.addEventListener("click", closeModal);
-      els.modalOverlay.addEventListener("click", (e)=>{ if(e.target === els.modalOverlay) closeModal(); });
+      // time open
+      el.b_timeBtn.addEventListener("click", openTimePicker);
 
-      // prevent background scroll via touch on overlay
-      els.modalOverlay.addEventListener("touchmove", (e) => {
-        if(e.target === els.modalOverlay) e.preventDefault();
-      }, { passive: false });
+      // quick picks click
+      el.b_quickPicks.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-time]");
+        if(!btn) return;
+        const t = btn.dataset.time || "";
+        if(t){
+          setActiveTime(t);
+        }
+      });
 
-      els.m_times.addEventListener("click", (e)=>{
+      // submit
+      el.b_submit.addEventListener("click", submitBooking);
+
+      // time picker
+      el.timeClose.addEventListener("click", closeTimePicker);
+      el.timeOverlay.addEventListener("click", (e)=>{
+        if(e.target === el.timeOverlay) closeTimePicker();
+      });
+      el.timeOverlay.addEventListener("touchmove", (e)=>{
+        if(e.target === el.timeOverlay) e.preventDefault();
+      }, { passive:false });
+
+      el.timeList.addEventListener("click", (e)=>{
         const btn = e.target.closest(".timeBtn");
         if(!btn) return;
-        state.activeTime = btn.dataset.time || "";
-        [...els.m_times.querySelectorAll(".timeBtn")].forEach(b => b.classList.toggle("active", b === btn));
-        updateSummary();
+        const t = btn.dataset.time || "";
+        [...el.timeList.querySelectorAll(".timeBtn")].forEach(b => b.classList.toggle("active", b === btn));
+        setActiveTime(t);
+        closeTimePicker();
       });
 
-      els.m_service.addEventListener("change", ()=>{ state.activeTime=""; renderTimes(); });
-      els.m_submit.addEventListener("click", submitBooking);
+      // toast
+      el.toastClose.addEventListener("click", hideToast);
+      el.toastTop.addEventListener("click", ()=>{
+        hideToast();
+        window.scrollTo({ top:0, behavior:"smooth" });
+      });
 
       window.addEventListener("keydown", (e)=>{
-        if(e.key === "Escape" && els.modalOverlay.classList.contains("open")) closeModal();
+        if(e.key === "Escape"){
+          if(el.timeOverlay.classList.contains("open")) closeTimePicker();
+          else if(el.bookingOverlay.classList.contains("open")) closeBooking();
+          else if(el.toast.classList.contains("open")) hideToast();
+        }
       });
     }
 
-    function startNextRotation(){
-      if(state.nextRotationTimer) clearInterval(state.nextRotationTimer);
-      state.nextRotationTimer = setInterval(()=>{ renderNext(); }, 10000);
-    }
-
+    /***************** INIT *****************/
     function init(){
       bindEls();
-      loadLS();
-      els.q.value = state.q || "";
+      bindEvents();
+      loadState();
 
+      // apply loaded
+      if(el.q) el.q.value = state.q || "";
       renderHeader();
-      renderGrid();
+      renderSections();
       renderNext();
       startNextRotation();
 
-      // auto-open booking from profile redirect
+      // show float if we have next
+      el.floatBar.style.display = "flex";
+
+      // query params (from profile)
       const u = new URL(location.href);
       const book = u.searchParams.get("book");
       const id = u.searchParams.get("id");
       const svc = u.searchParams.get("service");
       if(book === "1" && id){
         const l = getListings().find(x => String(x.id) === String(id));
-        if(l) openModal(l, svc || "");
+        if(l) openBooking(l, svc || "");
       }
     }
 
+    // SW register (PWA)
     (function(){
       if("serviceWorker" in navigator){
         window.addEventListener("load", ()=>{
@@ -1284,11 +1681,7 @@
       }
     })();
 
-    document.addEventListener("DOMContentLoaded", ()=>{
-      bindEls();
-      bindEvents();
-      init();
-    }, { once:true });
+    document.addEventListener("DOMContentLoaded", init, { once:true });
   </script>
 </body>
 </html>
