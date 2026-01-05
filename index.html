@@ -4,8 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <title>Beauty Booking</title>
 
+  <!-- OG -->
   <meta property="og:title" content="Beauty Booking" />
   <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
   <meta property="og:type" content="website" />
@@ -13,12 +17,7 @@
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-
-  <!-- PWA / iOS standalone -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Beauty Booking">
-  <link rel="apple-touch-icon" href="./icons/icon-180.png">
+  <link rel="apple-touch-icon" href="./icon-192.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,2781 +25,1430 @@
 
   <style>
     :root{
-      --bg:#07070b;
-      --bg2:#0b0b11;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.085);
-      --stroke:rgba(255,255,255,.10);
-      --stroke2:rgba(255,255,255,.14);
-      --text:#f4f3f8;
-      --muted:rgba(244,243,248,.68);
-
-      --pink:#ff4fd8;
-      --gold:#ffd27a;
-      --violet:#8b5cf6;
-
-      --ok:#20e3a5;
-      --warn:#ffd27a;
-
-      --r:22px;
-      --r2:28px;
-      --shadow: 0 22px 70px rgba(0,0,0,.55);
-      --shadow2: 0 10px 30px rgba(0,0,0,.35);
-
-      --glow: 0 0 0 1px rgba(255,79,216,.18), 0 18px 60px rgba(255,79,216,.15);
-      --glow2: 0 0 0 1px rgba(255,210,122,.15), 0 18px 60px rgba(255,210,122,.10);
-
-      --max:1200px;
-
-      --safeB: env(safe-area-inset-bottom, 0px);
-      --safeT: env(safe-area-inset-top, 0px);
-      --safeL: env(safe-area-inset-left, 0px);
-      --safeR: env(safe-area-inset-right, 0px);
+      --bg:#0b0b0f;
+      --bg2:#0f0f16;
+      --card:#12121b;
+      --card2:#151520;
+      --text:#f3f1ff;
+      --muted:rgba(243,241,255,.68);
+      --hair:rgba(255,255,255,.08);
+      --hair2:rgba(255,255,255,.12);
+      --accent:#ff5ea8;
+      --gold:#f6d17a;
+      --violet:#7b6bff;
+      --radius:18px;
+      --radius2:22px;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --shadow2: 0 14px 40px rgba(0,0,0,.45);
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+      --safeLeft: env(safe-area-inset-left, 0px);
+      --safeRight: env(safe-area-inset-right, 0px);
     }
-
-    body[data-theme="light"]{
-      --bg:#fbfbff;
-      --bg2:#f3f4ff;
-      --card:rgba(10,10,18,.05);
-      --card2:rgba(10,10,18,.08);
-      --stroke:rgba(10,10,18,.10);
-      --stroke2:rgba(10,10,18,.14);
-      --text:#0b0b0f;
-      --muted:rgba(11,11,15,.62);
-      --shadow: 0 22px 70px rgba(10,10,18,.14);
-      --shadow2: 0 10px 30px rgba(10,10,18,.10);
-    }
-
-    /* iOS Safari: stop weird auto text resizing */
-    html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
-
-    /* iOS PWA / overflow-x hard fix */
-    html{height:100%; width:100%; max-width:100%; overflow-x:hidden;}
-    body{max-width:100%; overflow-x:clip;}
-
-    *{box-sizing:border-box}
-    a{color:inherit; text-decoration:none}
-    button,input{font:inherit}
-    html,body{margin:0}
-
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text);
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),
-        radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),
-        radial-gradient(900px 700px at 70% 90%, rgba(255,210,122,.10), transparent 60%),
+        radial-gradient(1200px 680px at 20% -10%, rgba(255,94,168,.18), transparent 55%),
+        radial-gradient(900px 520px at 100% 10%, rgba(123,107,255,.14), transparent 55%),
+        radial-gradient(900px 520px at 30% 110%, rgba(246,209,122,.10), transparent 60%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      padding-left: max(0px, var(--safeL));
-      padding-right:max(0px, var(--safeR));
-      min-height:100svh;
+      color: var(--text);
+      overflow-x:hidden;
+      padding-left: var(--safeLeft);
+      padding-right: var(--safeRight);
     }
+    a{ color:inherit; text-decoration:none; }
+    button,input,select,textarea{ font: inherit; color:inherit; }
+    .wrap{ max-width: 1180px; margin:0 auto; padding: 16px 16px calc(18px + var(--safeBottom)); }
 
-    /* guard: no accidental 100vw */
-    .topbar, .wrap, .overlay, .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{max-width:100%;}
-
-    mark{
-      background: rgba(255,210,122,.18);
-      color: inherit;
-      padding: 0 .18em;
-      border-radius: .35em;
-      box-shadow: 0 0 0 1px rgba(255,210,122,.18);
-    }
-
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:18px 18px calc(160px + var(--safeB));
-    }
-
+    /* ===== Header / Topbar ===== */
     .topbar{
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(14px);
-      background: linear-gradient(180deg, rgba(7,7,11,.88), rgba(7,7,11,.55));
-      border-bottom:1px solid rgba(255,255,255,.06);
-      padding-top: var(--safeT);
+      position: sticky; top:0; z-index: 30;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(180deg, rgba(11,11,15,.78), rgba(11,11,15,.45));
+      border-bottom: 1px solid var(--hair);
     }
-    body[data-theme="light"] .topbar{
-      background: linear-gradient(180deg, rgba(251,251,255,.88), rgba(251,251,255,.55));
-      border-bottom:1px solid rgba(10,10,18,.08);
-    }
-
-    .topbar .inner{
-      max-width:var(--max);
+    .topbarInner{
+      max-width: 1180px;
       margin:0 auto;
-      padding:12px 18px;
+      padding: calc(10px + var(--safeTop)) 16px 12px;
       display:flex;
-      align-items:center;
+      align-items:flex-end; /* нижче */
       justify-content:space-between;
-      gap:10px;
+      gap: 14px;
     }
-
     .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-      flex:0 1 auto;
+      display:flex; align-items:flex-end; gap: 10px;
+      min-width: 210px;
     }
     .logo{
-      width:36px; height:36px; border-radius:14px;
+      width: 42px; height: 42px;
+      border-radius: 14px;
       background:
-        radial-gradient(10px 10px at 30% 25%, rgba(255,255,255,.65), transparent 60%),
-        radial-gradient(18px 18px at 70% 20%, rgba(255,210,122,.35), transparent 65%),
-        linear-gradient(135deg, rgba(255,79,216,.85), rgba(139,92,246,.85));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 12px 40px rgba(0,0,0,.35);
-      position:relative;
-      overflow:hidden;
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.22), transparent 60%),
+        linear-gradient(135deg, rgba(255,94,168,.95), rgba(123,107,255,.9));
+      box-shadow: 0 10px 28px rgba(0,0,0,.45);
+      position: relative;
+      border: 1px solid rgba(255,255,255,.12);
       flex:0 0 auto;
     }
     .logo:after{
       content:"";
-      position:absolute; inset:-40%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-      transform: rotate(20deg);
-      animation: sweep 5.8s linear infinite;
-      opacity:.65;
-    }
-    @keyframes sweep{0%{transform:translateX(-35%) rotate(20deg)}100%{transform:translateX(35%) rotate(20deg)}}
-
-    .brand h1{
-      font-family:"Playfair Display",serif;
-      font-size:18px; line-height:1.05; margin:0;
-      letter-spacing:.2px;
-      white-space:nowrap;
-    }
-    .brand h1 .w1, .brand h1 .w2{display:inline}
-    .brand .sub{font-size:12px; color:var(--muted); margin-top:2px; display:none}
-
-    .search{
-      flex:1;
-      display:flex; gap:10px; align-items:center;
-      background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:999px;
-      padding:10px 12px;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-      min-width: 240px;
-      max-width: 520px;
-      margin:0 10px;
-    }
-    body[data-theme="light"] .search{box-shadow: inset 0 0 0 1px rgba(10,10,18,.06)}
-    .search input{
-      background:transparent; border:0; outline:0; color:var(--text);
-      width:100%;
-      font-size:14px;
-    }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid var(--stroke);
-      background:var(--card);
-      padding:10px 12px;
-      border-radius:999px;
-      color:rgba(244,243,248,.9);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      cursor:pointer;
-      user-select:none;
-      white-space:nowrap;
-    }
-    body[data-theme="light"] .pill{color:rgba(11,11,15,.92)}
-    .pill:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
-    .pill:active{transform: translateY(0px) scale(.98)}
-    .pill.on{
-      border-color: rgba(255,79,216,.35);
-      background: rgba(255,79,216,.12);
-      box-shadow: 0 0 0 1px rgba(255,79,216,.14);
-    }
-
-    .top-actions{display:flex; gap:10px; align-items:center; flex:0 0 auto}
-
-    .iconbtn{
-      width:42px; height:42px; border-radius:14px;
-      border:1px solid var(--stroke);
-      background:var(--card);
-      color:var(--text);
-      cursor:pointer;
-      display:grid; place-items:center;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      position:relative;
-      flex:0 0 auto;
-    }
-    .iconbtn:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
-    .iconbtn:active{transform: translateY(0px) scale(.98)}
-    .badge{
-      position:absolute; top:-6px; right:-6px;
-      min-width:18px; height:18px; padding:0 6px;
-      border-radius:999px;
-      background: linear-gradient(135deg, rgba(255,79,216,.95), rgba(139,92,246,.95));
-      color:#0b0b0f;
-      font-weight:700; font-size:11px;
-      display:grid; place-items:center;
-      box-shadow: 0 8px 20px rgba(0,0,0,.35);
-    }
-
-    /* Install chip */
-    #installPill{display:none}
-    #installPill.show{display:inline-flex}
-    #installPill{
-      border-color: rgba(255,210,122,.28);
-      background: rgba(255,210,122,.10);
-      box-shadow: 0 0 0 1px rgba(255,210,122,.12);
-      color: rgba(244,243,248,.95);
-      font-weight:900;
-    }
-    body[data-theme="light"] #installPill{color: rgba(11,11,15,.95)}
-
-    /* Hero */
-    .hero{ padding:18px 0 8px; }
-    .heroCard{
-      border-radius: var(--r2);
-      border: 1px solid var(--stroke);
-      background:
-        radial-gradient(900px 500px at 20% 10%, rgba(255,79,216,.20), transparent 60%),
-        radial-gradient(900px 500px at 80% 20%, rgba(139,92,246,.18), transparent 60%),
-        var(--card);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .heroCard:before{
-      content:"";
       position:absolute; inset:-1px;
-      background: radial-gradient(400px 220px at 20% 0%, rgba(255,210,122,.16), transparent 60%);
-      pointer-events:none;
-    }
-    .heroInner{padding:22px 18px; display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; align-items:stretch}
-    .heroTitle{
-      font-family:"Playfair Display",serif;
-      font-size:36px;
-      letter-spacing:-.4px;
-      line-height:1.05;
-      margin:0 0 10px;
-    }
-    .heroTitle span{
-      background: linear-gradient(90deg, rgba(255,79,216,1), rgba(255,210,122,1));
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-    .heroDesc{margin:0 0 12px; color:var(--muted); max-width:56ch}
-    .chips{
-      display:flex; gap:10px;
-      flex-wrap:nowrap;
-      overflow:auto;
-      padding-bottom:6px;
-      -webkit-overflow-scrolling:touch;
-    }
-    .chips::-webkit-scrollbar{height:8px}
-    .chips::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
-    body[data-theme="light"] .chips::-webkit-scrollbar-thumb{background: rgba(10,10,18,.10)}
-    .chip{white-space:nowrap; flex:0 0 auto;}
-
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      background:var(--card);
-      cursor:pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      user-select:none;
-      font-size:13px;
-      font-weight:800;
-    }
-    .chip:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
-    .chip:active{transform: translateY(0px) scale(.98)}
-    .chip.on{
-      border-color: rgba(255,210,122,.35);
-      background: rgba(255,210,122,.10);
-      box-shadow: 0 0 0 1px rgba(255,210,122,.12);
-    }
-
-    .chipBreak{display:none; flex-basis:100%; height:0;}
-
-    .heroSide{display:flex; flex-direction:column; gap:10px;}
-    .glass{
-      border-radius: 20px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-    }
-    body[data-theme="light"] .glass{background: rgba(255,255,255,.55)}
-    .glass .pad{padding:14px 14px}
-    .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,243,248,.62)}
-    body[data-theme="light"] .kicker{color:rgba(11,11,15,.58)}
-    .bigLine{font-weight:900; margin-top:6px; font-size:14px}
-    .smallLine{margin-top:6px; color:var(--muted); font-size:12.5px}
-    .ctaRow{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
-
-    .btn{
-      border:0;
-      color:#0b0b0f;
-      background: linear-gradient(135deg, rgba(255,79,216,.98), rgba(139,92,246,.98));
       border-radius: 14px;
-      padding:12px 14px;
-      font-weight:900;
+      background: linear-gradient(135deg, rgba(246,209,122,.55), rgba(255,94,168,.35), rgba(123,107,255,.35));
+      filter: blur(10px);
+      opacity:.35;
+      z-index:-1;
+    }
+    .brandText{
+      display:flex; flex-direction:column;
+      line-height: 1.05;
+      transform: translateY(2px); /* нижче */
+    }
+    .brandText .title{
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 22px; /* більший */
+      letter-spacing: .2px;
+    }
+    .brandText .sub{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .actions{
+      display:flex; align-items:center; gap:10px;
+      transform: translateY(2px); /* нижче */
+      flex-wrap: nowrap;
+    }
+    .iconBtn{
+      width: 44px; height: 44px; /* більші */
+      border-radius: 14px;
+      border: 1px solid var(--hair2);
+      background: rgba(255,255,255,.04);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       cursor:pointer;
-      box-shadow: 0 18px 50px rgba(255,79,216,.16), 0 12px 34px rgba(0,0,0,.4);
-      transition: transform .18s ease, filter .18s ease, opacity .18s ease;
-      display:inline-flex; align-items:center; gap:10px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
     }
-    .btn:hover{transform: translateY(-1px); filter:saturate(1.1)}
-    .btn:active{transform: translateY(0px) scale(.98)}
-    .btn.secondary{
-      background: var(--card2);
-      color: rgba(244,243,248,.92);
-      border:1px solid var(--stroke);
-      box-shadow:none;
+    .iconBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); }
+    .iconBtn:active{ transform: translateY(0px) scale(.98); }
+    .badgeDot{
+      width: 8px; height:8px; border-radius: 99px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255,94,168,.18);
+      position:absolute;
+      transform: translate(12px,-12px);
     }
-    body[data-theme="light"] .btn.secondary{color: rgba(11,11,15,.92)}
-    .btn:disabled{opacity:.45; cursor:not-allowed; transform:none !important; filter:none !important;}
+    .iconWrap{ position:relative; display:inline-flex; }
 
-    .mbr{display:none;}
-
-    /* Sections */
-    .section{margin-top:18px}
-    .sectionHead{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin:20px 2px 10px;}
-    .sectionTitle{margin:0; font-family:"Playfair Display",serif; font-size:22px; letter-spacing:-.2px;}
-    .sectionNote{margin:0; color:var(--muted); font-size:13px}
-    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px;}
-
-    /* Cards */
-    .card{
-      grid-column: span 4;
-      border-radius: var(--r);
-      border:1px solid var(--stroke);
-      background: var(--card);
+    /* ===== Hero ===== */
+    .hero{
+      padding: 18px 0 10px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      align-items:stretch;
+    }
+    .heroCard{
+      border-radius: var(--radius2);
+      border: 1px solid var(--hair);
+      background:
+        radial-gradient(900px 320px at 10% 0%, rgba(255,94,168,.16), transparent 55%),
+        radial-gradient(900px 320px at 110% 20%, rgba(123,107,255,.14), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
       box-shadow: var(--shadow2);
+      padding: 18px;
       overflow:hidden;
       position:relative;
-      transform: translateZ(0);
-      transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+    }
+    .heroH{
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 34px;
+      line-height: 1.08;
+      margin: 0 0 10px;
+    }
+    .heroP{
+      margin:0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 60ch;
+    }
+
+    /* Quick service chips layout (MOBILE REQUIREMENT) */
+    .chips{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .chip{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--hair2);
+      background: rgba(0,0,0,.18);
       cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      font-size: 13px;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
     }
-    .card:hover{transform: translateY(-2px); border-color: var(--stroke2); background: var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45);}
-    .media{height:178px; background: rgba(255,255,255,.06); position:relative; overflow:hidden;}
-    .media img{
+    .chip:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.06); }
+    .chip.active{
+      border-color: rgba(255,94,168,.55);
+      background: rgba(255,94,168,.12);
+      box-shadow: 0 0 0 4px rgba(255,94,168,.10);
+    }
+
+    .heroCTA{
+      display:flex; gap:10px; flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .btn{
+      padding: 11px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--hair2);
+      background: rgba(255,255,255,.06);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.20); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.primary{
+      border-color: rgba(255,94,168,.55);
+      background: linear-gradient(135deg, rgba(255,94,168,.92), rgba(123,107,255,.82));
+      box-shadow: 0 14px 40px rgba(255,94,168,.18);
+    }
+    .btn.primary:hover{ filter: brightness(1.03); }
+
+    /* Right hero card */
+    .heroSide{
+      display:flex; flex-direction:column; gap: 12px;
+    }
+    .panel{
+      border-radius: var(--radius2);
+      border: 1px solid var(--hair);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      padding: 16px;
+    }
+    .panel .kicker{ font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .panel .big{
+      font-size: 16px; font-weight: 600; line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .panel .mini{ font-size: 12px; color: var(--muted); }
+
+    /* ===== Controls ===== */
+    .controls{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+      margin: 14px 0 6px;
+    }
+    .search{
+      flex: 1 1 320px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      border-radius: 16px;
+      border: 1px solid var(--hair2);
+      background: rgba(0,0,0,.20);
+      padding: 10px 12px;
+    }
+    .search input{
+      width:100%;
+      border:0;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .pill{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--hair2);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      font-size: 13px;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .pill.active{
+      border-color: rgba(246,209,122,.60);
+      background: rgba(246,209,122,.12);
+      box-shadow: 0 0 0 4px rgba(246,209,122,.08);
+    }
+
+    .sectionTitle{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 10px;
+      margin: 18px 0 10px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-family: "Playfair Display", serif;
+      font-size: 22px;
+      letter-spacing:.2px;
+    }
+    .sectionTitle .note{
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* ===== Listings grid ===== */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    .card{
+      border-radius: var(--radius2);
+      border: 1px solid var(--hair);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      box-shadow: 0 12px 34px rgba(0,0,0,.30);
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      min-height: 280px;
+    }
+    .card .img{
+      height: 150px;
+      background: #101018;
+      position:relative;
+      overflow:hidden;
+    }
+    .card .img img{
       width:100%; height:100%; object-fit:cover;
+      display:block;
       transform: scale(1.02);
-      transition: transform .55s cubic-bezier(.2,.9,.2,1), filter .55s ease;
-      filter: saturate(1.05) contrast(1.02);
+      transition: transform .35s ease;
     }
-    .card:hover .media img{transform: scale(1.10)}
-    .media:after{
+    .card:hover .img img{ transform: scale(1.08); }
+    .card .img:after{
       content:"";
       position:absolute; inset:0;
-      background:
-        radial-gradient(1200px 300px at 20% 0%, rgba(255,255,255,.16), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.55));
-      opacity:.95;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55));
       pointer-events:none;
     }
-    .shine{
-      content:"";
-      position:absolute; inset:-50%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-      transform: rotate(18deg) translateX(-35%);
-      opacity:0;
-      pointer-events:none;
-    }
-    .card:hover .shine{opacity:.9; animation: shine 1.1s ease forwards;}
-    @keyframes shine{0%{transform: rotate(18deg) translateX(-35%)} 100%{transform: rotate(18deg) translateX(35%)}}
-
-    .meta{padding:12px 12px 14px;}
-    .row1{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
-    .name{font-weight:900; letter-spacing:.1px; font-size:14px; margin:0}
-    .addr{margin:4px 0 0; color:var(--muted); font-size:12.5px; line-height:1.25}
-    .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-    .tag{
-      font-size:11px; font-weight:800;
-      padding:6px 9px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: var(--card);
-      color: rgba(244,243,248,.86);
-    }
-    body[data-theme="light"] .tag{color: rgba(11,11,15,.86)}
-    .tag.good{border-color: rgba(32,227,165,.28); background: rgba(32,227,165,.10)}
-    .tag.today{border-color: rgba(255,210,122,.32); background: rgba(255,210,122,.10); box-shadow: var(--glow2)}
-    .tag.partner{border-color: rgba(255,79,216,.32); background: rgba(255,79,216,.10); box-shadow: var(--glow)}
-
-    .why{margin-top:10px; font-size:12.5px; color:rgba(244,243,248,.82)}
-    body[data-theme="light"] .why{color:rgba(11,11,15,.78)}
-    .why span{color: rgba(255,210,122,.95); font-weight:900;}
-
-    .miniCTA{
-      position:absolute; left:12px; right:12px; bottom:12px;
-      display:flex; justify-content:space-between; gap:10px; align-items:center;
-      opacity:0; transform: translateY(8px);
-      transition: opacity .22s ease, transform .22s ease;
-      pointer-events:none;
-    }
-    .card:hover .miniCTA{opacity:1; transform: translateY(0); pointer-events:auto}
-    .miniBtn{
-      flex:1;
-      border:1px solid var(--stroke2);
-      background: rgba(0,0,0,.25);
-      color: rgba(244,243,248,.92);
-      padding:10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight:900;
-      display:flex; align-items:center; justify-content:center; gap:10px;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      backdrop-filter: blur(10px);
-    }
-    body[data-theme="light"] .miniBtn{background: rgba(255,255,255,.65); color: rgba(11,11,15,.92)}
-    .miniBtn:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.28); background: rgba(0,0,0,.30)}
-    body[data-theme="light"] .miniBtn:hover{background: rgba(255,255,255,.82)}
-    .miniBtn:active{transform: translateY(0px) scale(.98)}
-
-    .fav{
-      width:44px; height:44px;
-      border-radius: 16px;
-      border:1px solid var(--stroke2);
-      background: rgba(0,0,0,.22);
-      display:grid; place-items:center;
-      cursor:pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      backdrop-filter: blur(10px);
-    }
-    body[data-theme="light"] .fav{background: rgba(255,255,255,.72)}
-    .fav:hover{transform: translateY(-1px); border-color: rgba(255,79,216,.28)}
-    .fav:active{transform: translateY(0px) scale(.98)}
-    .fav.on{background: rgba(255,79,216,.16); border-color: rgba(255,79,216,.34); box-shadow: 0 0 0 1px rgba(255,79,216,.12);}
-    .favPop{animation: pop .25s ease}
-    @keyframes pop{0%{transform:scale(.9)} 60%{transform:scale(1.08)} 100%{transform:scale(1)}}
-
-    /* Featured strip (partners) */
-    .strip{display:flex; gap:14px; overflow:auto; padding-bottom:8px; scroll-snap-type:x mandatory;}
-    .strip::-webkit-scrollbar{height:10px}
-    .strip::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
-    body[data-theme="light"] .strip::-webkit-scrollbar-thumb{background: rgba(10,10,18,.12)}
-    .stripCard{
-      min-width: 320px;
-      scroll-snap-align:start;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: var(--card);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      position:relative;
-      cursor:pointer;
-      transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
-    }
-    .stripCard:hover{transform: translateY(-2px); border-color: var(--stroke2); background: var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45)}
-    .stripMedia{height:190px; position:relative; overflow:hidden}
-    .stripMedia img{width:100%; height:100%; object-fit:cover; transform: scale(1.03); transition: transform .55s cubic-bezier(.2,.9,.2,1)}
-    .stripCard:hover .stripMedia img{transform: scale(1.10)}
-    .stripMedia:after{content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.60)); pointer-events:none;}
-    .partnerBadge{
-      position:absolute; top:12px; left:12px;
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,79,216,.35);
-      background: rgba(255,79,216,.14);
-      box-shadow: var(--glow);
-      font-weight:900;
-      letter-spacing:.2px;
-      font-size:12px;
-    }
-    .microShimmer{
-      position:absolute; inset:-60%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-      transform: rotate(20deg) translateX(-35%);
-      opacity:.65;
-      animation: shimmer 3.8s linear infinite;
-      pointer-events:none;
-    }
-    @keyframes shimmer{0%{transform: rotate(20deg) translateX(-35%)}100%{transform: rotate(20deg) translateX(35%)}}
-
-    /* Empty state */
-    .empty{
-      border:1px solid var(--stroke);
-      background: var(--card);
-      border-radius: var(--r2);
-      box-shadow: var(--shadow2);
-      padding:18px;
-      margin-top:12px;
-    }
-    .empty h3{margin:0 0 6px; font-family:"Playfair Display",serif; font-size:18px}
-    .empty p{margin:0 0 10px; color:var(--muted); font-size:13px}
-    .empty .row{display:flex; gap:10px; flex-wrap:wrap}
-
-    /* Floating quick-book + back-to-top */
-    .floatbar{
-      position:fixed; left:0; right:0; bottom:16px;
-      display:flex; justify-content:center;
-      z-index:80;
-      pointer-events:none;
-    }
-    .floatbar .inner{
-      pointer-events:auto;
-      display:flex; gap:10px; align-items:center;
-      padding:10px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(7,7,11,.55);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 18px 60px rgba(0,0,0,.45);
-      margin-left: env(safe-area-inset-left);
-      margin-right: env(safe-area-inset-right);
-      max-width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
-    }
-    body[data-theme="light"] .floatbar .inner{background: rgba(251,251,255,.68)}
-    .floatCTA{
-      border:0; cursor:pointer;
-      padding:12px 14px;
-      border-radius: 999px;
-      font-weight:900;
-      color:#0b0b0f;
-      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
-      box-shadow: 0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4);
-      transition: transform .18s ease;
-      display:flex; align-items:center; gap:10px;
-    }
-    .floatCTA:hover{transform: translateY(-1px)}
-    .floatCTA:active{transform: translateY(0px) scale(.98)}
-    .topBtn{
-      width:44px; height:44px; border-radius: 999px;
-      border:1px solid var(--stroke2);
-      background: var(--card);
-      color:rgba(244,243,248,.92);
-      cursor:pointer;
-      transition: transform .18s ease;
-    }
-    body[data-theme="light"] .topBtn{color:rgba(11,11,15,.92)}
-    .topBtn:hover{transform: translateY(-1px)}
-    .topBtn:active{transform: translateY(0px) scale(.98)}
-
-    /* Modal overlays */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      backdrop-filter: blur(10px);
-      display:none;
-      z-index:100;
-      align-items:flex-end;
-      justify-content:center;
-      padding:18px;
-    }
-    body[data-theme="light"] .overlay{background: rgba(10,10,18,.35)}
-    .overlay.on{display:flex}
-
-    .sheet{
-      width:min(760px, 100%);
-      border-radius: 26px;
-      border:1px solid var(--stroke2);
-      background:
-        radial-gradient(900px 500px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(900px 500px at 80% 20%, rgba(139,92,246,.14), transparent 60%),
-        rgba(12,12,18,.92);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      transform: translateY(10px);
-      animation: sheetIn .22s ease forwards;
-      max-height: 92vh;
+    .cardBody{
+      padding: 12px 12px 12px;
       display:flex;
       flex-direction:column;
+      gap: 8px;
+      flex:1;
     }
-    body[data-theme="light"] .sheet{background: rgba(251,251,255,.92)}
-    @keyframes sheetIn{to{transform: translateY(0)}}
-
-    .sheetHead{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:14px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      flex:0 0 auto;
+    .cardTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
     }
-    body[data-theme="light"] .sheetHead{border-bottom:1px solid rgba(10,10,18,.08)}
-    .sheetHead h3{margin:0; font-size:14px; letter-spacing:.2px}
-    .x{
-      width:40px; height:40px; border-radius:14px;
-      border:1px solid var(--stroke2);
-      background: var(--card);
-      color:rgba(244,243,248,.92);
-      cursor:pointer;
-      transition: transform .18s ease;
+    .name{
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.2;
     }
-    body[data-theme="light"] .x{color:rgba(11,11,15,.92)}
-    .x:hover{transform: translateY(-1px)}
-    .x:active{transform: translateY(0px) scale(.98)}
-
-    /* Where box */
-    #bkWhere{
-      display:none;
-      gap:8px;
-      flex-direction:column;
-      padding:10px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      flex:0 0 auto;
-      background: rgba(0,0,0,.12);
+    .addr{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.2;
     }
-    body[data-theme="light"] #bkWhere{background: rgba(255,255,255,.55); border-bottom:1px solid rgba(10,10,18,.08)}
-    #bkWhereActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:2px}
-    .miniLink{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:9px 11px;
+    .tags{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .tag{
+      font-size: 11px;
+      padding: 6px 8px;
       border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: var(--card);
-      font-weight:900;
-      font-size:12.5px;
+      border: 1px solid var(--hair2);
+      background: rgba(255,255,255,.04);
+      color: rgba(243,241,255,.86);
+    }
+    .tag.good{ border-color: rgba(246,209,122,.40); background: rgba(246,209,122,.10); }
+    .tag.pink{ border-color: rgba(255,94,168,.40); background: rgba(255,94,168,.10); }
+    .tag.violet{ border-color: rgba(123,107,255,.45); background: rgba(123,107,255,.10); }
+
+    .cardActions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:auto;
+      padding-top: 6px;
+    }
+    .miniBtn{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--hair2);
+      background: rgba(255,255,255,.05);
       cursor:pointer;
+      font-size: 13px;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
     }
-    .miniLink:hover{background: var(--card2); border-color: var(--stroke2)}
-
-    .sheetBody{
-      padding:14px;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      flex:1 1 auto;
+    .miniBtn.primary{
+      border-color: rgba(255,94,168,.55);
+      background: rgba(255,94,168,.12);
     }
-
-    .formGrid{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-    .field{
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: var(--card);
-      padding:10px 12px;
-    }
-    .field label{
-      display:block;
-      font-size:11px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color:rgba(244,243,248,.62)
-    }
-    body[data-theme="light"] .field label{color:rgba(11,11,15,.58)}
-    .field input{
-      margin-top:6px;
-      width:100%;
-      border:0; outline:0;
-      background: transparent;
-      color: rgba(244,243,248,.95);
-      font-size:16px;
-    }
-    body[data-theme="light"] .field input{color: rgba(11,11,15,.95)}
-
-    .field.err{
-      border-color: rgba(255,79,216,.45);
-      box-shadow: 0 0 0 1px rgba(255,79,216,.16);
-    }
-    .hintErr{margin-top:6px; font-size:12px; color: rgba(255,210,122,.95); font-weight:800; display:none}
-    .field.err .hintErr{display:block}
-
-    .selectLike{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-top:6px;
-      padding:10px 12px;
-      border-radius: 16px;
-      border:1px solid var(--stroke2);
+    .heart{
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      display:inline-flex; align-items:center; justify-content:center;
+      border: 1px solid var(--hair2);
       background: rgba(0,0,0,.18);
       cursor:pointer;
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
     }
-    body[data-theme="light"] .selectLike{background: rgba(255,255,255,.65)}
-    .selectLike:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.22); background: rgba(0,0,0,.22)}
-    body[data-theme="light"] .selectLike:hover{background: rgba(255,255,255,.82)}
-    .selectLike:active{transform: translateY(0px) scale(.99)}
-    .selectLike .val{font-weight:900}
-    .selectLike .hint{color:var(--muted); font-size:12px}
-    .timeGlow{box-shadow: 0 0 0 1px rgba(255,210,122,.12), 0 16px 50px rgba(255,210,122,.08);}
+    .heart.active{ border-color: rgba(255,94,168,.55); background: rgba(255,94,168,.12); }
 
-    /* Sticky footer inside modal */
-    .sheetFoot{
-      padding:12px 14px calc(12px + var(--safeB));
-      border-top:1px solid rgba(255,255,255,.08);
-      display:flex; gap:10px; align-items:center; justify-content:space-between;
-      flex-wrap:wrap;
-      position:sticky;
-      bottom:0;
-      background: rgba(12,12,18,.92);
-      backdrop-filter: blur(10px);
-      flex:0 0 auto;
-    }
-    body[data-theme="light"] .sheetFoot{
-      border-top:1px solid rgba(10,10,18,.08);
-      background: rgba(251,251,255,.92);
-    }
-    .note{color:var(--muted); font-size:12.5px}
-    .note b{color: rgba(255,210,122,.95)}
-
-    .toast{
-      position:fixed; left:50%; transform:translateX(-50%);
-      bottom: calc(88px + var(--safeB));
-      background: rgba(0,0,0,.55);
-      border:1px solid var(--stroke2);
+    /* ===== Floating quick book ===== */
+    .floatBar{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(14px + var(--safeBottom));
+      z-index: 35;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      background: rgba(12,12,18,.66);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(18px);
       border-radius: 999px;
-      padding:10px 12px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 18px 60px rgba(0,0,0,.45);
-      color: rgba(244,243,248,.92);
-      font-weight:900;
-      display:none;
-      z-index:120;
-      max-width: calc(100% - 24px);
+      padding: 10px 10px;
+      box-shadow: var(--shadow);
+      max-width: min(680px, calc(100vw - 22px));
     }
-    body[data-theme="light"] .toast{background: rgba(251,251,255,.78); color: rgba(11,11,15,.92)}
-    .toast.on{display:block; animation: toastIn .18s ease}
-    @keyframes toastIn{from{transform:translateX(-50%) translateY(8px); opacity:0}to{transform:translateX(-50%) translateY(0); opacity:1}}
+    .floatText{
+      font-size: 13px;
+      color: rgba(243,241,255,.86);
+      padding-left: 6px;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      max-width: 46vw;
+    }
 
-    /* Time/date/drafts/success overlays */
-    .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
+    /* ===== Modal (NO JUMP / NO ZOOM) ===== */
+    .modalOverlay{
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(0,0,0,.62);
       display:none;
-      z-index:130;
       align-items:flex-end;
       justify-content:center;
-      padding:18px;
+      padding: calc(12px + var(--safeTop)) 12px calc(12px + var(--safeBottom));
     }
-    body[data-theme="light"] .timeOverlay,
-    body[data-theme="light"] .dateOverlay,
-    body[data-theme="light"] .draftsOverlay,
-    body[data-theme="light"] .successOverlay{background: rgba(10,10,18,.35)}
-    .timeOverlay.on, .dateOverlay.on, .draftsOverlay.on, .successOverlay.on{display:flex}
-
-    .miniSheet{
-      width:min(520px, 100%);
+    .modalOverlay.open{ display:flex; }
+    .modal{
+      width: min(720px, 100%);
       border-radius: 24px;
-      border:1px solid var(--stroke2);
-      background: rgba(12,12,18,.92);
-      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(20,20,30,.96), rgba(14,14,20,.96));
+      box-shadow: 0 28px 90px rgba(0,0,0,.7);
       overflow:hidden;
-      transform: translateY(10px);
-      animation: sheetIn .22s ease forwards;
-      max-height: 80vh;
+      /* IMPORTANT: prevent any transforms / scaling issues */
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+    .modal *{
+      /* stop surprises inside modal */
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+      -webkit-text-size-adjust: 100%;
+    }
+    .modalHead{
       display:flex;
-      flex-direction:column;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 14px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
     }
-    body[data-theme="light"] .miniSheet{background: rgba(251,251,255,.92)}
-    .miniHead{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:14px 14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      flex:0 0 auto;
+    .modalTitle{
+      font-weight: 700;
+      font-size: 15px;
     }
-    body[data-theme="light"] .miniHead{border-bottom:1px solid rgba(10,10,18,.08)}
-    .miniHead h4{margin:0; font-size:13px; letter-spacing:.2px}
-    .miniBody{padding:12px; overflow:auto; -webkit-overflow-scrolling:touch; flex:1 1 auto;}
-
-    .timeGrid{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;}
+    .closeBtn{
+      width: 42px; height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+    .modalBody{
+      padding: 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .field label{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .field input, .field select{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      padding: 11px 12px;
+      outline:none;
+    }
+    .full{ grid-column: 1 / -1; }
+    .timeList{
+      display:flex; flex-wrap:wrap; gap: 8px;
+    }
     .timeBtn{
-      border-radius: 16px;
-      border:1px solid var(--stroke2);
-      background: var(--card);
-      color: rgba(244,243,248,.92);
-      padding:12px 10px;
-      font-weight:900;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
       cursor:pointer;
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-    body[data-theme="light"] .timeBtn{color: rgba(11,11,15,.92)}
-    .timeBtn:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.24); background: var(--card2)}
-    .timeBtn:active{transform: translateY(0px) scale(.98)}
-    .timeBtn.on{border-color: rgba(255,210,122,.34); background: rgba(255,210,122,.12); box-shadow: var(--glow2); color: rgba(255,210,122,.95);}
-
-    .quickRow{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
-    .qchip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:9px 11px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      background: var(--card);
-      cursor:pointer;
-      user-select:none;
-      font-size:12.5px;
-      font-weight:900;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .qchip:hover{transform: translateY(-1px); background: var(--card2); border-color: var(--stroke2)}
-    .qchip.on{border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.10); box-shadow: 0 0 0 1px rgba(255,210,122,.12)}
-    .qchip:active{transform: translateY(0px) scale(.98)}
-
-    /* Calendar */
-    .calTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
-    .calNav{display:flex; gap:10px}
-    .calBtn{
-      width:40px; height:40px; border-radius:14px;
-      border:1px solid var(--stroke2);
-      background: var(--card);
-      color: var(--text);
-      cursor:pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .calBtn:hover{transform: translateY(-1px); background: var(--card2); border-color: var(--stroke2)}
-    .calBtn:active{transform: translateY(0px) scale(.98)}
-    .calTitle{font-weight:900}
-    .calGrid{display:grid; grid-template-columns: repeat(7, 1fr); gap:8px;}
-    .calDow{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-align:center; padding:4px 0}
-    .day{
-      border-radius: 14px;
-      border:1px solid var(--stroke);
-      background: var(--card);
-      padding:10px 0;
-      text-align:center;
-      font-weight:900;
-      cursor:pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      font-size: 13px;
+      -webkit-tap-highlight-color: transparent;
       user-select:none;
     }
-    .day:hover{transform: translateY(-1px); background: var(--card2); border-color: var(--stroke2)}
-    .day:active{transform: translateY(0px) scale(.98)}
-    .day.off{opacity:.35; cursor:not-allowed; transform:none !important;}
-    .day.on{border-color: rgba(255,210,122,.34); background: rgba(255,210,122,.10); box-shadow: var(--glow2); color: rgba(255,210,122,.95);}
-    .day.has{border-color: rgba(32,227,165,.25); background: rgba(32,227,165,.08)}
-
-    /* Drafts */
-    .draftItem{
-      border:1px solid var(--stroke);
-      background: var(--card);
-      border-radius: 18px;
-      padding:12px;
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      margin-bottom:10px;
+    .timeBtn.active{
+      border-color: rgba(255,94,168,.60);
+      background: rgba(255,94,168,.12);
+      box-shadow: 0 0 0 4px rgba(255,94,168,.10);
     }
-    .draftItem b{display:block}
-    .draftActions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
-    .miniBtn2{
-      border:1px solid var(--stroke2);
-      background: var(--card2);
-      color: rgba(244,243,248,.92);
-      padding:10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight:900;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    .modalFoot{
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      gap: 10px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap: wrap;
     }
-    body[data-theme="light"] .miniBtn2{color: rgba(11,11,15,.92)}
-    .miniBtn2:hover{transform: translateY(-1px); background: var(--card); border-color: var(--stroke2)}
-    .miniBtn2:active{transform: translateY(0px) scale(.98)}
-    .miniBtn2.danger{border-color: rgba(255,79,216,.28); background: rgba(255,79,216,.10)}
+    .summary{
+      font-size: 12px;
+      color: rgba(243,241,255,.82);
+      max-width: 62ch;
+    }
 
-    /* Responsive */
+    /* ===== Empty state ===== */
+    .empty{
+      border-radius: var(--radius2);
+      border: 1px dashed rgba(255,255,255,.16);
+      background: rgba(255,255,255,.03);
+      padding: 18px;
+      color: rgba(243,241,255,.84);
+      margin-top: 10px;
+    }
+
+    /* ===== Responsive ===== */
     @media (max-width: 980px){
-      .heroInner{grid-template-columns: 1fr; }
-      .card{grid-column: span 6;}
-      .search{display:none;}
+      .hero{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 640px){
+      .topbarInner{ padding: calc(10px + var(--safeTop)) 12px 12px; }
+      .wrap{ padding: 14px 12px calc(18px + var(--safeBottom)); }
+      .brand{ min-width: 0; }
+      .brandText .title{ font-size: 20px; } /* бренд вміщається */
+      .logo{ width: 40px; height: 40px; }
+      .iconBtn{ width: 44px; height: 44px; } /* великі іконки */
+      .heroH{ font-size: 28px; }
+      .heroCard{ padding: 16px; }
+      .grid{ grid-template-columns: 1fr; }
+      .modalBody{ grid-template-columns: 1fr; }
+      .floatText{ max-width: 48vw; }
+      /* MOBILE HERO CHIPS: 3 в ряд, а haircuts нижче */
+      .chips{ gap: 8px; }
+      .chip{ padding: 10px 12px; }
+      .chip.row1{ flex: 1 1 calc(33.333% - 6px); text-align:center; }
+      .chip.row2{ flex: 1 1 calc(50% - 6px); text-align:center; }
+      .heroCTA{ margin-top: 12px; }
     }
 
-    @media (max-width: 720px){
-      .wrap{padding:14px 14px calc(170px + var(--safeB));}
-      .topbar .inner{padding:10px 14px; gap:10px;}
-      .search{display:none;}
-      .hero{padding:12px 0 6px;}
-      .heroInner{padding:16px 14px;}
-      .heroTitle{font-size:30px;}
-      .heroDesc{display:none;}
-      .ctaRow{margin-top:10px;}
-      .chip{padding:9px 10px; font-size:13px;}
-      .chips{gap:8px;}
-      .iconbtn{width:40px; height:40px;}
-      .grid{grid-template-columns: 1fr !important; gap:12px !important;}
-      .card{grid-column: span 12;}
-      .formGrid{grid-template-columns: 1fr;}
-      .timeGrid{grid-template-columns: repeat(2, 1fr);}
-      .miniCTA{opacity:1 !important; transform:none !important; pointer-events:auto !important;}
-      .card .miniCTA{position: static; padding: 0 12px 12px; margin-top:-6px;}
-      .stripCard .miniCTA{position: static; margin-top:10px;}
-      .floatbar{ bottom: calc(12px + var(--safeB)); }
-      .overlay{ padding: 12px 12px calc(12px + var(--safeB)); }
-
-      /* ✅ mobile topbar: brand left (2 lines), actions right */
-      .brand h1{font-size:16px; white-space:normal; line-height:1.03;}
-      .brand h1 .w1, .brand h1 .w2{display:block;}
-      .top-actions{gap:8px;}
-      .pill{padding:8px 10px; font-size:12.5px;}
-      #aiBtn{padding:8px 10px;}
+    /* ===== Body lock (modal) ===== */
+    .lock{
+      overflow: hidden !important;
+      touch-action: none;
+      overscroll-behavior: contain;
+      position: fixed;
+      width: 100%;
     }
 
-    /* extra-compact iPhone (Safari/PWA) */
-    @media (max-width: 420px){
-      .heroTitle{font-size:28px;}
-      .heroInner{padding:14px 12px;}
-      .ctaRow{flex-direction:column;}
-      .btn{width:100%; justify-content:center;}
-      .mbr{display:inline;}
-      /* ✅ hero chips: wrap + force line break after 3 chips */
-      .chips{flex-wrap:wrap; overflow:visible; padding-bottom:0;}
-      .chipBreak{display:block;}
-    }
+    /* small helper icons */
+    .svg{ width: 18px; height: 18px; opacity: .92; }
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="inner">
-      <a class="brand" href="./index.html" aria-label="Beauty Booking home">
+  <header class="topbar">
+    <div class="topbarInner">
+      <div class="brand" role="button" tabindex="0" id="brandHome">
         <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1><span class="w1">Beauty</span> <span class="w2">Booking</span></h1>
-          <div class="sub"></div>
+        <div class="brandText">
+          <div class="title" id="t_brand">Beauty Booking</div>
+          <div class="sub" id="t_sub">Book in seconds • Verified salons</div>
         </div>
-      </a>
-
-      <div class="search" title="Search">
-        <span style="opacity:.7">⌕</span>
-        <input id="q" placeholder="Пошук салону, району, адреси…" autocomplete="off" />
       </div>
 
-      <div class="top-actions">
-        <button id="installPill" class="pill" title="Install app">⬇️ Install</button>
+      <div class="actions">
+        <button class="iconBtn" id="btnOnlyFav" title="Only favorites" aria-label="Only favorites">
+          <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.8 4.6c-1.7-1.8-4.6-1.8-6.3 0L12 7.1 9.5 4.6c-1.7-1.8-4.6-1.8-6.3 0-1.8 1.8-1.8 4.7 0 6.5l8.8 9.1 8.8-9.1c1.8-1.8 1.8-4.7 0-6.5z"/>
+          </svg>
+        </button>
 
-        <div id="favOnly" class="pill" role="button" tabindex="0" title="Only favorites">
-          <span id="favOnlyLabel" style="font-weight:900">Only ❤️</span>
+        <button class="iconBtn" id="btnAI" title="AI help" aria-label="AI help">
+          <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v4M12 17v4M4.2 7.2l2.8 2.8M17 17l2.8 2.8M3 12h4M17 12h4M7 17l-2.8 2.8M19.8 7.2 17 10"/>
+            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/>
+          </svg>
+        </button>
+
+        <button class="iconBtn" id="btnTheme" title="Theme" aria-label="Theme">
+          <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.6A9 9 0 1 1 11.4 3a7 7 0 1 0 9.6 9.6z"/>
+          </svg>
+        </button>
+
+        <div class="iconWrap">
+          <button class="iconBtn" id="btnCart" title="Cart" aria-label="Cart">
+            <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 6h15l-1.5 9h-12z"/>
+              <path d="M6 6 5 3H2"/>
+              <circle cx="9" cy="20" r="1.5"/>
+              <circle cx="18" cy="20" r="1.5"/>
+            </svg>
+          </button>
+          <span class="badgeDot" id="cartDot" style="display:none"></span>
         </div>
-
-        <button id="aiBtn" class="pill" title="AI help" style="border-color:rgba(255,210,122,.22); background:rgba(255,210,122,.08)">
-          <span>✨</span><span style="font-weight:900">AI help</span>
-        </button>
-
-        <button id="cartBtn" class="iconbtn" title="Saved drafts">
-          🧾
-          <span id="cartBadge" class="badge" style="display:none">0</span>
-        </button>
-
-        <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
-        <button id="langBtn" class="iconbtn" title="UA / EN">🌐</button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <div class="wrap">
+  <main class="wrap">
     <section class="hero">
       <div class="heroCard">
-        <div class="heroInner">
-          <div>
-            <h2 class="heroTitle">Book beauty in <span>seconds</span>.</h2>
-            <p class="heroDesc" id="heroDesc">
-              Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.
-            </p>
+        <h1 class="heroH" id="t_h1">Luxury beauty booking, instantly.</h1>
+        <p class="heroP" id="t_h1p">Choose a service, find verified salons, and book the next available slot — in seconds.</p>
 
-            <div class="chips" id="serviceChips"></div>
+        <!-- MOBILE: 1st row (манік/педикюр/брови), 2nd row (стрижки) -->
+        <div class="chips" id="serviceChips">
+          <div class="chip row1" data-service="manicure">Манікюр</div>
+          <div class="chip row1" data-service="pedicure">Педикюр</div>
+          <div class="chip row1" data-service="brows">Брови</div>
+          <div class="chip row2" data-service="haircut_w">Стрижка (ж)</div>
+          <div class="chip row2" data-service="haircut_m">Стрижка (ч)</div>
+        </div>
 
-            <div class="ctaRow">
-              <button class="btn" id="openQuick">⚡ Quick booking <span style="opacity:.85; font-weight:800">today</span></button>
-              <button class="btn secondary" id="resetBtn">Скинути фільтри</button>
-            </div>
+        <div class="heroCTA">
+          <button class="btn primary" id="btnQuickBook">Швидкий запис</button>
+          <button class="btn" id="btnResetFilters">Скинути фільтри</button>
+          <button class="btn" id="btnHow">Як це працює</button>
+        </div>
+      </div>
 
-            <div style="margin-top:12px; color:rgba(244,243,248,.70); font-size:12.5px; line-height:1.35">
-              <span style="color:rgba(255,210,122,.95); font-weight:900">Tip:</span>
-              вибери послугу — ми одразу покажемо доступні слоти.<span class="mbr"><br></span>
-              <span style="opacity:.92">Далі — 1 клік і підтвердження в Telegram.</span>
-            </div>
-          </div>
-
-          <div class="heroSide">
-            <div class="glass" id="nextAvailCard" role="button" tabindex="0" title="Next available">
-              <div class="pad">
-                <div class="kicker" id="nextKicker">Next available near you</div>
-                <div class="bigLine" id="nextLine">—</div>
-                <div class="smallLine" id="nextSub">Tap to book instantly</div>
-              </div>
-            </div>
-
-            <div class="glass" id="lastCard" style="display:none">
-              <div class="pad">
-                <div class="kicker" id="lastKicker">Your last booking</div>
-                <div class="bigLine" id="lastLine">—</div>
-                <div class="smallLine" id="lastSub">Tap to book again</div>
-              </div>
-            </div>
+      <div class="heroSide">
+        <div class="panel" id="nextPanel">
+          <div class="kicker" id="t_next">Next available near you</div>
+          <div class="big" id="nextBig">—</div>
+          <div class="mini" id="nextMini">—</div>
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn primary" id="btnNextBook">Book this slot</button>
+            <button class="btn" id="btnWhy">Why this one?</button>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="section" id="aiSection" style="display:none">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle" id="aiTitle">AI concierge</h3>
-          <p class="sectionNote" id="aiNote">Напиши, що потрібно — підберу 3 варіанти.</p>
-        </div>
-      </div>
-
-      <div class="glass">
-        <div class="pad">
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-            <input id="aiInput" placeholder="Напр: манікюр сьогодні після 18 до 60$ недалеко" style="
-              flex:1; min-width:220px;
-              padding:12px 12px;
-              border-radius: 16px;
-              border:1px solid var(--stroke2);
-              background: var(--card);
-              color: rgba(244,243,248,.92);
-              outline:none;
-              font-size:16px;
-            "/>
-            <button class="btn" id="aiGo">✨ Підібрати</button>
-          </div>
-          <div id="aiPicks" class="grid" style="margin-top:12px"></div>
+        <div class="panel">
+          <div class="kicker" id="t_trust">Trusted picks</div>
+          <div class="mini" id="t_trustp">Verified • Sterile • Great price • Fast booking</div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="savedSection" style="display:none">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle" id="savedTitle">Your saved</h3>
-          <p class="sectionNote" id="savedNote">Швидкий доступ до улюблених.</p>
-        </div>
+    <section class="controls">
+      <div class="search">
+        <svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-3.5-3.5"></path>
+        </svg>
+        <input id="q" type="search" placeholder="Пошук салону, району, майстра..." autocomplete="off" />
       </div>
-      <div class="grid" id="savedGrid"></div>
+
+      <button class="pill" id="pillTop">Top partners</button>
+      <button class="pill" id="pillRec">Recommended</button>
+      <button class="pill" id="pillAll">All</button>
     </section>
 
-    <section class="section" id="partnersSection">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle" id="partnersTitle">Top salons / partners</h3>
-          <p class="sectionNote" id="partnersNote">Платні партнери (показуються тільки якщо відповідають фільтрам).</p>
-        </div>
+    <section>
+      <div class="sectionTitle">
+        <h2 id="t_section">Top salons / partners</h2>
+        <div class="note" id="countNote">—</div>
       </div>
-      <div class="strip" id="partnerStrip"></div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" style="display:none"></div>
     </section>
+  </main>
 
-    <section class="section" id="recSection">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle" id="recTitle">Recommended</h3>
-          <p class="sectionNote" id="recNote">Підібрано під доступність, ціну та близькість.</p>
-        </div>
-      </div>
-      <div class="grid" id="recGrid"></div>
-    </section>
-
-    <section class="section" id="allSection">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle" id="allTitle">All others</h3>
-          <p class="sectionNote" id="allNote">Усі інші варіанти в місті.</p>
-        </div>
-      </div>
-      <div class="grid" id="allGrid"></div>
-
-      <div id="emptyBox" class="empty" style="display:none">
-        <h3 id="emptyTitle">Немає результатів</h3>
-        <p id="emptyText">Спробуй послабити фільтри — або ось популярні варіанти.</p>
-        <div class="row">
-          <button class="btn secondary" id="emptyReset">Скинути фільтри</button>
-          <button class="btn" id="emptyShowPopular">Показати популярні</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" style="margin-top:26px">
-      <div class="glass">
-        <div class="pad" style="display:flex; gap:14px; justify-content:space-between; flex-wrap:wrap; align-items:center">
-          <div>
-            <div class="kicker">How it works</div>
-            <div class="smallLine" style="margin-top:6px">
-              Обираєш послугу → бачиш доступні слоти → підтвердження в Telegram.
-              <span style="color:rgba(255,210,122,.9); font-weight:800">Без прихованих оплат.</span> Оплата зазвичай на місці.
-            </div>
-          </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap">
-            <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank" rel="noopener">Open sample profile →</a>
-            <a class="pill" href="#" id="policiesBtn">Policies</a>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Floating quick action -->
+  <div class="floatBar" id="floatBar" style="display:none">
+    <button class="btn primary" id="floatBook">Book now</button>
+    <div class="floatText" id="floatText">—</div>
+    <button class="btn" id="floatTop">Up</button>
   </div>
-
-  <div class="floatbar">
-    <div class="inner">
-      <button class="floatCTA" id="floatQuick">⚡ Quick book</button>
-      <button class="topBtn" id="toTop" title="Back to top">↑</button>
-    </div>
-  </div>
-
-  <div id="toast" class="toast">Saved</div>
 
   <!-- Booking modal -->
-  <div id="modal" class="overlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true">
-      <div class="sheetHead">
-        <h3 id="modalTitle">Booking</h3>
-        <button class="x" id="closeModal">✕</button>
+  <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalHead">
+        <div class="modalTitle" id="modalTitle">Бронювання</div>
+        <button class="closeBtn" id="modalClose" aria-label="Close">✕</button>
       </div>
-
-      <!-- WHERE -->
-      <div id="bkWhere">
-        <div style="font-weight:900" id="bkWhereName"></div>
-        <div style="font-size:12px; opacity:.78" id="bkWhereAddr"></div>
-        <div id="bkWhereActions">
-          <a class="miniLink" id="bkWhereProfile" href="#" target="_blank" rel="noopener">👤 Profile</a>
-          <a class="miniLink" id="bkWhereMaps" href="#" target="_blank" rel="noopener">🗺️ Maps</a>
-          <span class="miniLink" id="bkWhereEta" style="display:none; cursor:default">⏱️ —</span>
-        </div>
-      </div>
-
-      <div class="sheetBody">
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
-          <div class="tag partner" id="mPartner" style="display:none">Partner</div>
-          <div class="tag good" id="mVerified" style="display:none">Verified</div>
-          <div class="tag good" id="mSterile" style="display:none">Sterile</div>
-          <div class="tag today" id="mToday" style="display:none">Available today</div>
-          <div class="tag" id="mWhy" style="display:none"></div>
+      <div class="modalBody">
+        <div class="field full">
+          <label>Салон / Майстер</label>
+          <input id="m_listing" type="text" readonly />
         </div>
 
-        <div class="formGrid">
-          <div class="field" id="fNameWrap">
-            <label>Імʼя</label>
-            <input id="fName" placeholder="Your name" autocomplete="name" />
-            <div class="hintErr">Вкажи ім’я</div>
-          </div>
-
-          <div class="field" id="fPhoneWrap">
-            <label>Телефон</label>
-            <input id="fPhone" placeholder="+1 ..." autocomplete="tel" />
-            <div class="hintErr">Вкажи телефон</div>
-          </div>
-
-          <div class="field" id="fEmailWrap">
-            <label>Email</label>
-            <input id="fEmail" placeholder="you@email.com" autocomplete="email" />
-            <div class="hintErr">Вкажи email</div>
-          </div>
-
-          <div class="field">
-            <label>Послуга</label>
-            <div class="selectLike" id="svcPick">
-              <div>
-                <div class="val" id="svcVal">—</div>
-                <div class="hint" id="svcHint">tap to cycle</div>
-              </div>
-              <div style="opacity:.85">↻</div>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Дата</label>
-            <div class="selectLike" id="datePick">
-              <div>
-                <div class="val" id="dateVal">—</div>
-                <div class="hint" id="dateHint">calendar</div>
-              </div>
-              <div style="opacity:.85">📅</div>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Час</label>
-            <div class="selectLike timeGlow" id="timePick">
-              <div>
-                <div class="val" id="timeVal">Tap to choose</div>
-                <div class="hint" id="timeHint">custom picker</div>
-              </div>
-              <div style="opacity:.85">▾</div>
-            </div>
-          </div>
+        <div class="field full">
+          <label>Де салон / адреса</label>
+          <input id="m_address" type="text" readonly />
         </div>
 
-        <div style="margin-top:12px; color:var(--muted); font-size:12.5px">
-          Підтвердження: <b style="color:rgba(244,243,248,.92)">Telegram</b> · без спаму · можна скасувати/перенести.
+        <div class="field">
+          <label>Послуга</label>
+          <select id="m_service"></select>
+        </div>
+        <div class="field">
+          <label>Час</label>
+          <div class="timeList" id="m_times"></div>
+        </div>
+
+        <div class="field">
+          <label>Імʼя</label>
+          <input id="m_name" type="text" placeholder="Твоє імʼя" />
+        </div>
+        <div class="field">
+          <label>Телефон</label>
+          <input id="m_phone" type="tel" placeholder="+1 ..." />
+        </div>
+        <div class="field full">
+          <label>Email</label>
+          <input id="m_email" type="email" placeholder="you@email.com" />
         </div>
       </div>
-
-      <div class="sheetFoot">
-        <div class="note" id="priceLine">—</div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
-          <button class="btn secondary" id="saveDraftBtn">Save draft</button>
-          <button class="btn secondary" id="openProfileBtn">Profile</button>
-          <button class="btn" id="submitBooking" disabled>Confirm in Telegram</button>
+      <div class="modalFoot">
+        <div class="summary" id="m_summary">—</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn" id="m_cancel">Cancel</button>
+          <button class="btn primary" id="m_submit">Confirm booking</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Time picker -->
-  <div id="timeOverlay" class="timeOverlay" aria-hidden="true">
-    <div class="miniSheet" role="dialog" aria-modal="true">
-      <div class="miniHead">
-        <h4 id="timeTitle">Choose time</h4>
-        <button class="x" id="closeTime">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="quickRow">
-          <div class="qchip" id="tfToday">Today</div>
-          <div class="qchip" id="tfAfter18">After 18</div>
-          <div class="qchip" id="tfEarliest">Earliest</div>
-          <div class="qchip" id="tfCheapest">Cheapest</div>
-        </div>
-        <div id="timeGrid" class="timeGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Date calendar -->
-  <div id="dateOverlay" class="dateOverlay" aria-hidden="true">
-    <div class="miniSheet" role="dialog" aria-modal="true">
-      <div class="miniHead">
-        <h4 id="dateTitle">Choose date</h4>
-        <button class="x" id="closeDate">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="calTop">
-          <div class="calTitle" id="calTitle">—</div>
-          <div class="calNav">
-            <button class="calBtn" id="calPrev">←</button>
-            <button class="calBtn" id="calNext">→</button>
-          </div>
-        </div>
-        <div class="calGrid" id="calDow"></div>
-        <div class="calGrid" id="calGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Drafts -->
-  <div id="draftsOverlay" class="draftsOverlay" aria-hidden="true">
-    <div class="miniSheet" role="dialog" aria-modal="true" style="width:min(640px,100%)">
-      <div class="miniHead">
-        <h4 id="draftsTitle">Saved drafts</h4>
-        <button class="x" id="closeDrafts">✕</button>
-      </div>
-      <div class="miniBody">
-        <div id="draftsList"></div>
-        <div class="note" style="margin-top:10px">Tip: збережи 1–3 варіанти й бронюй в 1 клік.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Success -->
-  <div id="successOverlay" class="successOverlay" aria-hidden="true">
-    <div class="miniSheet" role="dialog" aria-modal="true" style="width:min(560px,100%)">
-      <div class="miniHead">
-        <h4 id="successTitle">Booked ✅</h4>
-        <button class="x" id="closeSuccess">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="empty" style="margin:0">
-          <h3 style="margin:0 0 6px" id="successLine">Sent to Telegram ✅</h3>
-          <p style="margin:0 0 12px" id="successSub">Next:</p>
-          <div class="row">
-            <button class="btn" id="openMapsBtn">🗺️ Open Maps</button>
-            <button class="btn" id="addIcsBtn">📅 Add to Calendar</button>
-            <button class="btn secondary" id="copyDetailsBtn">Copy details</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Policies modal -->
-  <div id="polModal" class="overlay" aria-hidden="true" style="align-items:center">
-    <div class="sheet" style="max-width:820px">
-      <div class="sheetHead">
-        <h3>Policies</h3>
-        <button class="x" id="closePol">✕</button>
-      </div>
-      <div class="sheetBody" style="color:rgba(244,243,248,.86); line-height:1.55">
-        <p style="margin:0 0 10px; color:rgba(244,243,248,.9)">
-          <b>Без прихованих оплат:</b> ціна/тривалість підтверджуються в Telegram. Оплата зазвичай на місці.
-        </p>
-        <p style="margin:0 0 10px; color:rgba(244,243,248,.82)">
-          <b>Перенесення/скасування:</b> через Telegram повідомлення (проф-формат).
-        </p>
-        <p style="margin:0; color:rgba(244,243,248,.72)">
-          <b>Антиспам:</b> підозрілі заявки можуть вимагати депозит/no-show protection (коли ввімкнемо).
-        </p>
-      </div>
-    </div>
-  </div>
-
+  <!-- Data must exist: SERVICES, LISTINGS -->
   <script src="./data.js"></script>
-  <script>
-    // === CONFIG ===
-    const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
-    // === STATE ===
+  <script>
+    /******************************************************************
+     * SAFETY / STABILITY PATCHES
+     ******************************************************************/
+    const safe = {
+      setText(el, v){
+        if(!el) return;
+        el.textContent = (v ?? "").toString();
+      },
+      setHTML(el, html){
+        if(!el) return;
+        // minimal safe html: strip <script>
+        const s = (html ?? "").toString().replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi,"");
+        el.innerHTML = s;
+      }
+    };
+
+    // Modal lock (NO JUMP / NO ZOOM / NO BODY SCROLL)
+    const modalLock = {
+      _y: 0,
+      lock(){
+        this._y = window.scrollY || document.documentElement.scrollTop || 0;
+        document.body.classList.add('lock');
+        document.body.style.top = `-${this._y}px`;
+      },
+      unlock(){
+        document.body.classList.remove('lock');
+        const y = this._y;
+        document.body.style.top = '';
+        window.scrollTo(0, y);
+      }
+    };
+
+    /******************************************************************
+     * APP STATE
+     ******************************************************************/
     const LS = {
-      lang: "bb_lang",
-      favs: "bb_favs",
-      cart: "bb_cart",
-      filters: "bb_filters_v2",
-      theme: "bb_theme",
-      last: "bb_last_booking",
-      contact: "bb_contact_v1",
-      installedHide: "bb_install_hide"
+      fav: "bb_fav_v1",
+      cart: "bb_cart_v1",
+      filters: "bb_filters_v2"
     };
 
     const state = {
-      lang: localStorage.getItem(LS.lang) || "uk",
       q: "",
-      serviceId: null,
-      favOnly: false,
-      userLoc: null,
-      favs: new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]")),
-      drafts: JSON.parse(localStorage.getItem(LS.cart) || "[]"),
-      theme: localStorage.getItem(LS.theme) || "dark"
+      section: "top",     // top | rec | all
+      service: "",        // filter by service key
+      onlyFav: false,
+      fav: new Set(),
+      cart: [],
+      activeListing: null,
+      activeTime: "",
+      nextRotationTimer: null,
+      nextIndex: 0
     };
 
-    // restore filters
-    try{
-      const saved = JSON.parse(localStorage.getItem(LS.filters) || "{}");
-      if(saved){
-        if(saved.serviceId) state.serviceId = saved.serviceId;
-        if(typeof saved.q === "string") state.q = saved.q;
-        if(typeof saved.favOnly === "boolean") state.favOnly = saved.favOnly;
-      }
-    }catch(e){}
-
-    const params = new URLSearchParams(location.search);
-    const AUTO = (params.get("book")==="1" && params.get("id"))
-      ? { id: params.get("id"), service: params.get("service") || null }
-      : null;
-
-    const $ = (s, el=document) => el.querySelector(s);
-
-    const isStandalone = () =>
-      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
-      (window.navigator.standalone === true);
-
-    const T = {
-      uk: {
-        searchPh: "Пошук салону, району, адреси…",
-        heroDesc: "Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.",
-        quick: "⚡ Quick booking",
-        reset: "Скинути фільтри",
-        nextNear: "Next available near you",
-        tapBook: "Tap to book instantly",
-        aiTitle: "AI concierge",
-        aiNote: "Напиши, що потрібно — підберу 3 варіанти.",
-        aiPh: "Напр: манікюр сьогодні після 18 до 60$ недалеко",
-        aiGo: "✨ Підібрати",
-        savedTitle: "Your saved",
-        savedNote: "Швидкий доступ до улюблених.",
-        partnersTitle: "Top salons / partners",
-        partnersNote: "Платні партнери (показуються тільки якщо відповідають фільтрам).",
-        recTitle: "Recommended",
-        recNote: "Підібрано під доступність, ціну та близькість.",
-        allTitle: "All others",
-        allNote: "Усі інші варіанти в місті.",
-        emptyTitle: "Немає результатів",
-        emptyText: "Спробуй послабити фільтри — або ось популярні варіанти.",
-        emptyReset: "Скинути фільтри",
-        emptyPopular: "Показати популярні",
-        booking: "Booking",
-        confirm: "Confirm in Telegram",
-        profile: "Profile",
-        chooseTime: "Choose time",
-        chooseDate: "Choose date",
-        only: "Only ❤️",
-        toastSaved: "Saved",
-        toastErr: "Перевір поля та час",
-        toastSent: "Sent to Telegram ✅",
-        toastDraft: "Draft saved ✅",
-        toastCopied: "Copied ✅",
-        toastFilters: "Filters reset",
-        draftsTitle: "Saved drafts",
-        lastKicker: "Your last booking",
-        lastSub: "Tap to book again",
-        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install"
-      },
-      en: {
-        searchPh: "Search salon, area, address…",
-        heroDesc: "Verified salons & masters. sterile · fast · spam-free. Confirmation via Telegram.",
-        quick: "⚡ Quick booking",
-        reset: "Reset filters",
-        nextNear: "Next available near you",
-        tapBook: "Tap to book instantly",
-        aiTitle: "AI concierge",
-        aiNote: "Tell me what you need — I’ll pick 3 options.",
-        aiPh: "e.g. brows today after 6pm under $60 nearby",
-        aiGo: "✨ Suggest",
-        savedTitle: "Your saved",
-        savedNote: "Fast access to favorites.",
-        partnersTitle: "Top salons / partners",
-        partnersNote: "Paid partners (shown only if matching filters).",
-        recTitle: "Recommended",
-        recNote: "Ranked by availability, price, distance.",
-        allTitle: "All others",
-        allNote: "All other options in the city.",
-        emptyTitle: "No results",
-        emptyText: "Try loosening filters — or see popular picks.",
-        emptyReset: "Reset filters",
-        emptyPopular: "Show popular",
-        booking: "Booking",
-        confirm: "Confirm in Telegram",
-        profile: "Profile",
-        chooseTime: "Choose time",
-        chooseDate: "Choose date",
-        only: "Only ❤️",
-        toastSaved: "Saved",
-        toastErr: "Check fields and time",
-        toastSent: "Sent to Telegram ✅",
-        toastDraft: "Draft saved ✅",
-        toastCopied: "Copied ✅",
-        toastFilters: "Filters reset",
-        draftsTitle: "Saved drafts",
-        lastKicker: "Your last booking",
-        lastSub: "Tap to book again",
-        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install"
-      }
-    };
-
-    function applyTheme(){
-      document.body.dataset.theme = state.theme === "light" ? "light" : "dark";
-      const btn = $("#themeBtn");
-      if(btn) btn.textContent = (state.theme === "light") ? "☀️" : "🌙";
-      localStorage.setItem(LS.theme, state.theme);
+    function loadLS(){
+      try{
+        const f = JSON.parse(localStorage.getItem(LS.fav) || "[]");
+        state.fav = new Set(Array.isArray(f) ? f : []);
+      }catch{}
+      try{
+        const c = JSON.parse(localStorage.getItem(LS.cart) || "[]");
+        state.cart = Array.isArray(c) ? c : [];
+      }catch{}
+      try{
+        const fil = JSON.parse(localStorage.getItem(LS.filters) || "{}");
+        if(fil && typeof fil === "object"){
+          state.q = fil.q || "";
+          state.section = fil.section || "top";
+          state.service = fil.service || "";
+          state.onlyFav = !!fil.onlyFav;
+        }
+      }catch{}
     }
-
-    function toast(msg){
-      const t = $("#toast");
-      if(!t) return;
-      t.textContent = msg;
-      t.classList.add("on");
-      clearTimeout(toast._t);
-      toast._t = setTimeout(()=>t.classList.remove("on"), 1600);
-    }
-
-    function saveFilters(){
+    function saveLS(){
+      localStorage.setItem(LS.fav, JSON.stringify([...state.fav]));
+      localStorage.setItem(LS.cart, JSON.stringify(state.cart));
       localStorage.setItem(LS.filters, JSON.stringify({
-        serviceId: state.serviceId,
-        q: state.q,
-        favOnly: state.favOnly
+        q: state.q, section: state.section, service: state.service, onlyFav: state.onlyFav
       }));
     }
 
-    // === SAFE renderTexts (NO CRASH) ===
-    function renderTexts(){
-      const get = (id)=> document.getElementById(id);
-      const safeSetText = (id, txt)=>{ const el=get(id); if(el) el.textContent = (txt ?? ""); };
-      const safeSetHTML = (id, html)=>{ const el=get(id); if(el) el.innerHTML = (html ?? ""); };
-      const safeSetAttr = (id, name, v)=>{ const el=get(id); if(el) el.setAttribute(name, v); };
+    /******************************************************************
+     * HELPERS
+     ******************************************************************/
+    function norm(s){ return (s || "").toString().trim().toLowerCase(); }
 
-      const t = T[state.lang] || T.uk;
-
-      safeSetAttr("q","placeholder", t.searchPh);
-      safeSetText("heroDesc", t.heroDesc);
-      safeSetHTML("openQuick", `${t.quick} <span style="opacity:.85; font-weight:800">today</span>`);
-      safeSetText("resetBtn", t.reset);
-
-      safeSetText("nextKicker", t.nextNear);
-      safeSetText("nextSub", t.tapBook);
-
-      safeSetText("aiTitle", t.aiTitle);
-      safeSetText("aiNote", t.aiNote);
-      safeSetAttr("aiInput","placeholder", t.aiPh);
-      safeSetText("aiGo", t.aiGo);
-
-      safeSetText("savedTitle", t.savedTitle);
-      safeSetText("savedNote", t.savedNote);
-
-      safeSetText("partnersTitle", t.partnersTitle);
-      safeSetText("partnersNote", t.partnersNote);
-
-      safeSetText("recTitle", t.recTitle);
-      safeSetText("recNote", t.recNote);
-
-      safeSetText("allTitle", t.allTitle);
-      safeSetText("allNote", t.allNote);
-
-      safeSetText("emptyTitle", t.emptyTitle);
-      safeSetText("emptyText", t.emptyText);
-      safeSetText("emptyReset", t.emptyReset);
-      safeSetText("emptyShowPopular", t.emptyPopular);
-
-      safeSetText("modalTitle", t.booking);
-      safeSetText("submitBooking", t.confirm);
-      safeSetText("openProfileBtn", t.profile);
-      safeSetText("timeTitle", t.chooseTime);
-      safeSetText("dateTitle", t.chooseDate);
-
-      safeSetText("favOnlyLabel", t.only);
-      safeSetText("draftsTitle", t.draftsTitle);
-      safeSetText("lastKicker", t.lastKicker);
-      safeSetText("lastSub", t.lastSub);
-      safeSetText("installPill", "⬇️ " + t.install);
+    function getServices(){
+      // from data.js
+      const svc = (window.SERVICES || []);
+      return Array.isArray(svc) ? svc : [];
+    }
+    function getListings(){
+      const l = (window.LISTINGS || []);
+      return Array.isArray(l) ? l : [];
     }
 
-    function setLang(next){
-      state.lang = next;
-      localStorage.setItem(LS.lang, next);
-      renderTexts();
-      renderAll();
-      renderNextHeroRotating(true);
-      renderLastBookingCard();
-    }
-
-    function escapeHtml(s){
-      return String(s||"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#39;");
-    }
-
-    function highlight(text, q){
-      if(!q) return escapeHtml(text);
-      const qq = q.trim().toLowerCase();
-      if(!qq) return escapeHtml(text);
-      const src = String(text || "");
-      const idx = src.toLowerCase().indexOf(qq);
-      if(idx < 0) return escapeHtml(src);
-      const a = src.slice(0, idx);
-      const b = src.slice(idx, idx + qq.length);
-      const c = src.slice(idx + qq.length);
-      return `${escapeHtml(a)}<mark>${escapeHtml(b)}</mark>${escapeHtml(c)}`;
-    }
-
-    function formatDateShort(iso){
-      const [y,m,d] = iso.split("-").map(x=>parseInt(x,10));
-      const dt = new Date(y, m-1, d);
-      return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { weekday:"short", month:"short", day:"numeric" });
-    }
-
-    function matchesQuery(listing, q){
-      if(!q) return true;
-      const s = (listing.name+" "+(listing.brand||"")+" "+(listing.address||"")+" "+(listing.city||"")).toLowerCase();
-      return s.includes(q.toLowerCase());
-    }
-
-    function matchesService(listing, serviceId){
-      if(!serviceId) return true;
-      try{
-        return !!window.bb.util.listingService(listing, serviceId);
-      }catch(e){
-        return !!(listing.services||[]).find(s=>s.serviceId===serviceId);
-      }
-    }
-
-    function serviceLabel(serviceId){
-      const m = (window.SERVICES||[]).find(s=>s.id===serviceId);
-      if(!m) return "";
-      return state.lang === "uk" ? m.ua : m.en;
-    }
-
-    function filteredListings(){
-      const all = (window.LISTINGS||[]).slice();
-      let out = all.filter(l => matchesQuery(l, state.q) && matchesService(l, state.serviceId));
-      if(state.favOnly) out = out.filter(l => state.favs.has(l.id));
-      return out;
-    }
-
-    function groupListings(list){
-      const partners = list.filter(l => !!l.partner);
-      const rest = list.filter(l => !l.partner);
-      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(rest, state.userLoc, state.serviceId) : rest;
-      const rec = ranked.filter(l => !!l.recommended).slice(0, 6);
-      const other = ranked.filter(l => !l.recommended);
-      return { partners, rec, other };
-    }
-
-    function safeImg(url){
-      return url || "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1200&q=80";
-    }
-
-    function cardTags(listing){
-      const tags = [];
-      let slot = null;
-      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
-      if(listing.partner) tags.push({t:"Partner", cls:"partner"});
-      if(listing.verified) tags.push({t:"Verified", cls:"good"});
-      if(listing.sterile) tags.push({t:"Sterile", cls:"good"});
-      try{
-        if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today"});
-      }catch(e){}
-      try{
-        const from = window.bb.util.minPriceFor(listing, state.serviceId);
-        if(from != null) tags.push({t:`from $${from}`, cls:""});
-      }catch(e){}
-      return tags;
-    }
-
-    function buildCard(listing, big=false){
-      let slot = null;
-      let why = "";
-      try{
-        slot = window.bb.util.nextAvailable(listing, state.serviceId);
-        why = window.bb.util.computeWhy(listing, state.userLoc, state.serviceId);
-      }catch(e){
-        why = state.lang==="uk" ? "Fast pick" : "Fast pick";
-      }
-
-      const div = document.createElement("div");
-      div.className = big ? "stripCard" : "card";
-      div.dataset.id = listing.id;
-
-      const img = safeImg((listing.images||[])[0]);
-      const tagHtml = cardTags(listing).map(x=>`<span class="tag ${x.cls||""}">${x.t}</span>`).join("");
-      const whenLine = slot ? `${formatDateShort(slot.dateISO)} · ${slot.time}` : (state.lang==="uk" ? "Немає слотів" : "No slots");
-      const whyLine = `<div class="why"><span>Why:</span> ${escapeHtml(why)}</div>`;
-
-      const nm = (state.q ? highlight(listing.name, state.q) : escapeHtml(listing.name));
-      const ad = (state.q ? highlight(listing.address, state.q) : escapeHtml(listing.address));
-
-      if(big){
-        div.innerHTML = `
-          <div class="stripMedia">
-            <img src="${img}" alt="">
-            <div class="partnerBadge">💎 Partner</div>
-            <div class="microShimmer"></div>
-          </div>
-          <div class="meta">
-            <div class="row1">
-              <div>
-                <p class="name">${nm}</p>
-                <p class="addr">${ad}</p>
-              </div>
-            </div>
-            <div class="tags">${tagHtml}</div>
-            ${whyLine}
-            <div class="miniCTA" style="opacity:1; transform:none; pointer-events:auto; position:static; margin-top:10px">
-              <button class="miniBtn" data-action="book">⚡ ${whenLine}</button>
-              <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
-            </div>
-          </div>
-        `;
-      } else {
-        div.innerHTML = `
-          <div class="media">
-            <img src="${img}" alt="">
-            <div class="shine"></div>
-          </div>
-          <div class="meta">
-            <div class="row1">
-              <div style="min-width:0">
-                <p class="name">${nm}</p>
-                <p class="addr">${ad}</p>
-              </div>
-            </div>
-            <div class="tags">${tagHtml}</div>
-            ${whyLine}
-          </div>
-          <div class="miniCTA">
-            <button class="miniBtn" data-action="book">⚡ ${whenLine}</button>
-            <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
-          </div>
-        `;
-      }
-
-      div.addEventListener("click", (e)=>{
-        const act = e.target?.dataset?.action;
-        if(act === "fav" || act === "book") return;
-        location.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-      });
-
-      div.querySelectorAll('[data-action="fav"]').forEach(btn=>{
-        btn.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          toggleFav(listing.id, btn);
-        });
-      });
-
-      div.querySelectorAll('[data-action="book"]').forEach(btn=>{
-        btn.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          openBooking(listing.id, state.serviceId, slot);
-        });
-      });
-
-      return div;
-    }
-
-    function toggleFav(id, el){
-      if(state.favs.has(id)) state.favs.delete(id);
-      else state.favs.add(id);
-      localStorage.setItem(LS.favs, JSON.stringify(Array.from(state.favs)));
-      if(el){
-        el.classList.toggle("on", state.favs.has(id));
-        el.classList.add("favPop");
-        setTimeout(()=>el.classList.remove("favPop"), 260);
-      }
-      toast(T[state.lang].toastSaved);
-      renderSaved();
-      if(state.favOnly) renderAll();
-    }
-
-    function updateDraftBadge(){
-      const n = state.drafts.length;
-      const b = $("#cartBadge");
-      if(b){
-        if(n>0){ b.style.display="grid"; b.textContent = String(n); }
-        else b.style.display="none";
-      }
-      localStorage.setItem(LS.cart, JSON.stringify(state.drafts));
-    }
-
-    function renderServiceChips(){
-      const box = $("#serviceChips");
-      if(!box) return;
-      box.innerHTML = "";
-
-      const all = (window.SERVICES||[]).slice();
-
-      // preferred luxury order: first row manicure/pedicure/brows, second row haircuts
-      const pref = ["manicure","pedicure","brows","haircut_men","haircut_women","haircut"];
-      const byId = new Map(all.map(x=>[x.id,x]));
-      const ordered = [];
-      pref.forEach(id=>{ if(byId.has(id)) ordered.push(byId.get(id)); });
-      all.forEach(s=>{ if(!ordered.includes(s)) ordered.push(s); });
-
-      ordered.forEach((s, idx)=>{
-        const chip = document.createElement("div");
-        chip.className = "chip" + (state.serviceId===s.id ? " on":"");
-        chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
-        chip.addEventListener("click", ()=>{
-          state.serviceId = (state.serviceId===s.id) ? null : s.id;
-          saveFilters();
-          renderServiceChips();
-          renderAll();
-          refreshHeroCandidates(true);
-          const sec = $("#partnersSection");
-          if(sec){
-            const y = sec.getBoundingClientRect().top + window.scrollY - 72;
-            window.scrollTo({top:y, behavior:"smooth"});
-          }
-        });
-        box.appendChild(chip);
-
-        // force line break after 3 chips on very small screens
-        if(idx === 2){
-          const br = document.createElement("div");
-          br.className = "chipBreak";
-          box.appendChild(br);
-        }
-      });
-    }
-
-    // HERO rotation
-    let heroRot = { idx: 0, list: [], timer: null };
-
-    function computeNextCandidates(){
-      const base = filteredListings();
-      const list = base.length ? base : (window.LISTINGS||[]).slice();
-      const partners = list.filter(l => !!l.partner && matchesService(l, state.serviceId));
-      const pool = partners.length ? partners : list;
-
-      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(pool, state.userLoc, state.serviceId) : pool;
-      const withSlots = ranked.filter(l => {
-        try{ return !!window.bb.util.nextAvailable(l, state.serviceId); }catch(e){ return false; }
-      });
-      return withSlots.slice(0, 8);
-    }
-
-    function setHeroCardAnimated(lineTxt, subTxt){
-      const line = $("#nextLine");
-      const sub = $("#nextSub");
-      if(!line || !sub) return;
-      line.style.transition = "opacity .25s ease, transform .25s ease";
-      sub.style.transition  = "opacity .25s ease, transform .25s ease";
-      line.style.opacity = "0";
-      sub.style.opacity  = "0";
-      line.style.transform = "translateY(4px)";
-      sub.style.transform  = "translateY(4px)";
-      setTimeout(()=>{
-        line.textContent = lineTxt;
-        sub.textContent = subTxt;
-        line.style.opacity = "1";
-        sub.style.opacity = "1";
-        line.style.transform = "translateY(0)";
-        sub.style.transform  = "translateY(0)";
-      }, 180);
-    }
-
-    function refreshHeroCandidates(resetIdx=false){
-      const nextList = computeNextCandidates();
-      const prevIds = heroRot.list.map(x=>x.id).join("|");
-      const nextIds = nextList.map(x=>x.id).join("|");
-      heroRot.list = nextList;
-      if(resetIdx || prevIds !== nextIds) heroRot.idx = 0;
-    }
-
-    function renderNextHeroRotating(animate=false){
-      if(!heroRot.list.length) refreshHeroCandidates(true);
-
-      const lineEl = $("#nextLine");
-      const card = $("#nextAvailCard");
-
-      if(!heroRot.list.length){
-        if(lineEl) lineEl.textContent = state.lang==="uk" ? "Немає слотів поруч" : "No nearby slots";
-        if(card){ card.onclick = null; card.onkeydown = null; }
-        return;
-      }
-
-      heroRot.idx = heroRot.idx % heroRot.list.length;
-      const listing = heroRot.list[heroRot.idx];
-      let slot = null;
-      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
-      if(!slot) return;
-
-      const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || ""));
-      const from = (slot.fromPrice != null) ? `${slot.fromPrice}` : "";
-      const todayISO = new Date().toISOString().slice(0,10);
-      const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today") : formatDateShort(slot.dateISO);
-
-      const lineTxt = `${listing.name} · ${day} ${slot.time} · from $${from}`;
-      const subTxt  = state.lang==="uk" ? `Tap to book · ${svc || "service"}` : `Tap to book · ${svc || "service"}`;
-
-      if(animate) setHeroCardAnimated(lineTxt, subTxt);
-      else {
-        const subEl = $("#nextSub");
-        if(lineEl) lineEl.textContent = lineTxt;
-        if(subEl) subEl.textContent = subTxt;
-      }
-
-      if(card){
-        card.onclick = ()=> openBooking(listing.id, state.serviceId, slot);
-        card.onkeydown = (e)=>{ if(e.key==="Enter") openBooking(listing.id, state.serviceId, slot); };
-      }
-    }
-
-    function startHeroRotationOnce(){
-      if(heroRot.timer) return;
-      heroRot.timer = setInterval(()=>{
-        if(!heroRot.list.length) refreshHeroCandidates(true);
-        if(!heroRot.list.length) return;
-        heroRot.idx = (heroRot.idx + 1) % heroRot.list.length;
-        renderNextHeroRotating(true);
-      }, 10000);
-    }
-
-    function renderSaved(){
-      const sec = $("#savedSection");
-      const grid = $("#savedGrid");
-      if(!sec || !grid) return;
-      const favList = (window.LISTINGS||[]).filter(l=>state.favs.has(l.id));
-      if(favList.length === 0){
-        sec.style.display = "none";
-        return;
-      }
-      sec.style.display = "block";
-      grid.innerHTML = "";
-      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(favList, state.userLoc, state.serviceId) : favList;
-      ranked.slice(0,6).forEach(l => grid.appendChild(buildCard(l,false)));
-    }
-
-    function renderAll(){
-      const list = filteredListings();
-      const { partners, rec, other } = groupListings(list);
-
-      const p = $("#partnerStrip"), r = $("#recGrid"), a = $("#allGrid");
-      if(p) p.innerHTML = "";
-      if(r) r.innerHTML = "";
-      if(a) a.innerHTML = "";
-
-      if(p) partners.forEach(l => p.appendChild(buildCard(l,true)));
-      if(r) rec.forEach(l => r.appendChild(buildCard(l,false)));
-      if(a) other.forEach(l => a.appendChild(buildCard(l,false)));
-
-      const empty = $("#emptyBox");
-      const noRes = list.length === 0;
-      if(empty) empty.style.display = noRes ? "block" : "none";
-      if(noRes){
-        if(p) p.innerHTML = "";
-        if(r) r.innerHTML = "";
-        if(a) a.innerHTML = "";
-      }
-
-      renderSaved();
-      refreshHeroCandidates(false);
-      renderNextHeroRotating(false);
-    }
-
-    // AI (simple heuristic picks)
-    function toggleAI(open){
-      const sec = $("#aiSection");
-      if(!sec) return;
-      sec.style.display = open ? "block" : "none";
-      if(open){
-        const y = sec.getBoundingClientRect().top + window.scrollY - 72;
-        window.scrollTo({top:y, behavior:"smooth"});
-        const inp = $("#aiInput");
-        if(inp) inp.focus();
-      }
-    }
-    function runAIQuery(text){
-      const q = String(text||"").toLowerCase();
-      let serviceId = state.serviceId;
-      if(!serviceId){
-        const svc = (window.SERVICES||[]).find(s => (s.ua||"").toLowerCase().includes(q) || (s.en||"").toLowerCase().includes(q));
-        if(svc) serviceId = svc.id;
-      }
-      const pool = (window.LISTINGS||[]).filter(l => matchesService(l, serviceId));
-      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(pool, state.userLoc, serviceId) : pool;
-      return { picks: ranked.slice(0,3).map(x=>({id:x.id})) };
-    }
-    function renderAIPicks(result){
-      const grid = $("#aiPicks");
-      if(!grid) return;
-      grid.innerHTML = "";
-      const picks = result?.picks || [];
-      if(picks.length === 0){
-        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3 style="margin:0 0 6px">No picks</h3><p style="margin:0; color:var(--muted)">Try another request.</p></div>`;
-        return;
-      }
-      picks.forEach(p=>{
-        const listing = (window.LISTINGS||[]).find(x=>x.id===p.id);
-        if(!listing) return;
-        grid.appendChild(buildCard(listing,false));
-      });
-    }
-
-    // === Booking modal state ===
-    const booking = {
-      listingId: null,
-      serviceId: null,
-      dateISO: null,
-      time: null,
-      dates: [],
-      times: [],
-      timeFilter: null,
-      lastPayload: null
-    };
-
-    function getSavedContact(){
-      try{ return JSON.parse(localStorage.getItem(LS.contact) || "null"); }catch(e){ return null; }
-    }
-    function saveContact(){
-      const n = $("#fName"), p = $("#fPhone"), e = $("#fEmail");
-      if(!n || !p || !e) return;
-      const payload = { name: n.value.trim(), phone: p.value.trim(), email: e.value.trim() };
-      if(payload.name || payload.phone || payload.email){
-        localStorage.setItem(LS.contact, JSON.stringify(payload));
-      }
-    }
-    function autofillContact(){
-      const c = getSavedContact();
-      if(!c) return;
-      const n = $("#fName"), p = $("#fPhone"), e = $("#fEmail");
-      if(n && n.value.trim()==="") n.value = c.name || "";
-      if(p && p.value.trim()==="") p.value = c.phone || "";
-      if(e && e.value.trim()==="") e.value = c.email || "";
-    }
-
-    function clearFieldErrors(){
-      ["fNameWrap","fPhoneWrap","fEmailWrap"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el) el.classList.remove("err");
-      });
-    }
-
-    function isEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||"").trim()); }
-    function isPhone(v){ return String(v||"").replace(/[^\d+]/g,"").length >= 8; }
-
-    function updateConfirmState(){
-      const btn = $("#submitBooking");
-      const name = $("#fName")?.value?.trim() || "";
-      const phone = $("#fPhone")?.value?.trim() || "";
-      const email = $("#fEmail")?.value?.trim() || "";
-
-      const ok = !!booking.listingId && !!booking.serviceId && !!booking.dateISO && !!booking.time
-        && name.length>=2 && isPhone(phone) && isEmail(email);
-
-      if(btn) btn.disabled = !ok;
-    }
-
-    function haversineKm(lat1, lon1, lat2, lon2){
-      const toRad = (x)=> x * Math.PI / 180;
-      const R = 6371;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return 2*R*Math.asin(Math.sqrt(a));
-    }
-
-    function renderBookingWhere(listing){
-      const box  = document.getElementById("bkWhere");
-      const name = document.getElementById("bkWhereName");
-      const addr = document.getElementById("bkWhereAddr");
-      const prof = document.getElementById("bkWhereProfile");
-      const maps = document.getElementById("bkWhereMaps");
-      const eta  = document.getElementById("bkWhereEta");
-      if(!box || !name || !addr || !prof || !maps) return;
-
-      if(!listing){
-        box.style.display = "none";
-        return;
-      }
-
-      box.style.display = "flex";
-      name.textContent = listing.name || "";
-      addr.textContent = listing.address || "";
-      prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-      maps.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address||"")}`;
-
-      if(eta) eta.style.display = "none";
-      if(state.userLoc && listing.lat && listing.lng && eta){
-        const dkm = haversineKm(state.userLoc.lat, state.userLoc.lng, listing.lat, listing.lng);
-        const mins = Math.max(3, Math.round(dkm * 3));
-        eta.textContent = `⏱️ ~${mins} min`;
-        eta.style.display = "inline-flex";
-      }
-    }
-
-    function openBooking(listingId, serviceId, presetSlot=null){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===listingId);
-      if(!listing) return;
-
-      booking.listingId = listingId;
-
-      const svcList = listing.services || [];
-      let targetServiceId =
-        serviceId && matchesService(listing, serviceId)
-          ? serviceId
-          : (svcList[0]?.serviceId || null);
-      booking.serviceId = targetServiceId;
-
-      const av = listing.availability || {};
-      booking.dates = Object.keys(av).sort().filter(d => (av[d]||[]).length>0);
-      booking.dateISO = presetSlot?.dateISO || booking.dates[0] || null;
-
-      booking.times = booking.dateISO ? (av[booking.dateISO] || []).slice().sort() : [];
-      booking.time = presetSlot?.time || booking.times[0] || null;
-
-      // tags
-      const mPartner = $("#mPartner"), mVerified = $("#mVerified"), mSterile = $("#mSterile"), mToday = $("#mToday"), mWhy = $("#mWhy");
-      if(mPartner) mPartner.style.display = listing.partner ? "inline-flex" : "none";
-      if(mVerified) mVerified.style.display = listing.verified ? "inline-flex" : "none";
-      if(mSterile) mSterile.style.display = listing.sterile ? "inline-flex" : "none";
-
-      let slot = null;
-      try{ slot = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
-      try{
-        if(mToday) mToday.style.display = (slot && window.bb.util.isTodaySlot(slot)) ? "inline-flex" : "none";
-      }catch(e){ if(mToday) mToday.style.display = "none"; }
-
-      if(mWhy){
-        mWhy.style.display = "inline-flex";
-        try{ mWhy.textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId); }
-        catch(e){ mWhy.textContent = "Why: fast pick"; }
-      }
-
-      renderBookingWhere(listing);
-
-      const svcMeta = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcVal = $("#svcVal"), dateVal = $("#dateVal"), timeVal = $("#timeVal");
-      if(svcVal) svcVal.textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
-      if(dateVal) dateVal.textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
-      if(timeVal) timeVal.textContent = booking.time ? booking.time : "Tap to choose";
-
-      const svcObj = window.bb?.util?.listingService
-        ? window.bb.util.listingService(listing, booking.serviceId)
-        : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
-
-      const label = serviceLabel(booking.serviceId);
-      const priceLine = $("#priceLine");
-      if(priceLine){
-        if(svcObj) priceLine.textContent = T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin);
-        else priceLine.textContent = "—";
-      }
-
-      autofillContact();
-      clearFieldErrors();
-      updateConfirmState();
-
-      const openProfileBtn = $("#openProfileBtn");
-      if(openProfileBtn) openProfileBtn.onclick = ()=> { location.href = `./profile.html?id=${encodeURIComponent(listingId)}`; };
-
-      const svcPick = $("#svcPick");
-      if(svcPick) svcPick.onclick = ()=>{
-        if(!svcList.length) return;
-        const idx = Math.max(0, svcList.findIndex(s=>s.serviceId===booking.serviceId));
-        const next = svcList[(idx+1) % svcList.length];
-        openBooking(listingId, next.serviceId, null);
-      };
-
-      const datePick = $("#datePick");
-      if(datePick) datePick.onclick = ()=> openDatePicker(listing);
-
-      const timePick = $("#timePick");
-      if(timePick) timePick.onclick = ()=> openTimePicker(listing);
-
-      const saveDraftBtn = $("#saveDraftBtn");
-      if(saveDraftBtn) saveDraftBtn.onclick = ()=> saveDraftCurrent();
-
-      const modal = $("#modal");
-      if(modal){
-        modal.classList.add("on");
-        modal.setAttribute("aria-hidden","false");
-      }
-    }
-
-    function closeBooking(){
-      const m = $("#modal");
-      if(!m) return;
-      m.classList.remove("on");
-      m.setAttribute("aria-hidden","true");
-    }
-
-    // === Time picker ===
-    function closeTimePicker(){
-      const o = $("#timeOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-    }
-
-    function setTimeFilter(next){
-      booking.timeFilter = (booking.timeFilter === next) ? null : next;
-      const on = (id, v)=> { const el=$(id); if(el) el.classList.toggle("on", booking.timeFilter === v); };
-      on("#tfToday","today");
-      on("#tfAfter18","after18");
-      on("#tfEarliest","earliest");
-      on("#tfCheapest","cheapest");
-    }
-
-    function pickTodayIfAvailable(listing){
-      const todayISO = new Date().toISOString().slice(0,10);
-      const times = (listing.availability?.[todayISO] || []).slice().sort();
-      if(times.length){
-        booking.dateISO = todayISO;
-        const dateVal = $("#dateVal"); if(dateVal) dateVal.textContent = formatDateShort(todayISO);
-        booking.times = times;
-        booking.time = times[0] || null;
-        const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = booking.time || "Tap to choose";
-        updateConfirmState();
-        return true;
-      }
+    function listingSupportsService(listing, serviceKey){
+      if(!serviceKey) return true;
+      const arr = listing?.services || listing?.serviceKeys || listing?.tags || [];
+      if(Array.isArray(arr)) return arr.map(norm).includes(norm(serviceKey));
       return false;
     }
 
-    function openTimePicker(listing){
-      const overlay = $("#timeOverlay");
-      const grid = $("#timeGrid");
-      if(!overlay || !grid) return;
+    function computeSection(listing){
+      // Keep it flexible: data.js may provide booleans / ranks
+      if(listing?.isPartner || listing?.partner) return "top";
+      if(listing?.isRecommended || listing?.recommended) return "rec";
+      return "all";
+    }
 
-      function renderTimes(){
-        grid.innerHTML = "";
-        let times = (listing.availability?.[booking.dateISO] || []).slice().sort();
+    function formatPriceFrom(listing, serviceKey){
+      // attempt: listing.prices[serviceKey] or service price object
+      const prices = listing?.prices || {};
+      const v = prices?.[serviceKey] ?? prices?.[norm(serviceKey)];
+      if(typeof v === "number") return `$${v}`;
+      if(typeof v === "string" && v.trim()) return v;
+      // fallback: show minimal
+      if(typeof listing?.fromPrice === "number") return `$${listing.fromPrice}`;
+      return "—";
+    }
 
-        if(booking.timeFilter === "today"){
-          pickTodayIfAvailable(listing);
-          times = (listing.availability?.[booking.dateISO] || []).slice().sort();
-        }
-        if(booking.timeFilter === "after18"){
-          times = times.filter(t => parseInt(t.split(":")[0]||"0",10) >= 18);
-        }
-        if(booking.timeFilter === "earliest"){
-          // already sorted; keep
-        }
-        if(booking.timeFilter === "cheapest"){
-          // cheapest pick is resolved via service price; keep time list normal (no fake ordering)
-        }
+    function getTimesFor(listing, serviceKey){
+      // requirement: show ONLY nearest slots (times), no "count" indicator
+      const all = listing?.slots || listing?.times || listing?.availability || {};
+      let arr = [];
+      if(Array.isArray(all)) arr = all;
+      else if(serviceKey && Array.isArray(all?.[serviceKey])) arr = all[serviceKey];
+      else if(Array.isArray(all?.default)) arr = all.default;
 
-        if(!times.length){
-          grid.innerHTML = `<div class="empty" style="grid-column:1/-1; margin:0">
-            <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає слотів":"No slots"}</h3>
-            <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Спробуй інший день":"Try another date"}</p>
-          </div>`;
-          return;
-        }
+      arr = (arr || []).map(x => (x ?? "").toString()).filter(Boolean);
+      // keep only up to 6 nearest times
+      return arr.slice(0, 6);
+    }
 
-        times.forEach(t=>{
-          const b = document.createElement("button");
-          b.className = "timeBtn" + (booking.time===t ? " on":"");
-          b.textContent = t;
-          b.addEventListener("click", ()=>{
-            booking.time = t;
-            const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = t;
-            updateConfirmState();
-            closeTimePicker();
-          });
-          grid.appendChild(b);
+    function pickNextAvailable(){
+      const list = getListings()
+        .filter(x => listingSupportsService(x, state.service || ""))
+        .filter(x => !state.onlyFav || state.fav.has(x.id))
+        .filter(x => {
+          const q = norm(state.q);
+          if(!q) return true;
+          const blob = norm([x.name, x.title, x.address, x.city, x.area, (x.tags||[]).join(" ")].join(" "));
+          return blob.includes(q);
+        });
+
+      if(list.length === 0) return null;
+
+      // rotate through candidates, prefer those with any times
+      const withTimes = list.filter(x => getTimesFor(x, state.service || "").length > 0);
+      const arr = withTimes.length ? withTimes : list;
+
+      state.nextIndex = (state.nextIndex + 1) % arr.length;
+      return arr[state.nextIndex];
+    }
+
+    /******************************************************************
+     * RENDER
+     ******************************************************************/
+    const els = {};
+    function bindEls(){
+      els.q = document.getElementById("q");
+      els.grid = document.getElementById("grid");
+      els.empty = document.getElementById("empty");
+      els.countNote = document.getElementById("countNote");
+
+      els.pillTop = document.getElementById("pillTop");
+      els.pillRec = document.getElementById("pillRec");
+      els.pillAll = document.getElementById("pillAll");
+
+      els.btnOnlyFav = document.getElementById("btnOnlyFav");
+      els.btnResetFilters = document.getElementById("btnResetFilters");
+      els.btnQuickBook = document.getElementById("btnQuickBook");
+      els.brandHome = document.getElementById("brandHome");
+
+      els.btnCart = document.getElementById("btnCart");
+      els.cartDot = document.getElementById("cartDot");
+
+      els.nextBig = document.getElementById("nextBig");
+      els.nextMini = document.getElementById("nextMini");
+      els.btnNextBook = document.getElementById("btnNextBook");
+      els.btnWhy = document.getElementById("btnWhy");
+      els.btnAI = document.getElementById("btnAI");
+      els.btnTheme = document.getElementById("btnTheme");
+      els.btnHow = document.getElementById("btnHow");
+
+      els.floatBar = document.getElementById("floatBar");
+      els.floatBook = document.getElementById("floatBook");
+      els.floatText = document.getElementById("floatText");
+      els.floatTop = document.getElementById("floatTop");
+
+      // modal
+      els.modalOverlay = document.getElementById("modalOverlay");
+      els.modalClose = document.getElementById("modalClose");
+      els.m_cancel = document.getElementById("m_cancel");
+      els.m_submit = document.getElementById("m_submit");
+      els.m_listing = document.getElementById("m_listing");
+      els.m_address = document.getElementById("m_address");
+      els.m_service = document.getElementById("m_service");
+      els.m_times = document.getElementById("m_times");
+      els.m_name = document.getElementById("m_name");
+      els.m_phone = document.getElementById("m_phone");
+      els.m_email = document.getElementById("m_email");
+      els.m_summary = document.getElementById("m_summary");
+
+      // chips
+      els.serviceChips = document.getElementById("serviceChips");
+    }
+
+    function renderHeader(){
+      // cart dot
+      els.cartDot.style.display = (state.cart?.length ? "inline-block" : "none");
+
+      // section pills
+      els.pillTop.classList.toggle("active", state.section === "top");
+      els.pillRec.classList.toggle("active", state.section === "rec");
+      els.pillAll.classList.toggle("active", state.section === "all");
+
+      // only fav
+      els.btnOnlyFav.classList.toggle("active", state.onlyFav);
+
+      // chips active
+      [...els.serviceChips.querySelectorAll(".chip")].forEach(ch => {
+        ch.classList.toggle("active", norm(ch.dataset.service) === norm(state.service));
+      });
+    }
+
+    function renderNext(){
+      const nxt = pickNextAvailable();
+      state._next = nxt;
+
+      if(!nxt){
+        safe.setText(els.nextBig, "Немає підходящих варіантів 😕");
+        safe.setText(els.nextMini, "Спробуй інший сервіс або очисти фільтри.");
+        els.btnNextBook.disabled = true;
+        return;
+      }
+
+      const times = getTimesFor(nxt, state.service || "");
+      const t = times[0] || "Today";
+      const from = formatPriceFrom(nxt, state.service || "");
+      safe.setText(els.nextBig, `${nxt.name || nxt.title || "Salon"} — ${t}`);
+      safe.setText(els.nextMini, `${from} • ${nxt.address || nxt.area || ""}`);
+      els.btnNextBook.disabled = false;
+
+      els.floatBar.style.display = "flex";
+      safe.setText(els.floatText, `${nxt.name || "Salon"} • ${t} • ${from}`);
+    }
+
+    function applyFilters(list){
+      let out = [...list];
+
+      // section: show as requested order: Top → Recommended → Others
+      // but pills let user pick view. Here we filter based on state.section.
+      if(state.section !== "all"){
+        out = out.filter(x => computeSection(x) === state.section);
+      }
+
+      // service
+      out = out.filter(x => listingSupportsService(x, state.service));
+
+      // only fav
+      if(state.onlyFav){
+        out = out.filter(x => state.fav.has(x.id));
+      }
+
+      // query
+      const q = norm(state.q);
+      if(q){
+        out = out.filter(x => {
+          const blob = norm([x.name, x.title, x.address, x.city, x.area, (x.tags||[]).join(" ")].join(" "));
+          return blob.includes(q);
         });
       }
 
-      // quick chips
-      const bind = (id, mode)=>{
-        const el = $(id);
-        if(!el) return;
-        el.onclick = ()=>{
-          setTimeFilter(mode);
-          renderTimes();
-        };
+      return out;
+    }
+
+    function sortDefault(list){
+      // keep stable sorting: partners first, then recommended, then rest
+      const rank = (x) => {
+        if(x?.isPartner || x?.partner) return 0;
+        if(x?.isRecommended || x?.recommended) return 1;
+        return 2;
       };
-      bind("#tfToday","today");
-      bind("#tfAfter18","after18");
-      bind("#tfEarliest","earliest");
-      bind("#tfCheapest","cheapest");
-      setTimeFilter(null); // reset highlights
-      renderTimes();
-
-      overlay.classList.add("on");
-      overlay.setAttribute("aria-hidden","false");
+      return list.sort((a,b) => rank(a)-rank(b));
     }
 
-    // === Date picker ===
-    function closeDatePicker(){
-      const o = $("#dateOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-    }
+    function cardHTML(x){
+      const img = x.image || x.img || x.photo || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
+      const name = x.name || x.title || "Salon";
+      const address = x.address || x.location || x.area || "";
+      const sec = computeSection(x);
+      const times = getTimesFor(x, state.service || "");
+      const t0 = times[0] || "—";
+      const from = formatPriceFrom(x, state.service || "");
+      const favOn = state.fav.has(x.id);
 
-    function openDatePicker(listing){
-      const overlay = $("#dateOverlay");
-      const grid = $("#calGrid");
-      const dow = $("#calDow");
-      const title = $("#calTitle");
-      if(!overlay || !grid || !dow || !title) return;
+      const tags = [];
+      if(sec === "top") tags.push(`<span class="tag good">Partner</span>`);
+      if(x.verified) tags.push(`<span class="tag pink">Verified</span>`);
+      if(x.sterile) tags.push(`<span class="tag violet">Sterile</span>`);
+      tags.push(`<span class="tag">From ${from}</span>`);
+      if(t0 && t0 !== "—") tags.push(`<span class="tag">Today ${t0}</span>`);
 
-      const locale = state.lang==="uk" ? "uk-UA" : "en-CA";
-      const dowNames = state.lang==="uk"
-        ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
-        : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      return `
+        <article class="card" data-id="${x.id}">
+          <div class="img">
+            <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=80';" />
+          </div>
+          <div class="cardBody">
+            <div class="cardTop">
+              <div>
+                <div class="name">${name}</div>
+                <div class="addr">${address}</div>
+                <div class="tags">${tags.join("")}</div>
+              </div>
+              <button class="heart ${favOn ? "active":""}" data-action="fav" aria-label="Favorite">❤</button>
+            </div>
 
-      dow.innerHTML = "";
-      dowNames.forEach(x=>{
-        const d = document.createElement("div");
-        d.className = "calDow";
-        d.textContent = x;
-        dow.appendChild(d);
-      });
-
-      const availableSet = new Set(Object.keys(listing.availability||{}).filter(d => (listing.availability[d]||[]).length));
-
-      // current month based on booking.dateISO
-      const base = booking.dateISO ? new Date(booking.dateISO+"T00:00:00") : new Date();
-      let viewY = base.getFullYear();
-      let viewM = base.getMonth(); // 0-11
-
-      function render(){
-        const dt = new Date(viewY, viewM, 1);
-        title.textContent = dt.toLocaleDateString(locale, { month:"long", year:"numeric" });
-
-        grid.innerHTML = "";
-
-        // monday-start offset
-        const firstDay = new Date(viewY, viewM, 1);
-        let start = firstDay.getDay(); // 0=Sun
-        start = (start===0) ? 6 : start-1; // 0=Mon
-
-        // days in month
-        const daysIn = new Date(viewY, viewM+1, 0).getDate();
-
-        // leading blanks
-        for(let i=0;i<start;i++){
-          const b = document.createElement("div");
-          b.className = "day off";
-          b.textContent = " ";
-          grid.appendChild(b);
-        }
-
-        for(let d=1; d<=daysIn; d++){
-          const iso = new Date(viewY, viewM, d).toISOString().slice(0,10);
-          const btn = document.createElement("div");
-          const has = availableSet.has(iso);
-          btn.className = "day" + (has ? " has":" off") + (booking.dateISO===iso ? " on":"");
-          btn.textContent = String(d);
-          if(has){
-            btn.addEventListener("click", ()=>{
-              booking.dateISO = iso;
-              booking.times = (listing.availability?.[iso] || []).slice().sort();
-              booking.time = booking.times[0] || null;
-
-              const dateVal = $("#dateVal"); if(dateVal) dateVal.textContent = formatDateShort(iso);
-              const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = booking.time || "Tap to choose";
-              updateConfirmState();
-              closeDatePicker();
-            });
-          }
-          grid.appendChild(btn);
-        }
-      }
-
-      const prev = $("#calPrev"), next = $("#calNext");
-      if(prev) prev.onclick = ()=>{ viewM--; if(viewM<0){viewM=11; viewY--;} render(); };
-      if(next) next.onclick = ()=>{ viewM++; if(viewM>11){viewM=0; viewY++;} render(); };
-
-      render();
-      overlay.classList.add("on");
-      overlay.setAttribute("aria-hidden","false");
-    }
-
-    // === Drafts ===
-    function openDrafts(){
-      const o = $("#draftsOverlay");
-      if(!o) return;
-      renderDraftsList();
-      o.classList.add("on");
-      o.setAttribute("aria-hidden","false");
-    }
-    function closeDrafts(){
-      const o = $("#draftsOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-    }
-
-    function renderDraftsList(){
-      const list = $("#draftsList");
-      if(!list) return;
-      list.innerHTML = "";
-
-      if(!state.drafts.length){
-        list.innerHTML = `<div class="empty" style="margin:0">
-          <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає чернеток":"No drafts"}</h3>
-          <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Збережи варіант у бронюванні":"Save a draft in booking"}</p>
-        </div>`;
-        return;
-      }
-
-      state.drafts.slice().reverse().forEach((d, idxRev)=>{
-        const idx = state.drafts.length - 1 - idxRev;
-        const item = document.createElement("div");
-        item.className = "draftItem";
-
-        item.innerHTML = `
-          <div style="min-width:0">
-            <b>${escapeHtml(d.listingName || "—")}</b>
-            <div style="margin-top:4px; color:var(--muted); font-size:12.5px">
-              ${escapeHtml(d.serviceLabel || "")} · ${escapeHtml(d.dateLabel || "")} · ${escapeHtml(d.time || "")}
+            <div class="cardActions">
+              <button class="miniBtn" data-action="profile">Profile</button>
+              <button class="miniBtn primary" data-action="book">Book</button>
             </div>
           </div>
-          <div class="draftActions">
-            <button class="miniBtn2" data-act="book">Book</button>
-            <button class="miniBtn2" data-act="profile">Profile</button>
-            <button class="miniBtn2 danger" data-act="del">Delete</button>
-          </div>
-        `;
-
-        item.querySelector('[data-act="book"]').onclick = ()=>{
-          closeDrafts();
-          openBooking(d.listingId, d.serviceId, {dateISO:d.dateISO, time:d.time, fromPrice:d.fromPrice});
-        };
-        item.querySelector('[data-act="profile"]').onclick = ()=>{
-          location.href = `./profile.html?id=${encodeURIComponent(d.listingId)}`;
-        };
-        item.querySelector('[data-act="del"]').onclick = ()=>{
-          state.drafts.splice(idx,1);
-          updateDraftBadge();
-          renderDraftsList();
-        };
-
-        list.appendChild(item);
-      });
+        </article>
+      `;
     }
 
-    function saveDraftCurrent(){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
-      if(!listing) return;
+    function renderGrid(){
+      let list = getListings();
+      list = sortDefault(list);
+      list = applyFilters(list);
 
-      const svcLabel = serviceLabel(booking.serviceId);
-      const payload = {
-        listingId: booking.listingId,
-        listingName: listing.name,
-        serviceId: booking.serviceId,
-        serviceLabel: svcLabel,
-        dateISO: booking.dateISO,
-        dateLabel: booking.dateISO ? formatDateShort(booking.dateISO) : "",
-        time: booking.time,
-        fromPrice: null,
-        ts: Date.now()
-      };
+      safe.setText(els.countNote, `${list.length} results`);
 
-      try{
-        payload.fromPrice = window.bb?.util?.minPriceFor ? window.bb.util.minPriceFor(listing, booking.serviceId) : null;
-      }catch(e){}
-
-      state.drafts.push(payload);
-      // keep only last 10
-      state.drafts = state.drafts.slice(-10);
-      updateDraftBadge();
-      toast(T[state.lang].toastDraft);
-    }
-
-    // === Last booking card ===
-    function renderLastBookingCard(){
-      const card = $("#lastCard");
-      const line = $("#lastLine");
-      if(!card || !line) return;
-
-      let last = null;
-      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
-      if(!last || !last.listingName){
-        card.style.display = "none";
+      if(list.length === 0){
+        els.grid.innerHTML = "";
+        els.empty.style.display = "block";
+        safe.setHTML(els.empty, `
+          <b>Нічого не знайдено.</b><br/>
+          Спробуй змінити сервіс або пошук.<br/>
+          <span style="color:rgba(243,241,255,.72)">Порада: “Скинути фільтри” скидає тільки фільтри, а пошук/Only ❤️ як у тебе було (як і домовлялись).</span>
+        `);
         return;
       }
-      card.style.display = "block";
-      line.textContent = `${last.listingName} · ${last.serviceLabel || ""}`;
 
-      card.onclick = ()=>{
-        openBooking(last.listingId, last.serviceId, {dateISO:last.dateISO, time:last.time, fromPrice:last.fromPrice});
-      };
+      els.empty.style.display = "none";
+      els.grid.innerHTML = list.map(cardHTML).join("");
     }
 
-    // === Booking submit ===
-    function setFieldError(id, on){
-      const el = document.getElementById(id);
-      if(el) el.classList.toggle("err", !!on);
+    /******************************************************************
+     * MODAL
+     ******************************************************************/
+    function openModal(listing, preferredServiceKey){
+      state.activeListing = listing;
+      state.activeTime = "";
+
+      // fill listing + address
+      safe.setText(els.m_listing, listing?.name || listing?.title || "Salon");
+      safe.setText(els.m_address, listing?.address || listing?.location || listing?.area || "—");
+
+      // services
+      const services = getServices();
+      const options = services
+        .filter(s => !preferredServiceKey || true)
+        .map(s => ({ key: s.key || s.id || s.slug || "", name: s.name || s.title || s.label || s.key || "" }))
+        .filter(x => x.key && x.name);
+
+      // if your data.js has exact keys like manicure/pedicure/brows/haircut_w/haircut_m
+      els.m_service.innerHTML = options.map(o => `<option value="${o.key}">${o.name}</option>`).join("");
+
+      // preselect service
+      const want = preferredServiceKey || state.service || options[0]?.key || "";
+      if(want) els.m_service.value = want;
+
+      renderTimes();
+
+      // open overlay
+      els.modalOverlay.classList.add("open");
+      els.modalOverlay.setAttribute("aria-hidden","false");
+      modalLock.lock();
+      updateSummary();
+    }
+
+    function closeModal(){
+      els.modalOverlay.classList.remove("open");
+      els.modalOverlay.setAttribute("aria-hidden","true");
+      modalLock.unlock();
+      state.activeListing = null;
+      state.activeTime = "";
+    }
+
+    function renderTimes(){
+      const l = state.activeListing;
+      if(!l) return;
+
+      const svcKey = els.m_service.value;
+      const times = getTimesFor(l, svcKey);
+
+      els.m_times.innerHTML = times.map(t => `<button class="timeBtn" type="button" data-time="${t}">${t}</button>`).join("");
+      updateSummary();
+    }
+
+    function updateSummary(){
+      const l = state.activeListing;
+      if(!l){
+        safe.setText(els.m_summary, "—");
+        return;
+      }
+      const svcKey = els.m_service.value || state.service || "";
+      const svcName = (() => {
+        const s = getServices().find(x => norm(x.key||x.id||x.slug) === norm(svcKey));
+        return s?.name || s?.title || s?.label || svcKey || "Service";
+      })();
+      const from = formatPriceFrom(l, svcKey);
+      const t = state.activeTime || "Select time";
+      const addr = l.address || l.area || "";
+      safe.setText(els.m_summary, `${svcName} • ${t} • From ${from} • ${addr}`);
     }
 
     async function submitBooking(){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
-      if(!listing) return;
-
-      const name = $("#fName")?.value?.trim() || "";
-      const phone = $("#fPhone")?.value?.trim() || "";
-      const email = $("#fEmail")?.value?.trim() || "";
-
-      clearFieldErrors();
-      let ok = true;
-      if(name.length<2){ setFieldError("fNameWrap", true); ok=false; }
-      if(!isPhone(phone)){ setFieldError("fPhoneWrap", true); ok=false; }
-      if(!isEmail(email)){ setFieldError("fEmailWrap", true); ok=false; }
-      if(!booking.dateISO || !booking.time){ ok=false; }
-
-      if(!ok){ toast(T[state.lang].toastErr); return; }
-
-      saveContact();
-
-      const svcLabel = serviceLabel(booking.serviceId);
-      const svcObj = window.bb?.util?.listingService
-        ? window.bb.util.listingService(listing, booking.serviceId)
-        : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
+      const l = state.activeListing;
+      if(!l) return;
 
       const payload = {
-        name, phone, email,
-        listingId: listing.id,
-        listingName: listing.name,
-        address: listing.address || "",
-        serviceId: booking.serviceId,
-        serviceName: svcLabel,
-        dateISO: booking.dateISO,
-        time: booking.time,
-        durationMin: svcObj?.durationMin ?? null,
-        fromPrice: svcObj?.from ?? null,
-        toPrice: svcObj?.to ?? null,
-        profileUrl: `${location.origin}${location.pathname.replace(/\/index\.html$|\/$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`
+        listingId: l.id,
+        listingName: l.name || l.title || "Salon",
+        address: l.address || l.area || "",
+        serviceKey: els.m_service.value,
+        time: state.activeTime,
+        name: els.m_name.value.trim(),
+        phone: els.m_phone.value.trim(),
+        email: els.m_email.value.trim(),
+        // link to profile (your existing behavior)
+        profileUrl: `./profile.html?id=${encodeURIComponent(l.id)}`
       };
 
-      const btn = $("#submitBooking");
-      if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
+      if(!payload.name || !payload.phone || !payload.email || !payload.time){
+        alert("Заповни імʼя, телефон, email і вибери час.");
+        return;
+      }
+
+      // If your worker URL exists in data.js util, use it; else fallback to current origin /book
+      const worker = (window.WORKER_URL || (window.bb && window.bb.util && window.bb.util.WORKER_URL)) || "";
+      const endpoint = (worker ? worker.replace(/\/$/,"") : "") + "/book";
 
       try{
-        const res = await fetch(`${WORKER_URL}/book`, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
+        els.m_submit.disabled = true;
+        els.m_submit.textContent = "Sending…";
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
           body: JSON.stringify(payload)
         });
 
-        if(!res.ok) throw new Error("Bad response");
-        const data = await res.json().catch(()=> ({}));
+        if(!res.ok){
+          const txt = await res.text().catch(()=> "");
+          throw new Error(txt || ("HTTP " + res.status));
+        }
 
-        // save last booking
-        const last = {
-          listingId: listing.id,
-          listingName: listing.name,
-          serviceId: booking.serviceId,
-          serviceLabel: svcLabel,
-          dateISO: booking.dateISO,
-          time: booking.time,
-          fromPrice: payload.fromPrice,
-          ts: Date.now()
-        };
-        localStorage.setItem(LS.last, JSON.stringify(last));
+        // cart dot show (optional)
+        state.cart.push({ id: l.id, t: Date.now(), service: payload.serviceKey, time: payload.time });
+        saveLS();
+        renderHeader();
 
-        booking.lastPayload = payload;
-
-        closeBooking();
-        toast(T[state.lang].toastSent);
-        renderLastBookingCard();
-        openSuccess(listing, payload);
-
+        alert("Готово ✅ Бронювання відправлено в Telegram.");
+        closeModal();
       }catch(e){
-        toast("Error. Try again.");
+        console.error(e);
+        alert("Помилка відправки. Перевір WORKER_URL / CORS у Worker.");
       }finally{
-        if(btn){
-          btn.textContent = T[state.lang].confirm;
-          btn.disabled = false;
-        }
+        els.m_submit.disabled = false;
+        els.m_submit.textContent = "Confirm booking";
       }
     }
 
-    function openSuccess(listing, payload){
-      const o = $("#successOverlay");
-      if(!o) return;
-      o.classList.add("on");
-      o.setAttribute("aria-hidden","false");
+    /******************************************************************
+     * EVENTS
+     ******************************************************************/
+    function bindEvents(){
+      els.q.addEventListener("input", (e) => {
+        state.q = e.target.value;
+        saveLS();
+        renderGrid();
+        renderNext();
+      });
 
-      const sub = $("#successSub");
-      if(sub){
-        sub.textContent = `${payload.serviceName || ""} · ${formatDateShort(payload.dateISO)} ${payload.time}`;
-      }
+      els.pillTop.addEventListener("click", ()=>{ state.section="top"; saveLS(); renderHeader(); renderGrid(); });
+      els.pillRec.addEventListener("click", ()=>{ state.section="rec"; saveLS(); renderHeader(); renderGrid(); });
+      els.pillAll.addEventListener("click", ()=>{ state.section="all"; saveLS(); renderHeader(); renderGrid(); });
 
-      const mapsBtn = $("#openMapsBtn");
-      if(mapsBtn) mapsBtn.onclick = ()=>{
-        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address||"")}`, "_blank", "noopener");
-      };
+      els.btnOnlyFav.addEventListener("click", ()=>{
+        state.onlyFav = !state.onlyFav;
+        saveLS();
+        renderHeader();
+        renderGrid();
+        renderNext();
+      });
 
-      const copyBtn = $("#copyDetailsBtn");
-      if(copyBtn) copyBtn.onclick = async ()=>{
-        const text = `${payload.serviceName}\n${payload.listingName}\n${payload.address}\n${payload.dateISO} ${payload.time}\n${payload.phone} · ${payload.email}`;
-        try{
-          await navigator.clipboard.writeText(text);
-          toast(T[state.lang].toastCopied);
-        }catch(e){
-          // fallback
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          ta.remove();
-          toast(T[state.lang].toastCopied);
+      // IMPORTANT: Reset filters behavior (as you requested): if 0 results, search and OnlyFav do NOT clear.
+      els.btnResetFilters.addEventListener("click", ()=>{
+        // reset only active filters (service + section)
+        state.service = "";
+        state.section = "top";
+        // do NOT touch state.q and state.onlyFav
+        saveLS();
+        renderHeader();
+        renderGrid();
+        renderNext();
+      });
+
+      // chips -> set service filter
+      els.serviceChips.addEventListener("click", (e)=>{
+        const ch = e.target.closest(".chip");
+        if(!ch) return;
+        const k = ch.dataset.service || "";
+        state.service = (norm(state.service) === norm(k)) ? "" : k;
+        saveLS();
+        renderHeader();
+        renderGrid();
+        renderNext();
+      });
+
+      // grid card actions
+      els.grid.addEventListener("click", (e)=>{
+        const card = e.target.closest(".card");
+        if(!card) return;
+        const id = card.dataset.id;
+        const l = getListings().find(x => String(x.id) === String(id));
+        if(!l) return;
+
+        const act = e.target.closest("[data-action]")?.dataset?.action;
+        if(act === "fav"){
+          if(state.fav.has(l.id)) state.fav.delete(l.id); else state.fav.add(l.id);
+          saveLS();
+          renderHeader();
+          renderGrid();
+          renderNext();
+          return;
         }
-      };
+        if(act === "profile"){
+          window.open(`./profile.html?id=${encodeURIComponent(l.id)}`, "_blank");
+          return;
+        }
+        if(act === "book"){
+          openModal(l, state.service || "");
+          return;
+        }
+      });
 
-      const icsBtn = $("#addIcsBtn");
-      if(icsBtn) icsBtn.onclick = ()=> downloadICS(payload);
+      // brand click -> top
+      els.brandHome.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
 
-      const close = $("#closeSuccess");
-      if(close) close.onclick = closeSuccess;
+      // floating bar
+      els.floatTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+      els.floatBook.addEventListener("click", ()=>{
+        if(state._next) openModal(state._next, state.service || "");
+      });
+
+      // next panel
+      els.btnNextBook.addEventListener("click", ()=>{
+        if(state._next) openModal(state._next, state.service || "");
+      });
+
+      els.btnWhy.addEventListener("click", ()=>{
+        // simple deterministic “why” (no OpenAI)
+        const l = state._next;
+        if(!l){ alert("Немає варіанту."); return; }
+        const reasons = [];
+        if(l.isPartner || l.partner) reasons.push("Partner pick");
+        if(l.verified) reasons.push("Verified");
+        if(l.sterile) reasons.push("Sterile");
+        if(state.service) reasons.push("Matches your service");
+        if(state.onlyFav) reasons.push("You’re viewing favorites");
+        const t = getTimesFor(l, state.service || "")[0];
+        if(t) reasons.push("Has a near slot");
+        alert("Why this one:\n• " + (reasons.length ? reasons.join("\n• ") : "Best match by availability."));
+      });
+
+      els.btnAI.addEventListener("click", ()=>{
+        alert("AI help (lite):\nНапиши в пошук: район + сервіс\nабо вибери chips.\n(Пізніше підключимо справжній AI через Worker)");
+      });
+
+      els.btnTheme.addEventListener("click", ()=>{
+        alert("Theme toggle — залишив як демо (щоб нічого не ламати). Якщо хочеш — зроблю 2 теми як наступний крок.");
+      });
+
+      els.btnHow.addEventListener("click", ()=>{
+        alert("How it works:\n1) Choose a service\n2) Pick a salon\n3) Select time\n4) Confirm — Telegram gets the booking");
+      });
+
+      els.btnQuickBook.addEventListener("click", ()=>{
+        // open next available
+        if(state._next) openModal(state._next, state.service || "");
+        else alert("Немає варіантів. Спробуй змінити фільтри.");
+      });
+
+      // modal events
+      els.modalClose.addEventListener("click", closeModal);
+      els.m_cancel.addEventListener("click", closeModal);
+
+      els.modalOverlay.addEventListener("click", (e)=>{
+        if(e.target === els.modalOverlay) closeModal();
+      });
+
+      // time pick
+      els.m_times.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".timeBtn");
+        if(!btn) return;
+        state.activeTime = btn.dataset.time || "";
+        [...els.m_times.querySelectorAll(".timeBtn")].forEach(b => b.classList.toggle("active", b === btn));
+        updateSummary();
+      });
+
+      els.m_service.addEventListener("change", ()=>{
+        state.activeTime = "";
+        renderTimes();
+      });
+
+      els.m_submit.addEventListener("click", submitBooking);
+
+      // esc close
+      window.addEventListener("keydown", (e)=>{
+        if(e.key === "Escape" && els.modalOverlay.classList.contains("open")) closeModal();
+      });
     }
 
-    function closeSuccess(){
-      const o = $("#successOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
+    /******************************************************************
+     * NEXT AVAILABLE ROTATION (every ~10s, as confirmed)
+     ******************************************************************/
+    function startNextRotation(){
+      if(state.nextRotationTimer) clearInterval(state.nextRotationTimer);
+      state.nextRotationTimer = setInterval(()=>{
+        renderNext();
+      }, 10000);
     }
 
-    function downloadICS(payload){
-      // basic ICS
-      const dtStart = payload.dateISO.replaceAll("-","") + "T" + payload.time.replace(":","") + "00";
-      const uid = "bb-" + Date.now() + "@bookingclub.beauty";
-      const title = `${payload.serviceName} · ${payload.listingName}`;
-      const desc = `${payload.address}\\nTelegram confirmation sent.`;
-      const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Beauty Booking//EN
-BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g,"").split(".")[0]}Z
-DTSTART:${dtStart}
-SUMMARY:${title}
-DESCRIPTION:${desc}
-LOCATION:${payload.address}
-END:VEVENT
-END:VCALENDAR`;
-
-      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "booking.ics";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url), 1500);
-    }
-
-    // === Reset filters (DO NOT clear search or favOnly) ===
-    function resetActiveFilters(){
-      state.serviceId = null;
-      saveFilters();
-      renderServiceChips();
-      renderAll();
-      refreshHeroCandidates(true);
-      toast(T[state.lang].toastFilters);
-    }
-
-    // === Install prompt ===
-    let deferredPrompt = null;
-    window.addEventListener("beforeinstallprompt", (e)=>{
-      e.preventDefault();
-      deferredPrompt = e;
-      const pill = $("#installPill");
-      const hidden = localStorage.getItem(LS.installedHide)==="1";
-      if(pill && !hidden && !isStandalone()) pill.classList.add("show");
-    });
-
-    async function doInstall(){
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice.catch(()=>null);
-      deferredPrompt = null;
-      const pill = $("#installPill");
-      if(pill) pill.classList.remove("show");
-      localStorage.setItem(LS.installedHide, "1");
-    }
-
-    // === Geolocation (optional) ===
-    function initGeo(){
-      if(!navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition((pos)=>{
-        state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        renderAll();
-      }, ()=>{}, { enableHighAccuracy:false, timeout:2500, maximumAge: 1000*60*20 });
-    }
-
-    // === INIT ===
+    /******************************************************************
+     * INIT
+     ******************************************************************/
     function init(){
-      applyTheme();
-      renderTexts();
+      bindEls();
+      loadLS();
 
-      const q = $("#q");
-      if(q){
-        q.value = state.q || "";
-        q.addEventListener("input", ()=>{
-          state.q = q.value || "";
-          saveFilters();
-          renderAll();
+      // apply initial UI values
+      els.q.value = state.q || "";
+
+      renderHeader();
+      renderGrid();
+      renderNext();
+      startNextRotation();
+
+      // If landing with query params for auto booking: ?book=1&id=...&service=...
+      const u = new URL(location.href);
+      const book = u.searchParams.get("book");
+      const id = u.searchParams.get("id");
+      const svc = u.searchParams.get("service");
+      if(book === "1" && id){
+        const l = getListings().find(x => String(x.id) === String(id));
+        if(l){
+          openModal(l, svc || "");
+        }
+      }
+    }
+
+    // Register SW (PWA)
+    (function(){
+      if("serviceWorker" in navigator){
+        window.addEventListener("load", ()=>{
+          navigator.serviceWorker.register("./worker.js").catch(()=>{});
         });
       }
+    })();
 
-      const favOnly = $("#favOnly");
-      if(favOnly){
-        favOnly.classList.toggle("on", !!state.favOnly);
-        favOnly.onclick = ()=>{
-          state.favOnly = !state.favOnly;
-          favOnly.classList.toggle("on", state.favOnly);
-          saveFilters();
-          renderAll();
-        };
-      }
-
-      $("#themeBtn")?.addEventListener("click", ()=>{
-        state.theme = (state.theme === "light") ? "dark" : "light";
-        applyTheme();
-      });
-
-      $("#langBtn")?.addEventListener("click", ()=>{
-        setLang(state.lang === "uk" ? "en" : "uk");
-      });
-
-      $("#aiBtn")?.addEventListener("click", ()=>{
-        const open = $("#aiSection")?.style?.display !== "block";
-        toggleAI(open);
-      });
-
-      $("#aiGo")?.addEventListener("click", ()=>{
-        const txt = $("#aiInput")?.value || "";
-        const res = runAIQuery(txt);
-        renderAIPicks(res);
-      });
-
-      $("#openQuick")?.addEventListener("click", ()=>{
-        if(!heroRot.list.length) refreshHeroCandidates(true);
-        if(heroRot.list.length){
-          const l = heroRot.list[heroRot.idx % heroRot.list.length];
-          const slot = window.bb?.util?.nextAvailable ? window.bb.util.nextAvailable(l, state.serviceId) : null;
-          openBooking(l.id, state.serviceId, slot);
-        }else{
-          window.scrollTo({top: $("#partnersSection")?.offsetTop || 0, behavior:"smooth"});
-        }
-      });
-
-      $("#floatQuick")?.addEventListener("click", ()=> $("#openQuick")?.click());
-      $("#toTop")?.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-
-      $("#resetBtn")?.addEventListener("click", resetActiveFilters);
-      $("#emptyReset")?.addEventListener("click", resetActiveFilters);
-      $("#emptyShowPopular")?.addEventListener("click", ()=>{
-        state.serviceId = null;
-        state.q = "";
-        state.favOnly = false;
-        saveFilters();
-        const q = $("#q"); if(q) q.value = "";
-        const favOnly = $("#favOnly"); if(favOnly) favOnly.classList.remove("on");
-        renderServiceChips();
-        renderAll();
-      });
-
-      $("#policiesBtn")?.addEventListener("click", (e)=>{
-        e.preventDefault();
-        const m = $("#polModal");
-        if(m){ m.classList.add("on"); m.setAttribute("aria-hidden","false"); }
-      });
-      $("#closePol")?.addEventListener("click", ()=>{
-        const m = $("#polModal");
-        if(m){ m.classList.remove("on"); m.setAttribute("aria-hidden","true"); }
-      });
-      $("#polModal")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="polModal") $("#closePol")?.click();
-      });
-
-      $("#closeModal")?.addEventListener("click", closeBooking);
-      $("#modal")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="modal") closeBooking();
-      });
-
-      $("#closeTime")?.addEventListener("click", closeTimePicker);
-      $("#timeOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="timeOverlay") closeTimePicker();
-      });
-
-      $("#closeDate")?.addEventListener("click", closeDatePicker);
-      $("#dateOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="dateOverlay") closeDatePicker();
-      });
-
-      $("#cartBtn")?.addEventListener("click", openDrafts);
-      $("#closeDrafts")?.addEventListener("click", closeDrafts);
-      $("#draftsOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="draftsOverlay") closeDrafts();
-      });
-
-      $("#closeSuccess")?.addEventListener("click", closeSuccess);
-      $("#successOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="successOverlay") closeSuccess();
-      });
-
-      $("#installPill")?.addEventListener("click", doInstall);
-
-      ["fName","fPhone","fEmail"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el){
-          el.addEventListener("input", ()=>{
-            updateConfirmState();
-            saveContact();
-          });
-        }
-      });
-
-      $("#submitBooking")?.addEventListener("click", submitBooking);
-
-      // render
-      updateDraftBadge();
-      renderServiceChips();
-      renderAll();
-      renderLastBookingCard();
-      startHeroRotationOnce();
-      initGeo();
-
-      // apply stored UI state
-      const q2 = $("#q"); if(q2) q2.value = state.q || "";
-      const favOnly2 = $("#favOnly"); if(favOnly2) favOnly2.classList.toggle("on", !!state.favOnly);
-
-      // AUTO open booking from profile redirect
-      if(AUTO){
-        const l = (window.LISTINGS||[]).find(x=>x.id===AUTO.id);
-        if(l){
-          const svc = AUTO.service || state.serviceId;
-          setTimeout(()=>{
-            openBooking(l.id, svc, null);
-          }, 180);
-        }
-      }
-
-      // hide install in standalone
-      if(isStandalone()){
-        const pill = $("#installPill");
-        if(pill) pill.classList.remove("show");
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", init);
+    init();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
