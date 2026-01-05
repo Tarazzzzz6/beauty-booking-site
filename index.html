@@ -56,6 +56,8 @@
       --safeT: env(safe-area-inset-top, 0px);
       --safeL: env(safe-area-inset-left, 0px);
       --safeR: env(safe-area-inset-right, 0px);
+
+      --topbarH: 84px; /* used for sticky offsets */
     }
 
     body[data-theme="light"]{
@@ -96,18 +98,22 @@
       padding-left: max(0px, var(--safeL));
       padding-right:max(0px, var(--safeR));
       min-height:100svh;
+      overscroll-behavior: none; /* reduces iOS bounce */
     }
 
-    /* ✅ prevent “jumping/zooming” by locking scroll when overlays open */
+    /* ✅ HARD scroll lock (no “скольжіння/їзда” при бронюванні) */
     body.modalLock{
       position: fixed;
       width: 100%;
       overflow: hidden;
       left: 0; right: 0;
+      overscroll-behavior: none;
+      touch-action: none;
     }
+    body.modalLock *{overscroll-behavior: none;}
 
     /* guard: no accidental 100vw */
-    .topbar, .wrap, .overlay, .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{max-width:100%;}
+    .topbar, .stickyBar, .wrap, .overlay, .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{max-width:100%;}
 
     mark{
       background: rgba(255,210,122,.18);
@@ -125,15 +131,17 @@
 
     /* ===== TOPBAR ===== */
     .topbar{
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(14px);
-      background: linear-gradient(180deg, rgba(7,7,11,.88), rgba(7,7,11,.55));
-      border-bottom:1px solid rgba(255,255,255,.06);
+      position:sticky; top:0; z-index:70;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(7,7,11,.90), rgba(7,7,11,.50));
+      border-bottom:1px solid rgba(255,255,255,.07);
       padding-top: var(--safeT);
+      box-shadow: 0 18px 60px rgba(0,0,0,.20);
     }
     body[data-theme="light"] .topbar{
-      background: linear-gradient(180deg, rgba(251,251,255,.88), rgba(251,251,255,.55));
+      background: linear-gradient(180deg, rgba(251,251,255,.90), rgba(251,251,255,.55));
       border-bottom:1px solid rgba(10,10,18,.08);
+      box-shadow: 0 18px 60px rgba(10,10,18,.08);
     }
 
     .topbar .inner{
@@ -141,29 +149,29 @@
       margin:0 auto;
 
       /* ✅ lower + more luxury spacing */
-      padding:14px 18px 12px;
+      padding:16px 18px 14px;
 
       display:flex;
-      align-items:flex-end;     /* ✅ icons sit a bit lower */
+      align-items:flex-end;     /* ✅ icons & brand lower */
       justify-content:space-between;
       gap:12px;
     }
 
     .brand{
       display:flex;
-      align-items:flex-end;    /* ✅ lower */
+      align-items:flex-end;
       gap:12px;
       min-width:0;
       flex:0 1 auto;
-      padding-top:2px;         /* ✅ lower */
+      padding-top:4px;         /* ✅ lower */
     }
     .logo{
-      width:40px; height:40px; border-radius:16px; /* ✅ bigger */
+      width:44px; height:44px; border-radius:18px; /* ✅ bigger */
       background:
         radial-gradient(10px 10px at 30% 25%, rgba(255,255,255,.65), transparent 60%),
         radial-gradient(18px 18px at 70% 20%, rgba(255,210,122,.35), transparent 65%),
         linear-gradient(135deg, rgba(255,79,216,.85), rgba(139,92,246,.85));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 12px 40px rgba(0,0,0,.35);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 14px 46px rgba(0,0,0,.36);
       position:relative;
       overflow:hidden;
       flex:0 0 auto;
@@ -180,12 +188,12 @@
 
     .brand h1{
       font-family:"Playfair Display",serif;
-      font-size:20px; line-height:1.04; margin:0; /* ✅ bigger */
+      font-size:22px; line-height:1.04; margin:0; /* ✅ bigger */
       letter-spacing:.2px;
       white-space:nowrap;
-      transform: translateY(1px); /* ✅ visually lower */
+      transform: translateY(2px); /* ✅ lower */
+      text-shadow: 0 10px 30px rgba(0,0,0,.18);
     }
-    .brand h1 .w1, .brand h1 .w2{display:inline}
     .brand .sub{font-size:12px; color:var(--muted); margin-top:2px; display:none}
 
     .search{
@@ -199,6 +207,7 @@
       min-width: 240px;
       max-width: 520px;
       margin:0 10px;
+      position:relative;
     }
     body[data-theme="light"] .search{box-shadow: inset 0 0 0 1px rgba(10,10,18,.06)}
     .search input{
@@ -207,11 +216,46 @@
       font-size:14px;
     }
 
+    /* ✅ search suggestions dropdown */
+    .sug{
+      position:absolute;
+      left:0; right:0;
+      top: calc(100% + 10px);
+      border-radius: 18px;
+      border: 1px solid var(--stroke2);
+      background: rgba(12,12,18,.92);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      display:none;
+      z-index:90;
+    }
+    body[data-theme="light"] .sug{background: rgba(251,251,255,.94);}
+    .sug.on{display:block; animation: sugIn .18s ease;}
+    @keyframes sugIn{from{transform:translateY(-4px); opacity:0}to{transform:translateY(0); opacity:1}}
+    .sugItem{
+      padding:11px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    body[data-theme="light"] .sugItem{border-top:1px solid rgba(10,10,18,.06);}
+    .sugItem:first-child{border-top:0}
+    .sugItem:hover{background: rgba(255,255,255,.06)}
+    body[data-theme="light"] .sugItem:hover{background: rgba(10,10,18,.05)}
+    .sugLeft{min-width:0}
+    .sugTitle{font-weight:900; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .sugMeta{margin-top:3px; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .sugTag{font-size:11px; font-weight:900; padding:6px 8px; border-radius:999px; border:1px solid var(--stroke); background: var(--card); opacity:.95}
+
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--stroke);
       background:var(--card);
-      padding:11px 13px;                 /* ✅ a bit bigger */
+      padding:12px 14px;                 /* ✅ bigger */
       border-radius:999px;
       color:rgba(244,243,248,.9);
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
@@ -236,12 +280,12 @@
       flex:0 0 auto;
       flex-wrap:wrap;
       justify-content:flex-end;
-      max-width: 520px;
-      transform: translateY(1px); /* ✅ lower */
+      max-width: 560px;
+      transform: translateY(2px); /* ✅ lower */
     }
 
     .iconbtn{
-      width:46px; height:46px; border-radius:16px; /* ✅ bigger */
+      width:50px; height:50px; border-radius:18px; /* ✅ bigger + lower feel */
       border:1px solid var(--stroke);
       background:var(--card);
       color:var(--text);
@@ -250,6 +294,7 @@
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
       position:relative;
       flex:0 0 auto;
+      font-size:18px;
     }
     .iconbtn:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
     .iconbtn:active{transform: translateY(0px) scale(.98)}
@@ -275,6 +320,40 @@
       font-weight:900;
     }
     body[data-theme="light"] #installPill{color: rgba(11,11,15,.95)}
+
+    /* ===== Sticky chips bar (idea #2) ===== */
+    .stickyBar{
+      position:sticky;
+      top: calc(var(--safeT) + 0px);
+      z-index:60;
+      display:none;
+      padding:10px 18px 12px;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(7,7,11,.86), rgba(7,7,11,.48));
+      border-bottom:1px solid rgba(255,255,255,.06);
+      box-shadow: 0 18px 60px rgba(0,0,0,.18);
+    }
+    body[data-theme="light"] .stickyBar{
+      background: linear-gradient(180deg, rgba(251,251,255,.90), rgba(251,251,255,.60));
+      border-bottom:1px solid rgba(10,10,18,.08);
+      box-shadow: 0 18px 60px rgba(10,10,18,.08);
+    }
+    .stickyBar.on{display:block;}
+    .stickyInner{
+      max-width:var(--max);
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .stickyLeft{display:flex; gap:10px; align-items:center; flex:1; min-width:260px;}
+    .stickyChips{
+      display:flex; gap:8px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .stickyRight{display:flex; gap:10px; align-items:center; justify-content:flex-end; flex:0 0 auto;}
 
     /* ===== HERO ===== */
     .hero{ padding:16px 0 8px; }
@@ -315,11 +394,11 @@
     }
     .heroDesc{margin:0 0 12px; color:var(--muted); max-width:56ch}
 
-    /* ✅ chips: 2 rows (3 top, rest below) on mobile/PWA */
+    /* ✅ chips: wrap */
     .chips{
       display:flex;
       gap:10px;
-      flex-wrap:wrap;       /* ✅ wrap instead of scroll */
+      flex-wrap:wrap;
       overflow:visible;
       padding-bottom:0;
       -webkit-overflow-scrolling:touch;
@@ -327,7 +406,7 @@
     .chipBreak{
       flex-basis:100%;
       height:0;
-      display:none;         /* enabled on small screens */
+      display:none;
     }
 
     .chip{
@@ -464,6 +543,7 @@
     body[data-theme="light"] .why{color:rgba(11,11,15,.78)}
     .why span{color: rgba(255,210,122,.95); font-weight:900;}
 
+    /* ✅ 1-tap Quick Book always visible on mobile, hover on desktop */
     .miniCTA{
       position:absolute; left:12px; right:12px; bottom:12px;
       display:flex; justify-content:space-between; gap:10px; align-items:center;
@@ -620,6 +700,7 @@
       align-items:flex-end;
       justify-content:center;
       padding:18px;
+      overscroll-behavior: none;
     }
     body[data-theme="light"] .overlay{background: rgba(10,10,18,.35)}
     .overlay.on{display:flex}
@@ -636,9 +717,12 @@
       overflow:hidden;
       transform: translateY(10px);
       animation: sheetIn .22s ease forwards;
-      max-height: 92vh;
+
+      /* ✅ keep modal stable, no “jump” */
+      max-height: min(92vh, calc(100svh - 18px - var(--safeT)));
       display:flex;
       flex-direction:column;
+      will-change: transform;
     }
     body[data-theme="light"] .sheet{background: rgba(251,251,255,.92)}
     @keyframes sheetIn{to{transform: translateY(0)}}
@@ -692,6 +776,8 @@
       overflow:auto;
       -webkit-overflow-scrolling: touch;
       flex:1 1 auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y; /* allow inner scroll only */
     }
 
     /* ✅ reserve space so tags/why line don't cause “jump” */
@@ -703,7 +789,7 @@
       border:1px solid var(--stroke);
       background: var(--card);
       padding:10px 12px;
-      min-height: 86px; /* ✅ keeps grid stable */
+      min-height: 86px;
       display:flex;
       flex-direction:column;
       justify-content:flex-start;
@@ -722,7 +808,7 @@
       border:0; outline:0;
       background: transparent;
       color: rgba(244,243,248,.95);
-      font-size:16px; /* ✅ iOS: prevents input zoom */
+      font-size:16px; /* iOS: prevents input zoom */
     }
     body[data-theme="light"] .field input{color: rgba(11,11,15,.95)}
 
@@ -731,7 +817,6 @@
       box-shadow: 0 0 0 1px rgba(255,79,216,.16);
     }
 
-    /* ✅ no layout shift on error message */
     .hintErr{
       margin-top:6px;
       font-size:12px;
@@ -752,7 +837,7 @@
       background: rgba(0,0,0,.18);
       cursor:pointer;
       transition: transform .18s ease, border-color .18s ease, background .18s ease;
-      min-height:56px; /* ✅ stable */
+      min-height:56px;
     }
     body[data-theme="light"] .selectLike{background: rgba(255,255,255,.65)}
     .selectLike:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.22); background: rgba(0,0,0,.22)}
@@ -762,7 +847,6 @@
     .selectLike .hint{color:var(--muted); font-size:12px}
     .timeGlow{box-shadow: 0 0 0 1px rgba(255,210,122,.12), 0 16px 50px rgba(255,210,122,.08);}
 
-    /* Sticky footer inside modal */
     .sheetFoot{
       padding:12px 14px calc(12px + var(--safeB));
       border-top:1px solid rgba(255,255,255,.08);
@@ -773,6 +857,7 @@
       background: rgba(12,12,18,.92);
       backdrop-filter: blur(10px);
       flex:0 0 auto;
+      overscroll-behavior: contain;
     }
     body[data-theme="light"] .sheetFoot{
       border-top:1px solid rgba(10,10,18,.08);
@@ -810,6 +895,7 @@
       align-items:flex-end;
       justify-content:center;
       padding:18px;
+      overscroll-behavior: none;
     }
     body[data-theme="light"] .timeOverlay,
     body[data-theme="light"] .dateOverlay,
@@ -826,7 +912,7 @@
       overflow:hidden;
       transform: translateY(10px);
       animation: sheetIn .22s ease forwards;
-      max-height: 80vh;
+      max-height: min(80vh, calc(100svh - 18px - var(--safeT)));
       display:flex;
       flex-direction:column;
     }
@@ -839,7 +925,7 @@
     }
     body[data-theme="light"] .miniHead{border-bottom:1px solid rgba(10,10,18,.08)}
     .miniHead h4{margin:0; font-size:13px; letter-spacing:.2px}
-    .miniBody{padding:12px; overflow:auto; -webkit-overflow-scrolling:touch; flex:1 1 auto;}
+    .miniBody{padding:12px; overflow:auto; -webkit-overflow-scrolling:touch; flex:1 1 auto; overscroll-behavior: contain; touch-action: pan-y;}
 
     .timeGrid{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;}
     .timeBtn{
@@ -938,32 +1024,32 @@
       .heroInner{grid-template-columns: 1fr; }
       .card{grid-column: span 6;}
       .search{display:none;}
-      .chipBreak{display:block;} /* ✅ 3 chips first row */
+      .chipBreak{display:block;}
+      .stickyBar{padding:10px 14px 12px;}
     }
 
     @media (max-width: 720px){
       .wrap{padding:14px 14px calc(170px + var(--safeB));}
 
-      /* ✅ compact sticky header */
       .topbar .inner{
-        padding:12px 14px 10px;
+        padding:14px 14px 12px;
         gap:10px;
       }
       .search{display:none;}
 
       .brand h1{
-        font-size:18px; white-space:normal; line-height:1.02;
+        font-size:19px; white-space:normal; line-height:1.02;
       }
-      .brand h1 .w1, .brand h1 .w2{display:block;} /* ✅ 2 lines */
-      .logo{width:38px; height:38px; border-radius:16px;}
+      .brand h1 .w1, .brand h1 .w2{display:block;}
+      .logo{width:42px; height:42px; border-radius:18px;}
 
       .top-actions{
         gap:8px;
-        max-width: 60%;
+        max-width: 64%;
       }
 
       .pill{padding:10px 12px; font-size:12.8px;}
-      .iconbtn{width:44px; height:44px; border-radius:16px;}
+      .iconbtn{width:46px; height:46px; border-radius:18px; font-size:17px;}
 
       .hero{padding:12px 0 6px;}
       .heroInner{padding:16px 14px;}
@@ -977,6 +1063,8 @@
       .card{grid-column: span 12;}
       .formGrid{grid-template-columns: 1fr;}
       .timeGrid{grid-template-columns: repeat(2, 1fr);}
+
+      /* ✅ mobile: always show miniCTA for 1-tap booking */
       .miniCTA{opacity:1 !important; transform:none !important; pointer-events:auto !important;}
       .card .miniCTA{position: static; padding: 0 12px 12px; margin-top:-6px;}
       .stripCard .miniCTA{position: static; margin-top:10px;}
@@ -999,7 +1087,7 @@
   <div class="topbar">
     <div class="inner">
       <a class="brand" href="./index.html" aria-label="Beauty Booking home">
-        <div class="logo" aria-hidden="true"></div>
+        <div class="logo" aria-hidden="true" title="Beauty Booking"></div>
         <div>
           <h1><span class="w1">Beauty</span> <span class="w2">Booking</span></h1>
           <div class="sub"></div>
@@ -1009,6 +1097,7 @@
       <div class="search" title="Search">
         <span style="opacity:.7">⌕</span>
         <input id="q" placeholder="Пошук салону, району, адреси…" autocomplete="off" />
+        <div id="searchSug" class="sug" aria-hidden="true"></div>
       </div>
 
       <div class="top-actions">
@@ -1022,13 +1111,26 @@
           <span>✨</span><span style="font-weight:900">AI help</span>
         </button>
 
-        <button id="cartBtn" class="iconbtn" title="Saved drafts">
+        <button id="cartBtn" class="iconbtn" title="Saved drafts (1-tap)">
           🧾
           <span id="cartBadge" class="badge" style="display:none">0</span>
         </button>
 
         <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
         <button id="langBtn" class="iconbtn" title="UA / EN">🌐</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Sticky service chips (idea #2) -->
+  <div id="stickyBar" class="stickyBar" aria-hidden="true">
+    <div class="stickyInner">
+      <div class="stickyLeft">
+        <div id="serviceChipsSticky" class="stickyChips"></div>
+      </div>
+      <div class="stickyRight">
+        <button class="pill" id="stickyQuick" title="Quick booking">⚡ <span id="stickyQuickLabel" style="font-weight:900">Quick</span></button>
+        <button class="pill" id="stickyReset" title="Reset active filters">↺ <span id="stickyResetLabel" style="font-weight:900">Reset</span></button>
       </div>
     </div>
   </div>
@@ -1043,10 +1145,8 @@
               Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.
             </p>
 
-            <!-- ✅ 3 chips on first row, rest on second -->
             <div class="chips" id="serviceChips"></div>
 
-            <!-- ✅ below chips -->
             <div class="ctaRow">
               <button class="btn" id="openQuick">⚡ Quick booking <span style="opacity:.85; font-weight:800">today</span></button>
               <button class="btn secondary" id="resetBtn">Скинути фільтри</button>
@@ -1075,6 +1175,17 @@
                 <div class="smallLine" id="lastSub">Tap to book again</div>
               </div>
             </div>
+
+            <!-- ✅ Trust layer (idea #9) -->
+            <div class="glass" id="trustCard" style="opacity:.95">
+              <div class="pad">
+                <div class="kicker" id="trustKicker">Trust</div>
+                <div class="smallLine" id="trustLine" style="margin-top:6px">
+                  ✅ Verified · 🧼 Sterile tools · ⚡ Instant confirmation · 🔒 No spam
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1149,10 +1260,12 @@
 
       <div id="emptyBox" class="empty" style="display:none">
         <h3 id="emptyTitle">Немає результатів</h3>
-        <p id="emptyText">Спробуй послабити фільтри — або ось популярні варіанти.</p>
+        <p id="emptyText">Спробуй послабити фільтри — або ось швидкі варіанти.</p>
         <div class="row">
+          <!-- ✅ Empty state 2.0 (idea #6) -->
           <button class="btn secondary" id="emptyReset">Скинути фільтри</button>
-          <button class="btn" id="emptyShowPopular">Показати популярні</button>
+          <button class="btn secondary" id="emptyShowPartners">Показати партнерів</button>
+          <button class="btn" id="emptyShowNearest">Показати найближчі</button>
         </div>
       </div>
     </section>
@@ -1206,11 +1319,11 @@
 
       <div class="sheetBody">
         <div id="modalTagsRow" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
-          <div class="tag partner" id="mPartner" style="display:none">Partner</div>
-          <div class="tag good" id="mVerified" style="display:none">Verified</div>
-          <div class="tag good" id="mSterile" style="display:none">Sterile</div>
-          <div class="tag today" id="mToday" style="display:none">Available today</div>
-          <div class="tag" id="mWhy" style="display:none"></div>
+          <div class="tag partner" id="mPartner" style="display:none" title="Paid partner (higher priority)">Partner</div>
+          <div class="tag good" id="mVerified" style="display:none" title="Verified salon/master">Verified</div>
+          <div class="tag good" id="mSterile" style="display:none" title="Sterile tools policy">Sterile</div>
+          <div class="tag today" id="mToday" style="display:none" title="Has slots today">Available today</div>
+          <div class="tag" id="mWhy" style="display:none" title="Why we show this one"></div>
         </div>
 
         <div class="formGrid">
@@ -1392,7 +1505,8 @@
       theme: "bb_theme",
       last: "bb_last_booking",
       contact: "bb_contact_v1",
-      installedHide: "bb_install_hide"
+      installedHide: "bb_install_hide",
+      a2hsHint: "bb_a2hs_hint_v1"
     };
 
     const state = {
@@ -1430,7 +1544,14 @@
       (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
       (window.navigator.standalone === true);
 
-    // ===== scroll lock (prevents PWA “jump/zoom” feeling) =====
+    // ✅ micro-haptics (idea #7)
+    function haptic(ms=12){
+      try{
+        if(navigator.vibrate) navigator.vibrate(ms);
+      }catch(e){}
+    }
+
+    // ===== scroll lock (prevents “скольжіння/їзда”) =====
     function lockScroll(){
       state._lockCount++;
       if(state._lockCount > 1) return;
@@ -1446,6 +1567,13 @@
       document.body.style.top = "";
       window.scrollTo(0, y);
     }
+
+    // ✅ iOS extra: prevent background touch scroll while locked
+    document.addEventListener("touchmove", (e)=>{
+      if(!document.body.classList.contains("modalLock")) return;
+      const allow = e.target && (e.target.closest(".sheetBody") || e.target.closest(".miniBody"));
+      if(!allow) e.preventDefault();
+    }, { passive:false });
 
     const T = {
       uk: {
@@ -1468,9 +1596,10 @@
         allTitle: "All others",
         allNote: "Усі інші варіанти в місті.",
         emptyTitle: "Немає результатів",
-        emptyText: "Спробуй послабити фільтри — або ось популярні варіанти.",
+        emptyText: "Спробуй послабити фільтри — або ось швидкі варіанти.",
         emptyReset: "Скинути фільтри",
-        emptyPopular: "Показати популярні",
+        emptyPartners: "Показати партнерів",
+        emptyNearest: "Показати найближчі",
         booking: "Booking",
         confirm: "Confirm in Telegram",
         profile: "Profile",
@@ -1483,9 +1612,13 @@
         toastDraft: "Draft saved ✅",
         toastCopied: "Copied ✅",
         toastFilters: "Filters reset",
+        toastInstalled: "Installed mode ✓",
+        toastA2HS: "Tip: Add to Home Screen for app mode",
         draftsTitle: "Saved drafts",
         lastKicker: "Your last booking",
         lastSub: "Tap to book again",
+        stickyQuick: "Quick",
+        stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
         install: "Install"
       },
@@ -1509,9 +1642,10 @@
         allTitle: "All others",
         allNote: "All other options in the city.",
         emptyTitle: "No results",
-        emptyText: "Try loosening filters — or see popular picks.",
+        emptyText: "Try loosening filters — or use quick actions.",
         emptyReset: "Reset filters",
-        emptyPopular: "Show popular",
+        emptyPartners: "Show partners",
+        emptyNearest: "Show nearest",
         booking: "Booking",
         confirm: "Confirm in Telegram",
         profile: "Profile",
@@ -1524,9 +1658,13 @@
         toastDraft: "Draft saved ✅",
         toastCopied: "Copied ✅",
         toastFilters: "Filters reset",
+        toastInstalled: "Installed mode ✓",
+        toastA2HS: "Tip: Add to Home Screen for app mode",
         draftsTitle: "Saved drafts",
         lastKicker: "Your last booking",
         lastSub: "Tap to book again",
+        stickyQuick: "Quick",
+        stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
         install: "Install"
       }
@@ -1593,7 +1731,8 @@
       safeSetText("emptyTitle", t.emptyTitle);
       safeSetText("emptyText", t.emptyText);
       safeSetText("emptyReset", t.emptyReset);
-      safeSetText("emptyShowPopular", t.emptyPopular);
+      safeSetText("emptyShowPartners", t.emptyPartners);
+      safeSetText("emptyShowNearest", t.emptyNearest);
 
       safeSetText("modalTitle", t.booking);
       safeSetText("submitBooking", t.confirm);
@@ -1606,6 +1745,9 @@
       safeSetText("lastKicker", t.lastKicker);
       safeSetText("lastSub", t.lastSub);
       safeSetText("installPill", "⬇️ " + t.install);
+
+      safeSetText("stickyQuickLabel", t.stickyQuick);
+      safeSetText("stickyResetLabel", t.stickyReset);
     }
 
     function setLang(next){
@@ -1615,6 +1757,7 @@
       renderAll();
       renderNextHeroRotating(true);
       renderLastBookingCard();
+      renderSearchSuggestions(true);
     }
 
     function escapeHtml(s){
@@ -1690,15 +1833,15 @@
       const tags = [];
       let slot = null;
       try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
-      if(listing.partner) tags.push({t:"Partner", cls:"partner"});
-      if(listing.verified) tags.push({t:"Verified", cls:"good"});
-      if(listing.sterile) tags.push({t:"Sterile", cls:"good"});
+      if(listing.partner) tags.push({t:"Partner", cls:"partner", title:"Paid partner (higher priority)"});
+      if(listing.verified) tags.push({t:"Verified", cls:"good", title:"Verified salon/master"});
+      if(listing.sterile) tags.push({t:"Sterile", cls:"good", title:"Sterile tools policy"});
       try{
-        if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today"});
+        if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today", title:"Has slots today"});
       }catch(e){}
       try{
         const from = window.bb.util.minPriceFor(listing, state.serviceId);
-        if(from != null) tags.push({t:`from $${from}`, cls:""});
+        if(from != null) tags.push({t:`from $${from}`, cls:"", title:"Minimum price for selected service"});
       }catch(e){}
       return tags;
     }
@@ -1718,9 +1861,12 @@
       div.dataset.id = listing.id;
 
       const img = safeImg((listing.images||[])[0]);
-      const tagHtml = cardTags(listing).map(x=>`<span class="tag ${x.cls||""}">${x.t}</span>`).join("");
+      const tagHtml = cardTags(listing)
+        .map(x=>`<span class="tag ${x.cls||""}" title="${escapeHtml(x.title||"")}">${escapeHtml(x.t)}</span>`)
+        .join("");
+
       const whenLine = slot ? `${formatDateShort(slot.dateISO)} · ${slot.time}` : (state.lang==="uk" ? "Немає слотів" : "No slots");
-      const whyLine = `<div class="why"><span>Why:</span> ${escapeHtml(why)}</div>`;
+      const whyLine = `<div class="why" title="Why this one?"><span>Why:</span> ${escapeHtml(why)}</div>`;
 
       const nm = (state.q ? highlight(listing.name, state.q) : escapeHtml(listing.name));
       const ad = (state.q ? highlight(listing.address, state.q) : escapeHtml(listing.address));
@@ -1742,7 +1888,7 @@
             <div class="tags">${tagHtml}</div>
             ${whyLine}
             <div class="miniCTA" style="opacity:1; transform:none; pointer-events:auto; position:static; margin-top:10px">
-              <button class="miniBtn" data-action="book">⚡ ${whenLine}</button>
+              <button class="miniBtn" data-action="book" title="Book next slot">⚡ ${whenLine}</button>
               <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
             </div>
           </div>
@@ -1764,7 +1910,7 @@
             ${whyLine}
           </div>
           <div class="miniCTA">
-            <button class="miniBtn" data-action="book">⚡ ${whenLine}</button>
+            <button class="miniBtn" data-action="book" title="Book next slot">⚡ ${whenLine}</button>
             <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
           </div>
         `;
@@ -1773,12 +1919,14 @@
       div.addEventListener("click", (e)=>{
         const act = e.target?.dataset?.action;
         if(act === "fav" || act === "book") return;
+        haptic(10);
         location.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
       });
 
       div.querySelectorAll('[data-action="fav"]').forEach(btn=>{
         btn.addEventListener("click", (e)=>{
           e.stopPropagation();
+          haptic(12);
           toggleFav(listing.id, btn);
         });
       });
@@ -1786,6 +1934,7 @@
       div.querySelectorAll('[data-action="book"]').forEach(btn=>{
         btn.addEventListener("click", (e)=>{
           e.stopPropagation();
+          haptic(16);
           openBooking(listing.id, state.serviceId, slot);
         });
       });
@@ -1818,13 +1967,13 @@
     }
 
     function renderServiceChips(){
-      const box = $("#serviceChips");
-      if(!box) return;
-      box.innerHTML = "";
+      const targets = [$("#serviceChips"), $("#serviceChipsSticky")].filter(Boolean);
+      if(!targets.length) return;
+
+      targets.forEach(t=>t.innerHTML = "");
 
       const all = (window.SERVICES||[]).slice();
 
-      // ✅ first row: manicure/pedicure/brows ; second row: haircuts
       const pref = ["manicure","pedicure","brows","haircut_men","haircut_women","haircut"];
       const byId = new Map(all.map(x=>[x.id,x]));
       const ordered = [];
@@ -1832,29 +1981,32 @@
       all.forEach(s=>{ if(!ordered.includes(s)) ordered.push(s); });
 
       ordered.forEach((s, idx)=>{
-        const chip = document.createElement("div");
-        chip.className = "chip" + (state.serviceId===s.id ? " on":"");
-        chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
-        chip.addEventListener("click", ()=>{
-          state.serviceId = (state.serviceId===s.id) ? null : s.id;
-          saveFilters();
-          renderServiceChips();
-          renderAll();
-          refreshHeroCandidates(true);
-          const sec = $("#partnersSection");
-          if(sec){
-            const y = sec.getBoundingClientRect().top + window.scrollY - 72;
-            window.scrollTo({top:y, behavior:"smooth"});
+        targets.forEach((box)=>{
+          const chip = document.createElement("div");
+          chip.className = "chip" + (state.serviceId===s.id ? " on":"");
+          chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
+          chip.title = "Filter by service";
+          chip.addEventListener("click", ()=>{
+            haptic(10);
+            state.serviceId = (state.serviceId===s.id) ? null : s.id;
+            saveFilters();
+            renderServiceChips();
+            renderAll();
+            refreshHeroCandidates(true);
+            const sec = $("#partnersSection");
+            if(sec){
+              const y = sec.getBoundingClientRect().top + window.scrollY - 72;
+              window.scrollTo({top:y, behavior:"smooth"});
+            }
+          });
+          box.appendChild(chip);
+
+          if(box.id === "serviceChips" && idx === 2){
+            const br = document.createElement("div");
+            br.className = "chipBreak";
+            box.appendChild(br);
           }
         });
-        box.appendChild(chip);
-
-        // ✅ force line break after 3 chips
-        if(idx === 2){
-          const br = document.createElement("div");
-          br.className = "chipBreak";
-          box.appendChild(br);
-        }
       });
     }
 
@@ -1923,644 +2075,720 @@
       const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || ""));
       const from = (slot.fromPrice != null) ? `${slot.fromPrice}` : "";
       const todayISO = new Date().toISOString().slice(0,10);
-      const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today") : formatDateShort(slot.dateISO);
+           const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today")
+        : formatDateShort(slot.dateISO);
 
-      const lineTxt = `${listing.name} · ${day} ${slot.time} · from $${from}`;
-      const subTxt  = state.lang==="uk" ? `Tap to book · ${svc || "service"}` : `Tap to book · ${svc || "service"}`;
+      const price = (slot.fromPrice!=null)
+        ? (state.lang==="uk" ? `від $${slot.fromPrice}${slot.toPrice?`–$${slot.toPrice}`:""}` : `from $${slot.fromPrice}${slot.toPrice?`–$${slot.toPrice}`:""}`)
+        : "";
+
+      const lineTxt = `${day} · ${slot.time} · ${listing.name}`;
+      const subTxt  = `${svc ? (svc + " · ") : ""}${price}${price? " · " : ""}${(listing.city||"")}`;
 
       if(animate) setHeroCardAnimated(lineTxt, subTxt);
-      else {
-        const subEl = $("#nextSub");
+      else{
         if(lineEl) lineEl.textContent = lineTxt;
-        if(subEl) subEl.textContent = subTxt;
+        const sub = $("#nextSub"); if(sub) sub.textContent = subTxt || (T[state.lang].tapBook);
       }
 
+      const onGo = ()=>{
+        haptic(16);
+        openBooking(listing.id, state.serviceId || svcFromListing(listing), slot);
+      };
       if(card){
-        card.onclick = ()=> openBooking(listing.id, state.serviceId, slot);
-        card.onkeydown = (e)=>{ if(e.key==="Enter") openBooking(listing.id, state.serviceId, slot); };
+        card.onclick = onGo;
+        card.onkeydown = (e)=>{ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); onGo(); } };
       }
     }
 
-    function startHeroRotationOnce(){
-      if(heroRot.timer) return;
+    function startHeroTimer(){
+      clearInterval(heroRot.timer);
       heroRot.timer = setInterval(()=>{
+        if(document.hidden) return;
         if(!heroRot.list.length) refreshHeroCandidates(true);
-        if(!heroRot.list.length) return;
-        heroRot.idx = (heroRot.idx + 1) % heroRot.list.length;
+        heroRot.idx = (heroRot.idx + 1) % Math.max(1, heroRot.list.length);
         renderNextHeroRotating(true);
       }, 10000);
     }
 
+    function svcFromListing(listing){
+      const s0 = (listing.services||[])[0];
+      return s0 ? s0.serviceId : null;
+    }
+
+    // ===== Last booking card =====
+    function renderLastBookingCard(){
+      const box = $("#lastCard");
+      if(!box) return;
+      let last = null;
+      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
+      if(!last || !last.listingId){ box.style.display="none"; return; }
+
+      const t = T[state.lang] || T.uk;
+      box.style.display="block";
+      const line = $("#lastLine");
+      if(line){
+        const when = last.dateISO ? `${formatDateShort(last.dateISO)} · ${last.time||""}` : (last.time||"");
+        line.textContent = `${when} · ${last.listingName||"—"}`;
+      }
+      const sub = $("#lastSub"); if(sub) sub.textContent = t.lastSub;
+
+      const go = ()=>{
+        haptic(14);
+        openBooking(last.listingId, last.serviceId||null, { dateISO:last.dateISO, time:last.time });
+      };
+      box.onclick = go;
+      box.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
+    }
+
+    // ===== Search suggestions =====
+    function renderSearchSuggestions(forceClose=false){
+      const sug = $("#searchSug");
+      const inp = $("#q");
+      if(!sug || !inp) return;
+
+      if(forceClose){
+        sug.classList.remove("on");
+        sug.setAttribute("aria-hidden","true");
+        sug.innerHTML = "";
+        return;
+      }
+
+      const q = (inp.value||"").trim();
+      if(q.length < 2){
+        sug.classList.remove("on");
+        sug.setAttribute("aria-hidden","true");
+        sug.innerHTML = "";
+        return;
+      }
+
+      const list = (window.LISTINGS||[]).slice()
+        .filter(l => matchesQuery(l, q))
+        .slice(0, 6);
+
+      if(!list.length){
+        sug.classList.remove("on");
+        sug.setAttribute("aria-hidden","true");
+        sug.innerHTML = "";
+        return;
+      }
+
+      sug.innerHTML = list.map(l=>{
+        const nm = highlight(l.name, q);
+        const ad = highlight(l.address, q);
+        const tag = l.partner ? "Partner" : (l.recommended ? "Recommended" : "Result");
+        return `
+          <div class="sugItem" data-id="${escapeHtml(l.id)}">
+            <div class="sugLeft">
+              <div class="sugTitle">${nm}</div>
+              <div class="sugMeta">${ad}</div>
+            </div>
+            <div class="sugTag">${escapeHtml(tag)}</div>
+          </div>
+        `;
+      }).join("");
+
+      sug.classList.add("on");
+      sug.setAttribute("aria-hidden","false");
+
+      sug.querySelectorAll(".sugItem").forEach(it=>{
+        it.addEventListener("click", ()=>{
+          const id = it.getAttribute("data-id");
+          const l = (window.LISTINGS||[]).find(x=>x.id===id);
+          if(!l) return;
+          haptic(10);
+          state.q = l.name;
+          const qEl = $("#q"); if(qEl) qEl.value = state.q;
+          saveFilters();
+          renderAll();
+          renderSearchSuggestions(true);
+        });
+      });
+    }
+
+    // ===== Rendering =====
     function renderSaved(){
       const sec = $("#savedSection");
       const grid = $("#savedGrid");
       if(!sec || !grid) return;
-      const favList = (window.LISTINGS||[]).filter(l=>state.favs.has(l.id));
-      if(favList.length === 0){
-        sec.style.display = "none";
+
+      const favList = (window.LISTINGS||[]).filter(l => state.favs.has(l.id));
+      if(!favList.length){ sec.style.display="none"; grid.innerHTML=""; return; }
+
+      sec.style.display="block";
+      grid.innerHTML = "";
+      favList.slice(0, 6).forEach(l => grid.appendChild(buildCard(l)));
+    }
+
+    function renderPartnersStrip(list){
+      const strip = $("#partnerStrip");
+      const sec = $("#partnersSection");
+      if(!strip || !sec) return;
+
+      const partners = list.filter(l => !!l.partner);
+      if(!partners.length){
+        sec.style.display="none";
+        strip.innerHTML = "";
         return;
       }
-      sec.style.display = "block";
-      grid.innerHTML = "";
-      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(favList, state.userLoc, state.serviceId) : favList;
-      ranked.slice(0,6).forEach(l => grid.appendChild(buildCard(l,false)));
+      sec.style.display="block";
+      strip.innerHTML = "";
+      partners.forEach(l => strip.appendChild(buildCard(l, true)));
+    }
+
+    function renderGrids(grouped){
+      const recGrid = $("#recGrid");
+      const allGrid = $("#allGrid");
+      const empty = $("#emptyBox");
+
+      if(recGrid) recGrid.innerHTML = "";
+      if(allGrid) allGrid.innerHTML = "";
+
+      const rec = grouped.rec || [];
+      const other = grouped.other || [];
+
+      if(recGrid){
+        rec.forEach(l => recGrid.appendChild(buildCard(l)));
+      }
+      if(allGrid){
+        other.forEach(l => allGrid.appendChild(buildCard(l)));
+      }
+
+      const total = (grouped.partners?.length||0) + rec.length + other.length;
+      if(empty) empty.style.display = total ? "none" : "block";
     }
 
     function renderAll(){
-      const list = filteredListings();
-      const { partners, rec, other } = groupListings(list);
-
-      const p = $("#partnerStrip"), r = $("#recGrid"), a = $("#allGrid");
-      if(p) p.innerHTML = "";
-      if(r) r.innerHTML = "";
-      if(a) a.innerHTML = "";
-
-      if(p) partners.forEach(l => p.appendChild(buildCard(l,true)));
-      if(r) rec.forEach(l => r.appendChild(buildCard(l,false)));
-      if(a) other.forEach(l => a.appendChild(buildCard(l,false)));
-
-      const empty = $("#emptyBox");
-      const noRes = list.length === 0;
-      if(empty) empty.style.display = noRes ? "block" : "none";
-      if(noRes){
-        if(p) p.innerHTML = "";
-        if(r) r.innerHTML = "";
-        if(a) a.innerHTML = "";
+      // sticky bar visibility
+      const sticky = $("#stickyBar");
+      if(sticky){
+        const show = (window.scrollY > 140);
+        sticky.classList.toggle("on", show);
+        sticky.setAttribute("aria-hidden", show ? "false":"true");
       }
+
+      const list = filteredListings();
+      const grouped = groupListings(list);
 
       renderSaved();
-      refreshHeroCandidates(false);
-      renderNextHeroRotating(false);
+      renderPartnersStrip(grouped.partners || []);
+      renderGrids(grouped);
+
+      // favOnly pill state
+      const favOnlyEl = $("#favOnly");
+      if(favOnlyEl) favOnlyEl.classList.toggle("on", !!state.favOnly);
+
+      updateDraftBadge();
     }
 
-    // AI (simple heuristic picks)
-    function toggleAI(open){
-      const sec = $("#aiSection");
-      if(!sec) return;
-      sec.style.display = open ? "block" : "none";
-      if(open){
-        const y = sec.getBoundingClientRect().top + window.scrollY - 72;
-        window.scrollTo({top:y, behavior:"smooth"});
-        const inp = $("#aiInput");
-        if(inp) inp.focus();
+    // ===== Reset behavior (IMPORTANT: when 0 results, don't clear search/favOnly) =====
+    function resetActiveFilters(){
+      const current = filteredListings();
+      const hasZero = (current.length === 0);
+
+      if(hasZero){
+        // only clear service filter (active filters), keep q + favOnly
+        state.serviceId = null;
+      }else{
+        state.serviceId = null;
+        state.q = "";
+        state.favOnly = false;
+        const qEl = $("#q"); if(qEl) qEl.value = "";
       }
-    }
-    function runAIQuery(text){
-      const q = String(text||"").toLowerCase();
-      let serviceId = state.serviceId;
-      if(!serviceId){
-        const svc = (window.SERVICES||[]).find(s => (s.ua||"").toLowerCase().includes(q) || (s.en||"").toLowerCase().includes(q));
-        if(svc) serviceId = svc.id;
-      }
-      const pool = (window.LISTINGS||[]).filter(l => matchesService(l, serviceId));
-      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(pool, state.userLoc, serviceId) : pool;
-      return { picks: ranked.slice(0,3).map(x=>({id:x.id})) };
-    }
-    function renderAIPicks(result){
-      const grid = $("#aiPicks");
-      if(!grid) return;
-      grid.innerHTML = "";
-      const picks = result?.picks || [];
-      if(picks.length === 0){
-        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3 style="margin:0 0 6px">No picks</h3><p style="margin:0; color:var(--muted)">Try another request.</p></div>`;
-        return;
-      }
-      picks.forEach(p=>{
-        const listing = (window.LISTINGS||[]).find(x=>x.id===p.id);
-        if(!listing) return;
-        grid.appendChild(buildCard(listing,false));
-      });
+
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(true);
+      renderSearchSuggestions(true);
+
+      toast(T[state.lang].toastFilters);
     }
 
-    // === Booking modal state ===
-    const booking = {
-      listingId: null,
+    // ===== Booking modal logic =====
+    let booking = {
+      listing: null,
       serviceId: null,
       dateISO: null,
       time: null,
-      dates: [],
-      times: [],
-      timeFilter: null,
-      lastPayload: null
+      slot: null
     };
 
-    function getSavedContact(){
-      try{ return JSON.parse(localStorage.getItem(LS.contact) || "null"); }catch(e){ return null; }
+    function openOverlay(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.add("on");
+      el.setAttribute("aria-hidden","false");
+      lockScroll();
     }
-    function saveContact(){
-      const n = $("#fName"), p = $("#fPhone"), e = $("#fEmail");
-      if(!n || !p || !e) return;
-      const payload = { name: n.value.trim(), phone: p.value.trim(), email: e.value.trim() };
-      if(payload.name || payload.phone || payload.email){
-        localStorage.setItem(LS.contact, JSON.stringify(payload));
-      }
-    }
-    function autofillContact(){
-      const c = getSavedContact();
-      if(!c) return;
-      const n = $("#fName"), p = $("#fPhone"), e = $("#fEmail");
-      if(n && n.value.trim()==="") n.value = c.name || "";
-      if(p && p.value.trim()==="") p.value = c.phone || "";
-      if(e && e.value.trim()==="") e.value = c.email || "";
+    function closeOverlay(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.remove("on");
+      el.setAttribute("aria-hidden","true");
+      unlockScroll();
     }
 
-    function clearFieldErrors(){
-      ["fNameWrap","fPhoneWrap","fEmailWrap"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el) el.classList.remove("err");
-      });
-    }
-
-    function isEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||"").trim()); }
-    function isPhone(v){ return String(v||"").replace(/[^\d+]/g,"").length >= 8; }
-
-    function updateConfirmState(){
-      const btn = $("#submitBooking");
-      const name = $("#fName")?.value?.trim() || "";
-      const phone = $("#fPhone")?.value?.trim() || "";
-      const email = $("#fEmail")?.value?.trim() || "";
-
-      const ok = !!booking.listingId && !!booking.serviceId && !!booking.dateISO && !!booking.time
-        && name.length>=2 && isPhone(phone) && isEmail(email);
-
-      if(btn) btn.disabled = !ok;
-    }
-
-    function haversineKm(lat1, lon1, lat2, lon2){
-      const toRad = (x)=> x * Math.PI / 180;
-      const R = 6371;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return 2*R*Math.asin(Math.sqrt(a));
-    }
-
-    function renderBookingWhere(listing){
-      const box  = document.getElementById("bkWhere");
-      const name = document.getElementById("bkWhereName");
-      const addr = document.getElementById("bkWhereAddr");
-      const prof = document.getElementById("bkWhereProfile");
-      const maps = document.getElementById("bkWhereMaps");
-      const eta  = document.getElementById("bkWhereEta");
-      if(!box || !name || !addr || !prof || !maps) return;
-
-      if(!listing){
-        box.style.display = "none";
-        return;
-      }
-
+    function setWhereBox(listing){
+      const box = $("#bkWhere");
+      if(!box) return;
+      $("#bkWhereName").textContent = listing.name || "—";
+      $("#bkWhereAddr").textContent = listing.address || "";
       box.style.display = "flex";
-      name.textContent = listing.name || "";
-      addr.textContent = listing.address || "";
-      prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-      maps.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address||"")}`;
 
-      if(eta) eta.style.display = "none";
-      if(state.userLoc && listing.lat && listing.lng && eta){
-        const dkm = haversineKm(state.userLoc.lat, state.userLoc.lng, listing.lat, listing.lng);
-        const mins = Math.max(3, Math.round(dkm * 3));
-        eta.textContent = `⏱️ ~${mins} min`;
-        eta.style.display = "inline-flex";
+      const prof = $("#bkWhereProfile");
+      if(prof) prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+
+      const maps = $("#bkWhereMaps");
+      if(maps){
+        const q = encodeURIComponent((listing.address||"") + " " + (listing.city||""));
+        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
       }
+      const eta = $("#bkWhereEta");
+      if(eta) eta.style.display="none";
     }
 
-    function openBooking(listingId, serviceId, presetSlot=null){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===listingId);
+    function openBooking(listingId, serviceId=null, slot=null){
+      const listing = (window.LISTINGS||[]).find(l => l.id===listingId);
       if(!listing) return;
 
-      lockScroll(); /* ✅ prevents jump */
+      booking.listing = listing;
+      booking.serviceId = serviceId || state.serviceId || svcFromListing(listing) || null;
+      booking.slot = slot || null;
 
-      booking.listingId = listingId;
-
-      const svcList = listing.services || [];
-      let targetServiceId =
-        serviceId && matchesService(listing, serviceId)
-          ? serviceId
-          : (svcList[0]?.serviceId || null);
-      booking.serviceId = targetServiceId;
-
-      const av = listing.availability || {};
-      booking.dates = Object.keys(av).sort().filter(d => (av[d]||[]).length>0);
-      booking.dateISO = presetSlot?.dateISO || booking.dates[0] || null;
-
-      booking.times = booking.dateISO ? (av[booking.dateISO] || []).slice().sort() : [];
-      booking.time = presetSlot?.time || booking.times[0] || null;
+      // defaults
+      const todayISO = new Date().toISOString().slice(0,10);
+      booking.dateISO = (slot && slot.dateISO) ? slot.dateISO : todayISO;
+      booking.time = (slot && slot.time) ? slot.time : null;
 
       // tags
-      const mPartner = $("#mPartner"), mVerified = $("#mVerified"), mSterile = $("#mSterile"), mToday = $("#mToday"), mWhy = $("#mWhy");
-      if(mPartner) mPartner.style.display = listing.partner ? "inline-flex" : "none";
-      if(mVerified) mVerified.style.display = listing.verified ? "inline-flex" : "none";
-      if(mSterile) mSterile.style.display = listing.sterile ? "inline-flex" : "none";
+      const mPartner = $("#mPartner"); if(mPartner) mPartner.style.display = listing.partner ? "inline-flex":"none";
+      const mVerified = $("#mVerified"); if(mVerified) mVerified.style.display = listing.verified ? "inline-flex":"none";
+      const mSterile = $("#mSterile"); if(mSterile) mSterile.style.display = listing.sterile ? "inline-flex":"none";
 
-      let slot = null;
-      try{ slot = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
-      try{
-        if(mToday) mToday.style.display = (slot && window.bb.util.isTodaySlot(slot)) ? "inline-flex" : "none";
-      }catch(e){ if(mToday) mToday.style.display = "none"; }
+      // today tag
+      const mToday = $("#mToday");
+      let next = null;
+      try{ next = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
+      const isToday = !!(next && (()=>{ try{ return window.bb.util.isTodaySlot(next); }catch(e){return false;} })());
+      if(mToday) mToday.style.display = isToday ? "inline-flex":"none";
 
+      // why
+      const mWhy = $("#mWhy");
       if(mWhy){
+        let why = "";
+        try{ why = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId); }catch(e){ why = state.lang==="uk"?"Smart pick":"Smart pick"; }
         mWhy.style.display = "inline-flex";
-        try{ mWhy.textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId); }
-        catch(e){ mWhy.textContent = "Why: fast pick"; }
+        mWhy.textContent = `Why: ${why}`;
       }
 
-      renderBookingWhere(listing);
+      setWhereBox(listing);
 
-      const svcMeta = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcVal = $("#svcVal"), dateVal = $("#dateVal"), timeVal = $("#timeVal");
-      if(svcVal) svcVal.textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
-      if(dateVal) dateVal.textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
-      if(timeVal) timeVal.textContent = booking.time ? booking.time : "Tap to choose";
+      // restore contact
+      try{
+        const c = JSON.parse(localStorage.getItem(LS.contact) || "{}");
+        if(c){
+          if($("#fName")) $("#fName").value = c.name || "";
+          if($("#fPhone")) $("#fPhone").value = c.phone || "";
+          if($("#fEmail")) $("#fEmail").value = c.email || "";
+        }
+      }catch(e){}
 
-      const svcObj = window.bb?.util?.listingService
-        ? window.bb.util.listingService(listing, booking.serviceId)
-        : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
+      // service display
+      syncServiceDisplay();
+      syncDateDisplay();
+      syncTimeDisplay();
 
-      const label = serviceLabel(booking.serviceId);
-      const priceLine = $("#priceLine");
-      if(priceLine){
-        if(svcObj) priceLine.textContent = T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin);
-        else priceLine.textContent = "—";
-      }
+      // price line
+      updatePriceLine();
 
-      autofillContact();
-      clearFieldErrors();
-      updateConfirmState();
-
-      const openProfileBtn = $("#openProfileBtn");
-      if(openProfileBtn) openProfileBtn.onclick = ()=> { location.href = `./profile.html?id=${encodeURIComponent(listingId)}`; };
-
-      const svcPick = $("#svcPick");
-      if(svcPick) svcPick.onclick = ()=>{
-        if(!svcList.length) return;
-        const idx = Math.max(0, svcList.findIndex(s=>s.serviceId===booking.serviceId));
-        const next = svcList[(idx+1) % svcList.length];
-        openBooking(listingId, next.serviceId, null);
-      };
-
-      const datePick = $("#datePick");
-      if(datePick) datePick.onclick = ()=> openDatePicker(listing);
-
-      const timePick = $("#timePick");
-      if(timePick) timePick.onclick = ()=> openTimePicker(listing);
-
-      const saveDraftBtn = $("#saveDraftBtn");
-      if(saveDraftBtn) saveDraftBtn.onclick = ()=> saveDraftCurrent();
-
-      const modal = $("#modal");
-      if(modal){
-        modal.classList.add("on");
-        modal.setAttribute("aria-hidden","false");
-      }
+      // open
+      openOverlay("modal");
+      validateForm();
     }
 
     function closeBooking(){
-      const m = $("#modal");
-      if(!m) return;
-      m.classList.remove("on");
-      m.setAttribute("aria-hidden","true");
-      unlockScroll();
+      closeOverlay("modal");
     }
 
-    // === Time picker ===
-    function closeTimePicker(){
-      const o = $("#timeOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-      unlockScroll();
+    function syncServiceDisplay(){
+      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId) || (window.SERVICES||[])[0];
+      if(!svc) return;
+      booking.serviceId = svc.id;
+      const t = (state.lang==="uk" ? svc.ua : svc.en);
+      const val = $("#svcVal"); if(val) val.textContent = t;
+      const hint = $("#svcHint"); if(hint) hint.textContent = state.lang==="uk" ? "tap to change" : "tap to change";
+      updatePriceLine();
     }
 
-    function setTimeFilter(next){
-      booking.timeFilter = (booking.timeFilter === next) ? null : next;
-      const on = (id, v)=> { const el=$(id); if(el) el.classList.toggle("on", booking.timeFilter === v); };
-      on("#tfToday","today");
-      on("#tfAfter18","after18");
-      on("#tfEarliest","earliest");
-      on("#tfCheapest","cheapest");
+    function syncDateDisplay(){
+      const v = $("#dateVal");
+      if(v) v.textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
     }
 
-    function pickTodayIfAvailable(listing){
-      const todayISO = new Date().toISOString().slice(0,10);
-      const times = (listing.availability?.[todayISO] || []).slice().sort();
-      if(times.length){
-        booking.dateISO = todayISO;
-        const dateVal = $("#dateVal"); if(dateVal) dateVal.textContent = formatDateShort(todayISO);
-        booking.times = times;
-        booking.time = times[0] || null;
-        const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = booking.time || "Tap to choose";
-        updateConfirmState();
-        return true;
+    function syncTimeDisplay(){
+      const v = $("#timeVal");
+      if(v) v.textContent = booking.time ? booking.time : (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+    }
+
+    function updatePriceLine(){
+      const t = T[state.lang] || T.uk;
+      const line = $("#priceLine");
+      if(!line || !booking.listing) return;
+
+      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : (state.lang==="uk"?"Послуга":"Service");
+
+      let from=null, to=null, dur=null;
+      try{
+        const sObj = window.bb.util.listingService(booking.listing, booking.serviceId);
+        if(sObj){
+          from = sObj.priceFrom ?? null;
+          to = sObj.priceTo ?? null;
+          dur = sObj.durationMin ?? null;
+        }
+      }catch(e){}
+      if(from==null){
+        // fallback: read listing.services
+        const sObj = (booking.listing.services||[]).find(x=>x.serviceId===booking.serviceId);
+        if(sObj){
+          from = sObj.priceFrom ?? null;
+          to = sObj.priceTo ?? null;
+          dur = sObj.durationMin ?? null;
+        }
       }
-      return false;
+
+      line.textContent = t.priceLine(svcName, from ?? "—", to ?? null, dur ?? "—");
     }
 
-    function openTimePicker(listing){
-      const overlay = $("#timeOverlay");
+    function validateForm(){
+      const name = ($("#fName")?.value||"").trim();
+      const phone = ($("#fPhone")?.value||"").trim();
+      const email = ($("#fEmail")?.value||"").trim();
+
+      const okName = name.length >= 2;
+      const okPhone = phone.length >= 6;
+      const okEmail = email.includes("@") && email.includes(".");
+
+      $("#fNameWrap")?.classList.toggle("err", !okName);
+      $("#fPhoneWrap")?.classList.toggle("err", !okPhone);
+      $("#fEmailWrap")?.classList.toggle("err", !okEmail);
+
+      const ok = okName && okPhone && okEmail && !!booking.dateISO && !!booking.time && !!booking.serviceId;
+      const btn = $("#submitBooking");
+      if(btn) btn.disabled = !ok;
+      return ok;
+    }
+
+    function cycleService(){
+      const all = (window.SERVICES||[]).slice();
+      if(!all.length) return;
+      let idx = all.findIndex(s=>s.id===booking.serviceId);
+      idx = (idx < 0) ? 0 : (idx + 1) % all.length;
+      booking.serviceId = all[idx].id;
+      booking.time = null; // force re-pick
+      syncServiceDisplay();
+      syncTimeDisplay();
+      validateForm();
+    }
+
+    // ===== Time picker =====
+    function slotsForListing(listing, serviceId){
+      try{
+        return window.bb.util.slotsFor(listing, serviceId);
+      }catch(e){
+        // fallback: if listing.slots array exists
+        return (listing.slots||[]).filter(x => !serviceId || x.serviceId===serviceId);
+      }
+    }
+
+    function renderTimeGrid(){
       const grid = $("#timeGrid");
-      if(!overlay || !grid) return;
+      if(!grid || !booking.listing) return;
+      grid.innerHTML = "";
 
-      lockScroll();
+      const slots = slotsForListing(booking.listing, booking.serviceId);
+      const list = slots.filter(s => !booking.dateISO || s.dateISO===booking.dateISO);
 
-      function renderTimes(){
-        grid.innerHTML = "";
-        let times = (listing.availability?.[booking.dateISO] || []).slice().sort();
-
-        if(booking.timeFilter === "today"){
-          pickTodayIfAvailable(listing);
-          times = (listing.availability?.[booking.dateISO] || []).slice().sort();
-        }
-        if(booking.timeFilter === "after18"){
-          times = times.filter(t => parseInt(t.split(":")[0]||"0",10) >= 18);
-        }
-
-        if(!times.length){
-          grid.innerHTML = `<div class="empty" style="grid-column:1/-1; margin:0">
-            <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає слотів":"No slots"}</h3>
-            <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Спробуй інший день":"Try another date"}</p>
-          </div>`;
-          return;
-        }
-
-        times.forEach(t=>{
-          const b = document.createElement("button");
-          b.className = "timeBtn" + (booking.time===t ? " on":"");
-          b.textContent = t;
-          b.addEventListener("click", ()=>{
-            booking.time = t;
-            const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = t;
-            updateConfirmState();
-            closeTimePicker();
-          });
-          grid.appendChild(b);
-        });
-      }
-
-      const bind = (id, mode)=>{
-        const el = $(id);
-        if(!el) return;
-        el.onclick = ()=>{
-          setTimeFilter(mode);
-          renderTimes();
-        };
-      };
-      bind("#tfToday","today");
-      bind("#tfAfter18","after18");
-      bind("#tfEarliest","earliest");
-      bind("#tfCheapest","cheapest");
-      setTimeFilter(null);
-      renderTimes();
-
-      overlay.classList.add("on");
-      overlay.setAttribute("aria-hidden","false");
-    }
-
-    // === Date picker ===
-    function closeDatePicker(){
-      const o = $("#dateOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-      unlockScroll();
-    }
-
-    function openDatePicker(listing){
-      const overlay = $("#dateOverlay");
-      const grid = $("#calGrid");
-      const dow = $("#calDow");
-      const title = $("#calTitle");
-      if(!overlay || !grid || !dow || !title) return;
-
-      lockScroll();
-
-      const locale = state.lang==="uk" ? "uk-UA" : "en-CA";
-      const dowNames = state.lang==="uk"
-        ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
-        : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-
-      dow.innerHTML = "";
-      dowNames.forEach(x=>{
-        const d = document.createElement("div");
-        d.className = "calDow";
-        d.textContent = x;
-        dow.appendChild(d);
-      });
-
-      const availableSet = new Set(Object.keys(listing.availability||{}).filter(d => (listing.availability[d]||[]).length));
-
-      const base = booking.dateISO ? new Date(booking.dateISO+"T00:00:00") : new Date();
-      let viewY = base.getFullYear();
-      let viewM = base.getMonth();
-
-      function render(){
-        const dt = new Date(viewY, viewM, 1);
-        title.textContent = dt.toLocaleDateString(locale, { month:"long", year:"numeric" });
-
-        grid.innerHTML = "";
-
-        let start = new Date(viewY, viewM, 1).getDay(); // 0=Sun
-        start = (start===0) ? 6 : start-1; // 0=Mon
-
-        const daysIn = new Date(viewY, viewM+1, 0).getDate();
-
-        for(let i=0;i<start;i++){
-          const b = document.createElement("div");
-          b.className = "day off";
-          b.textContent = " ";
-          grid.appendChild(b);
-        }
-
-        for(let d=1; d<=daysIn; d++){
-          const iso = new Date(viewY, viewM, d).toISOString().slice(0,10);
-          const btn = document.createElement("div");
-          const has = availableSet.has(iso);
-          btn.className = "day" + (has ? " has":" off") + (booking.dateISO===iso ? " on":"");
-          btn.textContent = String(d);
-          if(has){
-            btn.addEventListener("click", ()=>{
-              booking.dateISO = iso;
-              booking.times = (listing.availability?.[iso] || []).slice().sort();
-              booking.time = booking.times[0] || null;
-
-              const dateVal = $("#dateVal"); if(dateVal) dateVal.textContent = formatDateShort(iso);
-              const timeVal = $("#timeVal"); if(timeVal) timeVal.textContent = booking.time || "Tap to choose";
-              updateConfirmState();
-              closeDatePicker();
-            });
-          }
-          grid.appendChild(btn);
-        }
-      }
-
-      const prev = $("#calPrev"), next = $("#calNext");
-      if(prev) prev.onclick = ()=>{ viewM--; if(viewM<0){viewM=11; viewY--;} render(); };
-      if(next) next.onclick = ()=>{ viewM++; if(viewM>11){viewM=0; viewY++;} render(); };
-
-      render();
-      overlay.classList.add("on");
-      overlay.setAttribute("aria-hidden","false");
-    }
-
-    // === Drafts ===
-    function openDrafts(){
-      const o = $("#draftsOverlay");
-      if(!o) return;
-      lockScroll();
-      renderDraftsList();
-      o.classList.add("on");
-      o.setAttribute("aria-hidden","false");
-    }
-    function closeDrafts(){
-      const o = $("#draftsOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-      unlockScroll();
-    }
-
-    function renderDraftsList(){
-      const list = $("#draftsList");
-      if(!list) return;
-      list.innerHTML = "";
-
-      if(!state.drafts.length){
-        list.innerHTML = `<div class="empty" style="margin:0">
-          <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає чернеток":"No drafts"}</h3>
-          <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Збережи варіант у бронюванні":"Save a draft in booking"}</p>
-        </div>`;
+      if(!list.length){
+        grid.innerHTML = `<div style="grid-column:1/-1; opacity:.75; padding:8px 4px">${state.lang==="uk"?"Немає слотів на цю дату":"No slots for this date"}</div>`;
         return;
       }
 
-      state.drafts.slice().reverse().forEach((d, idxRev)=>{
-        const idx = state.drafts.length - 1 - idxRev;
-        const item = document.createElement("div");
-        item.className = "draftItem";
-
-        item.innerHTML = `
-          <div style="min-width:0">
-            <b>${escapeHtml(d.listingName || "—")}</b>
-            <div style="margin-top:4px; color:var(--muted); font-size:12.5px">
-              ${escapeHtml(d.serviceLabel || "")} · ${escapeHtml(d.dateLabel || "")} · ${escapeHtml(d.time || "")}
-            </div>
-          </div>
-          <div class="draftActions">
-            <button class="miniBtn2" data-act="book">Book</button>
-            <button class="miniBtn2" data-act="profile">Profile</button>
-            <button class="miniBtn2 danger" data-act="del">Delete</button>
-          </div>
-        `;
-
-        item.querySelector('[data-act="book"]').onclick = ()=>{
-          closeDrafts();
-          openBooking(d.listingId, d.serviceId, {dateISO:d.dateISO, time:d.time, fromPrice:d.fromPrice});
-        };
-        item.querySelector('[data-act="profile"]').onclick = ()=>{
-          location.href = `./profile.html?id=${encodeURIComponent(d.listingId)}`;
-        };
-        item.querySelector('[data-act="del"]').onclick = ()=>{
-          state.drafts.splice(idx,1);
-          updateDraftBadge();
-          renderDraftsList();
-        };
-
-        list.appendChild(item);
+      list.forEach(s=>{
+        const b = document.createElement("button");
+        b.className = "timeBtn" + (booking.time===s.time ? " on":"");
+        b.textContent = s.time;
+        b.addEventListener("click", ()=>{
+          haptic(12);
+          booking.time = s.time;
+          // keep extra slot price if present
+          booking.slot = { ...s };
+          syncTimeDisplay();
+          renderTimeGrid();
+          validateForm();
+          closeOverlay("timeOverlay");
+        });
+        grid.appendChild(b);
       });
     }
 
-    function saveDraftCurrent(){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
-      if(!listing) return;
+    function openTimePicker(){
+      openOverlay("timeOverlay");
+      renderTimeGrid();
+    }
 
-      const svcLabel = serviceLabel(booking.serviceId);
-      const payload = {
-        listingId: booking.listingId,
-        listingName: listing.name,
-        serviceId: booking.serviceId,
-        serviceLabel: svcLabel,
-        dateISO: booking.dateISO,
-        dateLabel: booking.dateISO ? formatDateShort(booking.dateISO) : "",
-        time: booking.time,
-        fromPrice: null,
-        ts: Date.now()
+    // quick time filters
+    function applyQuickTime(kind){
+      if(!booking.listing) return;
+      const slots = slotsForListing(booking.listing, booking.serviceId).filter(s => s.dateISO===booking.dateISO);
+      if(!slots.length) return;
+
+      const parse = (t)=>{ // "19:30"
+        const [h,m]=String(t).split(":").map(n=>parseInt(n,10));
+        return h*60+(m||0);
       };
 
-      try{
-        payload.fromPrice = window.bb?.util?.minPriceFor ? window.bb.util.minPriceFor(listing, booking.serviceId) : null;
-      }catch(e){}
+      let picked = null;
 
-      state.drafts.push(payload);
-      state.drafts = state.drafts.slice(-10);
+      if(kind==="today"){
+        // ensure date is today
+        booking.dateISO = new Date().toISOString().slice(0,10);
+        syncDateDisplay();
+      }
+
+      const list = slotsForListing(booking.listing, booking.serviceId).filter(s => s.dateISO===booking.dateISO);
+
+      if(kind==="after18"){
+        const after = list.filter(s => parse(s.time) >= 18*60);
+        picked = after.sort((a,b)=>parse(a.time)-parse(b.time))[0] || null;
+      }else if(kind==="earliest"){
+        picked = list.sort((a,b)=>parse(a.time)-parse(b.time))[0] || null;
+      }else if(kind==="cheapest"){
+        picked = list.slice().sort((a,b)=> (a.fromPrice??9999)-(b.fromPrice??9999))[0] || null;
+      }else if(kind==="today"){
+        picked = list.sort((a,b)=>parse(a.time)-parse(b.time))[0] || null;
+      }
+
+      if(picked){
+        booking.time = picked.time;
+        booking.slot = { ...picked };
+        syncTimeDisplay();
+        renderTimeGrid();
+        validateForm();
+      }
+    }
+
+    // ===== Date picker (mini calendar) =====
+    let cal = { y: new Date().getFullYear(), m: new Date().getMonth() }; // m: 0-11
+
+    function buildCalendar(){
+      const title = $("#calTitle");
+      const dow = $("#calDow");
+      const grid = $("#calGrid");
+      if(!title || !dow || !grid) return;
+
+      const dt = new Date(cal.y, cal.m, 1);
+      title.textContent = dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { month:"long", year:"numeric" });
+
+      const dows = (state.lang==="uk")
+        ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
+        : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+      dow.innerHTML = dows.map(x=>`<div class="calDow">${x}</div>`).join("");
+
+      grid.innerHTML = "";
+      const first = new Date(cal.y, cal.m, 1);
+      const startDow = (first.getDay()+6)%7; // Monday=0
+      const daysIn = new Date(cal.y, cal.m+1, 0).getDate();
+
+      const todayISO = new Date().toISOString().slice(0,10);
+      const slots = booking.listing ? slotsForListing(booking.listing, booking.serviceId) : [];
+      const hasSlots = new Set(slots.map(s=>s.dateISO));
+
+      // blanks
+      for(let i=0;i<startDow;i++){
+        const b = document.createElement("div");
+        b.className = "day off";
+        b.textContent = " ";
+        grid.appendChild(b);
+      }
+
+      for(let d=1; d<=daysIn; d++){
+        const iso = `${cal.y}-${String(cal.m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        const btn = document.createElement("div");
+        const off = (iso < todayISO);
+        const on  = (booking.dateISO === iso);
+        const has = hasSlots.has(iso);
+
+        btn.className = "day" + (off ? " off":"") + (on ? " on":"") + (has ? " has":"");
+        btn.textContent = String(d);
+
+        btn.addEventListener("click", ()=>{
+          if(off) return;
+          haptic(10);
+          booking.dateISO = iso;
+          booking.time = null;
+          booking.slot = null;
+          syncDateDisplay();
+          syncTimeDisplay();
+          validateForm();
+          buildCalendar();
+          closeOverlay("dateOverlay");
+        });
+
+        grid.appendChild(btn);
+      }
+    }
+
+    function openDatePicker(){
+      // align calendar to chosen date
+      if(booking.dateISO){
+        const [y,m] = booking.dateISO.split("-").map(n=>parseInt(n,10));
+        cal.y = y; cal.m = m-1;
+      }
+      openOverlay("dateOverlay");
+      buildCalendar();
+    }
+
+    // ===== Drafts =====
+    function saveDraft(){
+      if(!booking.listing) return;
+      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "";
+
+      const draft = {
+        id: "d_"+Math.random().toString(16).slice(2),
+        ts: Date.now(),
+        listingId: booking.listing.id,
+        listingName: booking.listing.name,
+        address: booking.listing.address,
+        serviceId: booking.serviceId,
+        serviceName: svcName,
+        dateISO: booking.dateISO,
+        time: booking.time
+      };
+
+      // replace similar (same listing+service) if exists
+      state.drafts = (state.drafts||[]).filter(d => !(d.listingId===draft.listingId && d.serviceId===draft.serviceId));
+      state.drafts.unshift(draft);
+      state.drafts = state.drafts.slice(0, 12);
+
       updateDraftBadge();
       toast(T[state.lang].toastDraft);
     }
 
-    // === Last booking card ===
-    function renderLastBookingCard(){
-      const card = $("#lastCard");
-      const line = $("#lastLine");
-      if(!card || !line) return;
+    function openDrafts(){
+      openOverlay("draftsOverlay");
+      renderDrafts();
+    }
 
-      let last = null;
-      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
-      if(!last || !last.listingName){
-        card.style.display = "none";
+    function renderDrafts(){
+      const list = $("#draftsList");
+      if(!list) return;
+
+      if(!state.drafts.length){
+        list.innerHTML = `<div style="opacity:.75; padding:8px 4px">${state.lang==="uk"?"Немає збережених чернеток":"No saved drafts"}</div>`;
         return;
       }
-      card.style.display = "block";
-      line.textContent = `${last.listingName} · ${last.serviceLabel || ""}`;
 
-      card.onclick = ()=>{
-        openBooking(last.listingId, last.serviceId, {dateISO:last.dateISO, time:last.time, fromPrice:last.fromPrice});
-      };
+      list.innerHTML = "";
+      state.drafts.forEach(d=>{
+        const wrap = document.createElement("div");
+        wrap.className = "draftItem";
+        wrap.innerHTML = `
+          <div style="min-width:0">
+            <b>${escapeHtml(d.listingName||"—")}</b>
+            <div style="margin-top:4px; font-size:12.5px; opacity:.78; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">
+              ${escapeHtml(d.serviceName||"")} · ${escapeHtml(d.dateISO?formatDateShort(d.dateISO):"")} · ${escapeHtml(d.time||"")}
+            </div>
+            <div style="margin-top:4px; font-size:12px; opacity:.68; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">
+              ${escapeHtml(d.address||"")}
+            </div>
+          </div>
+          <div class="draftActions">
+            <button class="miniBtn2" data-act="book" data-id="${escapeHtml(d.id)}">⚡ Book</button>
+            <button class="miniBtn2 danger" data-act="del" data-id="${escapeHtml(d.id)}">✕</button>
+          </div>
+        `;
+        list.appendChild(wrap);
+      });
+
+      list.querySelectorAll("[data-act='book']").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const id = b.getAttribute("data-id");
+          const d = state.drafts.find(x=>x.id===id);
+          if(!d) return;
+          closeOverlay("draftsOverlay");
+          openBooking(d.listingId, d.serviceId, { dateISO:d.dateISO, time:d.time });
+        });
+      });
+
+      list.querySelectorAll("[data-act='del']").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const id = b.getAttribute("data-id");
+          state.drafts = state.drafts.filter(x=>x.id!==id);
+          updateDraftBadge();
+          renderDrafts();
+        });
+      });
     }
 
-    // === Booking submit ===
-    function setFieldError(id, on){
-      const el = document.getElementById(id);
-      if(el) el.classList.toggle("err", !!on);
-    }
+    // ===== Telegram booking via Worker =====
+    async function sendBooking(){
+      if(!validateForm()){
+        toast(T[state.lang].toastErr);
+        return;
+      }
+      const btn = $("#submitBooking");
+      if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
 
-    async function submitBooking(){
-      const listing = (window.LISTINGS||[]).find(l=>l.id===booking.listingId);
-      if(!listing) return;
+      const name  = ($("#fName")?.value||"").trim();
+      const phone = ($("#fPhone")?.value||"").trim();
+      const email = ($("#fEmail")?.value||"").trim();
 
-      const name = $("#fName")?.value?.trim() || "";
-      const phone = $("#fPhone")?.value?.trim() || "";
-      const email = $("#fEmail")?.value?.trim() || "";
+      // persist contact
+      localStorage.setItem(LS.contact, JSON.stringify({ name, phone, email }));
 
-      clearFieldErrors();
-      let ok = true;
-      if(name.length<2){ setFieldError("fNameWrap", true); ok=false; }
-      if(!isPhone(phone)){ setFieldError("fPhoneWrap", true); ok=false; }
-      if(!isEmail(email)){ setFieldError("fEmailWrap", true); ok=false; }
-      if(!booking.dateISO || !booking.time){ ok=false; }
+      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : (state.lang==="uk"?"Послуга":"Service");
 
-      if(!ok){ toast(T[state.lang].toastErr); return; }
+      // try pull price/duration
+      let from=null, to=null, dur=null;
+      try{
+        const sObj = window.bb.util.listingService(booking.listing, booking.serviceId);
+        if(sObj){
+          from = sObj.priceFrom ?? null;
+          to = sObj.priceTo ?? null;
+          dur = sObj.durationMin ?? null;
+        }
+      }catch(e){}
+      if(booking.slot && booking.slot.fromPrice!=null) from = booking.slot.fromPrice;
+      if(booking.slot && booking.slot.toPrice!=null) to = booking.slot.toPrice;
 
-      saveContact();
-
-      const svcLabel = serviceLabel(booking.serviceId);
-      const svcObj = window.bb?.util?.listingService
-        ? window.bb.util.listingService(listing, booking.serviceId)
-        : (listing.services||[]).find(s=>s.serviceId===booking.serviceId);
+      const profileUrl = `${location.origin}${location.pathname.replace(/\/[^\/]*$/,"/")}profile.html?id=${encodeURIComponent(booking.listing.id)}`;
+      const mapsQ = encodeURIComponent((booking.listing.address||"") + " " + (booking.listing.city||""));
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQ}`;
 
       const payload = {
         name, phone, email,
-        listingId: listing.id,
-        listingName: listing.name,
-        address: listing.address || "",
+        lang: state.lang,
+        listingId: booking.listing.id,
+        listingName: booking.listing.name,
+        address: booking.listing.address,
+        city: booking.listing.city,
         serviceId: booking.serviceId,
-        serviceName: svcLabel,
+        serviceName: svcName,
         dateISO: booking.dateISO,
         time: booking.time,
-        durationMin: svcObj?.durationMin ?? null,
-        fromPrice: svcObj?.from ?? null,
-        toPrice: svcObj?.to ?? null,
-        profileUrl: `${location.origin}${location.pathname.replace(/\/index\.html$|\/$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`
+        priceFrom: from,
+        priceTo: to,
+        durationMin: dur,
+        profileUrl,
+        mapsUrl,
+        isStandalone: isStandalone()
       };
-
-      const btn = $("#submitBooking");
-      if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
 
       try{
         const res = await fetch(`${WORKER_URL}/book`, {
@@ -2569,315 +2797,442 @@
           body: JSON.stringify(payload)
         });
 
-        if(!res.ok) throw new Error("Bad response");
-        await res.json().catch(()=> ({}));
+        const ok = res.ok;
+        if(!ok){
+          toast("Error. Try again.");
+          if(btn){ btn.disabled = false; btn.textContent = T[state.lang].confirm; }
+          return;
+        }
 
-        const last = {
-          listingId: listing.id,
-          listingName: listing.name,
+        // save last booking
+        localStorage.setItem(LS.last, JSON.stringify({
+          listingId: booking.listing.id,
+          listingName: booking.listing.name,
           serviceId: booking.serviceId,
-          serviceLabel: svcLabel,
           dateISO: booking.dateISO,
-          time: booking.time,
-          fromPrice: payload.fromPrice,
-          ts: Date.now()
-        };
-        localStorage.setItem(LS.last, JSON.stringify(last));
+          time: booking.time
+        }));
 
-        booking.lastPayload = payload;
+        // success UI
+        $("#successLine").textContent = T[state.lang].toastSent;
+        $("#successSub").textContent = `${booking.listing.name} · ${svcName} · ${formatDateShort(booking.dateISO)} · ${booking.time}`;
+        openOverlay("successOverlay");
 
+        // close modal (but keep lock count correct)
         closeBooking();
+
         toast(T[state.lang].toastSent);
         renderLastBookingCard();
-        openSuccess(listing, payload);
-
       }catch(e){
-        toast("Error. Try again.");
+        toast("Network error");
       }finally{
-        if(btn){
-          btn.textContent = T[state.lang].confirm;
-          btn.disabled = false;
-        }
+        if(btn){ btn.textContent = T[state.lang].confirm; btn.disabled = false; }
       }
     }
 
-    function openSuccess(listing, payload){
-      const o = $("#successOverlay");
-      if(!o) return;
-      lockScroll();
-      o.classList.add("on");
-      o.setAttribute("aria-hidden","false");
+    // ===== Success actions =====
+    function makeICS(){
+      if(!booking.listing) return null;
 
-      const sub = $("#successSub");
-      if(sub){
-        sub.textContent = `${payload.serviceName || ""} · ${formatDateShort(payload.dateISO)} ${payload.time}`;
-      }
+      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "Service";
+      const title = `Beauty Booking — ${booking.listing.name} (${svcName})`;
 
-      const mapsBtn = $("#openMapsBtn");
-      if(mapsBtn) mapsBtn.onclick = ()=>{
-        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address||"")}`, "_blank", "noopener");
-      };
+      // assume local time
+      const [y,m,d] = booking.dateISO.split("-").map(n=>parseInt(n,10));
+      const [hh,mm] = booking.time.split(":").map(n=>parseInt(n,10));
+      const start = new Date(y, m-1, d, hh, mm||0, 0);
 
-      const copyBtn = $("#copyDetailsBtn");
-      if(copyBtn) copyBtn.onclick = async ()=>{
-        const text = `${payload.serviceName}\n${payload.listingName}\n${payload.address}\n${payload.dateISO} ${payload.time}\n${payload.phone} · ${payload.email}`;
-        try{
-          await navigator.clipboard.writeText(text);
-          toast(T[state.lang].toastCopied);
-        }catch(e){
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          ta.remove();
-          toast(T[state.lang].toastCopied);
-        }
-      };
+      let durMin = 60;
+      try{
+        const sObj = window.bb.util.listingService(booking.listing, booking.serviceId);
+        if(sObj?.durationMin) durMin = sObj.durationMin;
+      }catch(e){}
+      const end = new Date(start.getTime() + durMin*60000);
 
-      const icsBtn = $("#addIcsBtn");
-      if(icsBtn) icsBtn.onclick = ()=> downloadICS(payload);
+      const pad = (n)=>String(n).padStart(2,"0");
+      const fmt = (dt)=>`${dt.getFullYear()}${pad(dt.getMonth()+1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
 
-      const close = $("#closeSuccess");
-      if(close) close.onclick = closeSuccess;
-    }
-
-    function closeSuccess(){
-      const o = $("#successOverlay");
-      if(!o) return;
-      o.classList.remove("on");
-      o.setAttribute("aria-hidden","true");
-      unlockScroll();
-    }
-
-    function downloadICS(payload){
-      const dtStart = payload.dateISO.replaceAll("-","") + "T" + payload.time.replace(":","") + "00";
-      const uid = "bb-" + Date.now() + "@bookingclub.beauty";
-      const title = `${payload.serviceName} · ${payload.listingName}`;
-      const desc = `${payload.address}\\nTelegram confirmation sent.`;
       const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Beauty Booking//EN
+CALSCALE:GREGORIAN
 BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g,"").split(".")[0]}Z
-DTSTART:${dtStart}
+UID:${Date.now()}@beautybooking
+DTSTAMP:${fmt(new Date())}
+DTSTART:${fmt(start)}
+DTEND:${fmt(end)}
 SUMMARY:${title}
-DESCRIPTION:${desc}
-LOCATION:${payload.address}
+LOCATION:${(booking.listing.address||"").replace(/\n/g," ")}
+DESCRIPTION:Booked via Beauty Booking
 END:VEVENT
 END:VCALENDAR`;
 
-      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
+      return ics;
+    }
+
+    function downloadICS(){
+      const ics = makeICS();
+      if(!ics) return;
+      const blob = new Blob([ics], { type:"text/calendar;charset=utf-8" });
       const a = document.createElement("a");
-      a.href = url;
-      a.download = "booking.ics";
+      a.href = URL.createObjectURL(blob);
+      a.download = "beauty-booking.ics";
       document.body.appendChild(a);
       a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url), 1500);
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
     }
 
-    // === Reset filters (DO NOT clear search or favOnly) ===
-    function resetActiveFilters(){
-      state.serviceId = null;
-      saveFilters();
-      renderServiceChips();
-      renderAll();
-      refreshHeroCandidates(true);
-      toast(T[state.lang].toastFilters);
+    function copyDetails(){
+      if(!booking.listing) return;
+      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
+      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "";
+      const txt =
+`Beauty Booking
+${booking.listing.name}
+${booking.listing.address}
+${svcName}
+${booking.dateISO} ${booking.time}`;
+
+      try{
+        navigator.clipboard.writeText(txt);
+        toast(T[state.lang].toastCopied);
+      }catch(e){
+        toast("Copy failed");
+      }
     }
 
-    // === Install prompt ===
+    // ===== Policies =====
+    function openPolicies(){ openOverlay("polModal"); }
+    function closePolicies(){ closeOverlay("polModal"); }
+
+    // ===== AI concierge (simple heuristic) =====
+    function parseBudget(text){
+      const m = String(text||"").match(/(\$|usd|cad)?\s*(\d{2,3})\s*(\$)?/i);
+      if(!m) return null;
+      const v = parseInt(m[2],10);
+      return isNaN(v) ? null : v;
+    }
+
+    function runAIPicks(){
+      const sec = $("#aiSection");
+      const out = $("#aiPicks");
+      if(!sec || !out) return;
+
+      const q = ($("#aiInput")?.value||"").trim().toLowerCase();
+      if(!q){ out.innerHTML=""; return; }
+
+      // naive service detect
+      const svcMap = [
+        {k:["манік","manic"], id:"manicure"},
+        {k:["педик","pedi"], id:"pedicure"},
+        {k:["бров","brow"], id:"brows"},
+        {k:["чол","men"], id:"haircut_men"},
+        {k:["жін","women"], id:"haircut_women"},
+        {k:["стриж","hair"], id:"haircut"}
+      ];
+      let sid = null;
+      svcMap.some(x => x.k.some(k=>q.includes(k)) ? (sid=x.id, true) : false);
+
+      const budget = parseBudget(q);
+      const after18 = q.includes("після 18") || q.includes("after 18") || q.includes("after 6");
+
+      // candidates
+      let list = (window.LISTINGS||[]).slice().filter(l => matchesService(l, sid));
+      if(state.userLoc && window.bb?.util?.smartRecommend) list = window.bb.util.smartRecommend(list, state.userLoc, sid);
+
+      // filter by budget (min price)
+      if(budget!=null){
+        list = list.filter(l=>{
+          try{
+            const p = window.bb.util.minPriceFor(l, sid);
+            return p==null ? true : p <= budget;
+          }catch(e){ return true; }
+        });
+      }
+
+      // filter by after18 (has a slot >= 18:00 today/soon)
+      if(after18){
+        const todayISO = new Date().toISOString().slice(0,10);
+        const parse = (t)=>{ const [h,m]=String(t).split(":").map(n=>parseInt(n,10)); return h*60+(m||0); };
+        list = list.filter(l=>{
+          const slots = slotsForListing(l, sid).filter(s=>s.dateISO===todayISO && parse(s.time)>=18*60);
+          return slots.length>0;
+        });
+      }
+
+      const picks = list.slice(0, 3);
+      out.innerHTML = "";
+      picks.forEach(l => out.appendChild(buildCard(l)));
+      if(!picks.length){
+        out.innerHTML = `<div style="opacity:.75; padding:6px 2px">${state.lang==="uk"?"Нічого не знайшов — спробуй інший запит":"No picks — try another prompt"}</div>`;
+      }
+    }
+
+    // ===== Install (A2HS) =====
     let deferredPrompt = null;
     window.addEventListener("beforeinstallprompt", (e)=>{
       e.preventDefault();
       deferredPrompt = e;
       const pill = $("#installPill");
-      const hidden = localStorage.getItem(LS.installedHide)==="1";
-      if(pill && !hidden && !isStandalone()) pill.classList.add("show");
+      if(pill){
+        const hide = localStorage.getItem(LS.installedHide)==="1";
+        if(!hide) pill.classList.add("show");
+      }
     });
 
     async function doInstall(){
       if(!deferredPrompt) return;
       deferredPrompt.prompt();
-      await deferredPrompt.userChoice.catch(()=>null);
+      const choice = await deferredPrompt.userChoice;
       deferredPrompt = null;
       const pill = $("#installPill");
       if(pill) pill.classList.remove("show");
-      localStorage.setItem(LS.installedHide, "1");
+      localStorage.setItem(LS.installedHide,"1");
+      if(choice?.outcome === "accepted") toast(T[state.lang].toastInstalled);
     }
 
-    // === Geolocation (optional) ===
-    function initGeo(){
-      if(!navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition((pos)=>{
-        state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        renderAll();
-      }, ()=>{}, { enableHighAccuracy:false, timeout:2500, maximumAge: 1000*60*20 });
-    }
+    function initEvents(){
+      // search
+      const qEl = $("#q");
+      if(qEl){
+        qEl.value = state.q || "";
+        qEl.addEventListener("input", ()=>{
+          state.q = qEl.value || "";
+          saveFilters();
+          renderAll();
+          refreshHeroCandidates(true);
+          renderNextHeroRotating(true);
+          renderSearchSuggestions();
+        });
+        qEl.addEventListener("focus", ()=>renderSearchSuggestions());
+        qEl.addEventListener("blur", ()=>setTimeout(()=>renderSearchSuggestions(true), 160));
+      }
 
-    // === INIT ===
-    function init(){
-      applyTheme();
-      renderTexts();
-
-      const q = $("#q");
-      if(q){
-        q.value = state.q || "";
-        q.addEventListener("input", ()=>{
-          state.q = q.value || "";
+      // favOnly
+      const favOnly = $("#favOnly");
+      if(favOnly){
+        favOnly.addEventListener("click", ()=>{
+          haptic(10);
+          state.favOnly = !state.favOnly;
           saveFilters();
           renderAll();
         });
       }
 
-      const favOnly = $("#favOnly");
-      if(favOnly){
-        favOnly.classList.toggle("on", !!state.favOnly);
-        favOnly.onclick = ()=>{
-          state.favOnly = !state.favOnly;
-          favOnly.classList.toggle("on", state.favOnly);
-          saveFilters();
-          renderAll();
-        };
-      }
+      // ai
+      $("#aiBtn")?.addEventListener("click", ()=>{
+        haptic(10);
+        const sec = $("#aiSection");
+        if(!sec) return;
+        const on = sec.style.display !== "none";
+        sec.style.display = on ? "none" : "block";
+        if(!on) $("#aiInput")?.focus();
+      });
+      $("#aiGo")?.addEventListener("click", ()=>{ haptic(10); runAIPicks(); });
+      $("#aiInput")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); runAIPicks(); } });
 
+      // theme/lang
       $("#themeBtn")?.addEventListener("click", ()=>{
-        state.theme = (state.theme === "light") ? "dark" : "light";
+        haptic(10);
+        state.theme = (state.theme==="light") ? "dark" : "light";
         applyTheme();
       });
 
       $("#langBtn")?.addEventListener("click", ()=>{
-        setLang(state.lang === "uk" ? "en" : "uk");
+        haptic(10);
+        setLang(state.lang==="uk" ? "en" : "uk");
       });
 
-      $("#aiBtn")?.addEventListener("click", ()=>{
-        const open = $("#aiSection")?.style?.display !== "block";
-        toggleAI(open);
-      });
+      // install
+      $("#installPill")?.addEventListener("click", ()=>{ haptic(10); doInstall(); });
 
-      $("#aiGo")?.addEventListener("click", ()=>{
-        const txt = $("#aiInput")?.value || "";
-        const res = runAIQuery(txt);
-        renderAIPicks(res);
-      });
+      // reset buttons
+      $("#resetBtn")?.addEventListener("click", ()=>{ haptic(10); resetActiveFilters(); });
+      $("#stickyReset")?.addEventListener("click", ()=>{ haptic(10); resetActiveFilters(); });
+      $("#emptyReset")?.addEventListener("click", ()=>{ haptic(10); resetActiveFilters(); });
 
-      $("#openQuick")?.addEventListener("click", ()=>{
-        if(!heroRot.list.length) refreshHeroCandidates(true);
-        if(heroRot.list.length){
-          const l = heroRot.list[heroRot.idx % heroRot.list.length];
-          const slot = window.bb?.util?.nextAvailable ? window.bb.util.nextAvailable(l, state.serviceId) : null;
-          openBooking(l.id, state.serviceId, slot);
-        }else{
-          window.scrollTo({top: $("#partnersSection")?.offsetTop || 0, behavior:"smooth"});
+      // empty actions
+      $("#emptyShowPartners")?.addEventListener("click", ()=>{
+        haptic(10);
+        const sec = $("#partnersSection");
+        if(sec){
+          const y = sec.getBoundingClientRect().top + window.scrollY - 72;
+          window.scrollTo({top:y, behavior:"smooth"});
         }
       });
-
-      $("#floatQuick")?.addEventListener("click", ()=> $("#openQuick")?.click());
-      $("#toTop")?.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-
-      $("#resetBtn")?.addEventListener("click", resetActiveFilters);
-      $("#emptyReset")?.addEventListener("click", resetActiveFilters);
-      $("#emptyShowPopular")?.addEventListener("click", ()=>{
+      $("#emptyShowNearest")?.addEventListener("click", ()=>{
+        haptic(10);
         state.serviceId = null;
-        state.q = "";
-        state.favOnly = false;
         saveFilters();
-        const q = $("#q"); if(q) q.value = "";
-        const favOnly = $("#favOnly"); if(favOnly) favOnly.classList.remove("on");
         renderServiceChips();
         renderAll();
+        toast(state.lang==="uk" ? "Показую найближчі" : "Showing nearest");
       });
 
-      $("#policiesBtn")?.addEventListener("click", (e)=>{
-        e.preventDefault();
-        lockScroll();
-        const m = $("#polModal");
-        if(m){ m.classList.add("on"); m.setAttribute("aria-hidden","false"); }
-      });
-      $("#closePol")?.addEventListener("click", ()=>{
-        const m = $("#polModal");
-        if(m){ m.classList.remove("on"); m.setAttribute("aria-hidden","true"); }
-        unlockScroll();
-      });
-      $("#polModal")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="polModal") $("#closePol")?.click();
+      // quick booking
+      const doQuick = ()=>{
+        haptic(14);
+        // pick first candidate from hero list
+        if(!heroRot.list.length) refreshHeroCandidates(true);
+        const l = heroRot.list[0] || (filteredListings()[0] || (window.LISTINGS||[])[0]);
+        if(!l) return;
+        let slot=null;
+        try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
+        openBooking(l.id, state.serviceId || svcFromListing(l), slot);
+      };
+
+      $("#openQuick")?.addEventListener("click", doQuick);
+      $("#floatQuick")?.addEventListener("click", doQuick);
+      $("#stickyQuick")?.addEventListener("click", doQuick);
+
+      // to top
+      $("#toTop")?.addEventListener("click", ()=>{
+        haptic(8);
+        window.scrollTo({top:0, behavior:"smooth"});
       });
 
-      $("#closeModal")?.addEventListener("click", closeBooking);
-      $("#modal")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="modal") closeBooking();
+      // modal close
+      $("#closeModal")?.addEventListener("click", ()=>{ haptic(8); closeBooking(); });
+      $("#modal")?.addEventListener("click", (e)=>{ if(e.target?.id==="modal"){ closeBooking(); } });
+
+      // service/date/time pickers
+      $("#svcPick")?.addEventListener("click", ()=>{ haptic(10); cycleService(); renderTimeGrid(); });
+      $("#datePick")?.addEventListener("click", ()=>{ haptic(10); openDatePicker(); });
+      $("#timePick")?.addEventListener("click", ()=>{ haptic(10); openTimePicker(); });
+
+      // time overlay close + quick chips
+      $("#closeTime")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("timeOverlay"); });
+      $("#timeOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="timeOverlay") closeOverlay("timeOverlay"); });
+
+      $("#tfToday")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("today"); renderTimeGrid(); });
+      $("#tfAfter18")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("after18"); renderTimeGrid(); });
+      $("#tfEarliest")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("earliest"); renderTimeGrid(); });
+      $("#tfCheapest")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("cheapest"); renderTimeGrid(); });
+
+      // date overlay close + nav
+      $("#closeDate")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("dateOverlay"); });
+      $("#dateOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="dateOverlay") closeOverlay("dateOverlay"); });
+      $("#calPrev")?.addEventListener("click", ()=>{ haptic(6); cal.m--; if(cal.m<0){cal.m=11; cal.y--;} buildCalendar(); });
+      $("#calNext")?.addEventListener("click", ()=>{ haptic(6); cal.m++; if(cal.m>11){cal.m=0; cal.y++;} buildCalendar(); });
+
+      // drafts
+      $("#cartBtn")?.addEventListener("click", ()=>{ haptic(10); openDrafts(); });
+      $("#closeDrafts")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("draftsOverlay"); });
+      $("#draftsOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="draftsOverlay") closeOverlay("draftsOverlay"); });
+
+      $("#saveDraftBtn")?.addEventListener("click", ()=>{ haptic(12); saveDraft(); });
+
+      // open profile from modal
+      $("#openProfileBtn")?.addEventListener("click", ()=>{
+        if(!booking.listing) return;
+        haptic(10);
+        window.open(`./profile.html?id=${encodeURIComponent(booking.listing.id)}`, "_blank", "noopener");
       });
 
-      $("#closeTime")?.addEventListener("click", closeTimePicker);
-      $("#timeOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="timeOverlay") closeTimePicker();
-      });
+      // submit
+      $("#submitBooking")?.addEventListener("click", ()=>{ haptic(14); sendBooking(); });
 
-      $("#closeDate")?.addEventListener("click", closeDatePicker);
-      $("#dateOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="dateOverlay") closeDatePicker();
-      });
-
-      $("#cartBtn")?.addEventListener("click", openDrafts);
-      $("#closeDrafts")?.addEventListener("click", closeDrafts);
-      $("#draftsOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="draftsOverlay") closeDrafts();
-      });
-
-      $("#closeSuccess")?.addEventListener("click", closeSuccess);
-      $("#successOverlay")?.addEventListener("click", (e)=>{
-        if(e.target?.id==="successOverlay") closeSuccess();
-      });
-
-      $("#installPill")?.addEventListener("click", doInstall);
-
+      // validate on input
       ["fName","fPhone","fEmail"].forEach(id=>{
         const el = document.getElementById(id);
-        if(el){
-          el.addEventListener("input", ()=>{
-            updateConfirmState();
-            saveContact();
-          });
-        }
+        if(el) el.addEventListener("input", validateForm);
       });
 
-      $("#submitBooking")?.addEventListener("click", submitBooking);
+      // success overlay
+      $("#closeSuccess")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("successOverlay"); });
+      $("#successOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="successOverlay") closeOverlay("successOverlay"); });
+      $("#openMapsBtn")?.addEventListener("click", ()=>{
+        if(!booking.listing) return;
+        haptic(10);
+        const q = encodeURIComponent((booking.listing.address||"") + " " + (booking.listing.city||""));
+        window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank", "noopener");
+      });
+      $("#addIcsBtn")?.addEventListener("click", ()=>{ haptic(10); downloadICS(); });
+      $("#copyDetailsBtn")?.addEventListener("click", ()=>{ haptic(10); copyDetails(); });
 
-      // render
-      updateDraftBadge();
+      // policies
+      $("#policiesBtn")?.addEventListener("click", (e)=>{ e.preventDefault(); haptic(10); openPolicies(); });
+      $("#closePol")?.addEventListener("click", ()=>{ haptic(8); closePolicies(); });
+      $("#polModal")?.addEventListener("click", (e)=>{ if(e.target?.id==="polModal") closePolicies(); });
+
+      // scroll => sticky bar
+      window.addEventListener("scroll", ()=>{ renderAll(); }, { passive:true });
+
+      // escape key close
+      window.addEventListener("keydown", (e)=>{
+        if(e.key !== "Escape") return;
+        if($("#successOverlay")?.classList.contains("on")) return closeOverlay("successOverlay");
+        if($("#draftsOverlay")?.classList.contains("on")) return closeOverlay("draftsOverlay");
+        if($("#timeOverlay")?.classList.contains("on")) return closeOverlay("timeOverlay");
+        if($("#dateOverlay")?.classList.contains("on")) return closeOverlay("dateOverlay");
+        if($("#polModal")?.classList.contains("on")) return closeOverlay("polModal");
+        if($("#modal")?.classList.contains("on")) return closeBooking();
+      });
+    }
+
+    // ===== Init =====
+    function init(){
+      // apply theme
+      applyTheme();
+
+      // apply texts
+      renderTexts();
+
+      // services chips
       renderServiceChips();
-      renderAll();
-      renderLastBookingCard();
-      startHeroRotationOnce();
-      initGeo();
 
-      // apply stored UI state
-      const q2 = $("#q"); if(q2) q2.value = state.q || "";
-      const favOnly2 = $("#favOnly"); if(favOnly2) favOnly2.classList.toggle("on", !!state.favOnly);
+      // show AI section if previously opened? keep closed by default
+      $("#aiSection").style.display = "none";
+
+      // restore inputs
+      const qEl = $("#q");
+      if(qEl) qEl.value = state.q || "";
+
+      // drafts
+      updateDraftBadge();
+
+      // first render
+      renderAll();
+
+      // hero
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
+      startHeroTimer();
+
+      // last booking
+      renderLastBookingCard();
+
+      // install hint for iOS (optional toast)
+      if(!isStandalone()){
+        const hinted = localStorage.getItem(LS.a2hsHint)==="1";
+        if(!hinted && /iphone|ipad|ipod/i.test(navigator.userAgent||"")){
+          setTimeout(()=>toast(T[state.lang].toastA2HS), 1200);
+          localStorage.setItem(LS.a2hsHint,"1");
+        }
+      }
+
+      // events
+      initEvents();
 
       // AUTO open booking from profile redirect
       if(AUTO){
         const l = (window.LISTINGS||[]).find(x=>x.id===AUTO.id);
         if(l){
-          const svc = AUTO.service || state.serviceId;
-          setTimeout(()=>{
-            openBooking(l.id, svc, null);
-          }, 180);
+          let slot = null;
+          try{ slot = window.bb.util.nextAvailable(l, AUTO.service || null); }catch(e){}
+          setTimeout(()=>openBooking(l.id, AUTO.service || null, slot), 250);
         }
-      }
-
-      // hide install in standalone
-      if(isStandalone()){
-        const pill = $("#installPill");
-        if(pill) pill.classList.remove("show");
       }
     }
 
-    window.addEventListener("DOMContentLoaded", init);
+    // start after data.js ready
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+    else init();
   </script>
 </body>
 </html>
+
+
+
