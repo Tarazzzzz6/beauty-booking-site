@@ -917,7 +917,20 @@
     -webkit-overflow-scrolling:touch;
     padding-bottom:2px;
   }
-  .top-actions::-webkit-scrollbar{height:0}
+  .top-actions::-webkit-scrollbar{height:0}/* ✅ tighter iPhone row so everything fits */
+@supports (-webkit-touch-callout: none){
+  .top-actions{gap:8px;}
+  .pill{
+    padding:8px 10px;
+    font-size:12.5px;
+  }
+  .iconbtn{
+    width:38px;
+    height:38px;
+    border-radius:13px;
+  }
+}
+
 }
 
   </style>
@@ -2908,6 +2921,7 @@ END:VCALENDAR`;
   </script>
 </body>
 </html>
+
 
 
 
