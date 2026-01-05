@@ -27,15 +27,13 @@
     :root{
       --bg:#0b0b0f;
       --bg2:#0f0f16;
-      --card:#12121b;
-      --card2:#151520;
       --text:#f3f1ff;
       --muted:rgba(243,241,255,.68);
       --hair:rgba(255,255,255,.08);
       --hair2:rgba(255,255,255,.12);
       --accent:#ff5ea8;
-      --gold:#f6d17a;
       --violet:#7b6bff;
+      --gold:#f6d17a;
       --radius:18px;
       --radius2:22px;
       --shadow: 0 18px 60px rgba(0,0,0,.55);
@@ -64,7 +62,7 @@
     button,input,select,textarea{ font: inherit; color:inherit; }
     .wrap{ max-width: 1180px; margin:0 auto; padding: 16px 16px calc(18px + var(--safeBottom)); }
 
-    /* ===== Header / Topbar ===== */
+    /* ===== Header ===== */
     .topbar{
       position: sticky; top:0; z-index: 30;
       backdrop-filter: blur(18px);
@@ -76,13 +74,16 @@
       margin:0 auto;
       padding: calc(10px + var(--safeTop)) 16px 12px;
       display:flex;
-      align-items:flex-end; /* нижче */
+      align-items:flex-end;
       justify-content:space-between;
       gap: 14px;
     }
     .brand{
       display:flex; align-items:flex-end; gap: 10px;
       min-width: 210px;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
     }
     .logo{
       width: 42px; height: 42px;
@@ -107,27 +108,28 @@
     .brandText{
       display:flex; flex-direction:column;
       line-height: 1.05;
-      transform: translateY(2px); /* нижче */
+      transform: translateY(3px);
     }
     .brandText .title{
       font-family: "Playfair Display", serif;
       font-weight: 700;
-      font-size: 22px; /* більший */
+      font-size: 24px;
       letter-spacing: .2px;
     }
     .brandText .sub{
       font-size: 12px;
       color: var(--muted);
-      margin-top: 2px;
+      margin-top: 3px;
     }
     .actions{
       display:flex; align-items:center; gap:10px;
-      transform: translateY(2px); /* нижче */
+      transform: translateY(3px);
       flex-wrap: nowrap;
     }
     .iconBtn{
-      width: 44px; height: 44px; /* більші */
-      border-radius: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
       border: 1px solid var(--hair2);
       background: rgba(255,255,255,.04);
       display:inline-flex;
@@ -141,14 +143,15 @@
     }
     .iconBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); }
     .iconBtn:active{ transform: translateY(0px) scale(.98); }
+    .iconWrap{ position:relative; display:inline-flex; }
     .badgeDot{
       width: 8px; height:8px; border-radius: 99px;
       background: var(--accent);
       box-shadow: 0 0 0 4px rgba(255,94,168,.18);
       position:absolute;
-      transform: translate(12px,-12px);
+      transform: translate(13px,-13px);
     }
-    .iconWrap{ position:relative; display:inline-flex; }
+    .svg{ width: 18px; height: 18px; opacity: .92; }
 
     /* ===== Hero ===== */
     .hero{
@@ -184,7 +187,6 @@
       max-width: 60ch;
     }
 
-    /* Quick service chips layout (MOBILE REQUIREMENT) */
     .chips{
       display:flex;
       flex-wrap: wrap;
@@ -202,6 +204,7 @@
       white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
       user-select:none;
+      text-align:center;
     }
     .chip:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.06); }
     .chip.active{
@@ -233,10 +236,7 @@
     }
     .btn.primary:hover{ filter: brightness(1.03); }
 
-    /* Right hero card */
-    .heroSide{
-      display:flex; flex-direction:column; gap: 12px;
-    }
+    .heroSide{ display:flex; flex-direction:column; gap: 12px; }
     .panel{
       border-radius: var(--radius2);
       border: 1px solid var(--hair);
@@ -245,10 +245,7 @@
       padding: 16px;
     }
     .panel .kicker{ font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    .panel .big{
-      font-size: 16px; font-weight: 600; line-height: 1.2;
-      margin-bottom: 10px;
-    }
+    .panel .big{ font-size: 16px; font-weight: 600; line-height: 1.2; margin-bottom: 10px; }
     .panel .mini{ font-size: 12px; color: var(--muted); }
 
     /* ===== Controls ===== */
@@ -306,12 +303,9 @@
       font-size: 22px;
       letter-spacing:.2px;
     }
-    .sectionTitle .note{
-      color: var(--muted);
-      font-size: 12px;
-    }
+    .sectionTitle .note{ color: var(--muted); font-size: 12px; }
 
-    /* ===== Listings grid ===== */
+    /* ===== Grid ===== */
     .grid{
       display:grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
@@ -328,12 +322,7 @@
       flex-direction:column;
       min-height: 280px;
     }
-    .card .img{
-      height: 150px;
-      background: #101018;
-      position:relative;
-      overflow:hidden;
-    }
+    .card .img{ height: 150px; background: #101018; position:relative; overflow:hidden; }
     .card .img img{
       width:100%; height:100%; object-fit:cover;
       display:block;
@@ -348,31 +337,16 @@
       pointer-events:none;
     }
     .cardBody{
-      padding: 12px 12px 12px;
+      padding: 12px;
       display:flex;
       flex-direction:column;
       gap: 8px;
       flex:1;
     }
-    .cardTop{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .name{
-      font-weight: 700;
-      font-size: 15px;
-      line-height: 1.2;
-    }
-    .addr{
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.2;
-    }
-    .tags{
-      display:flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
+    .cardTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .name{ font-weight: 700; font-size: 15px; line-height: 1.2; }
+    .addr{ font-size: 12px; color: var(--muted); line-height: 1.2; }
+    .tags{ display:flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tag{
       font-size: 11px;
       padding: 6px 8px;
@@ -403,13 +377,10 @@
       -webkit-tap-highlight-color: transparent;
       user-select:none;
     }
-    .miniBtn.primary{
-      border-color: rgba(255,94,168,.55);
-      background: rgba(255,94,168,.12);
-    }
+    .miniBtn.primary{ border-color: rgba(255,94,168,.55); background: rgba(255,94,168,.12); }
     .heart{
-      width: 40px; height: 40px;
-      border-radius: 14px;
+      width: 44px; height: 44px;
+      border-radius: 16px;
       display:inline-flex; align-items:center; justify-content:center;
       border: 1px solid var(--hair2);
       background: rgba(0,0,0,.18);
@@ -457,24 +428,29 @@
       align-items:flex-end;
       justify-content:center;
       padding: calc(12px + var(--safeTop)) 12px calc(12px + var(--safeBottom));
+      overscroll-behavior: contain;
+      touch-action: none;
     }
     .modalOverlay.open{ display:flex; }
+
     .modal{
       width: min(720px, 100%);
       border-radius: 24px;
       border: 1px solid rgba(255,255,255,.14);
       background: linear-gradient(180deg, rgba(20,20,30,.96), rgba(14,14,20,.96));
       box-shadow: 0 28px 90px rgba(0,0,0,.7);
-      overflow:hidden;
-      /* IMPORTANT: prevent any transforms / scaling issues */
+
+      overflow: auto;
+      max-height: calc(100vh - (24px + var(--safeTop) + var(--safeBottom)));
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+
       transform: none !important;
       transition: none !important;
       animation: none !important;
       -webkit-text-size-adjust: 100%;
-      touch-action: manipulation;
     }
     .modal *{
-      /* stop surprises inside modal */
       transform: none !important;
       transition: none !important;
       animation: none !important;
@@ -485,16 +461,13 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding: 14px 14px;
+      padding: 14px;
       border-bottom: 1px solid rgba(255,255,255,.10);
     }
-    .modalTitle{
-      font-weight: 700;
-      font-size: 15px;
-    }
+    .modalTitle{ font-weight: 700; font-size: 15px; }
     .closeBtn{
-      width: 42px; height: 42px;
-      border-radius: 14px;
+      width: 46px; height: 46px;
+      border-radius: 16px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       cursor:pointer;
@@ -505,24 +478,18 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    .field{
-      display:flex; flex-direction:column; gap:6px;
-    }
-    .field label{
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    .field label{ font-size: 12px; color: var(--muted); }
     .field input, .field select{
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.20);
       padding: 11px 12px;
       outline:none;
+      font-size: 16px; /* iOS no-zoom */
     }
     .full{ grid-column: 1 / -1; }
-    .timeList{
-      display:flex; flex-wrap:wrap; gap: 8px;
-    }
+    .timeList{ display:flex; flex-wrap:wrap; gap: 8px; }
     .timeBtn{
       padding: 10px 12px;
       border-radius: 999px;
@@ -553,7 +520,6 @@
       max-width: 62ch;
     }
 
-    /* ===== Empty state ===== */
     .empty{
       border-radius: var(--radius2);
       border: 1px dashed rgba(255,255,255,.16);
@@ -563,7 +529,6 @@
       margin-top: 10px;
     }
 
-    /* ===== Responsive ===== */
     @media (max-width: 980px){
       .hero{ grid-template-columns: 1fr; }
       .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -572,23 +537,23 @@
       .topbarInner{ padding: calc(10px + var(--safeTop)) 12px 12px; }
       .wrap{ padding: 14px 12px calc(18px + var(--safeBottom)); }
       .brand{ min-width: 0; }
-      .brandText .title{ font-size: 20px; } /* бренд вміщається */
+      .brandText .title{ font-size: 22px; }
       .logo{ width: 40px; height: 40px; }
-      .iconBtn{ width: 44px; height: 44px; } /* великі іконки */
+      .iconBtn{ width: 48px; height: 48px; }
       .heroH{ font-size: 28px; }
       .heroCard{ padding: 16px; }
       .grid{ grid-template-columns: 1fr; }
       .modalBody{ grid-template-columns: 1fr; }
       .floatText{ max-width: 48vw; }
-      /* MOBILE HERO CHIPS: 3 в ряд, а haircuts нижче */
+
+      /* chips layout */
       .chips{ gap: 8px; }
-      .chip{ padding: 10px 12px; }
-      .chip.row1{ flex: 1 1 calc(33.333% - 6px); text-align:center; }
-      .chip.row2{ flex: 1 1 calc(50% - 6px); text-align:center; }
+      .chip.row1{ flex: 1 1 calc(33.333% - 6px); }
+      .chip.row2{ flex: 1 1 calc(50% - 6px); }
       .heroCTA{ margin-top: 12px; }
     }
 
-    /* ===== Body lock (modal) ===== */
+    /* body lock */
     .lock{
       overflow: hidden !important;
       touch-action: none;
@@ -596,9 +561,6 @@
       position: fixed;
       width: 100%;
     }
-
-    /* small helper icons */
-    .svg{ width: 18px; height: 18px; opacity: .92; }
   </style>
 </head>
 
@@ -609,7 +571,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div class="brandText">
           <div class="title" id="t_brand">Beauty Booking</div>
-          <div class="sub" id="t_sub">Book in seconds • Verified salons</div>
+          <div class="sub" id="t_sub">bookingclub.beauty • Montréal</div>
         </div>
       </div>
 
@@ -651,10 +613,9 @@
   <main class="wrap">
     <section class="hero">
       <div class="heroCard">
-        <h1 class="heroH" id="t_h1">Luxury beauty booking, instantly.</h1>
-        <p class="heroP" id="t_h1p">Choose a service, find verified salons, and book the next available slot — in seconds.</p>
+        <h1 class="heroH">Luxury beauty booking, instantly.</h1>
+        <p class="heroP">Choose a service, find verified salons, and book the next available slot — in seconds.</p>
 
-        <!-- MOBILE: 1st row (манік/педикюр/брови), 2nd row (стрижки) -->
         <div class="chips" id="serviceChips">
           <div class="chip row1" data-service="manicure">Манікюр</div>
           <div class="chip row1" data-service="pedicure">Педикюр</div>
@@ -672,7 +633,7 @@
 
       <div class="heroSide">
         <div class="panel" id="nextPanel">
-          <div class="kicker" id="t_next">Next available near you</div>
+          <div class="kicker">Next available near you</div>
           <div class="big" id="nextBig">—</div>
           <div class="mini" id="nextMini">—</div>
           <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
@@ -682,8 +643,8 @@
         </div>
 
         <div class="panel">
-          <div class="kicker" id="t_trust">Trusted picks</div>
-          <div class="mini" id="t_trustp">Verified • Sterile • Great price • Fast booking</div>
+          <div class="kicker">Trusted picks</div>
+          <div class="mini">Verified • Sterile • Great price • Fast booking</div>
         </div>
       </div>
     </section>
@@ -704,7 +665,7 @@
 
     <section>
       <div class="sectionTitle">
-        <h2 id="t_section">Top salons / partners</h2>
+        <h2>Top salons / partners</h2>
         <div class="note" id="countNote">—</div>
       </div>
       <div class="grid" id="grid"></div>
@@ -712,14 +673,12 @@
     </section>
   </main>
 
-  <!-- Floating quick action -->
   <div class="floatBar" id="floatBar" style="display:none">
     <button class="btn primary" id="floatBook">Book now</button>
     <div class="floatText" id="floatText">—</div>
     <button class="btn" id="floatTop">Up</button>
   </div>
 
-  <!-- Booking modal -->
   <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modalHead">
@@ -741,6 +700,7 @@
           <label>Послуга</label>
           <select id="m_service"></select>
         </div>
+
         <div class="field">
           <label>Час</label>
           <div class="timeList" id="m_times"></div>
@@ -750,15 +710,18 @@
           <label>Імʼя</label>
           <input id="m_name" type="text" placeholder="Твоє імʼя" />
         </div>
+
         <div class="field">
           <label>Телефон</label>
           <input id="m_phone" type="tel" placeholder="+1 ..." />
         </div>
+
         <div class="field full">
           <label>Email</label>
           <input id="m_email" type="email" placeholder="you@email.com" />
         </div>
       </div>
+
       <div class="modalFoot">
         <div class="summary" id="m_summary">—</div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -769,27 +732,18 @@
     </div>
   </div>
 
-  <!-- Data must exist: SERVICES, LISTINGS -->
   <script src="./data.js"></script>
 
   <script>
-    /******************************************************************
-     * SAFETY / STABILITY PATCHES
-     ******************************************************************/
     const safe = {
-      setText(el, v){
-        if(!el) return;
-        el.textContent = (v ?? "").toString();
-      },
+      setText(el, v){ if(!el) return; el.textContent = (v ?? "").toString(); },
       setHTML(el, html){
         if(!el) return;
-        // minimal safe html: strip <script>
         const s = (html ?? "").toString().replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi,"");
         el.innerHTML = s;
       }
     };
 
-    // Modal lock (NO JUMP / NO ZOOM / NO BODY SCROLL)
     const modalLock = {
       _y: 0,
       lock(){
@@ -805,40 +759,26 @@
       }
     };
 
-    /******************************************************************
-     * APP STATE
-     ******************************************************************/
-    const LS = {
-      fav: "bb_fav_v1",
-      cart: "bb_cart_v1",
-      filters: "bb_filters_v2"
+    const LS = { fav:"bb_fav_v1", cart:"bb_cart_v1", filters:"bb_filters_v2" };
+    const state = {
+      q:"", section:"top", service:"", onlyFav:false,
+      fav:new Set(), cart:[],
+      activeListing:null, activeTime:"",
+      nextRotationTimer:null, nextIndex:0
     };
 
-    const state = {
-      q: "",
-      section: "top",     // top | rec | all
-      service: "",        // filter by service key
-      onlyFav: false,
-      fav: new Set(),
-      cart: [],
-      activeListing: null,
-      activeTime: "",
-      nextRotationTimer: null,
-      nextIndex: 0
-    };
+    const els = {};
+
+    function norm(s){ return (s || "").toString().trim().toLowerCase(); }
+    function getServices(){ const svc = (window.SERVICES || []); return Array.isArray(svc) ? svc : []; }
+    function getListings(){ const l = (window.LISTINGS || []); return Array.isArray(l) ? l : []; }
 
     function loadLS(){
-      try{
-        const f = JSON.parse(localStorage.getItem(LS.fav) || "[]");
-        state.fav = new Set(Array.isArray(f) ? f : []);
-      }catch{}
-      try{
-        const c = JSON.parse(localStorage.getItem(LS.cart) || "[]");
-        state.cart = Array.isArray(c) ? c : [];
-      }catch{}
+      try{ state.fav = new Set(JSON.parse(localStorage.getItem(LS.fav) || "[]") || []); }catch{}
+      try{ state.cart = JSON.parse(localStorage.getItem(LS.cart) || "[]") || []; }catch{}
       try{
         const fil = JSON.parse(localStorage.getItem(LS.filters) || "{}");
-        if(fil && typeof fil === "object"){
+        if(fil && typeof fil==="object"){
           state.q = fil.q || "";
           state.section = fil.section || "top";
           state.service = fil.service || "";
@@ -854,56 +794,32 @@
       }));
     }
 
-    /******************************************************************
-     * HELPERS
-     ******************************************************************/
-    function norm(s){ return (s || "").toString().trim().toLowerCase(); }
-
-    function getServices(){
-      // from data.js
-      const svc = (window.SERVICES || []);
-      return Array.isArray(svc) ? svc : [];
-    }
-    function getListings(){
-      const l = (window.LISTINGS || []);
-      return Array.isArray(l) ? l : [];
-    }
-
     function listingSupportsService(listing, serviceKey){
       if(!serviceKey) return true;
       const arr = listing?.services || listing?.serviceKeys || listing?.tags || [];
       if(Array.isArray(arr)) return arr.map(norm).includes(norm(serviceKey));
       return false;
     }
-
     function computeSection(listing){
-      // Keep it flexible: data.js may provide booleans / ranks
       if(listing?.isPartner || listing?.partner) return "top";
       if(listing?.isRecommended || listing?.recommended) return "rec";
       return "all";
     }
-
     function formatPriceFrom(listing, serviceKey){
-      // attempt: listing.prices[serviceKey] or service price object
       const prices = listing?.prices || {};
       const v = prices?.[serviceKey] ?? prices?.[norm(serviceKey)];
       if(typeof v === "number") return `$${v}`;
       if(typeof v === "string" && v.trim()) return v;
-      // fallback: show minimal
       if(typeof listing?.fromPrice === "number") return `$${listing.fromPrice}`;
       return "—";
     }
-
     function getTimesFor(listing, serviceKey){
-      // requirement: show ONLY nearest slots (times), no "count" indicator
       const all = listing?.slots || listing?.times || listing?.availability || {};
       let arr = [];
       if(Array.isArray(all)) arr = all;
       else if(serviceKey && Array.isArray(all?.[serviceKey])) arr = all[serviceKey];
       else if(Array.isArray(all?.default)) arr = all.default;
-
       arr = (arr || []).map(x => (x ?? "").toString()).filter(Boolean);
-      // keep only up to 6 nearest times
       return arr.slice(0, 6);
     }
 
@@ -917,10 +833,8 @@
           const blob = norm([x.name, x.title, x.address, x.city, x.area, (x.tags||[]).join(" ")].join(" "));
           return blob.includes(q);
         });
-
       if(list.length === 0) return null;
 
-      // rotate through candidates, prefer those with any times
       const withTimes = list.filter(x => getTimesFor(x, state.service || "").length > 0);
       const arr = withTimes.length ? withTimes : list;
 
@@ -928,10 +842,6 @@
       return arr[state.nextIndex];
     }
 
-    /******************************************************************
-     * RENDER
-     ******************************************************************/
-    const els = {};
     function bindEls(){
       els.q = document.getElementById("q");
       els.grid = document.getElementById("grid");
@@ -963,7 +873,6 @@
       els.floatText = document.getElementById("floatText");
       els.floatTop = document.getElementById("floatTop");
 
-      // modal
       els.modalOverlay = document.getElementById("modalOverlay");
       els.modalClose = document.getElementById("modalClose");
       els.m_cancel = document.getElementById("m_cancel");
@@ -977,23 +886,16 @@
       els.m_email = document.getElementById("m_email");
       els.m_summary = document.getElementById("m_summary");
 
-      // chips
       els.serviceChips = document.getElementById("serviceChips");
     }
 
     function renderHeader(){
-      // cart dot
       els.cartDot.style.display = (state.cart?.length ? "inline-block" : "none");
-
-      // section pills
       els.pillTop.classList.toggle("active", state.section === "top");
       els.pillRec.classList.toggle("active", state.section === "rec");
       els.pillAll.classList.toggle("active", state.section === "all");
-
-      // only fav
       els.btnOnlyFav.classList.toggle("active", state.onlyFav);
 
-      // chips active
       [...els.serviceChips.querySelectorAll(".chip")].forEach(ch => {
         ch.classList.toggle("active", norm(ch.dataset.service) === norm(state.service));
       });
@@ -1007,6 +909,7 @@
         safe.setText(els.nextBig, "Немає підходящих варіантів 😕");
         safe.setText(els.nextMini, "Спробуй інший сервіс або очисти фільтри.");
         els.btnNextBook.disabled = true;
+        els.floatBar.style.display = "none";
         return;
       }
 
@@ -1024,21 +927,13 @@
     function applyFilters(list){
       let out = [...list];
 
-      // section: show as requested order: Top → Recommended → Others
-      // but pills let user pick view. Here we filter based on state.section.
       if(state.section !== "all"){
         out = out.filter(x => computeSection(x) === state.section);
       }
-
-      // service
       out = out.filter(x => listingSupportsService(x, state.service));
-
-      // only fav
       if(state.onlyFav){
         out = out.filter(x => state.fav.has(x.id));
       }
-
-      // query
       const q = norm(state.q);
       if(q){
         out = out.filter(x => {
@@ -1046,18 +941,12 @@
           return blob.includes(q);
         });
       }
-
       return out;
     }
 
     function sortDefault(list){
-      // keep stable sorting: partners first, then recommended, then rest
-      const rank = (x) => {
-        if(x?.isPartner || x?.partner) return 0;
-        if(x?.isRecommended || x?.recommended) return 1;
-        return 2;
-      };
-      return list.sort((a,b) => rank(a)-rank(b));
+      const rank = (x) => (x?.isPartner || x?.partner) ? 0 : (x?.isRecommended || x?.recommended) ? 1 : 2;
+      return list.sort((a,b) => rank(a) - rank(b));
     }
 
     function cardHTML(x){
@@ -1080,7 +969,8 @@
       return `
         <article class="card" data-id="${x.id}">
           <div class="img">
-            <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=80';" />
+            <img src="${img}" alt="${name}" loading="lazy"
+              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=80';" />
           </div>
           <div class="cardBody">
             <div class="cardTop">
@@ -1114,7 +1004,7 @@
         safe.setHTML(els.empty, `
           <b>Нічого не знайдено.</b><br/>
           Спробуй змінити сервіс або пошук.<br/>
-          <span style="color:rgba(243,241,255,.72)">Порада: “Скинути фільтри” скидає тільки фільтри, а пошук/Only ❤️ як у тебе було (як і домовлялись).</span>
+          <span style="color:rgba(243,241,255,.72)">“Скинути фільтри” скидає тільки фільтри, а пошук/Only ❤️ як і було.</span>
         `);
         return;
       }
@@ -1123,38 +1013,32 @@
       els.grid.innerHTML = list.map(cardHTML).join("");
     }
 
-    /******************************************************************
-     * MODAL
-     ******************************************************************/
     function openModal(listing, preferredServiceKey){
       state.activeListing = listing;
       state.activeTime = "";
 
-      // fill listing + address
       safe.setText(els.m_listing, listing?.name || listing?.title || "Salon");
       safe.setText(els.m_address, listing?.address || listing?.location || listing?.area || "—");
 
-      // services
       const services = getServices();
       const options = services
-        .filter(s => !preferredServiceKey || true)
         .map(s => ({ key: s.key || s.id || s.slug || "", name: s.name || s.title || s.label || s.key || "" }))
         .filter(x => x.key && x.name);
 
-      // if your data.js has exact keys like manicure/pedicure/brows/haircut_w/haircut_m
       els.m_service.innerHTML = options.map(o => `<option value="${o.key}">${o.name}</option>`).join("");
 
-      // preselect service
       const want = preferredServiceKey || state.service || options[0]?.key || "";
       if(want) els.m_service.value = want;
 
       renderTimes();
 
-      // open overlay
       els.modalOverlay.classList.add("open");
       els.modalOverlay.setAttribute("aria-hidden","false");
       modalLock.lock();
       updateSummary();
+
+      // стабільність: не фокусимо нічого автоматично (щоб не було zoom/jump)
+      setTimeout(() => {}, 260);
     }
 
     function closeModal(){
@@ -1178,10 +1062,7 @@
 
     function updateSummary(){
       const l = state.activeListing;
-      if(!l){
-        safe.setText(els.m_summary, "—");
-        return;
-      }
+      if(!l){ safe.setText(els.m_summary, "—"); return; }
       const svcKey = els.m_service.value || state.service || "";
       const svcName = (() => {
         const s = getServices().find(x => norm(x.key||x.id||x.slug) === norm(svcKey));
@@ -1206,7 +1087,6 @@
         name: els.m_name.value.trim(),
         phone: els.m_phone.value.trim(),
         email: els.m_email.value.trim(),
-        // link to profile (your existing behavior)
         profileUrl: `./profile.html?id=${encodeURIComponent(l.id)}`
       };
 
@@ -1215,7 +1095,6 @@
         return;
       }
 
-      // If your worker URL exists in data.js util, use it; else fallback to current origin /book
       const worker = (window.WORKER_URL || (window.bb && window.bb.util && window.bb.util.WORKER_URL)) || "";
       const endpoint = (worker ? worker.replace(/\/$/,"") : "") + "/book";
 
@@ -1234,7 +1113,6 @@
           throw new Error(txt || ("HTTP " + res.status));
         }
 
-        // cart dot show (optional)
         state.cart.push({ id: l.id, t: Date.now(), service: payload.serviceKey, time: payload.time });
         saveLS();
         renderHeader();
@@ -1250,9 +1128,6 @@
       }
     }
 
-    /******************************************************************
-     * EVENTS
-     ******************************************************************/
     function bindEvents(){
       els.q.addEventListener("input", (e) => {
         state.q = e.target.value;
@@ -1273,19 +1148,16 @@
         renderNext();
       });
 
-      // IMPORTANT: Reset filters behavior (as you requested): if 0 results, search and OnlyFav do NOT clear.
+      // reset only filters (service+section), keep search + onlyFav (per spec)
       els.btnResetFilters.addEventListener("click", ()=>{
-        // reset only active filters (service + section)
         state.service = "";
         state.section = "top";
-        // do NOT touch state.q and state.onlyFav
         saveLS();
         renderHeader();
         renderGrid();
         renderNext();
       });
 
-      // chips -> set service filter
       els.serviceChips.addEventListener("click", (e)=>{
         const ch = e.target.closest(".chip");
         if(!ch) return;
@@ -1297,7 +1169,6 @@
         renderNext();
       });
 
-      // grid card actions
       els.grid.addEventListener("click", (e)=>{
         const card = e.target.closest(".card");
         if(!card) return;
@@ -1324,22 +1195,14 @@
         }
       });
 
-      // brand click -> top
       els.brandHome.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
 
-      // floating bar
       els.floatTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-      els.floatBook.addEventListener("click", ()=>{
-        if(state._next) openModal(state._next, state.service || "");
-      });
+      els.floatBook.addEventListener("click", ()=>{ if(state._next) openModal(state._next, state.service || ""); });
 
-      // next panel
-      els.btnNextBook.addEventListener("click", ()=>{
-        if(state._next) openModal(state._next, state.service || "");
-      });
+      els.btnNextBook.addEventListener("click", ()=>{ if(state._next) openModal(state._next, state.service || ""); });
 
       els.btnWhy.addEventListener("click", ()=>{
-        // simple deterministic “why” (no OpenAI)
         const l = state._next;
         if(!l){ alert("Немає варіанту."); return; }
         const reasons = [];
@@ -1353,33 +1216,24 @@
         alert("Why this one:\n• " + (reasons.length ? reasons.join("\n• ") : "Best match by availability."));
       });
 
-      els.btnAI.addEventListener("click", ()=>{
-        alert("AI help (lite):\nНапиши в пошук: район + сервіс\nабо вибери chips.\n(Пізніше підключимо справжній AI через Worker)");
-      });
-
-      els.btnTheme.addEventListener("click", ()=>{
-        alert("Theme toggle — залишив як демо (щоб нічого не ламати). Якщо хочеш — зроблю 2 теми як наступний крок.");
-      });
-
-      els.btnHow.addEventListener("click", ()=>{
-        alert("How it works:\n1) Choose a service\n2) Pick a salon\n3) Select time\n4) Confirm — Telegram gets the booking");
-      });
+      els.btnAI.addEventListener("click", ()=>{ alert("AI help (lite): вибери chips або пошук. Пізніше підключимо справжній AI через Worker."); });
+      els.btnTheme.addEventListener("click", ()=>{ alert("Theme toggle — демо (щоб нічого не ламати)."); });
+      els.btnHow.addEventListener("click", ()=>{ alert("How it works:\n1) Choose a service\n2) Pick a salon\n3) Select time\n4) Confirm — Telegram gets the booking"); });
 
       els.btnQuickBook.addEventListener("click", ()=>{
-        // open next available
         if(state._next) openModal(state._next, state.service || "");
         else alert("Немає варіантів. Спробуй змінити фільтри.");
       });
 
-      // modal events
       els.modalClose.addEventListener("click", closeModal);
       els.m_cancel.addEventListener("click", closeModal);
+      els.modalOverlay.addEventListener("click", (e)=>{ if(e.target === els.modalOverlay) closeModal(); });
 
-      els.modalOverlay.addEventListener("click", (e)=>{
-        if(e.target === els.modalOverlay) closeModal();
-      });
+      // prevent background scroll via touch on overlay
+      els.modalOverlay.addEventListener("touchmove", (e) => {
+        if(e.target === els.modalOverlay) e.preventDefault();
+      }, { passive: false });
 
-      // time pick
       els.m_times.addEventListener("click", (e)=>{
         const btn = e.target.closest(".timeBtn");
         if(!btn) return;
@@ -1388,37 +1242,22 @@
         updateSummary();
       });
 
-      els.m_service.addEventListener("change", ()=>{
-        state.activeTime = "";
-        renderTimes();
-      });
-
+      els.m_service.addEventListener("change", ()=>{ state.activeTime=""; renderTimes(); });
       els.m_submit.addEventListener("click", submitBooking);
 
-      // esc close
       window.addEventListener("keydown", (e)=>{
         if(e.key === "Escape" && els.modalOverlay.classList.contains("open")) closeModal();
       });
     }
 
-    /******************************************************************
-     * NEXT AVAILABLE ROTATION (every ~10s, as confirmed)
-     ******************************************************************/
     function startNextRotation(){
       if(state.nextRotationTimer) clearInterval(state.nextRotationTimer);
-      state.nextRotationTimer = setInterval(()=>{
-        renderNext();
-      }, 10000);
+      state.nextRotationTimer = setInterval(()=>{ renderNext(); }, 10000);
     }
 
-    /******************************************************************
-     * INIT
-     ******************************************************************/
     function init(){
       bindEls();
       loadLS();
-
-      // apply initial UI values
       els.q.value = state.q || "";
 
       renderHeader();
@@ -1426,20 +1265,17 @@
       renderNext();
       startNextRotation();
 
-      // If landing with query params for auto booking: ?book=1&id=...&service=...
+      // auto-open booking from profile redirect
       const u = new URL(location.href);
       const book = u.searchParams.get("book");
       const id = u.searchParams.get("id");
       const svc = u.searchParams.get("service");
       if(book === "1" && id){
         const l = getListings().find(x => String(x.id) === String(id));
-        if(l){
-          openModal(l, svc || "");
-        }
+        if(l) openModal(l, svc || "");
       }
     }
 
-    // Register SW (PWA)
     (function(){
       if("serviceWorker" in navigator){
         window.addEventListener("load", ()=>{
@@ -1448,7 +1284,11 @@
       }
     })();
 
-    init();
+    document.addEventListener("DOMContentLoaded", ()=>{
+      bindEls();
+      bindEvents();
+      init();
+    }, { once:true });
   </script>
 </body>
 </html>
