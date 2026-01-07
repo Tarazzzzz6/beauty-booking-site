@@ -249,7 +249,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1527799820374-dcf8a3ff9c40?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1527799820374-dcf8a3ff9c0ea90c?auto=format&fit=crop&w=1400&q=80"
       ],
       services:[
         { serviceId:"pedicure", from:55, to:95, durationMin:80 },
@@ -259,58 +259,56 @@
     }
   ];
 
- 
-// ===== LIVE Availability generator (TEST MODE: always has slots for demo) =====
-(function generateLiveAvailability(){
-  const base = new Date();
-  const days = 45; // більше днів для демо
+  // ===== LIVE Availability generator (TEST MODE: always has slots for demo) =====
+  (function generateLiveAvailability(){
+    const base = new Date();
+    const days = 45; // більше днів для демо
 
-  for(const l of (window.LISTINGS||[])){
-    l.availability = {}; // ✅ перегенеровуємо завжди, щоб демо було стабільне
+    for(const l of (window.LISTINGS||[])){
+      l.availability = {}; // ✅ перегенеровуємо завжди, щоб демо було стабільне
 
-    for(let i=0;i<days;i++){
-      const d = addDaysLocal(base, i);
-      const key = isoLocal(d);
+      for(let i=0;i<days;i++){
+        const d = addDaysLocal(base, i);
+        const key = isoLocal(d);
 
-      // ✅ Гарантовано 3–7 слотів щодня (партнери трішки більше)
-      const min = l.partner ? 4 : 3;
-      const max = l.partner ? 8 : 7;
+        // ✅ Гарантовано 3–7 слотів щодня (партнери трішки більше)
+        const min = l.partner ? 4 : 3;
+        const max = l.partner ? 8 : 7;
 
-      let times = [];
-      const target = randInt(min, max);
-      for(let k=0;k<target;k++){
-        const h = randInt(10, 20);
-        const m = [0,10,20,30,40,50][randInt(0,5)];
-        times.push(`${pad(h)}:${pad(m)}`);
-      }
-      times = uniqSorted(times);
-
-      // ✅ Якщо today і після фільтра 0 — додаємо найближчі 2 години вручну
-      const now = new Date();
-      if (isoLocal(now) === key){
-        const cur = now.getHours()*60 + now.getMinutes();
-        times = times.filter(t=>{
-          const hh = parseInt(t.slice(0,2),10);
-          const mm = parseInt(t.slice(3),10);
-          return (hh*60 + mm) > (cur + 20);
-        });
-
-        if(!times.length){
-          const hh1 = Math.min(20, now.getHours() + 1);
-          const hh2 = Math.min(20, now.getHours() + 2);
-          times = uniqSorted([`${pad(hh1)}:00`, `${pad(hh2)}:30`]);
+        let times = [];
+        const target = randInt(min, max);
+        for(let k=0;k<target;k++){
+          const h = randInt(10, 20);
+          const m = [0,10,20,30,40,50][randInt(0,5)];
+          times.push(`${pad(h)}:${pad(m)}`);
         }
+        times = uniqSorted(times);
+
+        // ✅ Якщо today і після фільтра 0 — додаємо найближчі 2 години вручну
+        const now = new Date();
+        if (isoLocal(now) === key){
+          const cur = now.getHours()*60 + now.getMinutes();
+          times = times.filter(t=>{
+            const hh = parseInt(t.slice(0,2),10);
+            const mm = parseInt(t.slice(3),10);
+            return (hh*60 + mm) > (cur + 20);
+          });
+
+          if(!times.length){
+            const hh1 = Math.min(20, now.getHours() + 1);
+            const hh2 = Math.min(20, now.getHours() + 2);
+            times = uniqSorted([`${pad(hh1)}:00`, `${pad(hh2)}:30`]);
+          }
+        }
+
+        l.availability[key] = times;
       }
 
-      l.availability[key] = times;
+      // For profile calendar (service-filtered)
+      l.availabilityByService = buildAvailabilityByService(l);
+      l.slots = expandAvailabilityToIso(l.availability);
     }
-
-    // For profile calendar (service-filtered)
-    l.availabilityByService = buildAvailabilityByService(l);
-    l.slots = expandAvailabilityToIso(l.availability);
-  }
-})();
-
+  })();
 
   // ===== UTIL =====
   function haversineKm(a,b){
@@ -510,5 +508,4 @@
     conciergeSuggest
   };
 })();
-
 
