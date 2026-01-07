@@ -15,10 +15,14 @@
   // ===== Helpers =====
   const DAY = 86400000;
   const pad = (n)=> String(n).padStart(2,"0");
-  const isoDate = (d)=> d.toISOString().slice(0,10);
 
-  // Create local-ish ISO datetime string with offset, without heavy libs
-  // NOTE: Browser Date will parse "YYYY-MM-DDTHH:mm:00" as local time in most engines.
+  // ✅ FIX: Local ISO date (YYYY-MM-DD) WITHOUT UTC shift
+  const isoLocalDate = (d)=> {
+    const dt = (d instanceof Date) ? d : new Date(d);
+    return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
+  };
+
+  // Create local-ish ISO datetime string (parsed as local by browsers)
   const toLocalIso = (dateISO, hhmm) => `${dateISO}T${hhmm}:00`;
 
   function randInt(a,b){ return Math.floor(a + Math.random()*(b-a+1)); }
@@ -251,7 +255,10 @@
 
   // ===== LIVE Availability generator (30 days, realistic density) =====
   (function generateLiveAvailability(){
+    // ✅ FIX: anchor to local midnight
     const base = new Date();
+    base.setHours(0,0,0,0);
+
     const days = 30;
 
     for(const l of (window.LISTINGS||[])){
@@ -259,7 +266,7 @@
 
       for(let i=0;i<days;i++){
         const d = new Date(base.getTime() + i*DAY);
-        const key = isoDate(d);
+        const key = isoLocalDate(d); // ✅ FIX (local date key)
 
         // density rules: partners more likely to have slots
         const p = l.partner ? 0.82 : 0.65;
@@ -269,7 +276,7 @@
 
             // If today: remove times in the past (so it feels real)
             const now = new Date();
-            if (isoDate(now) === key){
+            if (isoLocalDate(now) === key){ // ✅ FIX (local compare)
               const cur = now.getHours()*60 + now.getMinutes();
               times = times.filter(t=>{
                 const hh = parseInt(t.slice(0,2),10);
@@ -288,7 +295,7 @@
         if (!l.availability[k] || !l.availability[k].length) delete l.availability[k];
       }
 
-      // NEW: for profile calendar (service-filtered)
+      // For profile calendar (service-filtered)
       l.availabilityByService = buildAvailabilityByService(l); // {serviceId:[ISO...]}
       l.slots = expandAvailabilityToIso(l.availability);        // union slots fallback
     }
@@ -324,7 +331,6 @@
   }
 
   // old-style: looks at listing.availability (date -> times)
-  // ✅ FIXED: return {date, dateISO} for backward compatibility with index.html
   function nextAvailable(listing, serviceId){
     const av = listing.availability || {};
     const dates = Object.keys(av).sort();
@@ -333,17 +339,16 @@
       if(!times.length) continue;
       const time = times[0];
       const price = minPriceFor(listing, serviceId);
-      return { date: d, dateISO: d, time, fromPrice: price };
+      return { dateISO:d, time, fromPrice: price };
     }
     return null;
   }
 
-  // ✅ FIXED: accept slot.date OR slot.dateISO
   function isTodaySlot(slot){
     if(!slot) return false;
-    const today = new Date().toISOString().slice(0,10);
-    const d = slot.date || slot.dateISO;
-    return d === today;
+    // ✅ FIX: local today
+    const t = isoLocalDate(new Date());
+    return slot.dateISO === t;
   }
 
   function smartScore(listing, userLoc, serviceId){
@@ -491,7 +496,9 @@
     isTodaySlot,
     smartRecommend,
     computeWhy,
-    conciergeSuggest
+    conciergeSuggest,
+
+    // export (handy for profile)
+    isoLocalDate
   };
 })();
-
