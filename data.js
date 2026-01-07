@@ -13,16 +13,22 @@
   ];
 
   // ===== Helpers =====
-  const DAY = 86400000;
   const pad = (n)=> String(n).padStart(2,"0");
 
-  // ✅ FIX: Local ISO date (YYYY-MM-DD) WITHOUT UTC shift
-  const isoLocalDate = (d)=> {
-    const dt = (d instanceof Date) ? d : new Date(d);
-    return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
+  // ✅ LOCAL ISO date (YYYY-MM-DD) — no UTC shift
+  const isoLocal = (d) => {
+    const y = d.getFullYear();
+    const m = pad(d.getMonth() + 1);
+    const day = pad(d.getDate());
+    return `${y}-${m}-${day}`;
   };
 
-  // Create local-ish ISO datetime string (parsed as local by browsers)
+  // ✅ create a local date at "day precision" (stable across DST)
+  const addDaysLocal = (base, add) =>
+    new Date(base.getFullYear(), base.getMonth(), base.getDate() + add);
+
+  // Create local-ish ISO datetime string
+  // NOTE: "YYYY-MM-DDTHH:mm:00" is parsed as local time in most engines.
   const toLocalIso = (dateISO, hhmm) => `${dateISO}T${hhmm}:00`;
 
   function randInt(a,b){ return Math.floor(a + Math.random()*(b-a+1)); }
@@ -56,7 +62,7 @@
     return out;
   }
 
-  // Build per-service ISO slots (same schedule for each service of that listing; clean & fast)
+  // Build per-service ISO slots (same schedule for each service of that listing)
   function buildAvailabilityByService(listing){
     const byService = {};
     const serviceIds = (listing.services||[]).map(s=>s.serviceId);
@@ -67,7 +73,7 @@
     return byService;
   }
 
-  // ===== LISTINGS (your originals, minimal changes) =====
+  // ===== LISTINGS =====
   window.LISTINGS = [
     {
       id:"romanukova-nails",
@@ -255,18 +261,15 @@
 
   // ===== LIVE Availability generator (30 days, realistic density) =====
   (function generateLiveAvailability(){
-    // ✅ FIX: anchor to local midnight
     const base = new Date();
-    base.setHours(0,0,0,0);
-
     const days = 30;
 
     for(const l of (window.LISTINGS||[])){
       l.availability = l.availability || {};
 
       for(let i=0;i<days;i++){
-        const d = new Date(base.getTime() + i*DAY);
-        const key = isoLocalDate(d); // ✅ FIX (local date key)
+        const d = addDaysLocal(base, i);
+        const key = isoLocal(d);
 
         // density rules: partners more likely to have slots
         const p = l.partner ? 0.82 : 0.65;
@@ -274,14 +277,14 @@
           if (chance(p)){
             let times = makeTimesForDay();
 
-            // If today: remove times in the past (so it feels real)
+            // If today: remove times in the past
             const now = new Date();
-            if (isoLocalDate(now) === key){ // ✅ FIX (local compare)
+            if (isoLocal(now) === key){
               const cur = now.getHours()*60 + now.getMinutes();
               times = times.filter(t=>{
                 const hh = parseInt(t.slice(0,2),10);
                 const mm = parseInt(t.slice(3),10);
-                return (hh*60 + mm) > (cur + 20); // leave 20 min buffer
+                return (hh*60 + mm) > (cur + 20);
               });
             }
 
@@ -290,18 +293,18 @@
         }
       }
 
-      // Keep it clean: drop empty days if any
+      // drop empty days
       for(const k of Object.keys(l.availability)){
         if (!l.availability[k] || !l.availability[k].length) delete l.availability[k];
       }
 
       // For profile calendar (service-filtered)
-      l.availabilityByService = buildAvailabilityByService(l); // {serviceId:[ISO...]}
-      l.slots = expandAvailabilityToIso(l.availability);        // union slots fallback
+      l.availabilityByService = buildAvailabilityByService(l);
+      l.slots = expandAvailabilityToIso(l.availability);
     }
   })();
 
-  // ===== UTIL (keeps your old behavior using date->times) =====
+  // ===== UTIL =====
   function haversineKm(a,b){
     if(!a||!b) return null;
     const R=6371;
@@ -346,8 +349,8 @@
 
   function isTodaySlot(slot){
     if(!slot) return false;
-    // ✅ FIX: local today
-    const t = isoLocalDate(new Date());
+    // ✅ LOCAL today, no UTC shift
+    const t = isoLocal(new Date());
     return slot.dateISO === t;
   }
 
@@ -496,9 +499,7 @@
     isTodaySlot,
     smartRecommend,
     computeWhy,
-    conciergeSuggest,
-
-    // export (handy for profile)
-    isoLocalDate
+    conciergeSuggest
   };
 })();
+
