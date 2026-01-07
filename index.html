@@ -152,7 +152,10 @@
     .topbar .inner{
       max-width:var(--max);
       margin:0 auto;
+
+      /* ✅ MORE: bigger + lower */
       padding:20px 18px 16px;
+
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
@@ -476,7 +479,6 @@
       cursor:pointer;
     }
     .card:hover{transform: translateY(-2px); border-color: var(--stroke2); background: var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45);}
-
     .media{height:178px; background: rgba(255,255,255,.06); position:relative; overflow:hidden;}
     .media img{
       width:100%; height:100%; object-fit:cover;
@@ -1454,11 +1456,10 @@
     </div>
   </div>
 
-  <script src="./data.js?v=7"></script>
+  <script src="./data.js"></script>
   <script>
     // === CONFIG ===
-   window.WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
-
+    window.WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
     // === STATE ===
     const LS = {
@@ -1509,14 +1510,6 @@
 
     function haptic(ms=12){
       try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
-    }
-
-    // ===== local ISO (fix UTC bugs) =====
-    function isoLocal(d=new Date()){
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,"0");
-      const day = String(d.getDate()).padStart(2,"0");
-      return `${y}-${m}-${day}`;
     }
 
     // ===== scroll lock =====
@@ -1586,6 +1579,7 @@
         lastSub: "Tap to book again",
         stickyQuick: "Quick",
         stickyReset: "Reset",
+        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
         install: "Install"
       },
       en: {
@@ -1630,6 +1624,7 @@
         lastSub: "Tap to book again",
         stickyQuick: "Quick",
         stickyReset: "Reset",
+        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
         install: "Install"
       }
     };
@@ -1745,7 +1740,15 @@
       return `${escapeHtml(a)}<mark>${escapeHtml(b)}</mark>${escapeHtml(c)}`;
     }
 
-    function formatDateShort(iso){
+    
+    // ✅ Local ISO (YYYY-MM-DD) to avoid UTC shift bugs
+    function isoLocal(d){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${day}`;
+    }
+function formatDateShort(iso){
       const [y,m,d] = iso.split("-").map(x=>parseInt(x,10));
       const dt = new Date(y, m-1, d);
       return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { weekday:"short", month:"short", day:"numeric" });
@@ -1825,148 +1828,264 @@
 
       const img = safeImg((listing.images||[])[0]);
       const tagHtml = cardTags(listing)
-        .map(x=>`<div class="tag ${x.cls||""}" title="${escapeHtml(x.title||"")}">${escapeHtml(x.t)}</div>`)
+        .map(x=>`<span class="tag ${x.cls||""}" title="${escapeHtml(x.title||"")}">${escapeHtml(x.t)}</span>`)
         .join("");
 
-      const whenTxt = slot
-        ? `${formatDateShort(slot.date)} · ${slot.time}`
-        : (state.lang==="uk" ? "Немає слотів" : "No slots");
+      const whenLine = slot ? `${formatDateShort(slot.dateISO)} · ${slot.time}` : (state.lang==="uk" ? "Немає слотів" : "No slots");
+      const whyLine = `<div class="why" title="Why this one?"><span>Why:</span> ${escapeHtml(why)}</div>`;
 
-      const priceFrom = (()=>{ try{ return window.bb.util.minPriceFor(listing, state.serviceId); }catch(e){ return null; } })();
+      const nm = (state.q ? highlight(listing.name, state.q) : escapeHtml(listing.name));
+      const ad = (state.q ? highlight(listing.address, state.q) : escapeHtml(listing.address));
 
-      div.innerHTML = `
-        <div class="${big ? "stripMedia" : "media"}">
-          <img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(listing.name||"")}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1200&q=80'"/>
-          <div class="shine"></div>
-          ${big ? `<div class="partnerBadge">💎 Partner<div class="microShimmer"></div></div>` : ``}
-        </div>
-
-        <div class="meta">
-          <div class="row1">
-            <div style="min-width:0">
-              <div class="name">${escapeHtml(listing.name||"")}</div>
-              <div class="addr">${escapeHtml(listing.address||"")}</div>
+      if(big){
+        div.innerHTML = `
+          <div class="stripMedia">
+            <img src="${img}" alt="">
+            <div class="partnerBadge">💎 Partner</div>
+            <div class="microShimmer"></div>
+          </div>
+          <div class="meta">
+            <div class="row1">
+              <div>
+                <p class="name">${nm}</p>
+                <p class="addr">${ad}</p>
+              </div>
             </div>
-            <div style="text-align:right; flex:0 0 auto">
-              <div style="font-weight:900; font-size:12.5px; opacity:.92">${escapeHtml(whenTxt)}</div>
-              ${priceFrom!=null ? `<div style="margin-top:4px; font-size:12px; color:var(--muted)">from <b style="color:rgba(255,210,122,.95)">$${priceFrom}</b></div>` : ``}
+            <div class="tags">${tagHtml}</div>
+            ${whyLine}
+            <div class="miniCTA" style="opacity:1; transform:none; pointer-events:auto; position:static; margin-top:10px">
+              <button class="miniBtn" data-action="book" title="Book next slot">⚡ ${whenLine}</button>
+              <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
             </div>
           </div>
-
-          <div class="tags">${tagHtml}</div>
-
-          <div class="why">
-            <span>${state.lang==="uk" ? "Why:" : "Why:"}</span>
-            ${escapeHtml(why || (state.lang==="uk" ? "Підібрано за доступністю" : "Picked by availability"))}
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="media">
+            <img src="${img}" alt="">
+            <div class="shine"></div>
           </div>
-        </div>
-
-        <div class="miniCTA">
-          <button class="miniBtn" data-act="book">⚡ ${state.lang==="uk" ? "Book" : "Book"}</button>
-          <button class="fav ${state.favs.has(listing.id) ? "on" : ""}" data-act="fav" title="Favorite">❤️</button>
-        </div>
-      `;
+          <div class="meta">
+            <div class="row1">
+              <div style="min-width:0">
+                <p class="name">${nm}</p>
+                <p class="addr">${ad}</p>
+              </div>
+            </div>
+            <div class="tags">${tagHtml}</div>
+            ${whyLine}
+          </div>
+          <div class="miniCTA">
+            <button class="miniBtn" data-action="book" title="Book next slot">⚡ ${whenLine}</button>
+            <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
+          </div>
+        `;
+      }
 
       div.addEventListener("click", (e)=>{
-        const act = e.target?.dataset?.act;
-        if(act === "fav"){
-          e.preventDefault(); e.stopPropagation();
-          toggleFav(listing.id, e.target);
-          return;
-        }
-        if(act === "book"){
-          e.preventDefault(); e.stopPropagation();
-          openBooking(listing, state.serviceId || null);
-          return;
-        }
-        openProfile(listing.id);
+        const act = e.target?.dataset?.action;
+        if(act === "fav" || act === "book") return;
+        haptic(10);
+        location.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+      });
+
+      div.querySelectorAll('[data-action="fav"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          haptic(12);
+          toggleFav(listing.id, btn);
+        });
+      });
+
+      div.querySelectorAll('[data-action="book"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          haptic(16);
+          openBooking(listing.id, state.serviceId, slot);
+        });
       });
 
       return div;
     }
 
-    function openProfile(listingId){
-      const url = `./profile.html?id=${encodeURIComponent(listingId)}`;
-      window.open(url, "_blank", "noopener");
-    }
-
-    function toggleFav(id, btnEl){
+    function toggleFav(id, el){
       if(state.favs.has(id)) state.favs.delete(id);
       else state.favs.add(id);
-
-      localStorage.setItem(LS.favs, JSON.stringify([...state.favs]));
-      if(btnEl){
-        btnEl.classList.toggle("on", state.favs.has(id));
-        btnEl.classList.add("favPop");
-        setTimeout(()=>btnEl.classList.remove("favPop"), 260);
+      localStorage.setItem(LS.favs, JSON.stringify(Array.from(state.favs)));
+      if(el){
+        el.classList.toggle("on", state.favs.has(id));
+        el.classList.add("favPop");
+        setTimeout(()=>el.classList.remove("favPop"), 260);
       }
-      renderSavedSection();
-      renderAll();
+      toast(T[state.lang].toastSaved);
+      renderSaved();
+      if(state.favOnly) renderAll();
     }
 
-    function renderSavedSection(){
-      const sec = $("#savedSection");
-      const grid = $("#savedGrid");
-      if(!sec || !grid) return;
+    function updateDraftBadge(){
+      const n = state.drafts.length;
+      const b = $("#cartBadge");
+      if(b){
+        if(n>0){ b.style.display="grid"; b.textContent = String(n); }
+        else b.style.display="none";
+      }
+      localStorage.setItem(LS.cart, JSON.stringify(state.drafts));
+    }
 
-      const favList = (window.LISTINGS||[]).filter(l => state.favs.has(l.id));
-      if(favList.length === 0){
-        sec.style.display = "none";
-        grid.innerHTML = "";
+    function renderServiceChips(){
+      const targets = [$("#serviceChips"), $("#serviceChipsSticky")].filter(Boolean);
+      if(!targets.length) return;
+      targets.forEach(t=>t.innerHTML = "");
+
+      const all = (window.SERVICES||[]).slice();
+      const pref = ["manicure","pedicure","brows","haircut_men","haircut_women","haircut"];
+      const byId = new Map(all.map(x=>[x.id,x]));
+      const ordered = [];
+      pref.forEach(id=>{ if(byId.has(id)) ordered.push(byId.get(id)); });
+      all.forEach(s=>{ if(!ordered.includes(s)) ordered.push(s); });
+
+      ordered.forEach((s, idx)=>{
+        targets.forEach((box)=>{
+          const chip = document.createElement("div");
+          chip.className = "chip" + (state.serviceId===s.id ? " on":"");
+          chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
+          chip.title = "Filter by service";
+          chip.addEventListener("click", ()=>{
+            haptic(10);
+            state.serviceId = (state.serviceId===s.id) ? null : s.id;
+            saveFilters();
+            renderServiceChips();
+            renderAll();
+            refreshHeroCandidates(true);
+            const sec = $("#partnersSection");
+            if(sec){
+              const y = sec.getBoundingClientRect().top + window.scrollY - 72;
+              window.scrollTo({top:y, behavior:"smooth"});
+            }
+          });
+          box.appendChild(chip);
+
+          if(box.id === "serviceChips" && idx === 2){
+            const br = document.createElement("div");
+            br.className = "chipBreak";
+            box.appendChild(br);
+          }
+        });
+      });
+    }
+
+    // HERO rotation
+    let heroRot = { idx: 0, list: [], timer: null };
+
+    function computeNextCandidates(){
+      const base = filteredListings();
+      const list = base.length ? base : (window.LISTINGS||[]).slice();
+      const partners = list.filter(l => !!l.partner && matchesService(l, state.serviceId));
+      const pool = partners.length ? partners : list;
+
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(pool, state.userLoc, state.serviceId) : pool;
+      const withSlots = ranked.filter(l => {
+        try{ return !!window.bb.util.nextAvailable(l, state.serviceId); }catch(e){ return false; }
+      });
+      return withSlots.slice(0, 8);
+    }
+
+    function setHeroCardAnimated(lineTxt, subTxt){
+      const line = $("#nextLine");
+      const sub = $("#nextSub");
+      if(!line || !sub) return;
+      line.style.transition = "opacity .25s ease, transform .25s ease";
+      sub.style.transition  = "opacity .25s ease, transform .25s ease";
+      line.style.opacity = "0";
+      sub.style.opacity  = "0";
+      line.style.transform = "translateY(4px)";
+      sub.style.transform  = "translateY(4px)";
+      setTimeout(()=>{
+        line.textContent = lineTxt;
+        sub.textContent = subTxt;
+        line.style.opacity = "1";
+        sub.style.opacity = "1";
+        line.style.transform = "translateY(0)";
+        sub.style.transform  = "translateY(0)";
+      }, 180);
+    }
+
+    function refreshHeroCandidates(resetIdx=false){
+      const nextList = computeNextCandidates();
+      const prevIds = heroRot.list.map(x=>x.id).join("|");
+      const nextIds = nextList.map(x=>x.id).join("|");
+      heroRot.list = nextList;
+      if(resetIdx || prevIds !== nextIds) heroRot.idx = 0;
+    }
+
+    function renderNextHeroRotating(animate=false){
+      if(!heroRot.list.length) refreshHeroCandidates(true);
+
+      const lineEl = $("#nextLine");
+      const card = $("#nextAvailCard");
+
+      if(!heroRot.list.length){
+        if(lineEl) lineEl.textContent = state.lang==="uk" ? "Немає слотів поруч" : "No nearby slots";
+        if(card){ card.onclick = null; card.onkeydown = null; }
         return;
       }
 
-      sec.style.display = "";
-      grid.innerHTML = "";
-      const a = favList.filter(x=>x.partner);
-      const b = favList.filter(x=>!x.partner);
-      [...a, ...b].forEach(l => grid.appendChild(buildCard(l, false)));
-    }
+      heroRot.idx = heroRot.idx % heroRot.list.length;
+      const listing = heroRot.list[heroRot.idx];
+      let slot = null;
+      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
+      if(!slot) return;
 
-    function renderPartnerStrip(list){
-      const strip = $("#partnerStrip");
-      const sec = $("#partnersSection");
-      if(!strip || !sec) return;
+      const todayISO = isoLocal(new Date());
+      const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today") : formatDateShort(slot.dateISO);
+      const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || "")) || (state.lang==="uk"?"Послуга":"Service");
+      const from = (slot.fromPrice != null) ? ` · from $${slot.fromPrice}` : "";
+      const txt = `${day} ${slot.time} · ${listing.name}${from}`;
+      const sub = state.lang==="uk" ? `Tap to book: ${svc}` : `Tap to book: ${svc}`;
 
-      strip.innerHTML = "";
-      if(!list || list.length === 0){
-        sec.style.display = "none";
-        return;
+      if(animate) setHeroCardAnimated(txt, sub);
+      else{
+        if($("#nextLine")) $("#nextLine").textContent = txt;
+        if($("#nextSub")) $("#nextSub").textContent = sub;
       }
-      sec.style.display = "";
-      list.forEach(l => strip.appendChild(buildCard(l, true)));
+
+      if(card){
+        const go = ()=>{
+          haptic(14);
+          openBooking(listing.id, state.serviceId, slot);
+        };
+        card.onclick = go;
+        card.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
+      }
     }
 
-    function renderGrid(id, list){
-      const grid = document.getElementById(id);
-      if(!grid) return;
-      grid.innerHTML = "";
-      list.forEach(l => grid.appendChild(buildCard(l, false)));
+    function startHeroRotation(){
+      clearInterval(heroRot.timer);
+      heroRot.timer = setInterval(()=>{
+        if(document.body.classList.contains("modalLock")) return;
+        if(!heroRot.list.length) refreshHeroCandidates(true);
+        if(!heroRot.list.length) return;
+        heroRot.idx = (heroRot.idx + 1) % heroRot.list.length;
+        renderNextHeroRotating(true);
+      }, 10000);
     }
 
-    function renderEmpty(show){
-      const box = $("#emptyBox");
-      if(!box) return;
-      box.style.display = show ? "" : "none";
-    }
-
+    // ===== Search suggestions =====
     function renderSearchSuggestions(forceClose=false){
-      const sug = $("#searchSug");
+      const box = $("#searchSug");
       const inp = $("#q");
-      if(!sug || !inp) return;
+      if(!box || !inp) return;
 
       if(forceClose){
-        sug.classList.remove("on");
-        sug.innerHTML = "";
-        sug.setAttribute("aria-hidden","true");
+        box.classList.remove("on");
+        box.innerHTML = "";
         return;
       }
 
-      const q = (state.q||"").trim();
+      const q = (state.q||"").trim().toLowerCase();
       if(q.length < 2){
-        sug.classList.remove("on");
-        sug.innerHTML = "";
-        sug.setAttribute("aria-hidden","true");
+        box.classList.remove("on");
+        box.innerHTML = "";
         return;
       }
 
@@ -1974,1101 +2093,1185 @@
         .filter(l => matchesQuery(l, q))
         .slice(0, 6);
 
-      if(list.length === 0){
-        sug.classList.remove("on");
-        sug.innerHTML = "";
-        sug.setAttribute("aria-hidden","true");
+      if(!list.length){
+        box.classList.remove("on");
+        box.innerHTML = "";
         return;
       }
 
-      sug.innerHTML = list.map(l=>{
-        const when = (()=>{ try{
-          const s = window.bb.util.nextAvailable(l, state.serviceId);
-          return s ? `${formatDateShort(s.date)} · ${s.time}` : (state.lang==="uk"?"Немає слотів":"No slots");
-        }catch(e){ return state.lang==="uk"?"—":"—"; }})();
-        const tag = l.partner ? "Partner" : (l.recommended ? "Recommended" : "Open");
+      box.innerHTML = list.map(l=>{
+        const tags = [];
+        if(l.partner) tags.push("Partner");
+        if(l.verified) tags.push("Verified");
         return `
           <div class="sugItem" data-id="${escapeHtml(l.id)}">
             <div class="sugLeft">
               <div class="sugTitle">${highlight(l.name, q)}</div>
-              <div class="sugMeta">${highlight(l.address||"", q)} · ${escapeHtml(when)}</div>
+              <div class="sugMeta">${highlight(l.address||"", q)}</div>
             </div>
-            <div class="sugTag">${escapeHtml(tag)}</div>
+            <div class="sugTag">${escapeHtml(tags[0] || "Open")}</div>
           </div>
         `;
       }).join("");
 
-      sug.classList.add("on");
-      sug.setAttribute("aria-hidden","false");
+      box.classList.add("on");
 
-      [...sug.querySelectorAll(".sugItem")].forEach(it=>{
+      box.querySelectorAll(".sugItem").forEach(it=>{
         it.addEventListener("click", ()=>{
-          const id = it.dataset.id;
-          const l = (window.LISTINGS||[]).find(x=>x.id===id);
-          if(!l) return;
+          const id = it.getAttribute("data-id");
+          if(!id) return;
           renderSearchSuggestions(true);
-          openBooking(l, state.serviceId || null);
+          haptic(10);
+          location.href = `./profile.html?id=${encodeURIComponent(id)}`;
         });
       });
     }
 
-    function renderServices(){
-      const wrap = $("#serviceChips");
-      const sticky = $("#serviceChipsSticky");
-      if(!wrap || !sticky) return;
-
-      const services = (window.SERVICES||[]).slice();
-
-      const mkChip = (s)=> {
-        const d = document.createElement("div");
-        d.className = "chip" + (state.serviceId===s.id ? " on" : "");
-        d.textContent = state.lang==="uk" ? s.ua : s.en;
-        d.addEventListener("click", ()=>{
-          haptic();
-          state.serviceId = (state.serviceId===s.id) ? null : s.id;
-          saveFilters();
-          renderServices();
-          renderAll();
-          renderNextHeroRotating(true);
-        });
-        return d;
-      };
-
-      wrap.innerHTML = "";
-      sticky.innerHTML = "";
-
-      services.forEach(s=>{
-        wrap.appendChild(mkChip(s));
-        sticky.appendChild(mkChip(s));
-      });
+    // ===== Saved section =====
+    function renderSaved(){
+      const sec = $("#savedSection");
+      const grid = $("#savedGrid");
+      if(!sec || !grid) return;
+      const list = (window.LISTINGS||[]).filter(l => state.favs.has(l.id));
+      if(!list.length){
+        sec.style.display = "none";
+        grid.innerHTML = "";
+        return;
+      }
+      sec.style.display = "";
+      grid.innerHTML = "";
+      list.slice(0,6).forEach(l=> grid.appendChild(buildCard(l,false)));
     }
 
+    // ===== Main render =====
     function renderAll(){
       const list = filteredListings();
-      const g = groupListings(list);
+      const { partners, rec, other } = groupListings(list);
 
-      renderPartnerStrip(g.partners);
-      renderGrid("recGrid", g.rec);
-      renderGrid("allGrid", g.other);
+      const strip = $("#partnerStrip");
+      const recGrid = $("#recGrid");
+      const allGrid = $("#allGrid");
+      const empty = $("#emptyBox");
 
-      const isEmpty = (g.partners.length + g.rec.length + g.other.length) === 0;
-      renderEmpty(isEmpty);
-
-      const badge = $("#cartBadge");
-      if(badge){
-        const n = (state.drafts||[]).length;
-        badge.style.display = n ? "" : "none";
-        badge.textContent = String(n);
+      if(strip){
+        strip.innerHTML = "";
+        partners.forEach(l => strip.appendChild(buildCard(l,true)));
+      }
+      if(recGrid){
+        recGrid.innerHTML = "";
+        rec.forEach(l => recGrid.appendChild(buildCard(l,false)));
+      }
+      if(allGrid){
+        allGrid.innerHTML = "";
+        other.forEach(l => allGrid.appendChild(buildCard(l,false)));
       }
 
-      renderSavedSection();
-      updateStickyVisibility();
-    }
+      const total = partners.length + rec.length + other.length;
+      if(empty) empty.style.display = (total === 0) ? "" : "none";
 
-    function updateStickyVisibility(){
-      const bar = $("#stickyBar");
-      if(!bar) return;
-      const y = window.scrollY || 0;
-      const on = y > 220;
-      bar.classList.toggle("on", on);
-      bar.setAttribute("aria-hidden", on ? "false" : "true");
-    }
-
-    function resetFilters(opts={keepQuery:true, keepFavOnly:true}){
-      state.serviceId = null;
-
-      if(!opts.keepQuery) state.q = "";
-      if(!opts.keepFavOnly) state.favOnly = false;
-
-      const qEl = $("#q");
-      if(qEl && !opts.keepQuery) qEl.value = "";
-
-      const favPill = $("#favOnly");
-      if(favPill) favPill.classList.toggle("on", state.favOnly);
-
+      renderSaved();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
       saveFilters();
-      renderServices();
+    }
+
+    // ===== Reset behaviors =====
+    function resetAllFilters(){
+      state.serviceId = null;
+      state.q = "";
+      state.favOnly = false;
+      const q = $("#q");
+      if(q) q.value = "";
+      saveFilters();
+      renderServiceChips();
       renderAll();
-      renderNextHeroRotating(true);
-      toast((T[state.lang]||T.uk).toastFilters);
+      toast(T[state.lang].toastFilters);
     }
 
-    // ===== Next available rotating hero =====
-    let heroRotTimer = null;
-    let heroRotIdx = 0;
-    function renderNextHeroRotating(force=false){
-      const card = $("#nextAvailCard");
-      const line = $("#nextLine");
-      if(!card || !line) return;
-
-      const list = filteredListings();
-      const ranked = (window.bb?.util?.smartRecommend)
-        ? window.bb.util.smartRecommend(list, state.userLoc, state.serviceId)
-        : list;
-
-      const picks = ranked.slice(0, 8).filter(Boolean);
-
-      if(picks.length === 0){
-        line.textContent = "—";
-        card.onclick = null;
-        card.onkeydown = null;
-        return;
-      }
-
-      const pick = picks[heroRotIdx % picks.length];
-      let slot = null;
-      try{ slot = window.bb.util.nextAvailable(pick, state.serviceId); }catch(e){}
-
-      const svcName = state.serviceId ? serviceLabel(state.serviceId) : (state.lang==="uk" ? "Any service" : "Any service");
-      const when = slot ? `${formatDateShort(slot.date)} · ${slot.time}` : (state.lang==="uk" ? "Немає слотів" : "No slots");
-      const from = (()=>{ try{ return window.bb.util.minPriceFor(pick, state.serviceId); }catch(e){ return null; } })();
-
-      line.textContent = `${pick.name} — ${svcName} · ${when}${from!=null ? ` · from $${from}` : ""}`;
-
-      const go = ()=>{
-        if(slot){
-          openBooking(pick, state.serviceId || null, slot.date, slot.time);
-        }else{
-          openBooking(pick, state.serviceId || null);
-        }
-      };
-
-      card.onclick = ()=>{ haptic(); go(); };
-      card.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); haptic(); go(); } };
-
-      if(force){
-        clearInterval(heroRotTimer);
-        heroRotTimer = null;
-      }
-      if(!heroRotTimer){
-        heroRotTimer = setInterval(()=>{
-          heroRotIdx++;
-          renderNextHeroRotating(false);
-        }, 10000);
-      }
+    // ✅ per requirement: in empty-state reset, DO NOT clear search & favOnly
+    function resetActiveFiltersOnly(){
+      state.serviceId = null;
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      toast(T[state.lang].toastFilters);
     }
 
-    // ===== Last booking card =====
-    function renderLastBookingCard(){
-      const box = $("#lastCard");
-      const line = $("#lastLine");
-      if(!box || !line) return;
-
-      let last = null;
-      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){ last = null; }
-      if(!last || !last.listingId){
-        box.style.display = "none";
-        return;
-      }
-
-      const listing = (window.LISTINGS||[]).find(l=>l.id===last.listingId);
-      if(!listing){
-        box.style.display = "none";
-        return;
-      }
-
-      const svcName = last.serviceId ? serviceLabel(last.serviceId) : (state.lang==="uk"?"Any service":"Any service");
-      const when = (last.date && last.time) ? `${formatDateShort(last.date)} · ${last.time}` : "";
-      line.textContent = `${listing.name} — ${svcName}${when ? ` · ${when}` : ""}`;
-
-      box.style.display = "";
-      box.onclick = ()=>{ haptic(); openBooking(listing, last.serviceId||null, last.date||null, last.time||null); };
-    }
-
-    // ===== Booking modal logic =====
+    // ===== Booking logic =====
     const booking = {
-      listing: null,
-      serviceId: null,
-      dateISO: null,
-      time: null,
-      holdUntil: 0,
-      monthCursor: null
+      listing:null,
+      serviceId:null,
+      dateISO:null,
+      time:null,
+      slot:null,
+      times:[],
+      monthCursor: null,
+      _lastSuccess: null
     };
 
-    function setContactFromLS(){
-      let c=null;
-      try{ c = JSON.parse(localStorage.getItem(LS.contact)||"null"); }catch(e){}
-      if(!c) return;
-      if($("#fName")) $("#fName").value = c.name || "";
-      if($("#fPhone")) $("#fPhone").value = c.phone || "";
-      if($("#fEmail")) $("#fEmail").value = c.email || "";
+    function getListing(id){
+      return (window.LISTINGS||[]).find(x=>x.id===id) || null;
     }
 
-    function saveContactToLS(){
-      const c = {
-        name: ($("#fName")?.value||"").trim(),
-        phone: ($("#fPhone")?.value||"").trim(),
-        email: ($("#fEmail")?.value||"").trim()
+    function fillWhere(listing){
+      const box = $("#bkWhere");
+      if(!box) return;
+      $("#bkWhereName").textContent = listing.name || "";
+      $("#bkWhereAddr").textContent = listing.address || "";
+      const prof = $("#bkWhereProfile");
+      const maps = $("#bkWhereMaps");
+      if(prof) prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+      if(maps){
+        const q = encodeURIComponent((listing.address||listing.name||""));
+        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+      }
+      box.style.display = "flex";
+    }
+
+    function setModalTags(listing){
+      const show = (id, on, txt)=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.style.display = on ? "inline-flex" : "none";
+        if(txt != null) el.textContent = txt;
       };
-      localStorage.setItem(LS.contact, JSON.stringify(c));
+      show("mPartner", !!listing.partner, "Partner");
+      show("mVerified", !!listing.verified, "Verified");
+      show("mSterile", !!listing.sterile, "Sterile");
+
+      let slot = null;
+      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
+      let isToday = false;
+      try{ isToday = slot && window.bb.util.isTodaySlot(slot); }catch(e){}
+      show("mToday", !!isToday, "Available today");
+
+      let why = "";
+      try{ why = window.bb.util.computeWhy(listing, state.userLoc, state.serviceId); }catch(e){}
+      show("mWhy", !!why, (state.lang==="uk"?"Why: ":"Why: ") + why);
     }
 
-    function validateForm(){
-      const name = ($("#fName")?.value||"").trim();
-      const phone = ($("#fPhone")?.value||"").trim();
-      const email = ($("#fEmail")?.value||"").trim();
+    function setPriceLine(listing, serviceId){
+      const t = T[state.lang] || T.uk;
+      const line = $("#priceLine");
+      if(!line) return;
 
-      const nW = $("#fNameWrap"), pW = $("#fPhoneWrap"), eW = $("#fEmailWrap");
-      if(nW) nW.classList.toggle("err", !name);
-      if(pW) pW.classList.toggle("err", !phone);
-      if(eW) eW.classList.toggle("err", !email || !email.includes("@"));
+      try{
+        const svcName = serviceId ? serviceLabel(serviceId) : (state.lang==="uk"?"Послуга":"Service");
 
-      const ok = !!name && !!phone && !!email.includes("@") && !!booking.serviceId && !!booking.dateISO && !!booking.time;
+        let from = null, to = null, dur = null;
+        try{ from = window.bb.util.minPriceFor(listing, serviceId); }catch(e){}
+        try{ to = window.bb.util.maxPriceFor ? window.bb.util.maxPriceFor(listing, serviceId) : null; }catch(e){}
+        try{ dur = window.bb.util.durationFor ? window.bb.util.durationFor(listing, serviceId) : null; }catch(e){}
+
+        if(from == null || dur == null){
+          const s = (listing.services||[]).find(x=>x.serviceId===serviceId) || (listing.services||[])[0];
+          if(s){
+            if(from == null) from = s.priceFrom ?? s.price ?? null;
+            if(to == null) to = s.priceTo ?? null;
+            if(dur == null) dur = s.duration ?? null;
+          }
+        }
+
+        line.textContent = (from != null && dur != null)
+          ? t.priceLine(svcName, from, to, dur)
+          : `${svcName}`;
+      }catch(e){
+        line.textContent = "—";
+      }
+    }
+
+    function setContactDefaults(){
+      try{
+        const c = JSON.parse(localStorage.getItem(LS.contact) || "{}");
+        if(c){
+          if($("#fName") && c.name) $("#fName").value = c.name;
+          if($("#fPhone") && c.phone) $("#fPhone").value = c.phone;
+          if($("#fEmail") && c.email) $("#fEmail").value = c.email;
+        }
+      }catch(e){}
+    }
+
+    function saveContact(){
+      localStorage.setItem(LS.contact, JSON.stringify({
+        name: ($("#fName")?.value || "").trim(),
+        phone: ($("#fPhone")?.value || "").trim(),
+        email: ($("#fEmail")?.value || "").trim()
+      }));
+    }
+
+    function validateBooking(){
+      const name = ($("#fName")?.value || "").trim();
+      const phone = ($("#fPhone")?.value || "").trim();
+      const email = ($("#fEmail")?.value || "").trim();
+      const ok = !!(name && phone && email && booking.dateISO && booking.time && booking.listing);
+
+      $("#fNameWrap")?.classList.toggle("err", !name);
+      $("#fPhoneWrap")?.classList.toggle("err", !phone);
+      $("#fEmailWrap")?.classList.toggle("err", !email);
+
       const btn = $("#submitBooking");
       if(btn) btn.disabled = !ok;
       return ok;
     }
 
-    function showWhere(listing){
-      const wrap = $("#bkWhere");
-      if(!wrap) return;
-      wrap.style.display = "flex";
-      $("#bkWhereName").textContent = listing.name || "";
-      $("#bkWhereAddr").textContent = listing.address || "";
-
-      const prof = $("#bkWhereProfile");
-      const maps = $("#bkWhereMaps");
-      if(prof) prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-      if(maps) maps.href = mapsLink(listing);
-
-      const eta = $("#bkWhereEta");
-      if(eta){
-        try{
-          const km = window.bb?.util?.distanceKm ? window.bb.util.distanceKm(listing, state.userLoc) : null;
-          if(km!=null){
-            eta.style.display = "";
-            eta.textContent = `📍 ~${km.toFixed(1)} km`;
-          }else{
-            eta.style.display = "none";
-          }
-        }catch(e){
-          eta.style.display = "none";
-        }
-      }
-    }
-
-    function mapsLink(listing){
-      const q = encodeURIComponent((listing.address||"") + " " + (listing.city||""));
-      return `https://www.google.com/maps/search/?api=1&query=${q}`;
-    }
-
-    function modalTags(listing){
-      const show = (id, on, txt)=>{
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.style.display = on ? "" : "none";
-        if(txt!=null) el.textContent = txt;
-      };
-
-      show("mPartner", !!listing.partner);
-      show("mVerified", !!listing.verified);
-      show("mSterile", !!listing.sterile);
-
-      let slot=null;
-      try{ slot = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
-      show("mToday", !!(slot && window.bb.util.isTodaySlot(slot)));
-
-      let why="";
-      try{ why = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId); }catch(e){}
-      show("mWhy", true, (state.lang==="uk" ? "Why: " : "Why: ") + (why||""));
-    }
-
-    function setService(serviceId){
-      const listing = booking.listing;
-      if(!listing) return;
-
-      const svc = (window.SERVICES||[]).find(s=>s.id===serviceId);
-      booking.serviceId = svc ? svc.id : null;
-
-      const svcVal = $("#svcVal");
-      if(svcVal) svcVal.textContent = svc ? (state.lang==="uk"?svc.ua:svc.en) : "—";
-
-      const pl = $("#priceLine");
-      if(pl){
-        let min=null, max=null, dur=null, label=svcVal?.textContent||"—";
-        try{
-          const info = window.bb?.util?.serviceInfoFor ? window.bb.util.serviceInfoFor(listing, booking.serviceId) : null;
-          if(info){
-            min = info.minPrice; max = info.maxPrice; dur = info.duration;
-          }else{
-            min = window.bb.util.minPriceFor(listing, booking.serviceId);
-            dur = (window.bb.util.durationFor ? window.bb.util.durationFor(listing, booking.serviceId) : 60);
-          }
-        }catch(e){
-          min = null; dur = 60;
-        }
-        const from = (min!=null ? min : 0);
-        const to = (max!=null && max!==min) ? max : null;
-        const d = (dur!=null ? dur : 60);
-        pl.innerHTML = `<b style="color:rgba(255,210,122,.95)">${escapeHtml(label)}</b> · from <b style="color:rgba(255,210,122,.95)">$${from}</b>${to?`–$${to}`:""} · <b style="color:rgba(255,210,122,.95)">${d}</b> min`;
-      }
-
-      if(!booking.dateISO){
-        booking.dateISO = defaultDateForListing(listing, booking.serviceId);
-      }
-      setDateISO(booking.dateISO, true);
-
-      modalTags(listing);
-      validateForm();
-    }
-
-    function defaultDateForListing(listing, serviceId){
-      try{
-        const s = window.bb.util.nextAvailable(listing, serviceId);
-        if(s && s.date) return s.date;
-      }catch(e){}
-      return isoLocal(new Date());
-    }
-
-    function availableTimesFor(listing, serviceId, dateISO){
-      // ✅ IMPORTANT: dateISO must be LOCAL
-      try{
-        if(window.bb?.util?.availableTimes){
-          return window.bb.util.availableTimes(listing, serviceId, dateISO) || [];
-        }
-      }catch(e){}
-      return ["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"].slice(0,9);
-    }
-
-    function setDateISO(dateISO, keepTimeIfPossible=false){
-      const listing = booking.listing;
-      if(!listing) return;
-
-      // ✅ normalize with local Date constructor (prevents UTC shift)
-      const [y,m,d] = String(dateISO).split("-").map(n=>parseInt(n,10));
-      const normalized = isoLocal(new Date(y, (m||1)-1, d||1));
-      booking.dateISO = normalized;
-
-      const dateVal = $("#dateVal");
-      if(dateVal) dateVal.textContent = formatDateShort(normalized);
-
-      // ✅ recompute available times EVERY date change
-      const times = availableTimesFor(listing, booking.serviceId, normalized);
-
-      if(!keepTimeIfPossible || !times.includes(booking.time)){
-        booking.time = null;
-             const tv = $("#timeVal");
-      if(tv) tv.textContent = booking.time ? booking.time : (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
-
-      // hold 2 min
-      booking.holdUntil = Date.now() + 2*60*1000;
-
-      validateForm();
-    }
-
-    // ===== Time picker UI =====
-    function openTimePicker(){
-      const listing = booking.listing;
-      if(!listing || !booking.serviceId || !booking.dateISO){
-        toast(state.lang==="uk" ? "Спочатку вибери послугу і дату" : "Pick service and date first");
-        return;
-      }
-      const times = availableTimesFor(listing, booking.serviceId, booking.dateISO);
-      renderTimeGrid(times);
-      $("#timeOverlay").classList.add("on");
+    function openModal(){
+      const m = $("#modal");
+      if(!m) return;
+      m.classList.add("on");
+      m.setAttribute("aria-hidden","false");
       lockScroll();
     }
-    function closeTimePicker(){
-      $("#timeOverlay").classList.remove("on");
+    function closeModal(){
+      const m = $("#modal");
+      if(!m) return;
+      m.classList.remove("on");
+      m.setAttribute("aria-hidden","true");
       unlockScroll();
     }
 
-    function renderTimeGrid(times){
+    function openOverlay(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.add("on");
+      el.setAttribute("aria-hidden","false");
+      lockScroll();
+    }
+    function closeOverlay(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.remove("on");
+      el.setAttribute("aria-hidden","true");
+      unlockScroll();
+    }
+
+    function listAvailableTimes(listing, serviceId, dateISO){
+      try{
+        if(window.bb?.util?.availableTimes) return window.bb.util.availableTimes(listing, serviceId, dateISO) || [];
+      }catch(e){}
+      const svc = (listing.services||[]).find(s=>s.serviceId===serviceId) || (listing.services||[])[0];
+      const slots = svc?.slots || listing.slots || [];
+      return slots
+        .filter(x=>x.dateISO===dateISO)
+        .map(x=>x.time)
+        .filter(Boolean);
+    }
+
+    function renderTimeGrid(){
       const grid = $("#timeGrid");
       if(!grid) return;
       grid.innerHTML = "";
-
-      if(!times || times.length===0){
-        grid.innerHTML = `<div style="grid-column:1/-1; padding:10px; color:var(--muted); font-weight:800">
-          ${state.lang==="uk" ? "На цю дату немає вільних слотів." : "No free slots for this date."}
-        </div>`;
-        return;
-      }
-
-      times.forEach(t=>{
+      (booking.times||[]).forEach(t=>{
         const b = document.createElement("button");
-        b.className = "timeBtn" + (booking.time===t ? " on" : "");
+        b.className = "timeBtn" + ((booking.time===t)?" on":"");
         b.textContent = t;
         b.addEventListener("click", ()=>{
-          haptic();
-          setTime(t);
-          closeTimePicker();
+          haptic(12);
+          booking.time = t;
+          $("#timeVal").textContent = t;
+          validateBooking();
+          renderTimeGrid();
+          closeOverlay("timeOverlay");
         });
         grid.appendChild(b);
       });
     }
 
-    // quick filters
-    function applyTimeQuick(which){
-      const listing = booking.listing;
-      if(!listing) return;
-      const times = availableTimesFor(listing, booking.serviceId, booking.dateISO);
-      if(!times || !times.length) return;
-
-      let pick = null;
-
-      if(which==="today"){
-        // just keep current date (already)
-        pick = times[0];
-      }
-      if(which==="after18"){
-        pick = times.find(x=>parseInt(x.split(":")[0],10) >= 18) || times[times.length-1];
-      }
-      if(which==="earliest"){
-        pick = times[0];
-      }
-      if(which==="cheapest"){
-        // cheapest = same time list, so choose earliest as proxy
-        pick = times[0];
-      }
-
-      if(pick){
-        setTime(pick);
-        renderTimeGrid(times);
-      }
-    }
-
-    // ===== Date calendar UI =====
-    function openDatePicker(){
-      $("#dateOverlay").classList.add("on");
-      lockScroll();
-      renderCalendar(true);
-    }
-    function closeDatePicker(){
-      $("#dateOverlay").classList.remove("on");
-      unlockScroll();
-    }
-
-    function monthKey(y,m){ return `${y}-${String(m+1).padStart(2,"0")}`; }
-
-    function renderCalendar(force=false){
-      const listing = booking.listing;
-      if(!listing) return;
-
-      // cursor month
-      if(!booking.monthCursor || force){
-        const [yy,mm] = (booking.dateISO||isoLocal()).split("-").map(n=>parseInt(n,10));
-        booking.monthCursor = { y: yy, m: (mm-1) };
-      }
-
-      const y = booking.monthCursor.y;
-      const m = booking.monthCursor.m;
-
-      const title = $("#calTitle");
-      if(title){
-        const dt = new Date(y, m, 1);
-        title.textContent = dt.toLocaleDateString(state.lang==="uk"?"uk-UA":"en-CA", { month:"long", year:"numeric" });
-      }
-
-      const dow = $("#calDow");
-      if(dow && !dow.dataset.done){
-        const names = state.lang==="uk"
-          ? ["пн","вт","ср","чт","пт","сб","нд"]
-          : ["mon","tue","wed","thu","fri","sat","sun"];
-        dow.innerHTML = names.map(x=>`<div class="calDow">${x}</div>`).join("");
-        dow.dataset.done = "1";
-      }
-
-      const grid = $("#calGrid");
-      if(!grid) return;
-      grid.innerHTML = "";
-
-      // Monday-first calendar
-      const first = new Date(y, m, 1);
-      const last = new Date(y, m+1, 0);
-      const firstDow = (first.getDay() + 6) % 7; // 0..6 (mon..sun)
-      const daysInMonth = last.getDate();
-
-      // fill blanks
-      for(let i=0;i<firstDow;i++){
-        const d = document.createElement("div");
-        d.className = "day off";
-        d.textContent = "";
-        grid.appendChild(d);
-      }
-
-      const todayISO = isoLocal(new Date());
-      for(let day=1; day<=daysInMonth; day++){
-        const iso = isoLocal(new Date(y, m, day));
-        const btn = document.createElement("div");
-        btn.className = "day";
-        btn.textContent = String(day);
-
-        // disable past days
-        if(iso < todayISO){
-          btn.classList.add("off");
-        }else{
-          // mark has slots
-          const times = availableTimesFor(listing, booking.serviceId, iso);
-          if(times && times.length) btn.classList.add("has");
-        }
-
-        if(iso === booking.dateISO) btn.classList.add("on");
-
-        btn.addEventListener("click", ()=>{
-          if(btn.classList.contains("off")) return;
-          haptic();
-          setDateISO(iso, true);
-          closeDatePicker();
-        });
-
-        grid.appendChild(btn);
-      }
-    }
-
-    // ===== Drafts =====
-    function openDrafts(){
-      renderDrafts();
-      $("#draftsOverlay").classList.add("on");
-      lockScroll();
-    }
-    function closeDrafts(){
-      $("#draftsOverlay").classList.remove("on");
-      unlockScroll();
-    }
-
-    function renderDrafts(){
-      const list = $("#draftsList");
-      if(!list) return;
-      const arr = state.drafts || [];
-      if(arr.length===0){
-        list.innerHTML = `<div style="color:var(--muted); font-weight:800">${state.lang==="uk"?"Немає чернеток.":"No drafts yet."}</div>`;
+    function openTimePicker(){
+      if(!booking.listing || !booking.dateISO) {
+        toast(state.lang==="uk" ? "Спочатку обери дату" : "Pick date first");
         return;
       }
+      booking.times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
+      if(!booking.times.length){
+        toast(state.lang==="uk" ? "Немає часу на цю дату" : "No times on this date");
+        return;
+      }
+      renderTimeGrid();
+      openOverlay("timeOverlay");
+    }
 
-      list.innerHTML = "";
-      arr.slice().reverse().forEach((d, idxFromEnd)=>{
-        const idx = arr.length-1-idxFromEnd;
-        const listing = (window.LISTINGS||[]).find(l=>l.id===d.listingId);
-        const name = listing?.name || d.listingId;
-        const svc = d.serviceId ? serviceLabel(d.serviceId) : (state.lang==="uk"?"Any service":"Any service");
-        const when = (d.date && d.time) ? `${formatDateShort(d.date)} · ${d.time}` : "";
+    function buildMonthGrid(cursor){
+      const y = cursor.getFullYear();
+      const m = cursor.getMonth();
+      const first = new Date(y, m, 1);
+      const startDow = (first.getDay() + 6) % 7; // Mon=0
+      const daysIn = new Date(y, m+1, 0).getDate();
+      const cells = [];
+      for(let i=0;i<startDow;i++) cells.push(null);
+      for(let d=1; d<=daysIn; d++) cells.push(new Date(y, m, d));
+      while(cells.length % 7 !== 0) cells.push(null);
+      return cells;
+    }
+
+    function renderCalendar(){
+      if(!booking.monthCursor) booking.monthCursor = new Date();
+      const calTitle = $("#calTitle");
+      const dow = $("#calDow");
+      const grid = $("#calGrid");
+      if(!grid || !dow) return;
+
+      const loc = state.lang==="uk" ? "uk-UA" : "en-CA";
+      if(calTitle) calTitle.textContent = booking.monthCursor.toLocaleDateString(loc, { month:"long", year:"numeric" });
+
+      const dows = state.lang==="uk"
+        ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
+        : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      dow.innerHTML = dows.map(x=>`<div class="calDow">${x}</div>`).join("");
+
+      const cells = buildMonthGrid(booking.monthCursor);
+      const todayISO = isoLocal(new Date());
+
+      grid.innerHTML = "";
+      cells.forEach(dt=>{
         const el = document.createElement("div");
-        el.className = "draftItem";
-        el.innerHTML = `
-          <div style="min-width:0">
-            <b>${escapeHtml(name)}</b>
-            <div style="margin-top:4px; color:var(--muted); font-size:12.5px">${escapeHtml(svc)}${when?` · ${escapeHtml(when)}`:""}</div>
-          </div>
-          <div class="draftActions">
-            <button class="miniBtn2" data-act="book">⚡ ${state.lang==="uk"?"Book":"Book"}</button>
-            <button class="miniBtn2 danger" data-act="del">🗑️</button>
-          </div>
-        `;
-        el.querySelector('[data-act="book"]').addEventListener("click", ()=>{
-          if(!listing) return;
-          closeDrafts();
-          openBooking(listing, d.serviceId||null, d.date||null, d.time||null);
+        el.className = "day";
+        if(!dt){
+          el.classList.add("off");
+          el.textContent = "";
+          grid.appendChild(el);
+          return;
+        }
+        const iso = isoLocal(dt);
+        el.textContent = String(dt.getDate());
+
+        const isPast = iso < todayISO;
+        if(isPast) el.classList.add("off");
+
+        let has = false;
+        try{
+          const times = listAvailableTimes(booking.listing, booking.serviceId, iso);
+          has = !!times.length;
+        }catch(e){}
+        if(has && !isPast) el.classList.add("has");
+
+        if(booking.dateISO === iso) el.classList.add("on");
+
+        el.addEventListener("click", ()=>{
+          if(isPast) return;
+          haptic(10);
+          booking.dateISO = iso;
+          $("#dateVal").textContent = formatDateShort(iso);
+          booking.time = null;
+          $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+          validateBooking();
+          renderCalendar();
+          closeOverlay("dateOverlay");
         });
-        el.querySelector('[data-act="del"]').addEventListener("click", ()=>{
-          state.drafts.splice(idx,1);
-          localStorage.setItem(LS.cart, JSON.stringify(state.drafts));
-          renderAll();
-          renderDrafts();
-        });
-        list.appendChild(el);
+
+        grid.appendChild(el);
       });
     }
 
-    function saveDraft(){
+    function openDatePicker(){
+      if(!booking.listing) return;
+      openOverlay("dateOverlay");
+      renderCalendar();
+    }
+
+    function cycleService(){
       const listing = booking.listing;
       if(!listing) return;
+      const svcs = (listing.services||[]).slice();
+      if(!svcs.length) return;
 
-      const d = {
-        listingId: listing.id,
-        serviceId: booking.serviceId,
-        date: booking.dateISO,
-        time: booking.time
-      };
+      const idx = Math.max(0, svcs.findIndex(s=>s.serviceId===booking.serviceId));
+      const next = svcs[(idx+1) % svcs.length];
+      booking.serviceId = next.serviceId;
+      $("#svcVal").textContent = serviceLabel(booking.serviceId) || (state.lang==="uk"?next.ua:next.en) || "—";
+      setPriceLine(listing, booking.serviceId);
 
-      state.drafts = state.drafts || [];
-      state.drafts.push(d);
-      localStorage.setItem(LS.cart, JSON.stringify(state.drafts));
-      toast((T[state.lang]||T.uk).toastDraft);
-      renderAll();
-    }
-
-    // ===== Booking open/close =====
-    function openBooking(listing, serviceId=null, dateISO=null, time=null){
-      booking.listing = listing;
-      booking.serviceId = null;
       booking.dateISO = null;
       booking.time = null;
-      booking.holdUntil = 0;
-
-      // show modal
-      $("#modal").classList.add("on");
-      lockScroll();
-
-      // where
-      showWhere(listing);
-
-      // initial service
-      const preferredService = serviceId || state.serviceId || (window.SERVICES?.[0]?.id || null);
-      setContactFromLS();
-
-      // set service
-      setService(preferredService);
-
-      // date
-      if(dateISO){
-        setDateISO(dateISO, true);
-      }else{
-        setDateISO(defaultDateForListing(listing, preferredService), true);
-      }
-
-      // time
-      if(time){
-        setTime(time);
-      }else{
-        // keep null, user picks
-        const tv = $("#timeVal");
-        if(tv) tv.textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
-      }
-
-      modalTags(listing);
-      validateForm();
+      $("#dateVal").textContent = "—";
+      $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+      validateBooking();
     }
 
-    function closeBooking(){
-      $("#modal").classList.remove("on");
-      unlockScroll();
+    function setServiceInitial(listing, serviceId){
+      const svcs = (listing.services||[]).slice();
+      let pick = null;
+      if(serviceId) pick = svcs.find(s=>s.serviceId===serviceId) || null;
+      if(!pick) pick = svcs[0] || null;
+
+      booking.serviceId = pick ? pick.serviceId : serviceId;
+      const txt = serviceLabel(booking.serviceId) || (pick ? (state.lang==="uk"?pick.ua:pick.en) : "");
+      $("#svcVal").textContent = txt || "—";
+      setPriceLine(listing, booking.serviceId);
     }
 
-    // ===== Telegram booking =====
-    async function sendBooking(){
-      if(!validateForm()){
-        toast((T[state.lang]||T.uk).toastErr);
+    function openBooking(listingId, serviceId=null, slot=null){
+      const listing = getListing(listingId);
+      if(!listing){
+        toast("Listing not found");
         return;
       }
 
-      const listing = booking.listing;
-      const name = ($("#fName")?.value||"").trim();
-      const phone = ($("#fPhone")?.value||"").trim();
-      const email = ($("#fEmail")?.value||"").trim();
+      booking.listing = listing;
+      booking.slot = slot || null;
 
-      saveContactToLS();
+      fillWhere(listing);
+      setModalTags(listing);
+      setServiceInitial(listing, serviceId);
 
-      // persist last booking
-      localStorage.setItem(LS.last, JSON.stringify({
-        listingId: listing.id,
-        serviceId: booking.serviceId,
-        date: booking.dateISO,
-        time: booking.time
-      }));
-
-      // build payload
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "Service";
-
-      // get price/duration
-      let min=null, max=null, dur=null;
-      try{
-        const info = window.bb?.util?.serviceInfoFor ? window.bb.util.serviceInfoFor(listing, booking.serviceId) : null;
-        if(info){ min=info.minPrice; max=info.maxPrice; dur=info.duration; }
-        else { min = window.bb.util.minPriceFor(listing, booking.serviceId); dur = window.bb.util.durationFor ? window.bb.util.durationFor(listing, booking.serviceId) : 60; }
-      }catch(e){ dur=60; }
-
-      const priceStr = (min!=null)
-        ? (max!=null && max!==min ? `$${min}–$${max}` : `$${min}`)
-        : "—";
-
-      const dtHuman = (() => {
-        // local human date
-        const [y,m,d] = booking.dateISO.split("-").map(n=>parseInt(n,10));
-        const dt = new Date(y, m-1, d);
-        const dd = dt.toLocaleDateString(state.lang==="uk"?"uk-UA":"en-CA", { year:"numeric", month:"2-digit", day:"2-digit" });
-        return `${dd} ${booking.time}`;
-      })();
-
-      const payload = {
-        name,
-        phone,
-        email,
-        serviceId: booking.serviceId,
-        serviceName: svcName,
-        listingId: listing.id,
-        listingName: listing.name || "",
-        address: listing.address || "",
-        city: listing.city || "",
-        date: booking.dateISO,
-        time: booking.time,
-        datetimeHuman: dtHuman,
-        price: priceStr,
-        durationMin: dur || 60,
-        profileUrl: `${location.origin}${location.pathname.replace(/index\.html?$/,"")}profile.html?id=${encodeURIComponent(listing.id)}`
-      };
-
-      const btn = $("#submitBooking");
-      if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
-
-      try{
-        const r = await fetch(`${WORKER_URL}/book`, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify(payload)
-        });
-        if(!r.ok) throw new Error("HTTP "+r.status);
-
-        toast((T[state.lang]||T.uk).toastSent);
-        closeBooking();
-        showSuccess(listing, payload);
-        renderLastBookingCard();
-      }catch(e){
-        toast("Telegram error");
-        console.error(e);
-      }finally{
-        if(btn){
-          btn.textContent = (T[state.lang]||T.uk).confirm;
-          btn.disabled = false;
-          validateForm();
-        }
+      if(slot && slot.dateISO && slot.time){
+        booking.dateISO = slot.dateISO;
+        booking.time = slot.time;
+        $("#dateVal").textContent = formatDateShort(slot.dateISO);
+        $("#timeVal").textContent = slot.time;
+      }else{
+        booking.dateISO = null;
+        booking.time = null;
+        $("#dateVal").textContent = "—";
+        $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
       }
+
+      setContactDefaults();
+      validateBooking();
+      openModal();
+
+      // ✅ reduce iOS “jump” when focusing inputs in PWA
+      setTimeout(()=>{
+        try{ $("#fName")?.blur(); }catch(e){}
+      }, 0);
     }
 
-    // ===== Success overlay =====
-    let lastSuccess = null;
-    function showSuccess(listing, payload){
-      lastSuccess = { listing, payload };
-      $("#successLine").textContent = state.lang==="uk" ? "Надіслано в Telegram ✅" : "Sent to Telegram ✅";
-      $("#successSub").textContent = state.lang==="uk"
-        ? "Далі: відкрий Maps або додай в календар."
-        : "Next: open Maps or add to calendar.";
-      $("#successOverlay").classList.add("on");
-      lockScroll();
-    }
-    function closeSuccess(){
-      $("#successOverlay").classList.remove("on");
-      unlockScroll();
+    function setQuickChip(activeId){
+      ["tfToday","tfAfter18","tfEarliest","tfCheapest"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.classList.toggle("on", id===activeId);
+      });
     }
 
-    function copySuccess(){
-      if(!lastSuccess) return;
-      const p = lastSuccess.payload;
-      const txt =
-        `Booking\n`+
-        `Name: ${p.name}\n`+
-        `Phone: ${p.phone}\n`+
-        `Email: ${p.email}\n`+
-        `Service: ${p.serviceName}\n`+
-        `Where: ${p.listingName}, ${p.address}\n`+
-        `When: ${p.datetimeHuman}\n`+
-        `Price: ${p.price} · ${p.durationMin} min\n`+
-        `Profile: ${p.profileUrl}\n`;
-      navigator.clipboard?.writeText(txt);
-      toast((T[state.lang]||T.uk).toastCopied);
+    function applyTimeQuick(mode){
+      if(!booking.listing || !booking.dateISO) return;
+      const times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
+      if(!times.length) return;
+
+      let pick = times[0];
+      if(mode==="after18"){
+        pick = times.find(t => t >= "18:00") || times[times.length-1];
+      }
+      if(mode==="earliest") pick = times[0];
+      if(mode==="cheapest") pick = times[0];
+
+      booking.times = times;
+      booking.time = pick;
+      $("#timeVal").textContent = pick;
+      validateBooking();
+      renderTimeGrid();
+      setQuickChip(mode==="after18"?"tfAfter18":mode==="earliest"?"tfEarliest":mode==="cheapest"?"tfCheapest":"tfToday");
     }
 
-    function downloadICS(){
-      if(!lastSuccess) return;
-      const p = lastSuccess.payload;
+    // ===== Drafts (✅ the part you lost) =====
+    function draftKey(d){
+      return `${d.id}__${d.serviceId||""}__${d.dateISO||""}__${d.time||""}`;
+    }
 
-      // create DTSTART/DTEND in local-ish format (no timezone complications)
-      const [y,m,d] = p.date.split("-").map(n=>parseInt(n,10));
-      const [hh,mm] = p.time.split(":").map(n=>parseInt(n,10));
-      const start = new Date(y, m-1, d, hh, mm, 0);
-      const end = new Date(start.getTime() + (p.durationMin||60)*60000);
-
-      const fmt = (dt)=>{
-        const Y = dt.getFullYear();
-        const M = String(dt.getMonth()+1).padStart(2,"0");
-        const D = String(dt.getDate()).padStart(2,"0");
-        const H = String(dt.getHours()).padStart(2,"0");
-        const Min = String(dt.getMinutes()).padStart(2,"0");
-        return `${Y}${M}${D}T${H}${Min}00`;
+    function saveDraft(){
+      if(!booking.listing) return;
+      const d = {
+        id: booking.listing.id,
+        serviceId: booking.serviceId,
+        dateISO: booking.dateISO,
+        time: booking.time,
+        createdAt: Date.now()
       };
+
+      // allow draft even without date/time (but better with)
+      const k = draftKey(d);
+      const map = new Map(state.drafts.map(x=>[draftKey(x), x]));
+      map.set(k, d);
+      state.drafts = Array.from(map.values()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+      updateDraftBadge();
+      toast(T[state.lang].toastDraft);
+    }
+
+    function renderDraftsList(){
+      const box = $("#draftsList");
+      if(!box) return;
+
+      if(!state.drafts.length){
+        box.innerHTML = `<div class="note">No drafts yet. Save 1–3 and book in 1 tap.</div>`;
+        return;
+      }
+
+      const loc = state.lang==="uk" ? "uk-UA" : "en-CA";
+
+      box.innerHTML = "";
+      state.drafts.slice(0,20).forEach((d, idx)=>{
+        const listing = getListing(d.id);
+        const title = listing ? listing.name : d.id;
+        const svc = d.serviceId ? (serviceLabel(d.serviceId) || d.serviceId) : (state.lang==="uk"?"Послуга":"Service");
+        const when = (d.dateISO && d.time) ? `${formatDateShort(d.dateISO)} · ${d.time}` : (state.lang==="uk"?"(без часу)":"(no time)");
+        const el = document.createElement("div");
+        el.className = "draftItem";
+        el.innerHTML = `
+                   <div style="min-width:0">
+            <b style="font-weight:900">${escapeHtml(title)}</b>
+            <div style="margin-top:6px; font-size:12.5px; color:var(--muted); line-height:1.35">
+              ${escapeHtml(svc)} · ${escapeHtml(when)}
+            </div>
+          </div>
+          <div class="draftActions">
+            <button class="miniBtn2" data-act="open" data-i="${idx}">Open</button>
+            <button class="miniBtn2" data-act="book" data-i="${idx}">Book</button>
+            <button class="miniBtn2 danger" data-act="del" data-i="${idx}">Delete</button>
+          </div>
+        `;
+        box.appendChild(el);
+      });
+
+      box.querySelectorAll("[data-act]").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          const act = btn.getAttribute("data-act");
+          const i = parseInt(btn.getAttribute("data-i")||"0",10);
+          const d = state.drafts[i];
+          if(!d) return;
+
+          if(act==="del"){
+            haptic(10);
+            state.drafts.splice(i,1);
+            updateDraftBadge();
+            renderDraftsList();
+            toast("Deleted");
+            return;
+          }
+
+          const listing = getListing(d.id);
+          if(!listing){
+            toast("Listing not found");
+            return;
+          }
+
+          if(act==="open"){
+            haptic(10);
+            closeOverlay("draftsOverlay");
+            openBooking(d.id, d.serviceId || null, (d.dateISO && d.time) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
+            return;
+          }
+
+          if(act==="book"){
+            haptic(14);
+            closeOverlay("draftsOverlay");
+            openBooking(d.id, d.serviceId || null, (d.dateISO && d.time) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
+            // if time exists, auto-send after tiny delay (still validates)
+            setTimeout(()=>{
+              if(d.dateISO && d.time){
+                try{ $("#submitBooking")?.click(); }catch(e){}
+              } else {
+                toast(state.lang==="uk" ? "Додай дату/час" : "Add date/time");
+              }
+            }, 120);
+          }
+        });
+      });
+    }
+
+    // ===== Success helpers =====
+    function openSuccess(payload){
+      // payload: { listing, serviceName, dateISO, time, name, phone, email, mapsUrl, textDetails }
+      booking._lastSuccess = payload;
+      $("#successLine").textContent = (state.lang==="uk" ? "Відправлено в Telegram ✅" : "Sent to Telegram ✅");
+      $("#successSub").textContent  = (state.lang==="uk"
+        ? "Далі: відкрий мапу або додай в календар."
+        : "Next: open maps or add to calendar.");
+      openOverlay("successOverlay");
+    }
+
+    function makeICS({title, location, startISO, durationMin=60, description=""}){
+      // startISO: "YYYY-MM-DDTHH:mm"
+      const dt = new Date(startISO);
+      const pad = (n)=>String(n).padStart(2,"0");
+      const toICS = (d)=>{
+        // local -> floating time (works OK for personal reminders)
+        return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+      };
+      const end = new Date(dt.getTime() + durationMin*60*1000);
+      const uid = `bb-${Date.now()}@bookingclub.beauty`;
 
       const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Beauty Booking//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
 BEGIN:VEVENT
-UID:${Date.now()}@beautybooking
-DTSTAMP:${fmt(new Date())}
-DTSTART:${fmt(start)}
-DTEND:${fmt(end)}
-SUMMARY:${p.serviceName} — ${p.listingName}
-LOCATION:${p.address}
-DESCRIPTION:Booked via Beauty Booking\\n${p.profileUrl}
+UID:${uid}
+DTSTAMP:${toICS(new Date())}
+DTSTART:${toICS(dt)}
+DTEND:${toICS(end)}
+SUMMARY:${title.replace(/\n/g," ")}
+LOCATION:${(location||"").replace(/\n/g," ")}
+DESCRIPTION:${(description||"").replace(/\n/g," ")}
 END:VEVENT
 END:VCALENDAR`;
 
-      const blob = new Blob([ics], { type:"text/calendar;charset=utf-8" });
+      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
+      a.href = url;
       a.download = "booking.ics";
       document.body.appendChild(a);
       a.click();
       a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
+      setTimeout(()=>URL.revokeObjectURL(url), 1500);
     }
 
-    // ===== Policies modal =====
-    function openPolicies(){
-      $("#polModal").classList.add("on");
-      lockScroll();
-    }
-    function closePolicies(){
-      $("#polModal").classList.remove("on");
-      unlockScroll();
-    }
-
-    // ===== AI concierge (simple heuristic) =====
-    function toggleAI(){
-      const sec = $("#aiSection");
-      if(!sec) return;
-      const on = sec.style.display === "none";
-      sec.style.display = on ? "" : "none";
-      if(on) $("#aiInput")?.focus();
+    function copyText(txt){
+      try{
+        navigator.clipboard.writeText(txt);
+        toast(T[state.lang].toastCopied);
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand("copy"); toast(T[state.lang].toastCopied); }catch(e2){}
+        ta.remove();
+      }
     }
 
-    function aiSuggest(){
-      const q = ($("#aiInput")?.value||"").toLowerCase();
-      const picksWrap = $("#aiPicks");
-      if(!picksWrap) return;
-      picksWrap.innerHTML = "";
+    // ===== Telegram booking submit =====
+    async function sendToTelegram(){
+      if(!validateBooking()){
+        toast(T[state.lang].toastErr);
+        return;
+      }
 
-      let svc = null;
-      if(q.includes("манік") || q.includes("mani")) svc = "manicure";
-      if(q.includes("педик") || q.includes("pedi")) svc = "pedicure";
-      if(q.includes("бров") || q.includes("brow")) svc = "brows";
-      if(q.includes("стриж")) svc = "haircut";
+      const listing = booking.listing;
+      const svcId = booking.serviceId;
+      const svcName = serviceLabel(svcId) || svcId || (state.lang==="uk"?"Послуга":"Service");
 
-      // temporary set
-      const prevSvc = state.serviceId;
-      if(svc) state.serviceId = svc;
+      const name = ($("#fName")?.value || "").trim();
+      const phone = ($("#fPhone")?.value || "").trim();
+      const email = ($("#fEmail")?.value || "").trim();
 
-      const list = filteredListings();
-      const ranked = (window.bb?.util?.smartRecommend)
-        ? window.bb.util.smartRecommend(list, state.userLoc, state.serviceId)
-        : list;
+      const dateISO = booking.dateISO;
+      const time = booking.time;
 
-      ranked.slice(0,3).forEach(l=> picksWrap.appendChild(buildCard(l,false)));
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((listing.address||listing.name||""))}`;
+      const profileUrl = `./profile.html?id=${encodeURIComponent(listing.id)}`;
 
-      state.serviceId = prevSvc; // restore
+      // duration / price for nicer msg
+      let dur = null, priceFrom = null;
+      try{ dur = window.bb.util.durationFor ? window.bb.util.durationFor(listing, svcId) : null; }catch(e){}
+      try{ priceFrom = window.bb.util.minPriceFor(listing, svcId); }catch(e){}
+      if(dur == null || priceFrom == null){
+        const s = (listing.services||[]).find(x=>x.serviceId===svcId) || (listing.services||[])[0];
+        if(s){
+          if(dur == null) dur = s.duration ?? null;
+          if(priceFrom == null) priceFrom = s.priceFrom ?? s.price ?? null;
+        }
+      }
+
+      // Keep last booking for card
+      localStorage.setItem(LS.last, JSON.stringify({
+        id: listing.id,
+        serviceId: svcId,
+        dateISO,
+        time,
+        at: Date.now()
+      }));
+
+      saveContact();
+
+      const payload = {
+        name, phone, email,
+        listingId: listing.id,
+        listingName: listing.name,
+        address: listing.address,
+        city: listing.city || "",
+        serviceId: svcId,
+        serviceName: svcName,
+        dateISO,
+        time,
+        priceFrom: priceFrom ?? null,
+        duration: dur ?? null,
+        profileUrl,
+        mapsUrl,
+        lang: state.lang
+      };
+
+      const btn = $("#submitBooking");
+      if(btn){ btn.disabled = true; btn.textContent = (state.lang==="uk"?"Sending…":"Sending…"); }
+
+      try{
+        const res = await fetch(`${WORKER_URL}/book`, {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if(!res.ok){
+          throw new Error("Worker error: " + res.status);
+        }
+
+        toast(T[state.lang].toastSent);
+        closeModal();
+
+        // Success overlay data
+        const details =
+`${listing.name}
+${svcName}
+${formatDateShort(dateISO)} · ${time}
+${listing.address || ""}
+
+Name: ${name}
+Phone: ${phone}
+Email: ${email}`;
+
+        openSuccess({
+          listing,
+          serviceName: svcName,
+          dateISO,
+          time,
+          name, phone, email,
+          mapsUrl,
+          textDetails: details,
+          durationMin: dur || 60
+        });
+
+        renderLastBookingCard();
+      }catch(err){
+        console.error(err);
+        toast(state.lang==="uk" ? "Помилка Telegram. Перевір WORKER_URL" : "Telegram error. Check WORKER_URL");
+      }finally{
+        if(btn){
+          btn.textContent = T[state.lang].confirm;
+          btn.disabled = !validateBooking();
+        }
+      }
     }
 
-    // ===== Install prompt =====
+    function renderLastBookingCard(){
+      const box = $("#lastCard");
+      if(!box) return;
+
+      let last = null;
+      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
+      if(!last || !last.id){
+        box.style.display = "none";
+        return;
+      }
+
+      const listing = getListing(last.id);
+      if(!listing){
+        box.style.display = "none";
+        return;
+      }
+
+      const svc = serviceLabel(last.serviceId) || (state.lang==="uk"?"Послуга":"Service");
+      const line = `${formatDateShort(last.dateISO)} · ${last.time} · ${listing.name}`;
+      $("#lastLine").textContent = line;
+      $("#lastSub").textContent = (state.lang==="uk" ? `Tap to book again: ${svc}` : `Tap to book again: ${svc}`);
+      box.style.display = "";
+
+      const go = ()=>{
+        haptic(14);
+        openBooking(listing.id, last.serviceId || null, { dateISO:last.dateISO, time:last.time, fromPrice:null });
+      };
+      box.onclick = go;
+      box.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
+    }
+
+    // ===== AI concierge (simple heuristic, no OpenAI) =====
+    function parseAiQuery(q){
+      const s = (q||"").toLowerCase();
+
+      const out = { serviceId: null, after: null, maxPrice: null, today: false };
+
+      if(s.includes("манік") || s.includes("маник") || s.includes("manic")) out.serviceId = "manicure";
+      if(s.includes("педик") || s.includes("pedi")) out.serviceId = "pedicure";
+      if(s.includes("бров") || s.includes("brow")) out.serviceId = "brows";
+      if(s.includes("чол") || s.includes("men")) out.serviceId = "haircut_men";
+      if(s.includes("жін") || s.includes("women") || s.includes("female")) out.serviceId = "haircut_women";
+      if(!out.serviceId && (s.includes("стриж") || s.includes("hair"))) out.serviceId = "haircut";
+
+      const m1 = s.match(/after\s*(\d{1,2})/i) || s.match(/після\s*(\d{1,2})/i);
+      if(m1){
+        const hh = String(Math.min(23, Math.max(0, parseInt(m1[1],10)))).padStart(2,"0");
+        out.after = `${hh}:00`;
+      } else if(s.includes("після 18") || s.includes("after 6") || s.includes("after 18")) {
+        out.after = "18:00";
+      }
+
+      const m2 = s.match(/(\d{2,3})\s*\$/) || s.match(/\$\s*(\d{2,3})/);
+      if(m2) out.maxPrice = parseInt(m2[1],10);
+
+      if(s.includes("today") || s.includes("сьогодні") || s.includes("сьодні")) out.today = true;
+
+      return out;
+    }
+
+    function runAi(){
+      const q = ($("#aiInput")?.value || "").trim();
+      if(!q){
+        toast(state.lang==="uk" ? "Напиши запит" : "Type a request");
+        return;
+      }
+
+      const p = parseAiQuery(q);
+
+      // temporary apply (does NOT overwrite main filters; it's just picks)
+      const base = (window.LISTINGS||[]).filter(l => matchesQuery(l, q) || matchesService(l, p.serviceId));
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(base, state.userLoc, p.serviceId) : base;
+
+      const todayISO = isoLocal(new Date());
+
+      const picks = ranked.filter(l=>{
+        if(p.serviceId && !matchesService(l, p.serviceId)) return false;
+
+        if(p.maxPrice != null){
+          try{
+            const from = window.bb.util.minPriceFor(l, p.serviceId);
+            if(from != null && from > p.maxPrice) return false;
+          }catch(e){}
+        }
+
+        // time constraint (rough)
+        if(p.today || p.after){
+          let slot = null;
+          try{ slot = window.bb.util.nextAvailable(l, p.serviceId); }catch(e){}
+          if(!slot) return false;
+          if(p.today && slot.dateISO !== todayISO) return false;
+          if(p.after && slot.dateISO === todayISO && slot.time < p.after) return false;
+        }
+
+        return true;
+      }).slice(0,3);
+
+      const grid = $("#aiPicks");
+      if(!grid) return;
+      grid.innerHTML = "";
+      if(!picks.length){
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає збігів":"No matches"}</h3><p style="margin:0;color:var(--muted)">${state.lang==="uk"?"Спробуй інший текст або зніми обмеження.":"Try different wording or loosen constraints."}</p></div>`;
+        return;
+      }
+      picks.forEach(l=> grid.appendChild(buildCard(l,false)));
+      $("#aiSection").scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    // ===== A2HS / Install =====
     let deferredPrompt = null;
+
     window.addEventListener("beforeinstallprompt", (e)=>{
       e.preventDefault();
       deferredPrompt = e;
-      const pill = $("#installPill");
-      if(pill && !localStorage.getItem(LS.installedHide)){
-        pill.classList.add("show");
-      }
+
+      const hide = localStorage.getItem(LS.installedHide) === "1";
+      if(hide) return;
+
+      $("#installPill")?.classList.add("show");
+    });
+
+    window.addEventListener("appinstalled", ()=>{
+      localStorage.setItem(LS.installedHide, "1");
+      $("#installPill")?.classList.remove("show");
+      toast("Installed ✅");
     });
 
     async function doInstall(){
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      try{ await deferredPrompt.userChoice; }catch(e){}
-      deferredPrompt = null;
-      $("#installPill")?.classList.remove("show");
-      localStorage.setItem(LS.installedHide, "1");
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        try{ await deferredPrompt.userChoice; }catch(e){}
+        deferredPrompt = null;
+        $("#installPill")?.classList.remove("show");
+        return;
+      }
+
+      // iOS hint
+      const shown = localStorage.getItem(LS.a2hsHint) === "1";
+      if(!shown && !isStandalone()){
+        localStorage.setItem(LS.a2hsHint, "1");
+        toast(T[state.lang].toastA2HS);
+      }
+    }
+
+    // ===== Sticky bar show/hide =====
+    function setupSticky(){
+      const bar = $("#stickyBar");
+      const hero = document.querySelector(".heroCard");
+      if(!bar || !hero) return;
+
+      const onScroll = ()=>{
+        const r = hero.getBoundingClientRect();
+        const should = (r.bottom < (parseInt(getComputedStyle(document.documentElement).getPropertyValue("--topbarH")) || 92));
+        bar.classList.toggle("on", should);
+        bar.setAttribute("aria-hidden", should ? "false" : "true");
+      };
+      window.addEventListener("scroll", onScroll, {passive:true});
+      onScroll();
     }
 
     // ===== Events wiring =====
-    function wireUI(){
-      // search
+    function wire(){
+      applyTheme();
+      renderTexts();
+      renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
+      startHeroRotation();
+      renderLastBookingCard();
+      setupSticky();
+      updateDraftBadge();
+
+      // Inputs
       $("#q")?.addEventListener("input", (e)=>{
         state.q = e.target.value || "";
         saveFilters();
         renderAll();
-        renderSearchSuggestions();
-        renderNextHeroRotating(true);
+        renderSearchSuggestions(false);
       });
-      $("#q")?.addEventListener("focus", ()=> renderSearchSuggestions());
+      $("#q")?.addEventListener("focus", ()=> renderSearchSuggestions(false));
       document.addEventListener("click", (e)=>{
-        const sug = $("#searchSug");
-        const q = $("#q");
-        if(!sug || !q) return;
-        if(e.target===q || e.target.closest(".sug")) return;
-        renderSearchSuggestions(true);
+        const inSearch = e.target?.closest?.(".search");
+        if(!inSearch) renderSearchSuggestions(true);
       });
 
-      // top actions
-      $("#langBtn")?.addEventListener("click", ()=>{
-        haptic();
-        setLang(state.lang==="uk" ? "en" : "uk");
-      });
+      // Top actions
       $("#themeBtn")?.addEventListener("click", ()=>{
-        haptic();
-        state.theme = (state.theme==="light") ? "dark" : "light";
+        haptic(10);
+        state.theme = (state.theme === "light") ? "dark" : "light";
         applyTheme();
       });
+
+      $("#langBtn")?.addEventListener("click", ()=>{
+        haptic(10);
+        setLang(state.lang === "uk" ? "en" : "uk");
+      });
+
       $("#favOnly")?.addEventListener("click", ()=>{
-        haptic();
+        haptic(10);
         state.favOnly = !state.favOnly;
-        $("#favOnly").classList.toggle("on", state.favOnly);
+        $("#favOnly")?.classList.toggle("on", state.favOnly);
         saveFilters();
         renderAll();
-        renderNextHeroRotating(true);
       });
-      $("#aiBtn")?.addEventListener("click", ()=>{ haptic(); toggleAI(); });
-      $("#aiGo")?.addEventListener("click", ()=>{ haptic(); aiSuggest(); });
 
+      // keep favOnly style on load
+      $("#favOnly")?.classList.toggle("on", state.favOnly);
+
+      $("#aiBtn")?.addEventListener("click", ()=>{
+        haptic(10);
+        const sec = $("#aiSection");
+        if(!sec) return;
+        const on = (sec.style.display === "none");
+        sec.style.display = on ? "" : "none";
+        if(on) sec.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      $("#aiGo")?.addEventListener("click", ()=>{ haptic(12); runAi(); });
+      $("#aiInput")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); runAi(); }});
+
+      $("#installPill")?.addEventListener("click", ()=>{ haptic(12); doInstall(); });
+
+      // Quick / Reset
       $("#openQuick")?.addEventListener("click", ()=>{
-        haptic();
-        const list = filteredListings();
-        const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(list, state.userLoc, state.serviceId) : list;
-        const pick = ranked[0];
-        if(pick) openBooking(pick, state.serviceId||null);
+        haptic(12);
+        // open best hero candidate or first rec
+        const list = computeNextCandidates();
+        if(list.length){
+          const l = list[0];
+          let slot = null;
+          try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
+          openBooking(l.id, state.serviceId, slot);
+        } else {
+          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
+        }
       });
-      $("#floatQuick")?.addEventListener("click", ()=>$("#openQuick")?.click());
 
-      $("#resetBtn")?.addEventListener("click", ()=> resetFilters({keepQuery:true, keepFavOnly:true}));
-      $("#stickyReset")?.addEventListener("click", ()=> resetFilters({keepQuery:true, keepFavOnly:true}));
-      $("#stickyQuick")?.addEventListener("click", ()=> $("#openQuick")?.click());
+      $("#floatQuick")?.addEventListener("click", ()=>{ $("#openQuick")?.click(); });
 
-      $("#emptyReset")?.addEventListener("click", ()=> resetFilters({keepQuery:true, keepFavOnly:true}));
+      $("#resetBtn")?.addEventListener("click", ()=>{ haptic(10); resetAllFilters(); });
+      $("#stickyReset")?.addEventListener("click", ()=>{ haptic(10); resetAllFilters(); });
+
+      $("#stickyQuick")?.addEventListener("click", ()=>{ haptic(12); $("#openQuick")?.click(); });
+
+      $("#emptyReset")?.addEventListener("click", ()=>{ haptic(10); resetActiveFiltersOnly(); });
       $("#emptyShowPartners")?.addEventListener("click", ()=>{
-        // show partners by turning off filters that hide them; just scroll up
-        window.scrollTo({ top: 0, behavior:"smooth" });
+        haptic(10);
+        const sec = $("#partnersSection");
+        if(sec) sec.scrollIntoView({behavior:"smooth", block:"start"});
       });
       $("#emptyShowNearest")?.addEventListener("click", ()=>{
-        window.scrollTo({ top: 0, behavior:"smooth" });
+        haptic(10);
+        // just scroll to recommended
+        $("#recSection")?.scrollIntoView({behavior:"smooth", block:"start"});
       });
 
-      $("#toTop")?.addEventListener("click", ()=> window.scrollTo({top:0,behavior:"smooth"}));
+      $("#toTop")?.addEventListener("click", ()=>{ window.scrollTo({top:0, behavior:"smooth"}); });
 
-      // modal
-      $("#closeModal")?.addEventListener("click", closeBooking);
-      $("#modal")?.addEventListener("click", (e)=>{ if(e.target=== $("#modal")) closeBooking(); });
-
-      $("#svcPick")?.addEventListener("click", ()=>{
-        const services = window.SERVICES||[];
-        if(!services.length) return;
-        const idx = Math.max(0, services.findIndex(s=>s.id===booking.serviceId));
-        const next = services[(idx+1) % services.length];
-        haptic();
-        setService(next.id);
+      // Policies
+      $("#policiesBtn")?.addEventListener("click", (e)=>{
+        e.preventDefault();
+        haptic(10);
+        $("#polModal")?.classList.add("on");
+        $("#polModal")?.setAttribute("aria-hidden","false");
+        lockScroll();
+      });
+      $("#closePol")?.addEventListener("click", ()=>{
+        $("#polModal")?.classList.remove("on");
+        $("#polModal")?.setAttribute("aria-hidden","true");
+        unlockScroll();
+      });
+      $("#polModal")?.addEventListener("click", (e)=>{
+        if(e.target?.id==="polModal"){ $("#closePol")?.click(); }
       });
 
-      $("#datePick")?.addEventListener("click", ()=>{ haptic(); openDatePicker(); });
-      $("#timePick")?.addEventListener("click", ()=>{ haptic(); openTimePicker(); });
+      // Booking modal
+      $("#closeModal")?.addEventListener("click", closeModal);
+      $("#modal")?.addEventListener("click", (e)=>{ if(e.target?.id==="modal") closeModal(); });
 
-      $("#closeTime")?.addEventListener("click", closeTimePicker);
-      $("#timeOverlay")?.addEventListener("click", (e)=>{ if(e.target===$("#timeOverlay")) closeTimePicker(); });
+      $("#openProfileBtn")?.addEventListener("click", ()=>{
+        if(!booking.listing) return;
+        haptic(10);
+        window.open(`./profile.html?id=${encodeURIComponent(booking.listing.id)}`, "_blank", "noopener");
+      });
 
-      $("#tfToday")?.addEventListener("click", ()=>{ haptic(); applyTimeQuick("today"); });
-      $("#tfAfter18")?.addEventListener("click", ()=>{ haptic(); applyTimeQuick("after18"); });
-      $("#tfEarliest")?.addEventListener("click", ()=>{ haptic(); applyTimeQuick("earliest"); });
-      $("#tfCheapest")?.addEventListener("click", ()=>{ haptic(); applyTimeQuick("cheapest"); });
+      $("#saveDraftBtn")?.addEventListener("click", ()=>{ haptic(10); saveDraft(); updateDraftBadge(); });
 
-      $("#closeDate")?.addEventListener("click", closeDatePicker);
-      $("#dateOverlay")?.addEventListener("click", (e)=>{ if(e.target===$("#dateOverlay")) closeDatePicker(); });
+      $("#svcPick")?.addEventListener("click", ()=>{ haptic(10); cycleService(); validateBooking(); });
+      $("#datePick")?.addEventListener("click", ()=>{ haptic(10); openDatePicker(); });
+      $("#timePick")?.addEventListener("click", ()=>{ haptic(10); openTimePicker(); });
+
+      // Date overlay
+      $("#closeDate")?.addEventListener("click", ()=> closeOverlay("dateOverlay"));
+      $("#dateOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="dateOverlay") closeOverlay("dateOverlay"); });
       $("#calPrev")?.addEventListener("click", ()=>{
-        haptic();
-        const c = booking.monthCursor || {y:new Date().getFullYear(), m:new Date().getMonth()};
-        let y=c.y, m=c.m-1;
-        if(m<0){ m=11; y--; }
-        booking.monthCursor={y,m};
+        haptic(8);
+        booking.monthCursor = booking.monthCursor || new Date();
+        booking.monthCursor = new Date(booking.monthCursor.getFullYear(), booking.monthCursor.getMonth()-1, 1);
         renderCalendar();
       });
       $("#calNext")?.addEventListener("click", ()=>{
-        haptic();
-        const c = booking.monthCursor || {y:new Date().getFullYear(), m:new Date().getMonth()};
-        let y=c.y, m=c.m+1;
-        if(m>11){ m=0; y++; }
-        booking.monthCursor={y,m};
+        haptic(8);
+        booking.monthCursor = booking.monthCursor || new Date();
+        booking.monthCursor = new Date(booking.monthCursor.getFullYear(), booking.monthCursor.getMonth()+1, 1);
         renderCalendar();
       });
 
-      // drafts
-      $("#cartBtn")?.addEventListener("click", ()=>{ haptic(); openDrafts(); });
-      $("#closeDrafts")?.addEventListener("click", closeDrafts);
-      $("#draftsOverlay")?.addEventListener("click", (e)=>{ if(e.target===$("#draftsOverlay")) closeDrafts(); });
-      $("#saveDraftBtn")?.addEventListener("click", ()=>{ haptic(); saveDraft(); });
+      // Time overlay quick chips
+      $("#closeTime")?.addEventListener("click", ()=> closeOverlay("timeOverlay"));
+      $("#timeOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="timeOverlay") closeOverlay("timeOverlay"); });
 
-      // profile button in modal
-      $("#openProfileBtn")?.addEventListener("click", ()=>{
-        const l = booking.listing;
-        if(!l) return;
-        openProfile(l.id);
+      $("#tfToday")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfToday"); applyTimeQuick("today"); });
+      $("#tfAfter18")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfAfter18"); applyTimeQuick("after18"); });
+      $("#tfEarliest")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfEarliest"); applyTimeQuick("earliest"); });
+      $("#tfCheapest")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfCheapest"); applyTimeQuick("cheapest"); });
+
+      // Drafts overlay
+      $("#cartBtn")?.addEventListener("click", ()=>{
+        haptic(10);
+        renderDraftsList();
+        openOverlay("draftsOverlay");
       });
+      $("#closeDrafts")?.addEventListener("click", ()=> closeOverlay("draftsOverlay"));
+      $("#draftsOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="draftsOverlay") closeOverlay("draftsOverlay"); });
 
-      // booking submit
-      $("#submitBooking")?.addEventListener("click", ()=>{ haptic(); sendBooking(); });
+      // Success overlay actions
+      $("#closeSuccess")?.addEventListener("click", ()=> closeOverlay("successOverlay"));
+      $("#successOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="successOverlay") closeOverlay("successOverlay"); });
 
-      // live validation
-      ["fName","fPhone","fEmail"].forEach(id=>{
-        $("#"+id)?.addEventListener("input", validateForm);
-      });
-
-      // policies
-      $("#policiesBtn")?.addEventListener("click", (e)=>{ e.preventDefault(); haptic(); openPolicies(); });
-      $("#closePol")?.addEventListener("click", closePolicies);
-      $("#polModal")?.addEventListener("click", (e)=>{ if(e.target===$("#polModal")) closePolicies(); });
-
-      // success
-      $("#closeSuccess")?.addEventListener("click", closeSuccess);
-      $("#successOverlay")?.addEventListener("click", (e)=>{ if(e.target===$("#successOverlay")) closeSuccess(); });
       $("#openMapsBtn")?.addEventListener("click", ()=>{
-        if(!lastSuccess) return;
-        window.open(mapsLink(lastSuccess.listing), "_blank", "noopener");
+        const p = booking._lastSuccess;
+        if(!p) return;
+        haptic(10);
+        window.open(p.mapsUrl, "_blank", "noopener");
       });
-      $("#addIcsBtn")?.addEventListener("click", downloadICS);
-      $("#copyDetailsBtn")?.addEventListener("click", copySuccess);
 
-      // install
-      $("#installPill")?.addEventListener("click", ()=>{ haptic(); doInstall(); });
+      $("#addIcsBtn")?.addEventListener("click", ()=>{
+        const p = booking._lastSuccess;
+        if(!p) return;
+        haptic(10);
+        const startISO = `${p.dateISO}T${p.time}`;
+        makeICS({
+          title: `Beauty Booking — ${p.serviceName}`,
+          location: p.listing?.address || p.listing?.name || "",
+          startISO,
+          durationMin: p.durationMin || 60,
+          description: p.textDetails || ""
+        });
+      });
 
-      // scroll
-      window.addEventListener("scroll", ()=> updateStickyVisibility(), { passive:true });
+      $("#copyDetailsBtn")?.addEventListener("click", ()=>{
+        const p = booking._lastSuccess;
+        if(!p) return;
+        haptic(8);
+        copyText(p.textDetails || "");
+      });
+
+      // Submit booking
+      $("#submitBooking")?.addEventListener("click", ()=>{ haptic(14); sendToTelegram(); });
+
+      // Validate on typing
+      ["fName","fPhone","fEmail"].forEach(id=>{
+        document.getElementById(id)?.addEventListener("input", ()=> validateBooking());
+      });
+
+      // ESC to close
+      document.addEventListener("keydown", (e)=>{
+        if(e.key !== "Escape") return;
+
+        if($("#successOverlay")?.classList.contains("on")){ closeOverlay("successOverlay"); return; }
+        if($("#draftsOverlay")?.classList.contains("on")){ closeOverlay("draftsOverlay"); return; }
+        if($("#dateOverlay")?.classList.contains("on")){ closeOverlay("dateOverlay"); return; }
+        if($("#timeOverlay")?.classList.contains("on")){ closeOverlay("timeOverlay"); return; }
+        if($("#polModal")?.classList.contains("on")){
+          $("#closePol")?.click(); return;
+        }
+        if($("#modal")?.classList.contains("on")){ closeModal(); return; }
+      });
     }
 
     // ===== Init =====
     function init(){
+      // theme
       applyTheme();
+
+      // lang
       renderTexts();
 
-      // restore UI values
-      const qEl = $("#q");
-      if(qEl){
-        qEl.value = state.q || "";
-      }
-      $("#favOnly")?.classList.toggle("on", state.favOnly);
+      // ask geo (soft)
+      try{
+        navigator.geolocation?.getCurrentPosition((pos)=>{
+          state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          renderAll();
+          refreshHeroCandidates(true);
+          renderNextHeroRotating(true);
+        }, ()=>{}, { enableHighAccuracy:false, timeout: 2000, maximumAge: 60_000 });
+      }catch(e){}
 
-      renderServices();
-
-      // Ensure data.js loaded
-      if(!window.LISTINGS || !Array.isArray(window.LISTINGS) || window.LISTINGS.length===0){
-        console.warn("LISTINGS missing. Check data.js path and deployment.");
-        // show empty state hint
-        renderEmpty(true);
-      }else{
-        renderAll();
-      }
-
-      // hero + last
-      renderNextHeroRotating(true);
-      renderLastBookingCard();
-      wireUI();
-
-      // auto-open booking from profile redirect
-      if(AUTO){
-        const listing = (window.LISTINGS||[]).find(l=>l.id===AUTO.id);
-        if(listing){
-          setTimeout(()=> openBooking(listing, AUTO.service || null), 120);
+      // Service worker
+      try{
+        if("serviceWorker" in navigator){
+          navigator.serviceWorker.register("./worker.js").catch(()=>{});
         }
-        // clean url
-        try{
-          const u = new URL(location.href);
-          u.searchParams.delete("book");
-          u.searchParams.delete("id");
-          u.searchParams.delete("service");
-          history.replaceState({}, "", u.toString());
-        }catch(e){}
+      }catch(e){}
+
+      // Apply saved theme & lang button visuals
+      setLang(state.lang);
+
+      // Auto-open booking from profile
+      if(AUTO){
+        setTimeout(()=>{
+          try{
+            const listing = getListing(AUTO.id);
+            if(!listing) return;
+            // precompute next slot if none specified
+            let slot = null;
+            try{ slot = window.bb.util.nextAvailable(listing, AUTO.service); }catch(e){}
+            openBooking(AUTO.id, AUTO.service, slot);
+          }catch(e){}
+        }, 250);
       }
+
+      wire();
     }
 
-    // run
-    document.addEventListener("DOMContentLoaded", init);
+    init();
   </script>
 </body>
 </html>
-
-
-
-
