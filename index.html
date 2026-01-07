@@ -2,7 +2,8 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <!-- ✅ iOS/PWA: stop input-zoom + keep app-like scale -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0f" />
   <title>Beauty Booking</title>
 
@@ -57,7 +58,7 @@
       --safeL: env(safe-area-inset-left, 0px);
       --safeR: env(safe-area-inset-right, 0px);
 
-      --topbarH: 84px; /* used for sticky offsets */
+      --topbarH: 92px; /* used for sticky offsets */
     }
 
     body[data-theme="light"]{
@@ -73,10 +74,15 @@
       --shadow2: 0 10px 30px rgba(10,10,18,.10);
     }
 
-    /* stop weird iOS auto text resizing */
     html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
 
-    /* overflow-x hard fix */
+    /* ✅ iOS: never zoom on input focus */
+    input, textarea, select{
+      font-size:16px !important;
+      -webkit-text-size-adjust:100%;
+      transform: translateZ(0);
+    }
+
     html{height:100%; width:100%; max-width:100%; overflow-x:hidden;}
     body{max-width:100%; overflow-x:clip;}
 
@@ -98,7 +104,7 @@
       padding-left: max(0px, var(--safeL));
       padding-right:max(0px, var(--safeR));
       min-height:100svh;
-      overscroll-behavior: none; /* reduces iOS bounce */
+      overscroll-behavior: none;
     }
 
     /* ✅ HARD scroll lock (no “скольжіння/їзда” при бронюванні) */
@@ -112,7 +118,6 @@
     }
     body.modalLock *{overscroll-behavior: none;}
 
-    /* guard: no accidental 100vw */
     .topbar, .stickyBar, .wrap, .overlay, .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{max-width:100%;}
 
     mark{
@@ -148,11 +153,11 @@
       max-width:var(--max);
       margin:0 auto;
 
-      /* ✅ lower + more luxury spacing */
-      padding:16px 18px 14px;
+      /* ✅ MORE: bigger + lower */
+      padding:20px 18px 16px;
 
       display:flex;
-      align-items:flex-end;     /* ✅ icons & brand lower */
+      align-items:flex-end;
       justify-content:space-between;
       gap:12px;
     }
@@ -163,15 +168,15 @@
       gap:12px;
       min-width:0;
       flex:0 1 auto;
-      padding-top:4px;         /* ✅ lower */
+      padding-top:6px;
     }
     .logo{
-      width:44px; height:44px; border-radius:18px; /* ✅ bigger */
+      width:52px; height:52px; border-radius:20px;
       background:
         radial-gradient(10px 10px at 30% 25%, rgba(255,255,255,.65), transparent 60%),
         radial-gradient(18px 18px at 70% 20%, rgba(255,210,122,.35), transparent 65%),
         linear-gradient(135deg, rgba(255,79,216,.85), rgba(139,92,246,.85));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 14px 46px rgba(0,0,0,.36);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 16px 52px rgba(0,0,0,.38);
       position:relative;
       overflow:hidden;
       flex:0 0 auto;
@@ -188,10 +193,10 @@
 
     .brand h1{
       font-family:"Playfair Display",serif;
-      font-size:22px; line-height:1.04; margin:0; /* ✅ bigger */
+      font-size:26px; line-height:1.02; margin:0;
       letter-spacing:.2px;
       white-space:nowrap;
-      transform: translateY(2px); /* ✅ lower */
+      transform: translateY(3px);
       text-shadow: 0 10px 30px rgba(0,0,0,.18);
     }
     .brand .sub{font-size:12px; color:var(--muted); margin-top:2px; display:none}
@@ -216,7 +221,6 @@
       font-size:14px;
     }
 
-    /* ✅ search suggestions dropdown */
     .sug{
       position:absolute;
       left:0; right:0;
@@ -255,13 +259,14 @@
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--stroke);
       background:var(--card);
-      padding:12px 14px;                 /* ✅ bigger */
+      padding:13px 16px;
       border-radius:999px;
       color:rgba(244,243,248,.9);
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
       cursor:pointer;
       user-select:none;
       white-space:nowrap;
+      font-weight:800;
     }
     body[data-theme="light"] .pill{color:rgba(11,11,15,.92)}
     .pill:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
@@ -272,7 +277,6 @@
       box-shadow: 0 0 0 1px rgba(255,79,216,.14);
     }
 
-    /* ✅ allow wrapping so everything fits (app/PWA) */
     .top-actions{
       display:flex;
       gap:10px;
@@ -280,12 +284,12 @@
       flex:0 0 auto;
       flex-wrap:wrap;
       justify-content:flex-end;
-      max-width: 560px;
-      transform: translateY(2px); /* ✅ lower */
+      max-width: 620px;
+      transform: translateY(3px);
     }
 
     .iconbtn{
-      width:50px; height:50px; border-radius:18px; /* ✅ bigger + lower feel */
+      width:56px; height:56px; border-radius:20px;
       border:1px solid var(--stroke);
       background:var(--card);
       color:var(--text);
@@ -294,7 +298,7 @@
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
       position:relative;
       flex:0 0 auto;
-      font-size:18px;
+      font-size:19px;
     }
     .iconbtn:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
     .iconbtn:active{transform: translateY(0px) scale(.98)}
@@ -309,7 +313,6 @@
       box-shadow: 0 8px 20px rgba(0,0,0,.35);
     }
 
-    /* Install chip */
     #installPill{display:none}
     #installPill.show{display:inline-flex}
     #installPill{
@@ -321,13 +324,13 @@
     }
     body[data-theme="light"] #installPill{color: rgba(11,11,15,.95)}
 
-    /* ===== Sticky chips bar (idea #2) ===== */
+    /* ===== Sticky chips bar ===== */
     .stickyBar{
       position:sticky;
       top: calc(var(--safeT) + 0px);
       z-index:60;
       display:none;
-      padding:10px 18px 12px;
+      padding:12px 18px 14px;
       backdrop-filter: blur(16px);
       background: linear-gradient(180deg, rgba(7,7,11,.86), rgba(7,7,11,.48));
       border-bottom:1px solid rgba(255,255,255,.06);
@@ -349,10 +352,7 @@
       flex-wrap:wrap;
     }
     .stickyLeft{display:flex; gap:10px; align-items:center; flex:1; min-width:260px;}
-    .stickyChips{
-      display:flex; gap:8px; flex-wrap:wrap;
-      align-items:center;
-    }
+    .stickyChips{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
     .stickyRight{display:flex; gap:10px; align-items:center; justify-content:flex-end; flex:0 0 auto;}
 
     /* ===== HERO ===== */
@@ -394,21 +394,8 @@
     }
     .heroDesc{margin:0 0 12px; color:var(--muted); max-width:56ch}
 
-    /* ✅ chips: wrap */
-    .chips{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      overflow:visible;
-      padding-bottom:0;
-      -webkit-overflow-scrolling:touch;
-    }
-    .chipBreak{
-      flex-basis:100%;
-      height:0;
-      display:none;
-    }
-
+    .chips{display:flex; gap:10px; flex-wrap:wrap; overflow:visible; padding-bottom:0; -webkit-overflow-scrolling:touch;}
+    .chipBreak{flex-basis:100%; height:0; display:none;}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px;
@@ -469,7 +456,6 @@
     }
     body[data-theme="light"] .btn.secondary{color: rgba(11,11,15,.92)}
     .btn:disabled{opacity:.45; cursor:not-allowed; transform:none !important; filter:none !important;}
-
     .mbr{display:none;}
 
     /* ===== Sections ===== */
@@ -543,7 +529,6 @@
     body[data-theme="light"] .why{color:rgba(11,11,15,.78)}
     .why span{color: rgba(255,210,122,.95); font-weight:900;}
 
-    /* ✅ 1-tap Quick Book always visible on mobile, hover on desktop */
     .miniCTA{
       position:absolute; left:12px; right:12px; bottom:12px;
       display:flex; justify-content:space-between; gap:10px; align-items:center;
@@ -718,7 +703,6 @@
       transform: translateY(10px);
       animation: sheetIn .22s ease forwards;
 
-      /* ✅ keep modal stable, no “jump” */
       max-height: min(92vh, calc(100svh - 18px - var(--safeT)));
       display:flex;
       flex-direction:column;
@@ -747,7 +731,6 @@
     .x:hover{transform: translateY(-1px)}
     .x:active{transform: translateY(0px) scale(.98)}
 
-    /* WHERE box */
     #bkWhere{
       display:none;
       gap:8px;
@@ -777,10 +760,8 @@
       -webkit-overflow-scrolling: touch;
       flex:1 1 auto;
       overscroll-behavior: contain;
-      touch-action: pan-y; /* allow inner scroll only */
+      touch-action: pan-y;
     }
-
-    /* ✅ reserve space so tags/why line don't cause “jump” */
     #modalTagsRow{min-height:44px;}
 
     .formGrid{display:grid; grid-template-columns: 1fr 1fr; gap:12px; align-items:stretch}
@@ -808,15 +789,13 @@
       border:0; outline:0;
       background: transparent;
       color: rgba(244,243,248,.95);
-      font-size:16px; /* iOS: prevents input zoom */
+      font-size:16px !important;
     }
     body[data-theme="light"] .field input{color: rgba(11,11,15,.95)}
-
     .field.err{
       border-color: rgba(255,79,216,.45);
       box-shadow: 0 0 0 1px rgba(255,79,216,.16);
     }
-
     .hintErr{
       margin-top:6px;
       font-size:12px;
@@ -885,7 +864,6 @@
     .toast.on{display:block; animation: toastIn .18s ease}
     @keyframes toastIn{from{transform:translateX(-50%) translateY(8px); opacity:0}to{transform:translateX(-50%) translateY(0); opacity:1}}
 
-    /* Time/date/drafts/success overlays */
     .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.55);
@@ -960,7 +938,6 @@
     .qchip.on{border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.10); box-shadow: 0 0 0 1px rgba(255,210,122,.12)}
     .qchip:active{transform: translateY(0px) scale(.98)}
 
-    /* Calendar */
     .calTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
     .calNav{display:flex; gap:10px}
     .calBtn{
@@ -993,7 +970,6 @@
     .day.on{border-color: rgba(255,210,122,.34); background: rgba(255,210,122,.10); box-shadow: var(--glow2); color: rgba(255,210,122,.95);}
     .day.has{border-color: rgba(32,227,165,.25); background: rgba(32,227,165,.08)}
 
-    /* Drafts */
     .draftItem{
       border:1px solid var(--stroke);
       background: var(--card);
@@ -1025,31 +1001,25 @@
       .card{grid-column: span 6;}
       .search{display:none;}
       .chipBreak{display:block;}
-      .stickyBar{padding:10px 14px 12px;}
+      .stickyBar{padding:12px 14px 14px;}
     }
 
     @media (max-width: 720px){
       .wrap{padding:14px 14px calc(170px + var(--safeB));}
 
       .topbar .inner{
-        padding:14px 14px 12px;
+        padding:18px 14px 14px;
         gap:10px;
       }
       .search{display:none;}
 
-      .brand h1{
-        font-size:19px; white-space:normal; line-height:1.02;
-      }
+      .brand h1{font-size:22px; white-space:normal; line-height:1.02;}
       .brand h1 .w1, .brand h1 .w2{display:block;}
-      .logo{width:42px; height:42px; border-radius:18px;}
+      .logo{width:50px; height:50px; border-radius:20px;}
 
-      .top-actions{
-        gap:8px;
-        max-width: 64%;
-      }
-
-      .pill{padding:10px 12px; font-size:12.8px;}
-      .iconbtn{width:46px; height:46px; border-radius:18px; font-size:17px;}
+      .top-actions{gap:8px; max-width: 70%;}
+      .pill{padding:12px 14px; font-size:13px;}
+      .iconbtn{width:54px; height:54px; border-radius:20px; font-size:18px;}
 
       .hero{padding:12px 0 6px;}
       .heroInner{padding:16px 14px;}
@@ -1064,7 +1034,6 @@
       .formGrid{grid-template-columns: 1fr;}
       .timeGrid{grid-template-columns: repeat(2, 1fr);}
 
-      /* ✅ mobile: always show miniCTA for 1-tap booking */
       .miniCTA{opacity:1 !important; transform:none !important; pointer-events:auto !important;}
       .card .miniCTA{position: static; padding: 0 12px 12px; margin-top:-6px;}
       .stripCard .miniCTA{position: static; margin-top:10px;}
@@ -1122,7 +1091,6 @@
     </div>
   </div>
 
-  <!-- ✅ Sticky service chips (idea #2) -->
   <div id="stickyBar" class="stickyBar" aria-hidden="true">
     <div class="stickyInner">
       <div class="stickyLeft">
@@ -1176,7 +1144,6 @@
               </div>
             </div>
 
-            <!-- ✅ Trust layer (idea #9) -->
             <div class="glass" id="trustCard" style="opacity:.95">
               <div class="pad">
                 <div class="kicker" id="trustKicker">Trust</div>
@@ -1210,7 +1177,7 @@
               background: var(--card);
               color: rgba(244,243,248,.92);
               outline:none;
-              font-size:16px;
+              font-size:16px !important;
             "/>
             <button class="btn" id="aiGo">✨ Підібрати</button>
           </div>
@@ -1262,7 +1229,6 @@
         <h3 id="emptyTitle">Немає результатів</h3>
         <p id="emptyText">Спробуй послабити фільтри — або ось швидкі варіанти.</p>
         <div class="row">
-          <!-- ✅ Empty state 2.0 (idea #6) -->
           <button class="btn secondary" id="emptyReset">Скинути фільтри</button>
           <button class="btn secondary" id="emptyShowPartners">Показати партнерів</button>
           <button class="btn" id="emptyShowNearest">Показати найближчі</button>
@@ -1306,7 +1272,6 @@
         <button class="x" id="closeModal">✕</button>
       </div>
 
-      <!-- WHERE -->
       <div id="bkWhere">
         <div style="font-weight:900" id="bkWhereName"></div>
         <div style="font-size:12px; opacity:.78" id="bkWhereAddr"></div>
@@ -1319,11 +1284,11 @@
 
       <div class="sheetBody">
         <div id="modalTagsRow" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
-          <div class="tag partner" id="mPartner" style="display:none" title="Paid partner (higher priority)">Partner</div>
-          <div class="tag good" id="mVerified" style="display:none" title="Verified salon/master">Verified</div>
-          <div class="tag good" id="mSterile" style="display:none" title="Sterile tools policy">Sterile</div>
-          <div class="tag today" id="mToday" style="display:none" title="Has slots today">Available today</div>
-          <div class="tag" id="mWhy" style="display:none" title="Why we show this one"></div>
+          <div class="tag partner" id="mPartner" style="display:none">Partner</div>
+          <div class="tag good" id="mVerified" style="display:none">Verified</div>
+          <div class="tag good" id="mSterile" style="display:none">Sterile</div>
+          <div class="tag today" id="mToday" style="display:none">Available today</div>
+          <div class="tag" id="mWhy" style="display:none"></div>
         </div>
 
         <div class="formGrid">
@@ -1335,13 +1300,13 @@
 
           <div class="field" id="fPhoneWrap">
             <label>Телефон</label>
-            <input id="fPhone" placeholder="+1 ..." autocomplete="tel" />
+            <input id="fPhone" placeholder="+1 ..." autocomplete="tel" inputmode="tel" />
             <div class="hintErr">Вкажи телефон</div>
           </div>
 
           <div class="field" id="fEmailWrap">
             <label>Email</label>
-            <input id="fEmail" placeholder="you@email.com" autocomplete="email" />
+            <input id="fEmail" placeholder="you@email.com" autocomplete="email" inputmode="email" />
             <div class="hintErr">Вкажи email</div>
           </div>
 
@@ -1523,7 +1488,6 @@
       _lockCount: 0
     };
 
-    // restore filters
     try{
       const saved = JSON.parse(localStorage.getItem(LS.filters) || "{}");
       if(saved){
@@ -1544,14 +1508,11 @@
       (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
       (window.navigator.standalone === true);
 
-    // ✅ micro-haptics (idea #7)
     function haptic(ms=12){
-      try{
-        if(navigator.vibrate) navigator.vibrate(ms);
-      }catch(e){}
+      try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
     }
 
-    // ===== scroll lock (prevents “скольжіння/їзда”) =====
+    // ===== scroll lock =====
     function lockScroll(){
       state._lockCount++;
       if(state._lockCount > 1) return;
@@ -1612,7 +1573,6 @@
         toastDraft: "Draft saved ✅",
         toastCopied: "Copied ✅",
         toastFilters: "Filters reset",
-        toastInstalled: "Installed mode ✓",
         toastA2HS: "Tip: Add to Home Screen for app mode",
         draftsTitle: "Saved drafts",
         lastKicker: "Your last booking",
@@ -1658,7 +1618,6 @@
         toastDraft: "Draft saved ✅",
         toastCopied: "Copied ✅",
         toastFilters: "Filters reset",
-        toastInstalled: "Installed mode ✓",
         toastA2HS: "Tip: Add to Home Screen for app mode",
         draftsTitle: "Saved drafts",
         lastKicker: "Your last booking",
@@ -1694,7 +1653,6 @@
       }));
     }
 
-    // === SAFE renderTexts (NO CRASH) ===
     function renderTexts(){
       const get = (id)=> document.getElementById(id);
       const safeSetText = (id, txt)=>{ const el=get(id); if(el) el.textContent = (txt ?? ""); };
@@ -1969,11 +1927,9 @@
     function renderServiceChips(){
       const targets = [$("#serviceChips"), $("#serviceChipsSticky")].filter(Boolean);
       if(!targets.length) return;
-
       targets.forEach(t=>t.innerHTML = "");
 
       const all = (window.SERVICES||[]).slice();
-
       const pref = ["manicure","pedicure","brows","haircut_men","haircut_women","haircut"];
       const byId = new Map(all.map(x=>[x.id,x]));
       const ordered = [];
@@ -2072,248 +2028,298 @@
       try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
       if(!slot) return;
 
-      const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || ""));
-      const from = (slot.fromPrice != null) ? `${slot.fromPrice}` : "";
       const todayISO = new Date().toISOString().slice(0,10);
-           const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today")
-        : formatDateShort(slot.dateISO);
+      const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today") : formatDateShort(slot.dateISO);
+      const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || "")) || (state.lang==="uk"?"Послуга":"Service");
+      const from = (slot.fromPrice != null) ? ` · from $${slot.fromPrice}` : "";
+      const txt = `${day} ${slot.time} · ${listing.name}${from}`;
+      const sub = state.lang==="uk" ? `Tap to book: ${svc}` : `Tap to book: ${svc}`;
 
-      const price = (slot.fromPrice!=null)
-        ? (state.lang==="uk" ? `від $${slot.fromPrice}${slot.toPrice?`–$${slot.toPrice}`:""}` : `from $${slot.fromPrice}${slot.toPrice?`–$${slot.toPrice}`:""}`)
-        : "";
-
-      const lineTxt = `${day} · ${slot.time} · ${listing.name}`;
-      const subTxt  = `${svc ? (svc + " · ") : ""}${price}${price? " · " : ""}${(listing.city||"")}`;
-
-      if(animate) setHeroCardAnimated(lineTxt, subTxt);
+      if(animate) setHeroCardAnimated(txt, sub);
       else{
-        if(lineEl) lineEl.textContent = lineTxt;
-        const sub = $("#nextSub"); if(sub) sub.textContent = subTxt || (T[state.lang].tapBook);
+        if($("#nextLine")) $("#nextLine").textContent = txt;
+        if($("#nextSub")) $("#nextSub").textContent = sub;
       }
 
-      const onGo = ()=>{
-        haptic(16);
-        openBooking(listing.id, state.serviceId || svcFromListing(listing), slot);
-      };
       if(card){
-        card.onclick = onGo;
-        card.onkeydown = (e)=>{ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); onGo(); } };
+        const go = ()=>{
+          haptic(14);
+          openBooking(listing.id, state.serviceId, slot);
+        };
+        card.onclick = go;
+        card.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
       }
     }
 
-    function startHeroTimer(){
+    function startHeroRotation(){
       clearInterval(heroRot.timer);
       heroRot.timer = setInterval(()=>{
-        if(document.hidden) return;
+        if(document.body.classList.contains("modalLock")) return;
         if(!heroRot.list.length) refreshHeroCandidates(true);
-        heroRot.idx = (heroRot.idx + 1) % Math.max(1, heroRot.list.length);
+        if(!heroRot.list.length) return;
+        heroRot.idx = (heroRot.idx + 1) % heroRot.list.length;
         renderNextHeroRotating(true);
       }, 10000);
     }
 
-    function svcFromListing(listing){
-      const s0 = (listing.services||[])[0];
-      return s0 ? s0.serviceId : null;
-    }
-
-    // ===== Last booking card =====
-    function renderLastBookingCard(){
-      const box = $("#lastCard");
-      if(!box) return;
-      let last = null;
-      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
-      if(!last || !last.listingId){ box.style.display="none"; return; }
-
-      const t = T[state.lang] || T.uk;
-      box.style.display="block";
-      const line = $("#lastLine");
-      if(line){
-        const when = last.dateISO ? `${formatDateShort(last.dateISO)} · ${last.time||""}` : (last.time||"");
-        line.textContent = `${when} · ${last.listingName||"—"}`;
-      }
-      const sub = $("#lastSub"); if(sub) sub.textContent = t.lastSub;
-
-      const go = ()=>{
-        haptic(14);
-        openBooking(last.listingId, last.serviceId||null, { dateISO:last.dateISO, time:last.time });
-      };
-      box.onclick = go;
-      box.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
-    }
-
     // ===== Search suggestions =====
     function renderSearchSuggestions(forceClose=false){
-      const sug = $("#searchSug");
+      const box = $("#searchSug");
       const inp = $("#q");
-      if(!sug || !inp) return;
+      if(!box || !inp) return;
 
       if(forceClose){
-        sug.classList.remove("on");
-        sug.setAttribute("aria-hidden","true");
-        sug.innerHTML = "";
+        box.classList.remove("on");
+        box.innerHTML = "";
         return;
       }
 
-      const q = (inp.value||"").trim();
+      const q = (state.q||"").trim().toLowerCase();
       if(q.length < 2){
-        sug.classList.remove("on");
-        sug.setAttribute("aria-hidden","true");
-        sug.innerHTML = "";
+        box.classList.remove("on");
+        box.innerHTML = "";
         return;
       }
 
-      const list = (window.LISTINGS||[]).slice()
+      const list = (window.LISTINGS||[])
         .filter(l => matchesQuery(l, q))
         .slice(0, 6);
 
       if(!list.length){
-        sug.classList.remove("on");
-        sug.setAttribute("aria-hidden","true");
-        sug.innerHTML = "";
+        box.classList.remove("on");
+        box.innerHTML = "";
         return;
       }
 
-      sug.innerHTML = list.map(l=>{
-        const nm = highlight(l.name, q);
-        const ad = highlight(l.address, q);
-        const tag = l.partner ? "Partner" : (l.recommended ? "Recommended" : "Result");
+      box.innerHTML = list.map(l=>{
+        const tags = [];
+        if(l.partner) tags.push("Partner");
+        if(l.verified) tags.push("Verified");
         return `
           <div class="sugItem" data-id="${escapeHtml(l.id)}">
             <div class="sugLeft">
-              <div class="sugTitle">${nm}</div>
-              <div class="sugMeta">${ad}</div>
+              <div class="sugTitle">${highlight(l.name, q)}</div>
+              <div class="sugMeta">${highlight(l.address||"", q)}</div>
             </div>
-            <div class="sugTag">${escapeHtml(tag)}</div>
+            <div class="sugTag">${escapeHtml(tags[0] || "Open")}</div>
           </div>
         `;
       }).join("");
 
-      sug.classList.add("on");
-      sug.setAttribute("aria-hidden","false");
+      box.classList.add("on");
 
-      sug.querySelectorAll(".sugItem").forEach(it=>{
+      box.querySelectorAll(".sugItem").forEach(it=>{
         it.addEventListener("click", ()=>{
           const id = it.getAttribute("data-id");
-          const l = (window.LISTINGS||[]).find(x=>x.id===id);
-          if(!l) return;
-          haptic(10);
-          state.q = l.name;
-          const qEl = $("#q"); if(qEl) qEl.value = state.q;
-          saveFilters();
-          renderAll();
+          if(!id) return;
           renderSearchSuggestions(true);
+          haptic(10);
+          location.href = `./profile.html?id=${encodeURIComponent(id)}`;
         });
       });
     }
 
-    // ===== Rendering =====
+    // ===== Saved section =====
     function renderSaved(){
       const sec = $("#savedSection");
       const grid = $("#savedGrid");
       if(!sec || !grid) return;
-
-      const favList = (window.LISTINGS||[]).filter(l => state.favs.has(l.id));
-      if(!favList.length){ sec.style.display="none"; grid.innerHTML=""; return; }
-
-      sec.style.display="block";
-      grid.innerHTML = "";
-      favList.slice(0, 6).forEach(l => grid.appendChild(buildCard(l)));
-    }
-
-    function renderPartnersStrip(list){
-      const strip = $("#partnerStrip");
-      const sec = $("#partnersSection");
-      if(!strip || !sec) return;
-
-      const partners = list.filter(l => !!l.partner);
-      if(!partners.length){
-        sec.style.display="none";
-        strip.innerHTML = "";
+      const list = (window.LISTINGS||[]).filter(l => state.favs.has(l.id));
+      if(!list.length){
+        sec.style.display = "none";
+        grid.innerHTML = "";
         return;
       }
-      sec.style.display="block";
-      strip.innerHTML = "";
-      partners.forEach(l => strip.appendChild(buildCard(l, true)));
+      sec.style.display = "";
+      grid.innerHTML = "";
+      list.slice(0,6).forEach(l=> grid.appendChild(buildCard(l,false)));
     }
 
-    function renderGrids(grouped){
+    // ===== Main render =====
+    function renderAll(){
+      const list = filteredListings();
+      const { partners, rec, other } = groupListings(list);
+
+      const strip = $("#partnerStrip");
       const recGrid = $("#recGrid");
       const allGrid = $("#allGrid");
       const empty = $("#emptyBox");
 
-      if(recGrid) recGrid.innerHTML = "";
-      if(allGrid) allGrid.innerHTML = "";
-
-      const rec = grouped.rec || [];
-      const other = grouped.other || [];
-
+      if(strip){
+        strip.innerHTML = "";
+        partners.forEach(l => strip.appendChild(buildCard(l,true)));
+      }
       if(recGrid){
-        rec.forEach(l => recGrid.appendChild(buildCard(l)));
+        recGrid.innerHTML = "";
+        rec.forEach(l => recGrid.appendChild(buildCard(l,false)));
       }
       if(allGrid){
-        other.forEach(l => allGrid.appendChild(buildCard(l)));
+        allGrid.innerHTML = "";
+        other.forEach(l => allGrid.appendChild(buildCard(l,false)));
       }
 
-      const total = (grouped.partners?.length||0) + rec.length + other.length;
-      if(empty) empty.style.display = total ? "none" : "block";
-    }
-
-    function renderAll(){
-      // sticky bar visibility
-      const sticky = $("#stickyBar");
-      if(sticky){
-        const show = (window.scrollY > 140);
-        sticky.classList.toggle("on", show);
-        sticky.setAttribute("aria-hidden", show ? "false":"true");
-      }
-
-      const list = filteredListings();
-      const grouped = groupListings(list);
+      const total = partners.length + rec.length + other.length;
+      if(empty) empty.style.display = (total === 0) ? "" : "none";
 
       renderSaved();
-      renderPartnersStrip(grouped.partners || []);
-      renderGrids(grouped);
-
-      // favOnly pill state
-      const favOnlyEl = $("#favOnly");
-      if(favOnlyEl) favOnlyEl.classList.toggle("on", !!state.favOnly);
-
-      updateDraftBadge();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
+      saveFilters();
     }
 
-    // ===== Reset behavior (IMPORTANT: when 0 results, don't clear search/favOnly) =====
-    function resetActiveFilters(){
-      const current = filteredListings();
-      const hasZero = (current.length === 0);
-
-      if(hasZero){
-        // only clear service filter (active filters), keep q + favOnly
-        state.serviceId = null;
-      }else{
-        state.serviceId = null;
-        state.q = "";
-        state.favOnly = false;
-        const qEl = $("#q"); if(qEl) qEl.value = "";
-      }
-
+    // ===== Reset behaviors =====
+    function resetAllFilters(){
+      state.serviceId = null;
+      state.q = "";
+      state.favOnly = false;
+      const q = $("#q");
+      if(q) q.value = "";
       saveFilters();
       renderServiceChips();
       renderAll();
-      refreshHeroCandidates(true);
-      renderNextHeroRotating(true);
-      renderSearchSuggestions(true);
-
       toast(T[state.lang].toastFilters);
     }
 
-    // ===== Booking modal logic =====
-    let booking = {
-      listing: null,
-      serviceId: null,
-      dateISO: null,
-      time: null,
-      slot: null
+    // ✅ per requirement: in empty-state reset, DO NOT clear search & favOnly
+    function resetActiveFiltersOnly(){
+      state.serviceId = null;
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      toast(T[state.lang].toastFilters);
+    }
+
+    // ===== Booking logic =====
+    const booking = {
+      listing:null,
+      serviceId:null,
+      dateISO:null,
+      time:null,
+      slot:null,
+      times:[],
+      monthCursor: null,
+      _lastSuccess: null
     };
+
+    function getListing(id){
+      return (window.LISTINGS||[]).find(x=>x.id===id) || null;
+    }
+
+    function fillWhere(listing){
+      const box = $("#bkWhere");
+      if(!box) return;
+      $("#bkWhereName").textContent = listing.name || "";
+      $("#bkWhereAddr").textContent = listing.address || "";
+      const prof = $("#bkWhereProfile");
+      const maps = $("#bkWhereMaps");
+      if(prof) prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+      if(maps){
+        const q = encodeURIComponent((listing.address||listing.name||""));
+        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+      }
+      box.style.display = "flex";
+    }
+
+    function setModalTags(listing){
+      const show = (id, on, txt)=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.style.display = on ? "inline-flex" : "none";
+        if(txt != null) el.textContent = txt;
+      };
+      show("mPartner", !!listing.partner, "Partner");
+      show("mVerified", !!listing.verified, "Verified");
+      show("mSterile", !!listing.sterile, "Sterile");
+
+      let slot = null;
+      try{ slot = window.bb.util.nextAvailable(listing, state.serviceId); }catch(e){}
+      let isToday = false;
+      try{ isToday = slot && window.bb.util.isTodaySlot(slot); }catch(e){}
+      show("mToday", !!isToday, "Available today");
+
+      let why = "";
+      try{ why = window.bb.util.computeWhy(listing, state.userLoc, state.serviceId); }catch(e){}
+      show("mWhy", !!why, (state.lang==="uk"?"Why: ":"Why: ") + why);
+    }
+
+    function setPriceLine(listing, serviceId){
+      const t = T[state.lang] || T.uk;
+      const line = $("#priceLine");
+      if(!line) return;
+
+      try{
+        const svcName = serviceId ? serviceLabel(serviceId) : (state.lang==="uk"?"Послуга":"Service");
+
+        let from = null, to = null, dur = null;
+        try{ from = window.bb.util.minPriceFor(listing, serviceId); }catch(e){}
+        try{ to = window.bb.util.maxPriceFor ? window.bb.util.maxPriceFor(listing, serviceId) : null; }catch(e){}
+        try{ dur = window.bb.util.durationFor ? window.bb.util.durationFor(listing, serviceId) : null; }catch(e){}
+
+        if(from == null || dur == null){
+          const s = (listing.services||[]).find(x=>x.serviceId===serviceId) || (listing.services||[])[0];
+          if(s){
+            if(from == null) from = s.priceFrom ?? s.price ?? null;
+            if(to == null) to = s.priceTo ?? null;
+            if(dur == null) dur = s.duration ?? null;
+          }
+        }
+
+        line.textContent = (from != null && dur != null)
+          ? t.priceLine(svcName, from, to, dur)
+          : `${svcName}`;
+      }catch(e){
+        line.textContent = "—";
+      }
+    }
+
+    function setContactDefaults(){
+      try{
+        const c = JSON.parse(localStorage.getItem(LS.contact) || "{}");
+        if(c){
+          if($("#fName") && c.name) $("#fName").value = c.name;
+          if($("#fPhone") && c.phone) $("#fPhone").value = c.phone;
+          if($("#fEmail") && c.email) $("#fEmail").value = c.email;
+        }
+      }catch(e){}
+    }
+
+    function saveContact(){
+      localStorage.setItem(LS.contact, JSON.stringify({
+        name: ($("#fName")?.value || "").trim(),
+        phone: ($("#fPhone")?.value || "").trim(),
+        email: ($("#fEmail")?.value || "").trim()
+      }));
+    }
+
+    function validateBooking(){
+      const name = ($("#fName")?.value || "").trim();
+      const phone = ($("#fPhone")?.value || "").trim();
+      const email = ($("#fEmail")?.value || "").trim();
+      const ok = !!(name && phone && email && booking.dateISO && booking.time && booking.listing);
+
+      $("#fNameWrap")?.classList.toggle("err", !name);
+      $("#fPhoneWrap")?.classList.toggle("err", !phone);
+      $("#fEmailWrap")?.classList.toggle("err", !email);
+
+      const btn = $("#submitBooking");
+      if(btn) btn.disabled = !ok;
+      return ok;
+    }
+
+    function openModal(){
+      const m = $("#modal");
+      if(!m) return;
+      m.classList.add("on");
+      m.setAttribute("aria-hidden","false");
+      lockScroll();
+    }
+    function closeModal(){
+      const m = $("#modal");
+      if(!m) return;
+      m.classList.remove("on");
+      m.setAttribute("aria-hidden","true");
+      unlockScroll();
+    }
 
     function openOverlay(id){
       const el = document.getElementById(id);
@@ -2330,204 +2336,32 @@
       unlockScroll();
     }
 
-    function setWhereBox(listing){
-      const box = $("#bkWhere");
-      if(!box) return;
-      $("#bkWhereName").textContent = listing.name || "—";
-      $("#bkWhereAddr").textContent = listing.address || "";
-      box.style.display = "flex";
-
-      const prof = $("#bkWhereProfile");
-      if(prof) prof.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
-
-      const maps = $("#bkWhereMaps");
-      if(maps){
-        const q = encodeURIComponent((listing.address||"") + " " + (listing.city||""));
-        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
-      }
-      const eta = $("#bkWhereEta");
-      if(eta) eta.style.display="none";
-    }
-
-    function openBooking(listingId, serviceId=null, slot=null){
-      const listing = (window.LISTINGS||[]).find(l => l.id===listingId);
-      if(!listing) return;
-
-      booking.listing = listing;
-      booking.serviceId = serviceId || state.serviceId || svcFromListing(listing) || null;
-      booking.slot = slot || null;
-
-      // defaults
-      const todayISO = new Date().toISOString().slice(0,10);
-      booking.dateISO = (slot && slot.dateISO) ? slot.dateISO : todayISO;
-      booking.time = (slot && slot.time) ? slot.time : null;
-
-      // tags
-      const mPartner = $("#mPartner"); if(mPartner) mPartner.style.display = listing.partner ? "inline-flex":"none";
-      const mVerified = $("#mVerified"); if(mVerified) mVerified.style.display = listing.verified ? "inline-flex":"none";
-      const mSterile = $("#mSterile"); if(mSterile) mSterile.style.display = listing.sterile ? "inline-flex":"none";
-
-      // today tag
-      const mToday = $("#mToday");
-      let next = null;
-      try{ next = window.bb.util.nextAvailable(listing, booking.serviceId); }catch(e){}
-      const isToday = !!(next && (()=>{ try{ return window.bb.util.isTodaySlot(next); }catch(e){return false;} })());
-      if(mToday) mToday.style.display = isToday ? "inline-flex":"none";
-
-      // why
-      const mWhy = $("#mWhy");
-      if(mWhy){
-        let why = "";
-        try{ why = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId); }catch(e){ why = state.lang==="uk"?"Smart pick":"Smart pick"; }
-        mWhy.style.display = "inline-flex";
-        mWhy.textContent = `Why: ${why}`;
-      }
-
-      setWhereBox(listing);
-
-      // restore contact
+    function listAvailableTimes(listing, serviceId, dateISO){
       try{
-        const c = JSON.parse(localStorage.getItem(LS.contact) || "{}");
-        if(c){
-          if($("#fName")) $("#fName").value = c.name || "";
-          if($("#fPhone")) $("#fPhone").value = c.phone || "";
-          if($("#fEmail")) $("#fEmail").value = c.email || "";
-        }
+        if(window.bb?.util?.availableTimes) return window.bb.util.availableTimes(listing, serviceId, dateISO) || [];
       }catch(e){}
-
-      // service display
-      syncServiceDisplay();
-      syncDateDisplay();
-      syncTimeDisplay();
-
-      // price line
-      updatePriceLine();
-
-      // open
-      openOverlay("modal");
-      validateForm();
-    }
-
-    function closeBooking(){
-      closeOverlay("modal");
-    }
-
-    function syncServiceDisplay(){
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId) || (window.SERVICES||[])[0];
-      if(!svc) return;
-      booking.serviceId = svc.id;
-      const t = (state.lang==="uk" ? svc.ua : svc.en);
-      const val = $("#svcVal"); if(val) val.textContent = t;
-      const hint = $("#svcHint"); if(hint) hint.textContent = state.lang==="uk" ? "tap to change" : "tap to change";
-      updatePriceLine();
-    }
-
-    function syncDateDisplay(){
-      const v = $("#dateVal");
-      if(v) v.textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
-    }
-
-    function syncTimeDisplay(){
-      const v = $("#timeVal");
-      if(v) v.textContent = booking.time ? booking.time : (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
-    }
-
-    function updatePriceLine(){
-      const t = T[state.lang] || T.uk;
-      const line = $("#priceLine");
-      if(!line || !booking.listing) return;
-
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : (state.lang==="uk"?"Послуга":"Service");
-
-      let from=null, to=null, dur=null;
-      try{
-        const sObj = window.bb.util.listingService(booking.listing, booking.serviceId);
-        if(sObj){
-          from = sObj.priceFrom ?? null;
-          to = sObj.priceTo ?? null;
-          dur = sObj.durationMin ?? null;
-        }
-      }catch(e){}
-      if(from==null){
-        // fallback: read listing.services
-        const sObj = (booking.listing.services||[]).find(x=>x.serviceId===booking.serviceId);
-        if(sObj){
-          from = sObj.priceFrom ?? null;
-          to = sObj.priceTo ?? null;
-          dur = sObj.durationMin ?? null;
-        }
-      }
-
-      line.textContent = t.priceLine(svcName, from ?? "—", to ?? null, dur ?? "—");
-    }
-
-    function validateForm(){
-      const name = ($("#fName")?.value||"").trim();
-      const phone = ($("#fPhone")?.value||"").trim();
-      const email = ($("#fEmail")?.value||"").trim();
-
-      const okName = name.length >= 2;
-      const okPhone = phone.length >= 6;
-      const okEmail = email.includes("@") && email.includes(".");
-
-      $("#fNameWrap")?.classList.toggle("err", !okName);
-      $("#fPhoneWrap")?.classList.toggle("err", !okPhone);
-      $("#fEmailWrap")?.classList.toggle("err", !okEmail);
-
-      const ok = okName && okPhone && okEmail && !!booking.dateISO && !!booking.time && !!booking.serviceId;
-      const btn = $("#submitBooking");
-      if(btn) btn.disabled = !ok;
-      return ok;
-    }
-
-    function cycleService(){
-      const all = (window.SERVICES||[]).slice();
-      if(!all.length) return;
-      let idx = all.findIndex(s=>s.id===booking.serviceId);
-      idx = (idx < 0) ? 0 : (idx + 1) % all.length;
-      booking.serviceId = all[idx].id;
-      booking.time = null; // force re-pick
-      syncServiceDisplay();
-      syncTimeDisplay();
-      validateForm();
-    }
-
-    // ===== Time picker =====
-    function slotsForListing(listing, serviceId){
-      try{
-        return window.bb.util.slotsFor(listing, serviceId);
-      }catch(e){
-        // fallback: if listing.slots array exists
-        return (listing.slots||[]).filter(x => !serviceId || x.serviceId===serviceId);
-      }
+      const svc = (listing.services||[]).find(s=>s.serviceId===serviceId) || (listing.services||[])[0];
+      const slots = svc?.slots || listing.slots || [];
+      return slots
+        .filter(x=>x.dateISO===dateISO)
+        .map(x=>x.time)
+        .filter(Boolean);
     }
 
     function renderTimeGrid(){
       const grid = $("#timeGrid");
-      if(!grid || !booking.listing) return;
+      if(!grid) return;
       grid.innerHTML = "";
-
-      const slots = slotsForListing(booking.listing, booking.serviceId);
-      const list = slots.filter(s => !booking.dateISO || s.dateISO===booking.dateISO);
-
-      if(!list.length){
-        grid.innerHTML = `<div style="grid-column:1/-1; opacity:.75; padding:8px 4px">${state.lang==="uk"?"Немає слотів на цю дату":"No slots for this date"}</div>`;
-        return;
-      }
-
-      list.forEach(s=>{
+      (booking.times||[]).forEach(t=>{
         const b = document.createElement("button");
-        b.className = "timeBtn" + (booking.time===s.time ? " on":"");
-        b.textContent = s.time;
+        b.className = "timeBtn" + ((booking.time===t)?" on":"");
+        b.textContent = t;
         b.addEventListener("click", ()=>{
           haptic(12);
-          booking.time = s.time;
-          // keep extra slot price if present
-          booking.slot = { ...s };
-          syncTimeDisplay();
+          booking.time = t;
+          $("#timeVal").textContent = t;
+          validateBooking();
           renderTimeGrid();
-          validateForm();
           closeOverlay("timeOverlay");
         });
         grid.appendChild(b);
@@ -2535,704 +2369,902 @@
     }
 
     function openTimePicker(){
-      openOverlay("timeOverlay");
+      if(!booking.listing || !booking.dateISO) {
+        toast(state.lang==="uk" ? "Спочатку обери дату" : "Pick date first");
+        return;
+      }
+      booking.times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
+      if(!booking.times.length){
+        toast(state.lang==="uk" ? "Немає часу на цю дату" : "No times on this date");
+        return;
+      }
       renderTimeGrid();
+      openOverlay("timeOverlay");
     }
 
-    // quick time filters
-    function applyQuickTime(kind){
-      if(!booking.listing) return;
-      const slots = slotsForListing(booking.listing, booking.serviceId).filter(s => s.dateISO===booking.dateISO);
-      if(!slots.length) return;
-
-      const parse = (t)=>{ // "19:30"
-        const [h,m]=String(t).split(":").map(n=>parseInt(n,10));
-        return h*60+(m||0);
-      };
-
-      let picked = null;
-
-      if(kind==="today"){
-        // ensure date is today
-        booking.dateISO = new Date().toISOString().slice(0,10);
-        syncDateDisplay();
-      }
-
-      const list = slotsForListing(booking.listing, booking.serviceId).filter(s => s.dateISO===booking.dateISO);
-
-      if(kind==="after18"){
-        const after = list.filter(s => parse(s.time) >= 18*60);
-        picked = after.sort((a,b)=>parse(a.time)-parse(b.time))[0] || null;
-      }else if(kind==="earliest"){
-        picked = list.sort((a,b)=>parse(a.time)-parse(b.time))[0] || null;
-      }else if(kind==="cheapest"){
-        picked = list.slice().sort((a,b)=> (a.fromPrice??9999)-(b.fromPrice??9999))[0] || null;
-      }else if(kind==="today"){
-        picked = list.sort((a,b)=>parse(a.time)-parse(b.time))[0] || null;
-      }
-
-      if(picked){
-        booking.time = picked.time;
-        booking.slot = { ...picked };
-        syncTimeDisplay();
-        renderTimeGrid();
-        validateForm();
-      }
+    function buildMonthGrid(cursor){
+      const y = cursor.getFullYear();
+      const m = cursor.getMonth();
+      const first = new Date(y, m, 1);
+      const startDow = (first.getDay() + 6) % 7; // Mon=0
+      const daysIn = new Date(y, m+1, 0).getDate();
+      const cells = [];
+      for(let i=0;i<startDow;i++) cells.push(null);
+      for(let d=1; d<=daysIn; d++) cells.push(new Date(y, m, d));
+      while(cells.length % 7 !== 0) cells.push(null);
+      return cells;
     }
 
-    // ===== Date picker (mini calendar) =====
-    let cal = { y: new Date().getFullYear(), m: new Date().getMonth() }; // m: 0-11
-
-    function buildCalendar(){
-      const title = $("#calTitle");
+    function renderCalendar(){
+      if(!booking.monthCursor) booking.monthCursor = new Date();
+      const calTitle = $("#calTitle");
       const dow = $("#calDow");
       const grid = $("#calGrid");
-      if(!title || !dow || !grid) return;
+      if(!grid || !dow) return;
 
-      const dt = new Date(cal.y, cal.m, 1);
-      title.textContent = dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { month:"long", year:"numeric" });
+      const loc = state.lang==="uk" ? "uk-UA" : "en-CA";
+      if(calTitle) calTitle.textContent = booking.monthCursor.toLocaleDateString(loc, { month:"long", year:"numeric" });
 
-      const dows = (state.lang==="uk")
+      const dows = state.lang==="uk"
         ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
         : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-
       dow.innerHTML = dows.map(x=>`<div class="calDow">${x}</div>`).join("");
 
-      grid.innerHTML = "";
-      const first = new Date(cal.y, cal.m, 1);
-      const startDow = (first.getDay()+6)%7; // Monday=0
-      const daysIn = new Date(cal.y, cal.m+1, 0).getDate();
-
+      const cells = buildMonthGrid(booking.monthCursor);
       const todayISO = new Date().toISOString().slice(0,10);
-      const slots = booking.listing ? slotsForListing(booking.listing, booking.serviceId) : [];
-      const hasSlots = new Set(slots.map(s=>s.dateISO));
 
-      // blanks
-      for(let i=0;i<startDow;i++){
-        const b = document.createElement("div");
-        b.className = "day off";
-        b.textContent = " ";
-        grid.appendChild(b);
-      }
+      grid.innerHTML = "";
+      cells.forEach(dt=>{
+        const el = document.createElement("div");
+        el.className = "day";
+        if(!dt){
+          el.classList.add("off");
+          el.textContent = "";
+          grid.appendChild(el);
+          return;
+        }
+        const iso = dt.toISOString().slice(0,10);
+        el.textContent = String(dt.getDate());
 
-      for(let d=1; d<=daysIn; d++){
-        const iso = `${cal.y}-${String(cal.m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-        const btn = document.createElement("div");
-        const off = (iso < todayISO);
-        const on  = (booking.dateISO === iso);
-        const has = hasSlots.has(iso);
+        const isPast = iso < todayISO;
+        if(isPast) el.classList.add("off");
 
-        btn.className = "day" + (off ? " off":"") + (on ? " on":"") + (has ? " has":"");
-        btn.textContent = String(d);
+        let has = false;
+        try{
+          const times = listAvailableTimes(booking.listing, booking.serviceId, iso);
+          has = !!times.length;
+        }catch(e){}
+        if(has && !isPast) el.classList.add("has");
 
-        btn.addEventListener("click", ()=>{
-          if(off) return;
+        if(booking.dateISO === iso) el.classList.add("on");
+
+        el.addEventListener("click", ()=>{
+          if(isPast) return;
           haptic(10);
           booking.dateISO = iso;
+          $("#dateVal").textContent = formatDateShort(iso);
           booking.time = null;
-          booking.slot = null;
-          syncDateDisplay();
-          syncTimeDisplay();
-          validateForm();
-          buildCalendar();
+          $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+          validateBooking();
+          renderCalendar();
           closeOverlay("dateOverlay");
         });
 
-        grid.appendChild(btn);
-      }
+        grid.appendChild(el);
+      });
     }
 
     function openDatePicker(){
-      // align calendar to chosen date
-      if(booking.dateISO){
-        const [y,m] = booking.dateISO.split("-").map(n=>parseInt(n,10));
-        cal.y = y; cal.m = m-1;
-      }
+      if(!booking.listing) return;
       openOverlay("dateOverlay");
-      buildCalendar();
+      renderCalendar();
     }
 
-    // ===== Drafts =====
+    function cycleService(){
+      const listing = booking.listing;
+      if(!listing) return;
+      const svcs = (listing.services||[]).slice();
+      if(!svcs.length) return;
+
+      const idx = Math.max(0, svcs.findIndex(s=>s.serviceId===booking.serviceId));
+      const next = svcs[(idx+1) % svcs.length];
+      booking.serviceId = next.serviceId;
+      $("#svcVal").textContent = serviceLabel(booking.serviceId) || (state.lang==="uk"?next.ua:next.en) || "—";
+      setPriceLine(listing, booking.serviceId);
+
+      booking.dateISO = null;
+      booking.time = null;
+      $("#dateVal").textContent = "—";
+      $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+      validateBooking();
+    }
+
+    function setServiceInitial(listing, serviceId){
+      const svcs = (listing.services||[]).slice();
+      let pick = null;
+      if(serviceId) pick = svcs.find(s=>s.serviceId===serviceId) || null;
+      if(!pick) pick = svcs[0] || null;
+
+      booking.serviceId = pick ? pick.serviceId : serviceId;
+      const txt = serviceLabel(booking.serviceId) || (pick ? (state.lang==="uk"?pick.ua:pick.en) : "");
+      $("#svcVal").textContent = txt || "—";
+      setPriceLine(listing, booking.serviceId);
+    }
+
+    function openBooking(listingId, serviceId=null, slot=null){
+      const listing = getListing(listingId);
+      if(!listing){
+        toast("Listing not found");
+        return;
+      }
+
+      booking.listing = listing;
+      booking.slot = slot || null;
+
+      fillWhere(listing);
+      setModalTags(listing);
+      setServiceInitial(listing, serviceId);
+
+      if(slot && slot.dateISO && slot.time){
+        booking.dateISO = slot.dateISO;
+        booking.time = slot.time;
+        $("#dateVal").textContent = formatDateShort(slot.dateISO);
+        $("#timeVal").textContent = slot.time;
+      }else{
+        booking.dateISO = null;
+        booking.time = null;
+        $("#dateVal").textContent = "—";
+        $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+      }
+
+      setContactDefaults();
+      validateBooking();
+      openModal();
+
+      // ✅ reduce iOS “jump” when focusing inputs in PWA
+      setTimeout(()=>{
+        try{ $("#fName")?.blur(); }catch(e){}
+      }, 0);
+    }
+
+    function setQuickChip(activeId){
+      ["tfToday","tfAfter18","tfEarliest","tfCheapest"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.classList.toggle("on", id===activeId);
+      });
+    }
+
+    function applyTimeQuick(mode){
+      if(!booking.listing || !booking.dateISO) return;
+      const times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
+      if(!times.length) return;
+
+      let pick = times[0];
+      if(mode==="after18"){
+        pick = times.find(t => t >= "18:00") || times[times.length-1];
+      }
+      if(mode==="earliest") pick = times[0];
+      if(mode==="cheapest") pick = times[0];
+
+      booking.times = times;
+      booking.time = pick;
+      $("#timeVal").textContent = pick;
+      validateBooking();
+      renderTimeGrid();
+      setQuickChip(mode==="after18"?"tfAfter18":mode==="earliest"?"tfEarliest":mode==="cheapest"?"tfCheapest":"tfToday");
+    }
+
+    // ===== Drafts (✅ the part you lost) =====
+    function draftKey(d){
+      return `${d.id}__${d.serviceId||""}__${d.dateISO||""}__${d.time||""}`;
+    }
+
     function saveDraft(){
       if(!booking.listing) return;
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "";
-
-      const draft = {
-        id: "d_"+Math.random().toString(16).slice(2),
-        ts: Date.now(),
-        listingId: booking.listing.id,
-        listingName: booking.listing.name,
-        address: booking.listing.address,
+      const d = {
+        id: booking.listing.id,
         serviceId: booking.serviceId,
-        serviceName: svcName,
         dateISO: booking.dateISO,
-        time: booking.time
+        time: booking.time,
+        createdAt: Date.now()
       };
 
-      // replace similar (same listing+service) if exists
-      state.drafts = (state.drafts||[]).filter(d => !(d.listingId===draft.listingId && d.serviceId===draft.serviceId));
-      state.drafts.unshift(draft);
-      state.drafts = state.drafts.slice(0, 12);
+      // allow draft even without date/time (but better with)
+      const k = draftKey(d);
+      const map = new Map(state.drafts.map(x=>[draftKey(x), x]));
+      map.set(k, d);
+      state.drafts = Array.from(map.values()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 
       updateDraftBadge();
       toast(T[state.lang].toastDraft);
     }
 
-    function openDrafts(){
-      openOverlay("draftsOverlay");
-      renderDrafts();
-    }
-
-    function renderDrafts(){
-      const list = $("#draftsList");
-      if(!list) return;
+    function renderDraftsList(){
+      const box = $("#draftsList");
+      if(!box) return;
 
       if(!state.drafts.length){
-        list.innerHTML = `<div style="opacity:.75; padding:8px 4px">${state.lang==="uk"?"Немає збережених чернеток":"No saved drafts"}</div>`;
+        box.innerHTML = `<div class="note">No drafts yet. Save 1–3 and book in 1 tap.</div>`;
         return;
       }
 
-      list.innerHTML = "";
-      state.drafts.forEach(d=>{
-        const wrap = document.createElement("div");
-        wrap.className = "draftItem";
-        wrap.innerHTML = `
-          <div style="min-width:0">
-            <b>${escapeHtml(d.listingName||"—")}</b>
-            <div style="margin-top:4px; font-size:12.5px; opacity:.78; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">
-              ${escapeHtml(d.serviceName||"")} · ${escapeHtml(d.dateISO?formatDateShort(d.dateISO):"")} · ${escapeHtml(d.time||"")}
-            </div>
-            <div style="margin-top:4px; font-size:12px; opacity:.68; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">
-              ${escapeHtml(d.address||"")}
+      const loc = state.lang==="uk" ? "uk-UA" : "en-CA";
+
+      box.innerHTML = "";
+      state.drafts.slice(0,20).forEach((d, idx)=>{
+        const listing = getListing(d.id);
+        const title = listing ? listing.name : d.id;
+        const svc = d.serviceId ? (serviceLabel(d.serviceId) || d.serviceId) : (state.lang==="uk"?"Послуга":"Service");
+        const when = (d.dateISO && d.time) ? `${formatDateShort(d.dateISO)} · ${d.time}` : (state.lang==="uk"?"(без часу)":"(no time)");
+        const el = document.createElement("div");
+        el.className = "draftItem";
+        el.innerHTML = `
+                   <div style="min-width:0">
+            <b style="font-weight:900">${escapeHtml(title)}</b>
+            <div style="margin-top:6px; font-size:12.5px; color:var(--muted); line-height:1.35">
+              ${escapeHtml(svc)} · ${escapeHtml(when)}
             </div>
           </div>
           <div class="draftActions">
-            <button class="miniBtn2" data-act="book" data-id="${escapeHtml(d.id)}">⚡ Book</button>
-            <button class="miniBtn2 danger" data-act="del" data-id="${escapeHtml(d.id)}">✕</button>
+            <button class="miniBtn2" data-act="open" data-i="${idx}">Open</button>
+            <button class="miniBtn2" data-act="book" data-i="${idx}">Book</button>
+            <button class="miniBtn2 danger" data-act="del" data-i="${idx}">Delete</button>
           </div>
         `;
-        list.appendChild(wrap);
+        box.appendChild(el);
       });
 
-      list.querySelectorAll("[data-act='book']").forEach(b=>{
-        b.addEventListener("click", ()=>{
-          const id = b.getAttribute("data-id");
-          const d = state.drafts.find(x=>x.id===id);
+      box.querySelectorAll("[data-act]").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          const act = btn.getAttribute("data-act");
+          const i = parseInt(btn.getAttribute("data-i")||"0",10);
+          const d = state.drafts[i];
           if(!d) return;
-          closeOverlay("draftsOverlay");
-          openBooking(d.listingId, d.serviceId, { dateISO:d.dateISO, time:d.time });
-        });
-      });
 
-      list.querySelectorAll("[data-act='del']").forEach(b=>{
-        b.addEventListener("click", ()=>{
-          const id = b.getAttribute("data-id");
-          state.drafts = state.drafts.filter(x=>x.id!==id);
-          updateDraftBadge();
-          renderDrafts();
+          if(act==="del"){
+            haptic(10);
+            state.drafts.splice(i,1);
+            updateDraftBadge();
+            renderDraftsList();
+            toast("Deleted");
+            return;
+          }
+
+          const listing = getListing(d.id);
+          if(!listing){
+            toast("Listing not found");
+            return;
+          }
+
+          if(act==="open"){
+            haptic(10);
+            closeOverlay("draftsOverlay");
+            openBooking(d.id, d.serviceId || null, (d.dateISO && d.time) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
+            return;
+          }
+
+          if(act==="book"){
+            haptic(14);
+            closeOverlay("draftsOverlay");
+            openBooking(d.id, d.serviceId || null, (d.dateISO && d.time) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
+            // if time exists, auto-send after tiny delay (still validates)
+            setTimeout(()=>{
+              if(d.dateISO && d.time){
+                try{ $("#submitBooking")?.click(); }catch(e){}
+              } else {
+                toast(state.lang==="uk" ? "Додай дату/час" : "Add date/time");
+              }
+            }, 120);
+          }
         });
       });
     }
 
-    // ===== Telegram booking via Worker =====
-    async function sendBooking(){
-      if(!validateForm()){
-        toast(T[state.lang].toastErr);
-        return;
-      }
-      const btn = $("#submitBooking");
-      if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
-
-      const name  = ($("#fName")?.value||"").trim();
-      const phone = ($("#fPhone")?.value||"").trim();
-      const email = ($("#fEmail")?.value||"").trim();
-
-      // persist contact
-      localStorage.setItem(LS.contact, JSON.stringify({ name, phone, email }));
-
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : (state.lang==="uk"?"Послуга":"Service");
-
-      // try pull price/duration
-      let from=null, to=null, dur=null;
-      try{
-        const sObj = window.bb.util.listingService(booking.listing, booking.serviceId);
-        if(sObj){
-          from = sObj.priceFrom ?? null;
-          to = sObj.priceTo ?? null;
-          dur = sObj.durationMin ?? null;
-        }
-      }catch(e){}
-      if(booking.slot && booking.slot.fromPrice!=null) from = booking.slot.fromPrice;
-      if(booking.slot && booking.slot.toPrice!=null) to = booking.slot.toPrice;
-
-      const profileUrl = `${location.origin}${location.pathname.replace(/\/[^\/]*$/,"/")}profile.html?id=${encodeURIComponent(booking.listing.id)}`;
-      const mapsQ = encodeURIComponent((booking.listing.address||"") + " " + (booking.listing.city||""));
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQ}`;
-
-      const payload = {
-        name, phone, email,
-        lang: state.lang,
-        listingId: booking.listing.id,
-        listingName: booking.listing.name,
-        address: booking.listing.address,
-        city: booking.listing.city,
-        serviceId: booking.serviceId,
-        serviceName: svcName,
-        dateISO: booking.dateISO,
-        time: booking.time,
-        priceFrom: from,
-        priceTo: to,
-        durationMin: dur,
-        profileUrl,
-        mapsUrl,
-        isStandalone: isStandalone()
-      };
-
-      try{
-        const res = await fetch(`${WORKER_URL}/book`, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const ok = res.ok;
-        if(!ok){
-          toast("Error. Try again.");
-          if(btn){ btn.disabled = false; btn.textContent = T[state.lang].confirm; }
-          return;
-        }
-
-        // save last booking
-        localStorage.setItem(LS.last, JSON.stringify({
-          listingId: booking.listing.id,
-          listingName: booking.listing.name,
-          serviceId: booking.serviceId,
-          dateISO: booking.dateISO,
-          time: booking.time
-        }));
-
-        // success UI
-        $("#successLine").textContent = T[state.lang].toastSent;
-        $("#successSub").textContent = `${booking.listing.name} · ${svcName} · ${formatDateShort(booking.dateISO)} · ${booking.time}`;
-        openOverlay("successOverlay");
-
-        // close modal (but keep lock count correct)
-        closeBooking();
-
-        toast(T[state.lang].toastSent);
-        renderLastBookingCard();
-      }catch(e){
-        toast("Network error");
-      }finally{
-        if(btn){ btn.textContent = T[state.lang].confirm; btn.disabled = false; }
-      }
+    // ===== Success helpers =====
+    function openSuccess(payload){
+      // payload: { listing, serviceName, dateISO, time, name, phone, email, mapsUrl, textDetails }
+      booking._lastSuccess = payload;
+      $("#successLine").textContent = (state.lang==="uk" ? "Відправлено в Telegram ✅" : "Sent to Telegram ✅");
+      $("#successSub").textContent  = (state.lang==="uk"
+        ? "Далі: відкрий мапу або додай в календар."
+        : "Next: open maps or add to calendar.");
+      openOverlay("successOverlay");
     }
 
-    // ===== Success actions =====
-    function makeICS(){
-      if(!booking.listing) return null;
-
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "Service";
-      const title = `Beauty Booking — ${booking.listing.name} (${svcName})`;
-
-      // assume local time
-      const [y,m,d] = booking.dateISO.split("-").map(n=>parseInt(n,10));
-      const [hh,mm] = booking.time.split(":").map(n=>parseInt(n,10));
-      const start = new Date(y, m-1, d, hh, mm||0, 0);
-
-      let durMin = 60;
-      try{
-        const sObj = window.bb.util.listingService(booking.listing, booking.serviceId);
-        if(sObj?.durationMin) durMin = sObj.durationMin;
-      }catch(e){}
-      const end = new Date(start.getTime() + durMin*60000);
-
+    function makeICS({title, location, startISO, durationMin=60, description=""}){
+      // startISO: "YYYY-MM-DDTHH:mm"
+      const dt = new Date(startISO);
       const pad = (n)=>String(n).padStart(2,"0");
-      const fmt = (dt)=>`${dt.getFullYear()}${pad(dt.getMonth()+1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
+      const toICS = (d)=>{
+        // local -> floating time (works OK for personal reminders)
+        return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+      };
+      const end = new Date(dt.getTime() + durationMin*60*1000);
+      const uid = `bb-${Date.now()}@bookingclub.beauty`;
 
       const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Beauty Booking//EN
 CALSCALE:GREGORIAN
+METHOD:PUBLISH
 BEGIN:VEVENT
-UID:${Date.now()}@beautybooking
-DTSTAMP:${fmt(new Date())}
-DTSTART:${fmt(start)}
-DTEND:${fmt(end)}
-SUMMARY:${title}
-LOCATION:${(booking.listing.address||"").replace(/\n/g," ")}
-DESCRIPTION:Booked via Beauty Booking
+UID:${uid}
+DTSTAMP:${toICS(new Date())}
+DTSTART:${toICS(dt)}
+DTEND:${toICS(end)}
+SUMMARY:${title.replace(/\n/g," ")}
+LOCATION:${(location||"").replace(/\n/g," ")}
+DESCRIPTION:${(description||"").replace(/\n/g," ")}
 END:VEVENT
 END:VCALENDAR`;
 
-      return ics;
-    }
-
-    function downloadICS(){
-      const ics = makeICS();
-      if(!ics) return;
-      const blob = new Blob([ics], { type:"text/calendar;charset=utf-8" });
+      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "beauty-booking.ics";
+      a.href = url;
+      a.download = "booking.ics";
       document.body.appendChild(a);
       a.click();
-      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1500);
     }
 
-    function copyDetails(){
-      if(!booking.listing) return;
-      const svc = (window.SERVICES||[]).find(s=>s.id===booking.serviceId);
-      const svcName = svc ? (state.lang==="uk"?svc.ua:svc.en) : "";
-      const txt =
-`Beauty Booking
-${booking.listing.name}
-${booking.listing.address}
-${svcName}
-${booking.dateISO} ${booking.time}`;
-
+    function copyText(txt){
       try{
         navigator.clipboard.writeText(txt);
         toast(T[state.lang].toastCopied);
       }catch(e){
-        toast("Copy failed");
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand("copy"); toast(T[state.lang].toastCopied); }catch(e2){}
+        ta.remove();
       }
     }
 
-    // ===== Policies =====
-    function openPolicies(){ openOverlay("polModal"); }
-    function closePolicies(){ closeOverlay("polModal"); }
+    // ===== Telegram booking submit =====
+    async function sendToTelegram(){
+      if(!validateBooking()){
+        toast(T[state.lang].toastErr);
+        return;
+      }
 
-    // ===== AI concierge (simple heuristic) =====
-    function parseBudget(text){
-      const m = String(text||"").match(/(\$|usd|cad)?\s*(\d{2,3})\s*(\$)?/i);
-      if(!m) return null;
-      const v = parseInt(m[2],10);
-      return isNaN(v) ? null : v;
+      const listing = booking.listing;
+      const svcId = booking.serviceId;
+      const svcName = serviceLabel(svcId) || svcId || (state.lang==="uk"?"Послуга":"Service");
+
+      const name = ($("#fName")?.value || "").trim();
+      const phone = ($("#fPhone")?.value || "").trim();
+      const email = ($("#fEmail")?.value || "").trim();
+
+      const dateISO = booking.dateISO;
+      const time = booking.time;
+
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((listing.address||listing.name||""))}`;
+      const profileUrl = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+
+      // duration / price for nicer msg
+      let dur = null, priceFrom = null;
+      try{ dur = window.bb.util.durationFor ? window.bb.util.durationFor(listing, svcId) : null; }catch(e){}
+      try{ priceFrom = window.bb.util.minPriceFor(listing, svcId); }catch(e){}
+      if(dur == null || priceFrom == null){
+        const s = (listing.services||[]).find(x=>x.serviceId===svcId) || (listing.services||[])[0];
+        if(s){
+          if(dur == null) dur = s.duration ?? null;
+          if(priceFrom == null) priceFrom = s.priceFrom ?? s.price ?? null;
+        }
+      }
+
+      // Keep last booking for card
+      localStorage.setItem(LS.last, JSON.stringify({
+        id: listing.id,
+        serviceId: svcId,
+        dateISO,
+        time,
+        at: Date.now()
+      }));
+
+      saveContact();
+
+      const payload = {
+        name, phone, email,
+        listingId: listing.id,
+        listingName: listing.name,
+        address: listing.address,
+        city: listing.city || "",
+        serviceId: svcId,
+        serviceName: svcName,
+        dateISO,
+        time,
+        priceFrom: priceFrom ?? null,
+        duration: dur ?? null,
+        profileUrl,
+        mapsUrl,
+        lang: state.lang
+      };
+
+      const btn = $("#submitBooking");
+      if(btn){ btn.disabled = true; btn.textContent = (state.lang==="uk"?"Sending…":"Sending…"); }
+
+      try{
+        const res = await fetch(`${WORKER_URL}/book`, {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if(!res.ok){
+          throw new Error("Worker error: " + res.status);
+        }
+
+        toast(T[state.lang].toastSent);
+        closeModal();
+
+        // Success overlay data
+        const details =
+`${listing.name}
+${svcName}
+${formatDateShort(dateISO)} · ${time}
+${listing.address || ""}
+
+Name: ${name}
+Phone: ${phone}
+Email: ${email}`;
+
+        openSuccess({
+          listing,
+          serviceName: svcName,
+          dateISO,
+          time,
+          name, phone, email,
+          mapsUrl,
+          textDetails: details,
+          durationMin: dur || 60
+        });
+
+        renderLastBookingCard();
+      }catch(err){
+        console.error(err);
+        toast(state.lang==="uk" ? "Помилка Telegram. Перевір WORKER_URL" : "Telegram error. Check WORKER_URL");
+      }finally{
+        if(btn){
+          btn.textContent = T[state.lang].confirm;
+          btn.disabled = !validateBooking();
+        }
+      }
     }
 
-    function runAIPicks(){
-      const sec = $("#aiSection");
-      const out = $("#aiPicks");
-      if(!sec || !out) return;
+    function renderLastBookingCard(){
+      const box = $("#lastCard");
+      if(!box) return;
 
-      const q = ($("#aiInput")?.value||"").trim().toLowerCase();
-      if(!q){ out.innerHTML=""; return; }
+      let last = null;
+      try{ last = JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){}
+      if(!last || !last.id){
+        box.style.display = "none";
+        return;
+      }
 
-      // naive service detect
-      const svcMap = [
-        {k:["манік","manic"], id:"manicure"},
-        {k:["педик","pedi"], id:"pedicure"},
-        {k:["бров","brow"], id:"brows"},
-        {k:["чол","men"], id:"haircut_men"},
-        {k:["жін","women"], id:"haircut_women"},
-        {k:["стриж","hair"], id:"haircut"}
-      ];
-      let sid = null;
-      svcMap.some(x => x.k.some(k=>q.includes(k)) ? (sid=x.id, true) : false);
+      const listing = getListing(last.id);
+      if(!listing){
+        box.style.display = "none";
+        return;
+      }
 
-      const budget = parseBudget(q);
-      const after18 = q.includes("після 18") || q.includes("after 18") || q.includes("after 6");
+      const svc = serviceLabel(last.serviceId) || (state.lang==="uk"?"Послуга":"Service");
+      const line = `${formatDateShort(last.dateISO)} · ${last.time} · ${listing.name}`;
+      $("#lastLine").textContent = line;
+      $("#lastSub").textContent = (state.lang==="uk" ? `Tap to book again: ${svc}` : `Tap to book again: ${svc}`);
+      box.style.display = "";
 
-      // candidates
-      let list = (window.LISTINGS||[]).slice().filter(l => matchesService(l, sid));
-      if(state.userLoc && window.bb?.util?.smartRecommend) list = window.bb.util.smartRecommend(list, state.userLoc, sid);
+      const go = ()=>{
+        haptic(14);
+        openBooking(listing.id, last.serviceId || null, { dateISO:last.dateISO, time:last.time, fromPrice:null });
+      };
+      box.onclick = go;
+      box.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
+    }
 
-      // filter by budget (min price)
-      if(budget!=null){
-        list = list.filter(l=>{
+    // ===== AI concierge (simple heuristic, no OpenAI) =====
+    function parseAiQuery(q){
+      const s = (q||"").toLowerCase();
+
+      const out = { serviceId: null, after: null, maxPrice: null, today: false };
+
+      if(s.includes("манік") || s.includes("маник") || s.includes("manic")) out.serviceId = "manicure";
+      if(s.includes("педик") || s.includes("pedi")) out.serviceId = "pedicure";
+      if(s.includes("бров") || s.includes("brow")) out.serviceId = "brows";
+      if(s.includes("чол") || s.includes("men")) out.serviceId = "haircut_men";
+      if(s.includes("жін") || s.includes("women") || s.includes("female")) out.serviceId = "haircut_women";
+      if(!out.serviceId && (s.includes("стриж") || s.includes("hair"))) out.serviceId = "haircut";
+
+      const m1 = s.match(/after\s*(\d{1,2})/i) || s.match(/після\s*(\d{1,2})/i);
+      if(m1){
+        const hh = String(Math.min(23, Math.max(0, parseInt(m1[1],10)))).padStart(2,"0");
+        out.after = `${hh}:00`;
+      } else if(s.includes("після 18") || s.includes("after 6") || s.includes("after 18")) {
+        out.after = "18:00";
+      }
+
+      const m2 = s.match(/(\d{2,3})\s*\$/) || s.match(/\$\s*(\d{2,3})/);
+      if(m2) out.maxPrice = parseInt(m2[1],10);
+
+      if(s.includes("today") || s.includes("сьогодні") || s.includes("сьодні")) out.today = true;
+
+      return out;
+    }
+
+    function runAi(){
+      const q = ($("#aiInput")?.value || "").trim();
+      if(!q){
+        toast(state.lang==="uk" ? "Напиши запит" : "Type a request");
+        return;
+      }
+
+      const p = parseAiQuery(q);
+
+      // temporary apply (does NOT overwrite main filters; it's just picks)
+      const base = (window.LISTINGS||[]).filter(l => matchesQuery(l, q) || matchesService(l, p.serviceId));
+      const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(base, state.userLoc, p.serviceId) : base;
+
+      const todayISO = new Date().toISOString().slice(0,10);
+
+      const picks = ranked.filter(l=>{
+        if(p.serviceId && !matchesService(l, p.serviceId)) return false;
+
+        if(p.maxPrice != null){
           try{
-            const p = window.bb.util.minPriceFor(l, sid);
-            return p==null ? true : p <= budget;
-          }catch(e){ return true; }
-        });
-      }
+            const from = window.bb.util.minPriceFor(l, p.serviceId);
+            if(from != null && from > p.maxPrice) return false;
+          }catch(e){}
+        }
 
-      // filter by after18 (has a slot >= 18:00 today/soon)
-      if(after18){
-        const todayISO = new Date().toISOString().slice(0,10);
-        const parse = (t)=>{ const [h,m]=String(t).split(":").map(n=>parseInt(n,10)); return h*60+(m||0); };
-        list = list.filter(l=>{
-          const slots = slotsForListing(l, sid).filter(s=>s.dateISO===todayISO && parse(s.time)>=18*60);
-          return slots.length>0;
-        });
-      }
+        // time constraint (rough)
+        if(p.today || p.after){
+          let slot = null;
+          try{ slot = window.bb.util.nextAvailable(l, p.serviceId); }catch(e){}
+          if(!slot) return false;
+          if(p.today && slot.dateISO !== todayISO) return false;
+          if(p.after && slot.dateISO === todayISO && slot.time < p.after) return false;
+        }
 
-      const picks = list.slice(0, 3);
-      out.innerHTML = "";
-      picks.forEach(l => out.appendChild(buildCard(l)));
+        return true;
+      }).slice(0,3);
+
+      const grid = $("#aiPicks");
+      if(!grid) return;
+      grid.innerHTML = "";
       if(!picks.length){
-        out.innerHTML = `<div style="opacity:.75; padding:6px 2px">${state.lang==="uk"?"Нічого не знайшов — спробуй інший запит":"No picks — try another prompt"}</div>`;
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає збігів":"No matches"}</h3><p style="margin:0;color:var(--muted)">${state.lang==="uk"?"Спробуй інший текст або зніми обмеження.":"Try different wording or loosen constraints."}</p></div>`;
+        return;
       }
+      picks.forEach(l=> grid.appendChild(buildCard(l,false)));
+      $("#aiSection").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    // ===== Install (A2HS) =====
+    // ===== A2HS / Install =====
     let deferredPrompt = null;
+
     window.addEventListener("beforeinstallprompt", (e)=>{
       e.preventDefault();
       deferredPrompt = e;
-      const pill = $("#installPill");
-      if(pill){
-        const hide = localStorage.getItem(LS.installedHide)==="1";
-        if(!hide) pill.classList.add("show");
-      }
+
+      const hide = localStorage.getItem(LS.installedHide) === "1";
+      if(hide) return;
+
+      $("#installPill")?.classList.add("show");
+    });
+
+    window.addEventListener("appinstalled", ()=>{
+      localStorage.setItem(LS.installedHide, "1");
+      $("#installPill")?.classList.remove("show");
+      toast("Installed ✅");
     });
 
     async function doInstall(){
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      const pill = $("#installPill");
-      if(pill) pill.classList.remove("show");
-      localStorage.setItem(LS.installedHide,"1");
-      if(choice?.outcome === "accepted") toast(T[state.lang].toastInstalled);
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        try{ await deferredPrompt.userChoice; }catch(e){}
+        deferredPrompt = null;
+        $("#installPill")?.classList.remove("show");
+        return;
+      }
+
+      // iOS hint
+      const shown = localStorage.getItem(LS.a2hsHint) === "1";
+      if(!shown && !isStandalone()){
+        localStorage.setItem(LS.a2hsHint, "1");
+        toast(T[state.lang].toastA2HS);
+      }
     }
 
-    function initEvents(){
-      // search
-      const qEl = $("#q");
-      if(qEl){
-        qEl.value = state.q || "";
-        qEl.addEventListener("input", ()=>{
-          state.q = qEl.value || "";
-          saveFilters();
-          renderAll();
-          refreshHeroCandidates(true);
-          renderNextHeroRotating(true);
-          renderSearchSuggestions();
-        });
-        qEl.addEventListener("focus", ()=>renderSearchSuggestions());
-        qEl.addEventListener("blur", ()=>setTimeout(()=>renderSearchSuggestions(true), 160));
-      }
+    // ===== Sticky bar show/hide =====
+    function setupSticky(){
+      const bar = $("#stickyBar");
+      const hero = document.querySelector(".heroCard");
+      if(!bar || !hero) return;
 
-      // favOnly
-      const favOnly = $("#favOnly");
-      if(favOnly){
-        favOnly.addEventListener("click", ()=>{
-          haptic(10);
-          state.favOnly = !state.favOnly;
-          saveFilters();
-          renderAll();
-        });
-      }
+      const onScroll = ()=>{
+        const r = hero.getBoundingClientRect();
+        const should = (r.bottom < (parseInt(getComputedStyle(document.documentElement).getPropertyValue("--topbarH")) || 92));
+        bar.classList.toggle("on", should);
+        bar.setAttribute("aria-hidden", should ? "false" : "true");
+      };
+      window.addEventListener("scroll", onScroll, {passive:true});
+      onScroll();
+    }
 
-      // ai
-      $("#aiBtn")?.addEventListener("click", ()=>{
-        haptic(10);
-        const sec = $("#aiSection");
-        if(!sec) return;
-        const on = sec.style.display !== "none";
-        sec.style.display = on ? "none" : "block";
-        if(!on) $("#aiInput")?.focus();
+    // ===== Events wiring =====
+    function wire(){
+      applyTheme();
+      renderTexts();
+      renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
+      startHeroRotation();
+      renderLastBookingCard();
+      setupSticky();
+      updateDraftBadge();
+
+      // Inputs
+      $("#q")?.addEventListener("input", (e)=>{
+        state.q = e.target.value || "";
+        saveFilters();
+        renderAll();
+        renderSearchSuggestions(false);
       });
-      $("#aiGo")?.addEventListener("click", ()=>{ haptic(10); runAIPicks(); });
-      $("#aiInput")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); runAIPicks(); } });
+      $("#q")?.addEventListener("focus", ()=> renderSearchSuggestions(false));
+      document.addEventListener("click", (e)=>{
+        const inSearch = e.target?.closest?.(".search");
+        if(!inSearch) renderSearchSuggestions(true);
+      });
 
-      // theme/lang
+      // Top actions
       $("#themeBtn")?.addEventListener("click", ()=>{
         haptic(10);
-        state.theme = (state.theme==="light") ? "dark" : "light";
+        state.theme = (state.theme === "light") ? "dark" : "light";
         applyTheme();
       });
 
       $("#langBtn")?.addEventListener("click", ()=>{
         haptic(10);
-        setLang(state.lang==="uk" ? "en" : "uk");
+        setLang(state.lang === "uk" ? "en" : "uk");
       });
 
-      // install
-      $("#installPill")?.addEventListener("click", ()=>{ haptic(10); doInstall(); });
+      $("#favOnly")?.addEventListener("click", ()=>{
+        haptic(10);
+        state.favOnly = !state.favOnly;
+        $("#favOnly")?.classList.toggle("on", state.favOnly);
+        saveFilters();
+        renderAll();
+      });
 
-      // reset buttons
-      $("#resetBtn")?.addEventListener("click", ()=>{ haptic(10); resetActiveFilters(); });
-      $("#stickyReset")?.addEventListener("click", ()=>{ haptic(10); resetActiveFilters(); });
-      $("#emptyReset")?.addEventListener("click", ()=>{ haptic(10); resetActiveFilters(); });
+      // keep favOnly style on load
+      $("#favOnly")?.classList.toggle("on", state.favOnly);
 
-      // empty actions
+      $("#aiBtn")?.addEventListener("click", ()=>{
+        haptic(10);
+        const sec = $("#aiSection");
+        if(!sec) return;
+        const on = (sec.style.display === "none");
+        sec.style.display = on ? "" : "none";
+        if(on) sec.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      $("#aiGo")?.addEventListener("click", ()=>{ haptic(12); runAi(); });
+      $("#aiInput")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); runAi(); }});
+
+      $("#installPill")?.addEventListener("click", ()=>{ haptic(12); doInstall(); });
+
+      // Quick / Reset
+      $("#openQuick")?.addEventListener("click", ()=>{
+        haptic(12);
+        // open best hero candidate or first rec
+        const list = computeNextCandidates();
+        if(list.length){
+          const l = list[0];
+          let slot = null;
+          try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
+          openBooking(l.id, state.serviceId, slot);
+        } else {
+          toast(state.lang==="uk" ? "Немає слотів" : "No slots");
+        }
+      });
+
+      $("#floatQuick")?.addEventListener("click", ()=>{ $("#openQuick")?.click(); });
+
+      $("#resetBtn")?.addEventListener("click", ()=>{ haptic(10); resetAllFilters(); });
+      $("#stickyReset")?.addEventListener("click", ()=>{ haptic(10); resetAllFilters(); });
+
+      $("#stickyQuick")?.addEventListener("click", ()=>{ haptic(12); $("#openQuick")?.click(); });
+
+      $("#emptyReset")?.addEventListener("click", ()=>{ haptic(10); resetActiveFiltersOnly(); });
       $("#emptyShowPartners")?.addEventListener("click", ()=>{
         haptic(10);
         const sec = $("#partnersSection");
-        if(sec){
-          const y = sec.getBoundingClientRect().top + window.scrollY - 72;
-          window.scrollTo({top:y, behavior:"smooth"});
-        }
+        if(sec) sec.scrollIntoView({behavior:"smooth", block:"start"});
       });
       $("#emptyShowNearest")?.addEventListener("click", ()=>{
         haptic(10);
-        state.serviceId = null;
-        saveFilters();
-        renderServiceChips();
-        renderAll();
-        toast(state.lang==="uk" ? "Показую найближчі" : "Showing nearest");
+        // just scroll to recommended
+        $("#recSection")?.scrollIntoView({behavior:"smooth", block:"start"});
       });
 
-      // quick booking
-      const doQuick = ()=>{
-        haptic(14);
-        // pick first candidate from hero list
-        if(!heroRot.list.length) refreshHeroCandidates(true);
-        const l = heroRot.list[0] || (filteredListings()[0] || (window.LISTINGS||[])[0]);
-        if(!l) return;
-        let slot=null;
-        try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
-        openBooking(l.id, state.serviceId || svcFromListing(l), slot);
-      };
+      $("#toTop")?.addEventListener("click", ()=>{ window.scrollTo({top:0, behavior:"smooth"}); });
 
-      $("#openQuick")?.addEventListener("click", doQuick);
-      $("#floatQuick")?.addEventListener("click", doQuick);
-      $("#stickyQuick")?.addEventListener("click", doQuick);
-
-      // to top
-      $("#toTop")?.addEventListener("click", ()=>{
-        haptic(8);
-        window.scrollTo({top:0, behavior:"smooth"});
+      // Policies
+      $("#policiesBtn")?.addEventListener("click", (e)=>{
+        e.preventDefault();
+        haptic(10);
+        $("#polModal")?.classList.add("on");
+        $("#polModal")?.setAttribute("aria-hidden","false");
+        lockScroll();
+      });
+      $("#closePol")?.addEventListener("click", ()=>{
+        $("#polModal")?.classList.remove("on");
+        $("#polModal")?.setAttribute("aria-hidden","true");
+        unlockScroll();
+      });
+      $("#polModal")?.addEventListener("click", (e)=>{
+        if(e.target?.id==="polModal"){ $("#closePol")?.click(); }
       });
 
-      // modal close
-      $("#closeModal")?.addEventListener("click", ()=>{ haptic(8); closeBooking(); });
-      $("#modal")?.addEventListener("click", (e)=>{ if(e.target?.id==="modal"){ closeBooking(); } });
+      // Booking modal
+      $("#closeModal")?.addEventListener("click", closeModal);
+      $("#modal")?.addEventListener("click", (e)=>{ if(e.target?.id==="modal") closeModal(); });
 
-      // service/date/time pickers
-      $("#svcPick")?.addEventListener("click", ()=>{ haptic(10); cycleService(); renderTimeGrid(); });
-      $("#datePick")?.addEventListener("click", ()=>{ haptic(10); openDatePicker(); });
-      $("#timePick")?.addEventListener("click", ()=>{ haptic(10); openTimePicker(); });
-
-      // time overlay close + quick chips
-      $("#closeTime")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("timeOverlay"); });
-      $("#timeOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="timeOverlay") closeOverlay("timeOverlay"); });
-
-      $("#tfToday")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("today"); renderTimeGrid(); });
-      $("#tfAfter18")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("after18"); renderTimeGrid(); });
-      $("#tfEarliest")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("earliest"); renderTimeGrid(); });
-      $("#tfCheapest")?.addEventListener("click", ()=>{ haptic(10); applyQuickTime("cheapest"); renderTimeGrid(); });
-
-      // date overlay close + nav
-      $("#closeDate")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("dateOverlay"); });
-      $("#dateOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="dateOverlay") closeOverlay("dateOverlay"); });
-      $("#calPrev")?.addEventListener("click", ()=>{ haptic(6); cal.m--; if(cal.m<0){cal.m=11; cal.y--;} buildCalendar(); });
-      $("#calNext")?.addEventListener("click", ()=>{ haptic(6); cal.m++; if(cal.m>11){cal.m=0; cal.y++;} buildCalendar(); });
-
-      // drafts
-      $("#cartBtn")?.addEventListener("click", ()=>{ haptic(10); openDrafts(); });
-      $("#closeDrafts")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("draftsOverlay"); });
-      $("#draftsOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="draftsOverlay") closeOverlay("draftsOverlay"); });
-
-      $("#saveDraftBtn")?.addEventListener("click", ()=>{ haptic(12); saveDraft(); });
-
-      // open profile from modal
       $("#openProfileBtn")?.addEventListener("click", ()=>{
         if(!booking.listing) return;
         haptic(10);
         window.open(`./profile.html?id=${encodeURIComponent(booking.listing.id)}`, "_blank", "noopener");
       });
 
-      // submit
-      $("#submitBooking")?.addEventListener("click", ()=>{ haptic(14); sendBooking(); });
+      $("#saveDraftBtn")?.addEventListener("click", ()=>{ haptic(10); saveDraft(); updateDraftBadge(); });
 
-      // validate on input
-      ["fName","fPhone","fEmail"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el) el.addEventListener("input", validateForm);
+      $("#svcPick")?.addEventListener("click", ()=>{ haptic(10); cycleService(); validateBooking(); });
+      $("#datePick")?.addEventListener("click", ()=>{ haptic(10); openDatePicker(); });
+      $("#timePick")?.addEventListener("click", ()=>{ haptic(10); openTimePicker(); });
+
+      // Date overlay
+      $("#closeDate")?.addEventListener("click", ()=> closeOverlay("dateOverlay"));
+      $("#dateOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="dateOverlay") closeOverlay("dateOverlay"); });
+      $("#calPrev")?.addEventListener("click", ()=>{
+        haptic(8);
+        booking.monthCursor = booking.monthCursor || new Date();
+        booking.monthCursor = new Date(booking.monthCursor.getFullYear(), booking.monthCursor.getMonth()-1, 1);
+        renderCalendar();
+      });
+      $("#calNext")?.addEventListener("click", ()=>{
+        haptic(8);
+        booking.monthCursor = booking.monthCursor || new Date();
+        booking.monthCursor = new Date(booking.monthCursor.getFullYear(), booking.monthCursor.getMonth()+1, 1);
+        renderCalendar();
       });
 
-      // success overlay
-      $("#closeSuccess")?.addEventListener("click", ()=>{ haptic(8); closeOverlay("successOverlay"); });
-      $("#successOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="successOverlay") closeOverlay("successOverlay"); });
-      $("#openMapsBtn")?.addEventListener("click", ()=>{
-        if(!booking.listing) return;
+      // Time overlay quick chips
+      $("#closeTime")?.addEventListener("click", ()=> closeOverlay("timeOverlay"));
+      $("#timeOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="timeOverlay") closeOverlay("timeOverlay"); });
+
+      $("#tfToday")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfToday"); applyTimeQuick("today"); });
+      $("#tfAfter18")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfAfter18"); applyTimeQuick("after18"); });
+      $("#tfEarliest")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfEarliest"); applyTimeQuick("earliest"); });
+      $("#tfCheapest")?.addEventListener("click", ()=>{ haptic(8); setQuickChip("tfCheapest"); applyTimeQuick("cheapest"); });
+
+      // Drafts overlay
+      $("#cartBtn")?.addEventListener("click", ()=>{
         haptic(10);
-        const q = encodeURIComponent((booking.listing.address||"") + " " + (booking.listing.city||""));
-        window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank", "noopener");
+        renderDraftsList();
+        openOverlay("draftsOverlay");
       });
-      $("#addIcsBtn")?.addEventListener("click", ()=>{ haptic(10); downloadICS(); });
-      $("#copyDetailsBtn")?.addEventListener("click", ()=>{ haptic(10); copyDetails(); });
+      $("#closeDrafts")?.addEventListener("click", ()=> closeOverlay("draftsOverlay"));
+      $("#draftsOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="draftsOverlay") closeOverlay("draftsOverlay"); });
 
-      // policies
-      $("#policiesBtn")?.addEventListener("click", (e)=>{ e.preventDefault(); haptic(10); openPolicies(); });
-      $("#closePol")?.addEventListener("click", ()=>{ haptic(8); closePolicies(); });
-      $("#polModal")?.addEventListener("click", (e)=>{ if(e.target?.id==="polModal") closePolicies(); });
+      // Success overlay actions
+      $("#closeSuccess")?.addEventListener("click", ()=> closeOverlay("successOverlay"));
+      $("#successOverlay")?.addEventListener("click", (e)=>{ if(e.target?.id==="successOverlay") closeOverlay("successOverlay"); });
 
-      // scroll => sticky bar
-      window.addEventListener("scroll", ()=>{ renderAll(); }, { passive:true });
+      $("#openMapsBtn")?.addEventListener("click", ()=>{
+        const p = booking._lastSuccess;
+        if(!p) return;
+        haptic(10);
+        window.open(p.mapsUrl, "_blank", "noopener");
+      });
 
-      // escape key close
-      window.addEventListener("keydown", (e)=>{
+      $("#addIcsBtn")?.addEventListener("click", ()=>{
+        const p = booking._lastSuccess;
+        if(!p) return;
+        haptic(10);
+        const startISO = `${p.dateISO}T${p.time}`;
+        makeICS({
+          title: `Beauty Booking — ${p.serviceName}`,
+          location: p.listing?.address || p.listing?.name || "",
+          startISO,
+          durationMin: p.durationMin || 60,
+          description: p.textDetails || ""
+        });
+      });
+
+      $("#copyDetailsBtn")?.addEventListener("click", ()=>{
+        const p = booking._lastSuccess;
+        if(!p) return;
+        haptic(8);
+        copyText(p.textDetails || "");
+      });
+
+      // Submit booking
+      $("#submitBooking")?.addEventListener("click", ()=>{ haptic(14); sendToTelegram(); });
+
+      // Validate on typing
+      ["fName","fPhone","fEmail"].forEach(id=>{
+        document.getElementById(id)?.addEventListener("input", ()=> validateBooking());
+      });
+
+      // ESC to close
+      document.addEventListener("keydown", (e)=>{
         if(e.key !== "Escape") return;
-        if($("#successOverlay")?.classList.contains("on")) return closeOverlay("successOverlay");
-        if($("#draftsOverlay")?.classList.contains("on")) return closeOverlay("draftsOverlay");
-        if($("#timeOverlay")?.classList.contains("on")) return closeOverlay("timeOverlay");
-        if($("#dateOverlay")?.classList.contains("on")) return closeOverlay("dateOverlay");
-        if($("#polModal")?.classList.contains("on")) return closeOverlay("polModal");
-        if($("#modal")?.classList.contains("on")) return closeBooking();
+
+        if($("#successOverlay")?.classList.contains("on")){ closeOverlay("successOverlay"); return; }
+        if($("#draftsOverlay")?.classList.contains("on")){ closeOverlay("draftsOverlay"); return; }
+        if($("#dateOverlay")?.classList.contains("on")){ closeOverlay("dateOverlay"); return; }
+        if($("#timeOverlay")?.classList.contains("on")){ closeOverlay("timeOverlay"); return; }
+        if($("#polModal")?.classList.contains("on")){
+          $("#closePol")?.click(); return;
+        }
+        if($("#modal")?.classList.contains("on")){ closeModal(); return; }
       });
     }
 
     // ===== Init =====
     function init(){
-      // apply theme
+      // theme
       applyTheme();
 
-      // apply texts
+      // lang
       renderTexts();
 
-      // services chips
-      renderServiceChips();
+      // ask geo (soft)
+      try{
+        navigator.geolocation?.getCurrentPosition((pos)=>{
+          state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          renderAll();
+          refreshHeroCandidates(true);
+          renderNextHeroRotating(true);
+        }, ()=>{}, { enableHighAccuracy:false, timeout: 2000, maximumAge: 60_000 });
+      }catch(e){}
 
-      // show AI section if previously opened? keep closed by default
-      $("#aiSection").style.display = "none";
-
-      // restore inputs
-      const qEl = $("#q");
-      if(qEl) qEl.value = state.q || "";
-
-      // drafts
-      updateDraftBadge();
-
-      // first render
-      renderAll();
-
-      // hero
-      refreshHeroCandidates(true);
-      renderNextHeroRotating(false);
-      startHeroTimer();
-
-      // last booking
-      renderLastBookingCard();
-
-      // install hint for iOS (optional toast)
-      if(!isStandalone()){
-        const hinted = localStorage.getItem(LS.a2hsHint)==="1";
-        if(!hinted && /iphone|ipad|ipod/i.test(navigator.userAgent||"")){
-          setTimeout(()=>toast(T[state.lang].toastA2HS), 1200);
-          localStorage.setItem(LS.a2hsHint,"1");
+      // Service worker
+      try{
+        if("serviceWorker" in navigator){
+          navigator.serviceWorker.register("./worker.js").catch(()=>{});
         }
-      }
+      }catch(e){}
 
-      // events
-      initEvents();
+      // Apply saved theme & lang button visuals
+      setLang(state.lang);
 
-      // AUTO open booking from profile redirect
+      // Auto-open booking from profile
       if(AUTO){
-        const l = (window.LISTINGS||[]).find(x=>x.id===AUTO.id);
-        if(l){
-          let slot = null;
-          try{ slot = window.bb.util.nextAvailable(l, AUTO.service || null); }catch(e){}
-          setTimeout(()=>openBooking(l.id, AUTO.service || null, slot), 250);
-        }
+        setTimeout(()=>{
+          try{
+            const listing = getListing(AUTO.id);
+            if(!listing) return;
+            // precompute next slot if none specified
+            let slot = null;
+            try{ slot = window.bb.util.nextAvailable(listing, AUTO.service); }catch(e){}
+            openBooking(AUTO.id, AUTO.service, slot);
+          }catch(e){}
+        }, 250);
       }
+
+      wire();
     }
 
-    // start after data.js ready
-    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-    else init();
+    init();
   </script>
 </body>
 </html>
-
-
 
