@@ -324,6 +324,7 @@
   }
 
   // old-style: looks at listing.availability (date -> times)
+  // ✅ FIXED: return {date, dateISO} for backward compatibility with index.html
   function nextAvailable(listing, serviceId){
     const av = listing.availability || {};
     const dates = Object.keys(av).sort();
@@ -332,15 +333,17 @@
       if(!times.length) continue;
       const time = times[0];
       const price = minPriceFor(listing, serviceId);
-      return { dateISO:d, time, fromPrice: price };
+      return { date: d, dateISO: d, time, fromPrice: price };
     }
     return null;
   }
 
+  // ✅ FIXED: accept slot.date OR slot.dateISO
   function isTodaySlot(slot){
     if(!slot) return false;
-    const t = new Date().toISOString().slice(0,10);
-    return slot.dateISO === t;
+    const today = new Date().toISOString().slice(0,10);
+    const d = slot.date || slot.dateISO;
+    return d === today;
   }
 
   function smartScore(listing, userLoc, serviceId){
@@ -491,3 +494,4 @@
     conciergeSuggest
   };
 })();
+
