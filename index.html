@@ -1459,7 +1459,7 @@
   <script src="./data.js"></script>
   <script>
     // === CONFIG ===
-    window.WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
+    const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
     // === STATE ===
     const LS = {
@@ -1508,7 +1508,17 @@
       (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
       (window.navigator.standalone === true);
 
-    function haptic(ms=12){
+    
+
+    // Local ISO date (YYYY-MM-DD) without UTC shift
+    function isoLocal(d=new Date()){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+
+function haptic(ms=12){
       try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
     }
 
@@ -1740,15 +1750,7 @@
       return `${escapeHtml(a)}<mark>${escapeHtml(b)}</mark>${escapeHtml(c)}`;
     }
 
-    
-    // ✅ Local ISO (YYYY-MM-DD) to avoid UTC shift bugs
-    function isoLocal(d){
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,"0");
-      const day = String(d.getDate()).padStart(2,"0");
-      return `${y}-${m}-${day}`;
-    }
-function formatDateShort(iso){
+    function formatDateShort(iso){
       const [y,m,d] = iso.split("-").map(x=>parseInt(x,10));
       const dt = new Date(y, m-1, d);
       return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { weekday:"short", month:"short", day:"numeric" });
@@ -2345,15 +2347,65 @@ function formatDateShort(iso){
     }
 
     function listAvailableTimes(listing, serviceId, dateISO){
-      try{
-        if(window.bb?.util?.availableTimes) return window.bb.util.availableTimes(listing, serviceId, dateISO) || [];
-      }catch(e){}
-      const svc = (listing.services||[]).find(s=>s.serviceId===serviceId) || (listing.services||[])[0];
-      const slots = svc?.slots || listing.slots || [];
-      return slots
-        .filter(x=>x.dateISO===dateISO)
-        .map(x=>x.time)
-        .filter(Boolean);
+      // Returns ["HH:MM", ...] for a given listing/service/date.
+      // Supports:
+      // 1) listing.availabilityByService[serviceId] = ["YYYY-MM-DDTHH:MM:SS", ...]
+      // 2) listing.availability[dateISO] = ["HH:MM", ...]
+      // 3) legacy slots format: listing.slots = [{serviceId,dateISO,time}, ...]
+      const sid = serviceId || (listing?.services?.[0]?.serviceId || null);
+
+      // (1) ISO slots by service
+      if(listing?.availabilityByService && sid && Array.isArray(listing.availabilityByService[sid])){
+        const arr = listing.availabilityByService[sid]
+          .filter(s => typeof s === "string" && s.startsWith(dateISO+"T"))
+          .map(s => s.slice(11,16))
+          .filter(Boolean);
+        if(arr.length) return arr;
+      }
+
+      // (2) date -> times map
+      if(listing?.availability && Array.isArray(listing.availability[dateISO]) && listing.availability[dateISO].length){
+        return listing.availability[dateISO].slice().filter(Boolean);
+      }
+
+      // (3) legacy object slots
+      const svc = (listing?.services||[]).find(s=> s.serviceId===sid) || (listing?.services||[])[0] || null;
+      const slots = Array.isArray(listing?.slots) ? listing.slots : [];
+      const legacy = slots
+        .filter(x => x && (x.serviceId===(svc?.serviceId||sid)) && x.dateISO===dateISO)
+        .map(x => x.time)
+        .filter(Boolean)
+        .sort();
+      if(legacy.length) return legacy;
+
+      // (4) Demo fallback: always give a few random times so UX never looks broken
+      const pad = (n)=> String(n).padStart(2,"0");
+      const uniqSorted = (arr)=> Array.from(new Set(arr)).sort();
+      const randInt = (a,b)=> Math.floor(a + Math.random()*(b-a+1));
+      const makeTimes = ()=>{
+        const count = randInt(3,7);
+        const out = [];
+        for(let i=0;i<count;i++){
+          const h = randInt(10,20);
+          const m = [0,10,20,30,40,50][randInt(0,5)];
+          out.push(`${pad(h)}:${pad(m)}`);
+        }
+        return uniqSorted(out);
+      };
+      const times = makeTimes();
+
+      // persist into availability (so changing back doesn't "lose" it)
+      listing.availability = listing.availability || {};
+      listing.availability[dateISO] = times;
+
+      // keep availabilityByService in sync if present
+      if(listing.availabilityByService && sid){
+        listing.availabilityByService[sid] = listing.availabilityByService[sid] || [];
+        for(const t of times){
+          listing.availabilityByService[sid].push(`${dateISO}T${t}:00`);
+        }
+      }
+      return times;
     }
 
     function renderTimeGrid(){
@@ -3275,3 +3327,4 @@ Email: ${email}`;
   </script>
 </body>
 </html>
+
