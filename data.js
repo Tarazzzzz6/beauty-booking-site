@@ -2,9 +2,6 @@
 (function(){
   // ===== Worker endpoint (fallback used by profile booking) =====
   window.WORKER_URL = window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev";
-  // Demo slots generator: keep true while проект у тесті (можна вимкнути пізніше)
-  window.BB_DEMO_SLOTS = (window.BB_DEMO_SLOTS !== false);
-
 
   // ---- SERVICES ----
   window.SERVICES = [
@@ -14,33 +11,6 @@
     { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
     { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" },
   ];
-  // ---- PAYMENTS (demo config) ----
-  window.PAYMENTS = window.PAYMENTS || {
-    mode: "demo",
-    depositEnabled: true,
-    depositAmount: 10,
-    applePay: true,
-    googlePay: false
-  };
-
-
-  // ===== Demo metrics (stable per listing) =====
-  function hashCode(str){
-    let h = 0;
-    for(let i=0;i<str.length;i++){
-      h = ((h<<5)-h) + str.charCodeAt(i);
-      h |= 0;
-    }
-    return Math.abs(h);
-  }
-  function stableRand01(seed){
-    // simple LCG
-    let x = (seed % 2147483647);
-    x = (x * 48271) % 2147483647;
-    return x / 2147483647;
-  }
-
-
 
   // ===== Helpers =====
   const pad = (n)=> String(n).padStart(2,"0");
@@ -64,6 +34,18 @@
   function randInt(a,b){ return Math.floor(a + Math.random()*(b-a+1)); }
   function uniqSorted(arr){ return Array.from(new Set(arr)).sort(); }
 
+  function makeTimesForDay(){
+    // premium vibe: 2–6 slots/day, between 10:00–20:00
+    const count = randInt(2,6);
+    const out = [];
+    for(let i=0;i<count;i++){
+      const h = randInt(10,20);
+      const m = [0,10,20,30,40,50][randInt(0,5)];
+      out.push(`${pad(h)}:${pad(m)}`);
+    }
+    return uniqSorted(out);
+  }
+
   // Expand date->["11:00"] into ISO datetime list
   function expandAvailabilityToIso(avByDate){
     const out = [];
@@ -74,6 +56,7 @@
         out.push(toLocalIso(d,t));
       }
     }
+    // Sort by datetime
     out.sort((a,b)=> new Date(a) - new Date(b));
     return out;
   }
@@ -275,24 +258,6 @@
     }
   ];
 
-  // Attach demo rating + weekly bookings (stable) if not provided
-  for(const l of (window.LISTINGS||[])){
-    const seed = hashCode(l.id || l.name || "listing");
-    if(l.rating==null){
-      // 4.3 - 5.0
-      l.rating = 4.3 + stableRand01(seed)*0.7;
-    }
-    if(l.reviewsCount==null){
-      l.reviewsCount = 20 + Math.floor(stableRand01(seed+7)*380);
-    }
-    if(l._weeklyBookings==null){
-      // 30 - 260
-      l._weeklyBookings = 30 + Math.floor(stableRand01(seed+19)*230);
-    }
-  }
-
-
-
   // ===== LIVE Availability generator (TEST MODE: always has slots for demo) =====
   (function generateLiveAvailability(){
     const base = new Date();
@@ -389,6 +354,7 @@
 
   function isTodaySlot(slot){
     if(!slot) return false;
+    // ✅ LOCAL today, no UTC shift
     const t = isoLocal(new Date());
     return slot.dateISO === t;
   }
@@ -531,7 +497,6 @@
 
   window.bb = window.bb || {};
   window.bb.util = {
-    isoLocal,
     haversineKm,
     listingService,
     minPriceFor,
@@ -542,4 +507,3 @@
     conciergeSuggest
   };
 })();
-;try{window.__BB_DATA_STATUS__=`DATA: ${(window.LISTINGS&&window.LISTINGS.length)||0} listings (data.js loaded)`;}catch(e){}

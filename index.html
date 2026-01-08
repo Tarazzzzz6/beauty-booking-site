@@ -136,11 +136,12 @@
 
     /* ===== TOPBAR ===== */
     .topbar{
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(12px);
-      background: linear-gradient(180deg, rgba(11,11,15,.92), rgba(11,11,15,.72));
-      border-bottom:1px solid rgba(255,255,255,.08);
-      padding: calc(var(--safeT) + 14px) 18px 12px;
+      position:sticky; top:0; z-index:70;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(7,7,11,.90), rgba(7,7,11,.50));
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-top: var(--safeT);
+      box-shadow: 0 18px 60px rgba(0,0,0,.20);
     }
     body[data-theme="light"] .topbar{
       background: linear-gradient(180deg, rgba(251,251,255,.90), rgba(251,251,255,.55));
@@ -162,20 +163,23 @@
     }
 
     .brand{
-      display:flex; align-items:center; gap:12px;
-      padding-top: 12px;
-      transform: translateY(8px);
+      display:flex;
+      align-items:flex-end;
+      gap:12px;
+      min-width:0;
+      flex:0 1 auto;
+      padding-top:6px;
     }
     .logo{
-      width:58px; height:58px;
-      display:grid; place-items:center;
-      border-radius:18px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,64,169,.38), transparent 55%),
-                  radial-gradient(circle at 70% 70%, rgba(255,208,96,.26), transparent 55%),
-                  rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow: 0 16px 44px rgba(0,0,0,.55);
+      width:52px; height:52px; border-radius:20px;
+      background:
+        radial-gradient(10px 10px at 30% 25%, rgba(255,255,255,.65), transparent 60%),
+        radial-gradient(18px 18px at 70% 20%, rgba(255,210,122,.35), transparent 65%),
+        linear-gradient(135deg, rgba(255,79,216,.85), rgba(139,92,246,.85));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 16px 52px rgba(0,0,0,.38);
+      position:relative;
       overflow:hidden;
+      flex:0 0 auto;
     }
     .logo:after{
       content:"";
@@ -188,11 +192,12 @@
     @keyframes sweep{0%{transform:translateX(-35%) rotate(20deg)}100%{transform:translateX(35%) rotate(20deg)}}
 
     .brand h1{
-      margin:0;
-      font-family: "Playfair Display", serif;
-      font-size: 30px;
-      letter-spacing:.3px;
-      line-height: 1.05;
+      font-family:"Playfair Display",serif;
+      font-size:26px; line-height:1.02; margin:0;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      transform: translateY(3px);
+      text-shadow: 0 10px 30px rgba(0,0,0,.18);
     }
     .brand .sub{font-size:12px; color:var(--muted); margin-top:2px; display:none}
 
@@ -280,20 +285,20 @@
       flex-wrap:wrap;
       justify-content:flex-end;
       max-width: 620px;
-      transform: translateY(10px);
+      transform: translateY(3px);
     }
 
     .iconbtn{
-      width:60px; height:60px;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      display:grid; place-items:center;
+      width:56px; height:56px; border-radius:20px;
+      border:1px solid var(--stroke);
+      background:var(--card);
+      color:var(--text);
       cursor:pointer;
-      transition: transform .15s ease, background .2s ease, border-color .2s ease;
-      font-size: 20px;
-      touch-action: manipulation;
+      display:grid; place-items:center;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      position:relative;
+      flex:0 0 auto;
+      font-size:19px;
     }
     .iconbtn:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
     .iconbtn:active{transform: translateY(0px) scale(.98)}
@@ -519,11 +524,6 @@
     .tag.good{border-color: rgba(32,227,165,.28); background: rgba(32,227,165,.10)}
     .tag.today{border-color: rgba(255,210,122,.32); background: rgba(255,210,122,.10); box-shadow: var(--glow2)}
     .tag.partner{border-color: rgba(255,79,216,.32); background: rgba(255,79,216,.10); box-shadow: var(--glow)}
-
-
-    .slotRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .slotPill{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(244,243,248,.92)}
-    body[data-theme="light"] .slotPill{border-color:rgba(11,11,15,.12);background:rgba(11,11,15,.04);color:rgba(11,11,15,.82)}
 
     .why{margin-top:10px; font-size:12.5px; color:rgba(244,243,248,.82)}
     body[data-theme="light"] .why{color:rgba(11,11,15,.78)}
@@ -1049,23 +1049,7 @@
       .btn{width:100%; justify-content:center;}
       .mbr{display:inline;}
     }
-  
-    /* ===== Payments (Apple Pay demo) ===== */
-    .payBox{margin-top:12px;padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(255,255,255,.04)}
-    .payTitle{font-weight:700;margin-bottom:8px}
-    .payRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .payBtn{appearance:none;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:10px 12px;font-weight:700;cursor:pointer}
-    .payBtn[aria-pressed="true"]{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.12)}
-    .payNote{margin-top:8px;font-size:12px;opacity:.8}
-
-  
-  /* ✅ header micro-tune (bigger icons + slightly lower) */
-  .top-actions{margin-top:10px; gap:10px;}
-  .pill{font-size:14px; padding:10px 12px; min-height:38px;}
-  .pill .ico{font-size:18px;}
-  .brand h1{font-size:22px; margin-top:6px;}
-  .brand .sub{margin-top:2px;}
-</style>
+  </style>
 </head>
 
 <body>
@@ -1212,17 +1196,7 @@
       <div class="grid" id="savedGrid"></div>
     </section>
 
-    
-    <!-- Trending this week -->
-    <section class="sec" id="trendingSec" style="margin-top:14px">
-      <div class="secHead">
-        <h2 id="trendingTitle">Trending this week</h2>
-        <div class="secSub" id="trendingSub">Most booked this week (demo)</div>
-      </div>
-      <div class="strip" id="trendingRow" aria-label="Trending this week"></div>
-    </section>
-
-<section class="section" id="partnersSection">
+    <section class="section" id="partnersSection">
       <div class="sectionHead">
         <div>
           <h3 class="sectionTitle" id="partnersTitle">Top salons / partners</h3>
@@ -1363,7 +1337,6 @@
             <div class="selectLike timeGlow" id="timePick">
               <div>
                 <div class="val" id="timeVal">Tap to choose</div>
-                <div id="holdLine" class="hint" style="display:none;margin-top:6px;font-size:12px"></div>
                 <div class="hint" id="timeHint">custom picker</div>
               </div>
               <div style="opacity:.85">▾</div>
@@ -1483,59 +1456,8 @@
     </div>
   </div>
 
-  <script src="./data.js?v=20260108"></script>
+  <script src="./data.js"></script>
   <script>
-/* === BOOTSTRAP: ensure demo data exists even if data.js didn't load (GitHub/Pages path issues) === */
-(function(){
-  try{
-    if(!window.SERVICES || !Array.isArray(window.SERVICES) || !window.SERVICES.length){
-      window.SERVICES = [
-        { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
-        { id:"pedicure", ua:"Педикюр", en:"Pedicure", icon:"🦶" },
-        { id:"brows", ua:"Брови", en:"Brows", icon:"✨" },
-        { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
-        { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" }
-      ];
-    }
-    if(!window.LISTINGS || !Array.isArray(window.LISTINGS) || !window.LISTINGS.length){
-      const now = new Date();
-      const pad = (n)=> String(n).padStart(2,"0");
-      const isoLocal = (d)=> `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-      const addDays = (b,i)=> new Date(b.getFullYear(), b.getMonth(), b.getDate()+i);
-      const times = ["10:00","11:30","13:00","15:00","17:30","19:00"];
-      const avail = {};
-      for(let i=0;i<30;i++){
-        avail[isoLocal(addDays(now,i))] = times.slice(0, 4 + (i%3));
-      }
-      window.LISTINGS = [{
-        id:"demo-salon",
-        name:"Demo Salon (data.js not loaded)",
-        brand:"Beauty Booking",
-        city:"Montréal",
-        address:"Downtown Montréal, QC",
-        lat:45.5019, lng:-73.5674,
-        partner:true, recommended:true,
-        verified:true, sterile:true,
-        phone:"+1 (514) 000-0000",
-        instagram:"https://instagram.com/",
-        images:[
-          "https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=1400&q=80",
-          "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=1400&q=80"
-        ],
-        services:[
-          { serviceId:"manicure", from:30, to:55, durationMin:60 },
-          { serviceId:"pedicure", from:45, to:75, durationMin:75 },
-          { serviceId:"brows", from:25, to:45, durationMin:45 }
-        ],
-        availability: avail
-      }];
-    }
-    window.__BB_DATA_STATUS__ = `DATA: ${window.LISTINGS?.length||0} listings`;
-  }catch(e){
-    window.__BB_DATA_STATUS__ = "DATA: bootstrap error";
-  }
-})();
-
     // === CONFIG ===
     const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
@@ -1586,51 +1508,6 @@
       (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
       (window.navigator.standalone === true);
 
-  // === DATA FALLBACK (demo always shows listings even if data.js fails to load) ===
-  if (!Array.isArray(window.LISTINGS) || window.LISTINGS.length === 0) {
-    window.SERVICES = window.SERVICES || [
-      { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
-      { id:"pedicure", ua:"Педикюр", en:"Pedicure", icon:"🦶" },
-      { id:"brows", ua:"Брови", en:"Brows", icon:"✨" },
-      { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
-      { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" },
-    ];
-
-    window.LISTINGS = [
-      {
-        id:"demo-atelier",
-        name:"Demo Atelier",
-        brand:"Demo Atelier",
-        city:"Montréal",
-        address:"Downtown Montréal, QC",
-        lat:45.5019, lng:-73.5674,
-        partner:true, recommended:true, verified:true, sterile:true,
-        phone:"+1 (514) 000-0000",
-        instagram:"https://instagram.com/",
-        images:["https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=1400&q=80"],
-        services:[
-          { serviceId:"manicure", from:35, to:60, durationMin:60 },
-          { serviceId:"brows", from:30, to:55, durationMin:45 }
-        ],
-        availability:{}
-      },
-      {
-        id:"demo-home-master",
-        name:"Iryna Stovban · Home master",
-        brand:"Iryna Stovban",
-        city:"Montréal",
-        address:"6740 Bd Décarie, Montréal, QC H3X 0A7, Canada",
-        lat:45.4929, lng:-73.6545,
-        partner:false, recommended:true, verified:true, sterile:true,
-        phone:"+1 (438) 233-3457",
-        instagram:"https://share.google/eQ0wgWkzDtTdM8v4Y0",
-        images:["https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80"],
-        services:[{ serviceId:"manicure", from:20, to:25, durationMin:60 }],
-        availability:{}
-      }
-    ];
-  }
-
     
 
     // Local ISO date (YYYY-MM-DD) without UTC shift
@@ -1640,18 +1517,6 @@
       const day = String(d.getDate()).padStart(2,'0');
       return `${y}-${m}-${day}`;
     }
-
-    // ✅ Normalize service ids (backward-compatible)
-    function normServiceId(id){
-      const m = {
-        "mens_haircut":"mens_haircut",
-        "womens_haircut":"womens_haircut",
-        "men_haircut":"mens_haircut",
-        "women_haircut":"womens_haircut"
-      };
-      return m[id] || id;
-    }
-
 
 function haptic(ms=12){
       try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
@@ -1770,9 +1635,8 @@ function haptic(ms=12){
         stickyQuick: "Quick",
         stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install",
-      deposit_title: "Deposit (optional)",
-      deposit_note: "Demo mode: this won’t charge anything yet. Later we’ll connect real Stripe + Apple Pay.",}
+        install: "Install"
+      }
     };
 
     function applyTheme(){
@@ -1940,7 +1804,6 @@ function haptic(ms=12){
       if(listing.partner) tags.push({t:"Partner", cls:"partner", title:"Paid partner (higher priority)"});
       if(listing.verified) tags.push({t:"Verified", cls:"good", title:"Verified salon/master"});
       if(listing.sterile) tags.push({t:"Sterile", cls:"good", title:"Sterile tools policy"});
-      if(listing.rating){ tags.push({t:`⭐ ${(+listing.rating).toFixed(1)}${listing.reviewsCount?` (${listing.reviewsCount})`:""}`, cls:"good", title:"Rating (demo)"}); }
       try{
         if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today", title:"Has slots today"});
       }catch(e){}
@@ -1972,10 +1835,6 @@ function haptic(ms=12){
 
       const whenLine = slot ? `${formatDateShort(slot.dateISO)} · ${slot.time}` : (state.lang==="uk" ? "Немає слотів" : "No slots");
       const whyLine = `<div class="why" title="Why this one?"><span>Why:</span> ${escapeHtml(why)}</div>`;
-    const nextTimes = slot ? ((av[slot.dateISO]||[]).slice().sort().slice(0,3)) : [];
-    const pills = nextTimes.map(t=>`<span class="slotPill">${escapeHtml(t)}</span>`).join("");
-    const pillsHtml = pills ? `<div class="slotRow" aria-label="Next times">${pills}</div>` : "";
-
 
       const nm = (state.q ? highlight(listing.name, state.q) : escapeHtml(listing.name));
       const ad = (state.q ? highlight(listing.address, state.q) : escapeHtml(listing.address));
@@ -2044,7 +1903,7 @@ function haptic(ms=12){
         btn.addEventListener("click", (e)=>{
           e.stopPropagation();
           haptic(16);
-          openBooking(listing.id, normServiceId(state.serviceId, slot));
+          openBooking(listing.id, state.serviceId, slot);
         });
       });
 
@@ -2081,7 +1940,7 @@ function haptic(ms=12){
       targets.forEach(t=>t.innerHTML = "");
 
       const all = (window.SERVICES||[]).slice();
-      const pref = ["manicure","pedicure","brows","mens_haircut","womens_haircut","haircut"];
+      const pref = ["manicure","pedicure","brows","haircut_men","haircut_women","haircut"];
       const byId = new Map(all.map(x=>[x.id,x]));
       const ordered = [];
       pref.forEach(id=>{ if(byId.has(id)) ordered.push(byId.get(id)); });
@@ -2195,7 +2054,7 @@ function haptic(ms=12){
       if(card){
         const go = ()=>{
           haptic(14);
-          openBooking(listing.id, normServiceId(state.serviceId, slot));
+          openBooking(listing.id, state.serviceId, slot);
         };
         card.onclick = go;
         card.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
@@ -2287,28 +2146,6 @@ function haptic(ms=12){
     }
 
     // ===== Main render =====
-
-    function renderTrending(list){
-      const row = $("#trendingRow");
-      if(!row) return;
-      const pool = (list||[]).slice().filter(l=>l && l._weeklyBookings!=null);
-      pool.sort((a,b)=> (b._weeklyBookings||0) - (a._weeklyBookings||0));
-      const picks = pool.slice(0,8);
-      row.innerHTML = "";
-      for(const l of picks){
-        const c = buildCard(l, true);
-        c.classList.add("cardBig");
-        row.appendChild(c);
-      }
-      // hide if empty
-      const sec = $("#trendingSec");
-      if(sec) sec.style.display = picks.length ? "" : "none";
-      // localized labels
-      $("#trendingTitle").textContent = state.lang==="uk" ? "Trending цього тижня" : "Trending this week";
-      $("#trendingSub").textContent = state.lang==="uk" ? "Найчастіше бронювали (демо)" : "Most booked this week (demo)";
-    }
-
-
     function renderAll(){
       const list = filteredListings();
       const { partners, rec, other } = groupListings(list);
@@ -2335,8 +2172,6 @@ function haptic(ms=12){
       if(empty) empty.style.display = (total === 0) ? "" : "none";
 
       renderSaved();
-      renderTrending(list);
-
       refreshHeroCandidates(true);
       renderNextHeroRotating(false);
       saveFilters();
@@ -2373,11 +2208,7 @@ function haptic(ms=12){
       slot:null,
       times:[],
       monthCursor: null,
-      _lastSuccess: null,
-      holdUntil: null,
-      _holdTick: null,
-      paymentMethod: null,
-      depositAmount: 0
+      _lastSuccess: null
     };
 
     function getListing(id){
@@ -2484,47 +2315,6 @@ function haptic(ms=12){
       if(btn) btn.disabled = !ok;
       return ok;
     }
-    function clearHold(){
-      if (booking._holdTick){ clearInterval(booking._holdTick); booking._holdTick=null; }
-      booking.holdUntil = null;
-      const hl = $("#holdLine");
-      if(hl){ hl.style.display="none"; hl.textContent=""; }
-    }
-
-    function startHold(){
-      clearHold();
-      booking.holdUntil = Date.now() + 120000; // 2 min
-      updateHoldLine();
-      booking._holdTick = setInterval(updateHoldLine, 500);
-    }
-
-    function updateHoldLine(){
-      const hl = $("#holdLine");
-      if(!hl) return;
-      if(!booking.holdUntil || !booking.time){
-        hl.style.display="none";
-        hl.textContent="";
-        return;
-      }
-      const ms = booking.holdUntil - Date.now();
-      if(ms <= 0){
-        clearHold();
-        // expire selection
-        booking.time = null;
-        booking.timeISO = null;
-        const tv = $("#timeVal");
-        if(tv) tv.textContent = i18n("pick_time");
-        validateBooking();
-        toast(LANG==="ua" ? "Слот більше не утримується — обери час знову" : "Hold expired — please pick a time again");
-        return;
-      }
-      const sec = Math.ceil(ms/1000);
-      const mm = Math.floor(sec/60);
-      const ss = String(sec%60).padStart(2,"0");
-      hl.style.display="block";
-      hl.textContent = (LANG==="ua" ? `⏳ Утримуємо слот ще ${mm}:${ss}` : `⏳ Holding slot for ${mm}:${ss}`);
-    }
-
 
     function openModal(){
       const m = $("#modal");
@@ -2538,7 +2328,6 @@ function haptic(ms=12){
       if(!m) return;
       m.classList.remove("on");
       m.setAttribute("aria-hidden","true");
-      clearHold();
       unlockScroll();
     }
 
@@ -2558,8 +2347,6 @@ function haptic(ms=12){
     }
 
     function listAvailableTimes(listing, serviceId, dateISO){
-      serviceId = normServiceId(serviceId);
-
       // Returns ["HH:MM", ...] for a given listing/service/date.
       // Supports:
       // 1) listing.availabilityByService[serviceId] = ["YYYY-MM-DDTHH:MM:SS", ...]
@@ -2618,20 +2405,6 @@ function haptic(ms=12){
           listing.availabilityByService[sid].push(`${dateISO}T${t}:00`);
         }
       }
-      // ✅ DEMO/SAFETY: якщо після фільтрів немає часу — генеруємо слоти, щоб завжди було що показати
-      if(!times.length){
-        const todayISO = isoLocal(new Date());
-        if(dateISO === todayISO){
-          const now2 = new Date();
-          const h1 = Math.min(20, now2.getHours() + 1);
-          const h2 = Math.min(20, now2.getHours() + 2);
-          times = uniqSorted([`${pad(h1)}:00`, `${pad(h2)}:30`, `${pad(Math.min(20, h2+1))}:00`]);
-        } else {
-          times = makeTimesForDay();
-        }
-        listing.availability[dateISO] = times.slice();
-      }
-
       return times;
     }
 
@@ -2646,7 +2419,6 @@ function haptic(ms=12){
         b.addEventListener("click", ()=>{
           haptic(12);
           booking.time = t;
-          startHold();
           $("#timeVal").textContent = t;
           validateBooking();
           renderTimeGrid();
@@ -2661,8 +2433,7 @@ function haptic(ms=12){
         toast(state.lang==="uk" ? "Спочатку обери дату" : "Pick date first");
         return;
       }
-      if(!booking.serviceId){ booking.serviceId = normServiceId( normServiceId(booking.listing?.services?.[0]?.serviceId || null)); }
-    booking.times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
+      booking.times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
       if(!booking.times.length){
         toast(state.lang==="uk" ? "Немає часу на цю дату" : "No times on this date");
         return;
@@ -2733,9 +2504,6 @@ function haptic(ms=12){
           booking.dateISO = iso;
           $("#dateVal").textContent = formatDateShort(iso);
           booking.time = null;
-          clearHold();
-          if(!booking.serviceId){ booking.serviceId = normServiceId(booking.listing?.services?.[0]?.serviceId || null); }
-    booking.times = listAvailableTimes(booking.listing, booking.serviceId, booking.dateISO);
           $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
           validateBooking();
           renderCalendar();
@@ -2760,7 +2528,7 @@ function haptic(ms=12){
 
       const idx = Math.max(0, svcs.findIndex(s=>s.serviceId===booking.serviceId));
       const next = svcs[(idx+1) % svcs.length];
-      booking.serviceId = normServiceId(next.serviceId);
+      booking.serviceId = next.serviceId;
       $("#svcVal").textContent = serviceLabel(booking.serviceId) || (state.lang==="uk"?next.ua:next.en) || "—";
       setPriceLine(listing, booking.serviceId);
 
@@ -2777,15 +2545,13 @@ function haptic(ms=12){
       if(serviceId) pick = svcs.find(s=>s.serviceId===serviceId) || null;
       if(!pick) pick = svcs[0] || null;
 
-      booking.serviceId = normServiceId(pick ? pick.serviceId : serviceId);
+      booking.serviceId = pick ? pick.serviceId : serviceId;
       const txt = serviceLabel(booking.serviceId) || (pick ? (state.lang==="uk"?pick.ua:pick.en) : "");
       $("#svcVal").textContent = txt || "—";
       setPriceLine(listing, booking.serviceId);
     }
 
     function openBooking(listingId, serviceId=null, slot=null){
-      serviceId = normServiceId(serviceId);
-
       const listing = getListing(listingId);
       if(!listing){
         toast("Listing not found");
@@ -2933,14 +2699,14 @@ function haptic(ms=12){
           if(act==="open"){
             haptic(10);
             closeOverlay("draftsOverlay");
-            openBooking(d.id, normServiceId(d.serviceId || null, (d.dateISO && d.time)) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
+            openBooking(d.id, d.serviceId || null, (d.dateISO && d.time) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
             return;
           }
 
           if(act==="book"){
             haptic(14);
             closeOverlay("draftsOverlay");
-            openBooking(d.id, normServiceId(d.serviceId || null, (d.dateISO && d.time)) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
+            openBooking(d.id, d.serviceId || null, (d.dateISO && d.time) ? { dateISO:d.dateISO, time:d.time, fromPrice:null } : null);
             // if time exists, auto-send after tiny delay (still validates)
             setTimeout(()=>{
               if(d.dateISO && d.time){
@@ -3156,7 +2922,7 @@ Email: ${email}`;
 
       const go = ()=>{
         haptic(14);
-        openBooking(listing.id, normServiceId(last.serviceId || null, { dateISO:last.dateISO, time:last.time, fromPrice:null }));
+        openBooking(listing.id, last.serviceId || null, { dateISO:last.dateISO, time:last.time, fromPrice:null });
       };
       box.onclick = go;
       box.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
@@ -3171,8 +2937,8 @@ Email: ${email}`;
       if(s.includes("манік") || s.includes("маник") || s.includes("manic")) out.serviceId = "manicure";
       if(s.includes("педик") || s.includes("pedi")) out.serviceId = "pedicure";
       if(s.includes("бров") || s.includes("brow")) out.serviceId = "brows";
-      if(s.includes("чол") || s.includes("men")) out.serviceId = "mens_haircut";
-      if(s.includes("жін") || s.includes("women") || s.includes("female")) out.serviceId = "womens_haircut";
+      if(s.includes("чол") || s.includes("men")) out.serviceId = "haircut_men";
+      if(s.includes("жін") || s.includes("women") || s.includes("female")) out.serviceId = "haircut_women";
       if(!out.serviceId && (s.includes("стриж") || s.includes("hair"))) out.serviceId = "haircut";
 
       const m1 = s.match(/after\s*(\d{1,2})/i) || s.match(/після\s*(\d{1,2})/i);
@@ -3330,15 +3096,29 @@ Email: ${email}`;
       });
 
       $("#favOnly")?.addEventListener("click", ()=>{
-        haptic(10);
+        // If user has no favorites yet, don't allow "Only ❤️" to hide everything
+        if((state.favs?.size||0) === 0){
+          state.favOnly = false;
+          $("#favOnly")?.classList.remove("on");
+          toast((dict.ua?.noFavs) || "Ще немає ❤️ улюблених — показую всі");
+          saveState();
+          renderAll();
+          return;
+        }
         state.favOnly = !state.favOnly;
         $("#favOnly")?.classList.toggle("on", state.favOnly);
-        saveFilters();
+        saveState();
         renderAll();
       });
 
       // keep favOnly style on load
       $("#favOnly")?.classList.toggle("on", state.favOnly);
+// auto-disable favOnly if user has no favorites yet (prevents empty homepage)
+      if(state.favOnly && (state.favs?.size||0) === 0){
+        state.favOnly = false;
+        $("#favOnly")?.classList.remove("on");
+        saveState();
+      }
 
       $("#aiBtn")?.addEventListener("click", ()=>{
         haptic(10);
@@ -3363,7 +3143,7 @@ Email: ${email}`;
           const l = list[0];
           let slot = null;
           try{ slot = window.bb.util.nextAvailable(l, state.serviceId); }catch(e){}
-          openBooking(l.id, normServiceId(state.serviceId, slot));
+          openBooking(l.id, state.serviceId, slot);
         } else {
           toast(state.lang==="uk" ? "Немає слотів" : "No slots");
         }
@@ -3549,7 +3329,7 @@ Email: ${email}`;
             // precompute next slot if none specified
             let slot = null;
             try{ slot = window.bb.util.nextAvailable(listing, AUTO.service); }catch(e){}
-            openBooking(AUTO.id, normServiceId(AUTO.service, slot));
+            openBooking(AUTO.id, AUTO.service, slot);
           }catch(e){}
         }, 250);
       }
@@ -3559,8 +3339,6 @@ Email: ${email}`;
 
     init();
   </script>
-
-<div id="bbDataBadge" style="position:fixed;left:10px;bottom:10px;z-index:9999;font:12px/1.2 system-ui;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);padding:6px 8px;border-radius:10px;pointer-events:none;max-width:70vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading…</div>
-<script>(function(){var el=document.getElementById('bbDataBadge'); if(!el) return; el.textContent=(window.__BB_DATA_STATUS__||'DATA: ?') + ' · ' + location.pathname; setTimeout(()=>{el.style.opacity='0.25';},3500);})();</script>
 </body>
 </html>
+
