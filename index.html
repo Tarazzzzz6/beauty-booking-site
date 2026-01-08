@@ -1058,7 +1058,14 @@
     .payBtn[aria-pressed="true"]{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.12)}
     .payNote{margin-top:8px;font-size:12px;opacity:.8}
 
-  </style>
+  
+  /* ✅ header micro-tune (bigger icons + slightly lower) */
+  .top-actions{margin-top:10px; gap:10px;}
+  .pill{font-size:14px; padding:10px 12px; min-height:38px;}
+  .pill .ico{font-size:18px;}
+  .brand h1{font-size:22px; margin-top:6px;}
+  .brand .sub{margin-top:2px;}
+</style>
 </head>
 
 <body>
@@ -1527,6 +1534,51 @@
     const isStandalone = () =>
       (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
       (window.navigator.standalone === true);
+
+  // === DATA FALLBACK (demo always shows listings even if data.js fails to load) ===
+  if (!Array.isArray(window.LISTINGS) || window.LISTINGS.length === 0) {
+    window.SERVICES = window.SERVICES || [
+      { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
+      { id:"pedicure", ua:"Педикюр", en:"Pedicure", icon:"🦶" },
+      { id:"brows", ua:"Брови", en:"Brows", icon:"✨" },
+      { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
+      { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" },
+    ];
+
+    window.LISTINGS = [
+      {
+        id:"demo-atelier",
+        name:"Demo Atelier",
+        brand:"Demo Atelier",
+        city:"Montréal",
+        address:"Downtown Montréal, QC",
+        lat:45.5019, lng:-73.5674,
+        partner:true, recommended:true, verified:true, sterile:true,
+        phone:"+1 (514) 000-0000",
+        instagram:"https://instagram.com/",
+        images:["https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=1400&q=80"],
+        services:[
+          { serviceId:"manicure", from:35, to:60, durationMin:60 },
+          { serviceId:"brows", from:30, to:55, durationMin:45 }
+        ],
+        availability:{}
+      },
+      {
+        id:"demo-home-master",
+        name:"Iryna Stovban · Home master",
+        brand:"Iryna Stovban",
+        city:"Montréal",
+        address:"6740 Bd Décarie, Montréal, QC H3X 0A7, Canada",
+        lat:45.4929, lng:-73.6545,
+        partner:false, recommended:true, verified:true, sterile:true,
+        phone:"+1 (438) 233-3457",
+        instagram:"https://share.google/eQ0wgWkzDtTdM8v4Y0",
+        images:["https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80"],
+        services:[{ serviceId:"manicure", from:20, to:25, durationMin:60 }],
+        availability:{}
+      }
+    ];
+  }
 
     
 
