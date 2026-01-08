@@ -1770,8 +1770,7 @@ function haptic(ms=12){
         stickyQuick: "Quick",
         stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install"
-      
+        install: "Install",
       deposit_title: "Deposit (optional)",
       deposit_note: "Demo mode: this won’t charge anything yet. Later we’ll connect real Stripe + Apple Pay.",}
     };
@@ -2784,7 +2783,9 @@ function haptic(ms=12){
       setPriceLine(listing, booking.serviceId);
     }
 
-    function openBooking(listingId, normServiceId(serviceId=null, slot=null)){
+    function openBooking(listingId, serviceId=null, slot=null){
+      serviceId = normServiceId(serviceId);
+
       const listing = getListing(listingId);
       if(!listing){
         toast("Listing not found");
