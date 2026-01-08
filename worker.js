@@ -1,5 +1,5 @@
 /* worker.js — PWA Service Worker (production only) */
-const CACHE = "bb-cache-v1";
+const CACHE = "bb-cache-v2";
 const CORE = [
   "./",
   "./index.html",
@@ -53,3 +53,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
