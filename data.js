@@ -1,11 +1,11 @@
-/* Beauty Booking — data.js (global, LIVE + backward compatible) */
+* Beauty Booking — data.js (global, LIVE + backward compatible) */
 (function(){
   // ===== Worker endpoint (fallback used by profile booking) =====
   window.WORKER_URL = window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev";
   // Demo slots generator: keep true while проект у тесті (можна вимкнути пізніше)
   window.BB_DEMO_SLOTS = (window.BB_DEMO_SLOTS !== false);
 
-
+/
   // ---- SERVICES ----
   window.SERVICES = [
     { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
