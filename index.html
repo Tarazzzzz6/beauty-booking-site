@@ -1483,8 +1483,59 @@
     </div>
   </div>
 
-  <script src="./data.js"></script>
+  <script src="./data.js?v=20260108"></script>
   <script>
+/* === BOOTSTRAP: ensure demo data exists even if data.js didn't load (GitHub/Pages path issues) === */
+(function(){
+  try{
+    if(!window.SERVICES || !Array.isArray(window.SERVICES) || !window.SERVICES.length){
+      window.SERVICES = [
+        { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
+        { id:"pedicure", ua:"Педикюр", en:"Pedicure", icon:"🦶" },
+        { id:"brows", ua:"Брови", en:"Brows", icon:"✨" },
+        { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
+        { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" }
+      ];
+    }
+    if(!window.LISTINGS || !Array.isArray(window.LISTINGS) || !window.LISTINGS.length){
+      const now = new Date();
+      const pad = (n)=> String(n).padStart(2,"0");
+      const isoLocal = (d)=> `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+      const addDays = (b,i)=> new Date(b.getFullYear(), b.getMonth(), b.getDate()+i);
+      const times = ["10:00","11:30","13:00","15:00","17:30","19:00"];
+      const avail = {};
+      for(let i=0;i<30;i++){
+        avail[isoLocal(addDays(now,i))] = times.slice(0, 4 + (i%3));
+      }
+      window.LISTINGS = [{
+        id:"demo-salon",
+        name:"Demo Salon (data.js not loaded)",
+        brand:"Beauty Booking",
+        city:"Montréal",
+        address:"Downtown Montréal, QC",
+        lat:45.5019, lng:-73.5674,
+        partner:true, recommended:true,
+        verified:true, sterile:true,
+        phone:"+1 (514) 000-0000",
+        instagram:"https://instagram.com/",
+        images:[
+          "https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=1400&q=80",
+          "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=1400&q=80"
+        ],
+        services:[
+          { serviceId:"manicure", from:30, to:55, durationMin:60 },
+          { serviceId:"pedicure", from:45, to:75, durationMin:75 },
+          { serviceId:"brows", from:25, to:45, durationMin:45 }
+        ],
+        availability: avail
+      }];
+    }
+    window.__BB_DATA_STATUS__ = `DATA: ${window.LISTINGS?.length||0} listings`;
+  }catch(e){
+    window.__BB_DATA_STATUS__ = "DATA: bootstrap error";
+  }
+})();
+
     // === CONFIG ===
     const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
@@ -3507,5 +3558,8 @@ Email: ${email}`;
 
     init();
   </script>
+
+<div id="bbDataBadge" style="position:fixed;left:10px;bottom:10px;z-index:9999;font:12px/1.2 system-ui;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);padding:6px 8px;border-radius:10px;pointer-events:none;max-width:70vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading…</div>
+<script>(function(){var el=document.getElementById('bbDataBadge'); if(!el) return; el.textContent=(window.__BB_DATA_STATUS__||'DATA: ?') + ' · ' + location.pathname; setTimeout(()=>{el.style.opacity='0.25';},3500);})();</script>
 </body>
 </html>
