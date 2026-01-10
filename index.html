@@ -3096,29 +3096,15 @@ Email: ${email}`;
       });
 
       $("#favOnly")?.addEventListener("click", ()=>{
-        // If user has no favorites yet, don't allow "Only ❤️" to hide everything
-        if((state.favs?.size||0) === 0){
-          state.favOnly = false;
-          $("#favOnly")?.classList.remove("on");
-          toast((dict.ua?.noFavs) || "Ще немає ❤️ улюблених — показую всі");
-          saveState();
-          renderAll();
-          return;
-        }
+        haptic(10);
         state.favOnly = !state.favOnly;
         $("#favOnly")?.classList.toggle("on", state.favOnly);
-        saveState();
+        saveFilters();
         renderAll();
       });
 
       // keep favOnly style on load
       $("#favOnly")?.classList.toggle("on", state.favOnly);
-// auto-disable favOnly if user has no favorites yet (prevents empty homepage)
-      if(state.favOnly && (state.favs?.size||0) === 0){
-        state.favOnly = false;
-        $("#favOnly")?.classList.remove("on");
-        saveState();
-      }
 
       $("#aiBtn")?.addEventListener("click", ()=>{
         haptic(10);
@@ -3294,6 +3280,19 @@ Email: ${email}`;
 
     // ===== Init =====
     function init(){
+    // ✅ Emergency reset (PWA cache/localStorage). Open site once with ?reset=1
+    try{
+      const qs = new URLSearchParams(location.search);
+      if(qs.get("reset")==="1"){
+        Promise.resolve()
+          .then(()=> (navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))) : null))
+          .then(()=> (window.caches ? caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))) : null))
+          .then(()=> { try{ localStorage.clear(); }catch(e){}; })
+          .then(()=> { location.replace(location.origin + location.pathname); });
+        return;
+      }
+    }catch(e){}
+
       // theme
       applyTheme();
 
