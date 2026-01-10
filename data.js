@@ -542,4 +542,3 @@
     conciergeSuggest
   };
 })();
-;try{window.__BB_DATA_STATUS__=`DATA: ${(window.LISTINGS&&window.LISTINGS.length)||0} listings (data.js loaded)`;}catch(e){}
