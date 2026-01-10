@@ -3337,7 +3337,21 @@ Email: ${email}`;
     }
 
     init();
-  </script>
+  </script><script>
+  console.log("LISTINGS:", window.LISTINGS);
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof renderAll === "function") {
+      console.log("renderAll()");
+      renderAll();
+    } else if (typeof renderListings === "function") {
+      console.log("renderListings()");
+      renderListings();
+    } else {
+      console.error("❌ No render function found");
+    }
+  });
+</script>
+
 </body>
 </html>
 
