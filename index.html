@@ -1853,7 +1853,10 @@ function haptic(ms=12){
         .map(x=>`<span class="tag ${x.cls||""}" title="${escapeHtml(x.title||"")}">${escapeHtml(x.t)}</span>`)
         .join("");
 
-    const whenLine = slot ? `${formatDateShort(slot.dateISO)} · ${slot.time}` : (lang==="ua" ? "Найближчих слотів поки нема" : "No upcoming slots yet");
+   const whenLine = slot
+  ? `${formatDateShort(slot.dateISO)} · ${slot.time}`
+  : (state.lang === "uk" ? "Найближчих слотів поки нема" : "No upcoming slots yet");
+
       const whyLine = `<div class="why" title="Why this one?"><span>Why:</span> ${escapeHtml(why)}</div>`;
 
       const nm = (state.q ? highlight(listing.name, state.q) : escapeHtml(listing.name));
