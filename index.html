@@ -54,1827 +54,7 @@
       --contentPad: 14px;
       --max: 1120px;
 
-      --iconSize: 18px;
-      --iconPad: 10px;
-    }
-
-    [data-theme="light"]{
-      --bg:#faf7ff;
-      --bg2:#ffffff;
-      --card:rgba(15,15,25,.05);
-      --card2:rgba(15,15,25,.07);
-      --stroke:rgba(15,15,25,.10);
-      --stroke2:rgba(15,15,25,.14);
-      --text:#17171d;
-      --muted:rgba(15,15,25,.72);
-      --shadow: 0 20px 60px rgba(10,10,20,.18);
-      --shadow2: 0 14px 40px rgba(10,10,20,.14);
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      color:var(--text);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(1200px 800px at 15% -10%, rgba(255,79,216,.20), transparent 55%),
-        radial-gradient(900px 700px at 90% 0%, rgba(139,92,246,.18), transparent 55%),
-        radial-gradient(900px 700px at 50% 110%, rgba(255,210,122,.12), transparent 55%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      overflow-x:hidden;
-    }
-    a{color:inherit}
-
-    .wrap{max-width:var(--max); margin:0 auto; padding: calc(var(--safeTop) + 10px) var(--contentPad) calc(var(--safeBot) + 120px);}
-    .glass{
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      border-radius: var(--r2);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    /* ===== Topbar ===== */
-    .topbar{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      margin: 0 auto 12px;
-      padding: calc(var(--safeTop) + 10px) var(--topbarPad) 12px;
-      border-radius: 0 0 26px 26px;
-      background: linear-gradient(180deg, rgba(8,8,14,.92), rgba(8,8,14,.65));
-      border-bottom:1px solid var(--stroke);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    [data-theme="light"] .topbar{
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
-    }
-    .topbarRow{
-      max-width:var(--max);
-      margin:0 auto;
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:12px;
-      padding: 0 var(--contentPad);
-    }
-
-    .brand{
-      display:flex;
-      align-items:flex-end;
-      gap:10px;
-      min-width: 0; /* ✅ allow shrink on mobile */
-      flex: 1;
-    }
-    .logo{
-      width: 42px; height: 42px;
-      border-radius: 14px;
-      display:grid; place-items:center;
-      background:
-        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.35), transparent 60%),
-        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.88));
-      box-shadow: 0 14px 40px rgba(255,79,216,.10), 0 18px 60px rgba(255,210,122,.08);
-      border:1px solid rgba(255,255,255,.20);
-      transform: translateY(2px);
-      flex: 0 0 auto;
-    }
-    .logo span{
-      font-family: "Playfair Display", serif;
-      font-weight:700;
-      font-size: 18px;
-      color: rgba(10,10,14,.92);
-      letter-spacing: .3px;
-    }
-    .brandTitle{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      transform: translateY(2px);
-      min-width: 0;
-    }
-    .brandTitle b{
-      font-family:"Playfair Display", serif;
-      font-size: 22px;
-      letter-spacing: .2px;
-      line-height:1.05;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 52vw;
-    }
-    .brandTitle small{
-      color:var(--muted);
-      font-size: 12px;
-      letter-spacing: .2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 52vw;
-    }
-
-    /* ✅ Right icons: no ugly wrap; scroll if needed */
-    .actions{
-      display:flex;
-      align-items:flex-end;
-      gap:10px;
-      padding-bottom: 2px;
-      flex-wrap: nowrap;            /* ✅ keep in one line */
-      justify-content:flex-end;
-      max-width: 58vw;
-      overflow-x: auto;              /* ✅ if too tight, scroll */
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .actions::-webkit-scrollbar{ display:none; }
-
-    .iconBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding: var(--iconPad) 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      box-shadow: 0 8px 20px rgba(0,0,0,.22);
-      font-size: 14px;
-      line-height:1;
-      white-space: nowrap;
-      flex: 0 0 auto;
-    }
-    .iconBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); border-color: var(--stroke2); }
-    .iconBtn:active{ transform: translateY(0px) scale(.98); }
-    .iconDot{
-      width: var(--iconSize);
-      height: var(--iconSize);
-      display:grid;
-      place-items:center;
-      font-size: 18px;
-      line-height:1;
-    }
-    .iconBtn .lbl{ font-weight:600; opacity:.92; }
-    .pill{
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(139,92,246,.20));
-      border-color: rgba(255,79,216,.25);
-    }
-    .heartOn{
-      background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,210,122,.16));
-      border-color: rgba(255,79,216,.30);
-    }
-
-    /* ===== Hero ===== */
-    .hero{ padding: 14px; border-radius: var(--r2); position:relative; overflow:hidden; }
-    .hero::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(600px 260px at 10% 20%, rgba(255,79,216,.22), transparent 55%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.14), transparent 60%),
-        radial-gradient(520px 260px at 70% 120%, rgba(139,92,246,.14), transparent 60%);
-      pointer-events:none;
-    }
-    .heroInner{
-      position:relative;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 14px;
-      align-items:stretch;
-    }
-    @media (max-width: 880px){
-      .heroInner{ grid-template-columns: 1fr; }
-    }
-    .heroLeft{
-      padding: 18px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      position:relative;
-      min-height: 240px;
-    }
-    .heroTitle{
-      font-family:"Playfair Display", serif;
-      font-size: 34px;
-      line-height:1.05;
-      margin:0 0 8px;
-      letter-spacing:.2px;
-    }
-    @media (max-width: 520px){ .heroTitle{ font-size: 28px; } }
-    .heroSub{
-      color: var(--muted);
-      font-size: 14px;
-      line-height:1.5;
-      margin:0 0 14px;
-      max-width: 58ch;
-    }
-    .heroControls{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top: 10px;
-    }
-    .cta{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid rgba(255,79,216,.30);
-      background: linear-gradient(135deg, rgba(255,79,216,.30), rgba(255,210,122,.18));
-      box-shadow: 0 18px 60px rgba(255,79,216,.10);
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    .cta:hover{ filter: brightness(1.03); }
-    .ghost{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:700;
-    }
-    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
-    .chip{
-      padding: 9px 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      cursor:pointer;
-      font-weight:700;
-      font-size: 13px;
-      color: var(--text);
-      opacity:.95;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: var(--stroke2); }
-    .chipActive{
-      border-color: rgba(255,79,216,.30);
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(139,92,246,.18));
-    }
-
-    .heroRight{
-      padding: 18px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      position:relative;
-      min-height: 240px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .nextHdr{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .nextHdr b{ font-size: 14px; letter-spacing:.2px; }
-    .dots{ display:flex; gap:6px; align-items:center; }
-    .dot{
-      width:6px; height:6px; border-radius:99px;
-      background: rgba(255,255,255,.28);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .dot.on{ background: rgba(255,79,216,.75); border-color: rgba(255,79,216,.30); }
-
-    .nextCard{
-      position:relative;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.20);
-      overflow:hidden;
-      flex:1;
-      min-height: 160px;
-      box-shadow: 0 14px 40px rgba(0,0,0,.25);
-    }
-    .nextImg{
-      position:absolute; inset:0;
-      background-size:cover;
-      background-position:center;
-      filter: saturate(1.05) contrast(1.03);
-      transform: scale(1.03);
-    }
-    .nextImg::after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.62)),
-        radial-gradient(420px 240px at 30% 20%, rgba(255,79,216,.18), transparent 60%),
-        radial-gradient(420px 240px at 80% 80%, rgba(255,210,122,.12), transparent 60%);
-    }
-    .nextBody{
-      position:relative;
-      padding: 14px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .nextTitle{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .nextTitle h3{
-      margin:0;
-      font-family:"Playfair Display", serif;
-      font-size: 18px;
-      line-height:1.12;
-    }
-    .badgeRow{ display:flex; gap:8px; flex-wrap:wrap; }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
-      font-size: 12px;
-      color: rgba(255,255,255,.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      white-space: nowrap;
-    }
-    .badge.pink{ border-color: rgba(255,79,216,.22); }
-    .badge.gold{ border-color: rgba(255,210,122,.22); }
-    .nextMeta{ color: rgba(255,255,255,.86); font-size: 13px; line-height:1.45; }
-    .nextActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 6px; }
-    .miniBtn{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.22);
-      cursor:pointer;
-      font-weight:800;
-      box-shadow: 0 14px 40px rgba(0,0,0,.22);
-    }
-    .miniBtn.primary{
-      border-color: rgba(255,79,216,.28);
-      background: linear-gradient(135deg, rgba(255,79,216,.25), rgba(255,210,122,.14));
-    }
-
-    .smallCard{
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding: 12px;
-    }
-    [data-theme="light"] .smallCard{ background: rgba(255,255,255,.55); }
-    .smallLabel{
-      font-size: 11px;
-      letter-spacing: .24em;
-      text-transform: uppercase;
-      opacity: .75;
-      margin-bottom: 6px;
-    }
-    .smallLine{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:baseline;
-      font-weight:900;
-    }
-    .smallLine span{ opacity:.92; font-weight:800; }
-    .trustRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      font-size: 12px;
-      opacity: .92;
-      margin-top: 4px;
-    }
-    .trustRow b{ font-weight:1000; }
-
-    /* ===== Filters ===== */
-    .filters{
-      margin: 12px 0 14px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 12px;
-      align-items:stretch;
-    }
-    @media (max-width: 880px){ .filters{ grid-template-columns: 1fr; } }
-    .searchBox, .sortBox{
-      padding: 12px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow2);
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .searchBox input{
-      width:100%;
-      border:0;
-      outline:none;
-      background: transparent;
-      color: var(--text);
-      font-size: 16px;
-      padding: 10px 8px;
-    }
-    .searchBox input::placeholder{ color: rgba(255,255,255,.55); }
-    [data-theme="light"] .searchBox input::placeholder{ color: rgba(15,15,25,.45); }
-
-    .sortBox{ justify-content:space-between; flex-wrap:wrap; }
-    .seg{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .seg button{
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:800;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .seg button.on{
-      border-color: rgba(255,79,216,.30);
-      background: linear-gradient(135deg, rgba(255,79,216,.20), rgba(139,92,246,.16));
-    }
-
-    /* ===== Sections & grid ===== */
-    .section{ margin-top: 16px; }
-    .section h2{
-      margin: 0 0 10px;
-      font-family: "Playfair Display", serif;
-      font-size: 22px;
-      letter-spacing:.2px;
-    }
-    .section p{
-      margin: -6px 0 10px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    @media (max-width: 960px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } }
-
-    /* ===== Cards ===== */
-    .card{
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-      box-shadow: var(--shadow2);
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      min-height: 340px;
-      transform: translateZ(0);
-    }
-    .imgWrap{
-      position:relative;
-      height: 170px;
-      overflow:hidden;
-      background: rgba(255,255,255,.05);
-    }
-    .img{
-      position:absolute; inset:0;
-      background-size:cover;
-      background-position:center;
-      transform: scale(1.02);
-      transition: transform .6s ease;
-      filter: saturate(1.05) contrast(1.03);
-    }
-    .card:hover .img{ transform: scale(1.08); }
-    .shine{
-      position:absolute; inset:-20%;
-      background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.18) 50%, transparent 65%);
-      transform: translateX(-35%) rotate(10deg);
-      opacity:0;
-      transition: opacity .25s ease, transform .8s ease;
-      pointer-events:none;
-    }
-    .card:hover .shine{ opacity:.25; transform: translateX(35%) rotate(10deg); }
-
-    .topBadges{
-      position:absolute;
-      left: 10px;
-      top: 10px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      z-index:3;
-    }
-    .cornerActions{
-      position:absolute;
-      right: 10px;
-      top: 10px;
-      display:flex;
-      gap:8px;
-      z-index:3;
-    }
-    .cbtn{
-      width: 38px; height: 38px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: transform .12s ease, background .12s ease;
-    }
-    .cbtn:hover{ transform: translateY(-1px); background: rgba(0,0,0,.30); }
-    .cbtn:active{ transform: translateY(0px) scale(.98); }
-    .cbtn .h{ font-size: 18px; line-height:1; }
-
-    .body{
-      padding: 12px 12px 14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      flex:1;
-    }
-    .titleRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .titleRow h3{
-      margin:0;
-      font-size: 16px;
-      line-height:1.15;
-      font-weight: 900;
-      letter-spacing:.1px;
-    }
-    .titleRow .price{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      gap:2px;
-      min-width: 90px;
-    }
-    .price b{ font-size: 14px; letter-spacing:.2px; white-space:nowrap; }
-    .price small{ font-size: 11px; color: var(--muted); white-space:nowrap; }
-    .addr{ color: var(--muted); font-size: 13px; line-height:1.35; }
-    .metaRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 2px;
-    }
-    .miniBadges{ display:flex; gap:8px; flex-wrap:wrap; }
-    .mini{
-      padding: 7px 10px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      font-size: 12px;
-      font-weight:800;
-      color: var(--text);
-      opacity:.95;
-      white-space: nowrap;
-    }
-    .mini.ok{ border-color: rgba(124,247,212,.22); background: rgba(124,247,212,.10); }
-    .mini.v{ border-color: rgba(255,210,122,.22); background: rgba(255,210,122,.10); }
-    .mini.p{ border-color: rgba(255,79,216,.22); background: rgba(255,79,216,.10); }
-
-    .why{
-      color: rgba(255,255,255,.88);
-      font-size: 12px;
-      line-height:1.35;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-    }
-    [data-theme="light"] .why{ color: rgba(15,15,25,.88); background: rgba(255,255,255,.55); }
-
-    .btnRow{
-      margin-top:auto;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .btn{
-      flex:1;
-      min-width: 120px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:900;
-      letter-spacing:.15px;
-      box-shadow: 0 16px 50px rgba(0,0,0,.18);
-    }
-    .btn.primary{
-      border-color: rgba(255,79,216,.26);
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(255,210,122,.12));
-    }
-    .btn:active{ transform: scale(.99); }
-
-    /* ===== Empty states ===== */
-    .empty{
-      margin-top: 12px;
-      padding: 16px;
-      border-radius: var(--r2);
-      border:1px dashed rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
-      color: var(--muted);
-    }
-    .empty b{ color: var(--text); }
-    .emptyActions{ margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap; }
-    .linkBtn{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:900;
-    }
-
-    /* ===== Floating quick book ===== */
-    .floating{
-      position: fixed;
-      right: 14px;
-      bottom: calc(var(--safeBot) + 14px);
-      z-index: 80;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .fab{
-      padding: 14px 16px;
-      border-radius: 999px;
-      border:1px solid rgba(255,79,216,.26);
-      background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,210,122,.12));
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      cursor:pointer;
-      font-weight:1000;
-      letter-spacing:.2px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .fab span{ font-size: 18px; line-height:1; }
-    .fab small{ font-weight:900; opacity:.92; }
-
-    .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: calc(var(--safeBot) + 90px);
-      z-index: 200;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.16);
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: rgba(255,255,255,.92);
-      font-weight:900;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      max-width: min(520px, calc(100vw - 24px));
-    }
-    [data-theme="light"] .toast{ background: rgba(255,255,255,.75); color: rgba(15,15,25,.92); }
-    .toast.on{ opacity:1; transform: translateX(-50%) translateY(-2px); }
-
-    /* ===== Netbar (offline / update) ===== */
-    .netbar{
-      position: fixed;
-      left: 14px;
-      right: 14px;
-      top: calc(var(--safeTop) + 10px);
-      z-index: 999;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 10px 12px;
-      display:none;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      box-shadow: 0 16px 50px rgba(0,0,0,.30);
-    }
-    [data-theme="light"] .netbar{ background: rgba(255,255,255,.80); }
-    .netbar.on{ display:flex; }
-    .netbar b{ font-weight:1000; }
-    .netbar .btns{ display:flex; gap:10px; flex-wrap:wrap; }
-    .netbar button{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:1000;
-      white-space:nowrap;
-    }
-
-    /* ===== Modal ===== */
-    .overlay{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      z-index: 120;
-      padding: 12px;
-      padding-bottom: calc(var(--safeBot) + 12px);
-    }
-    .overlay.on{ display:flex; }
-    .modal{
-      width: min(680px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,10,16,.92), rgba(10,10,16,.84));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: 84vh;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="light"] .modal{
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.10), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88));
-    }
-    .mHead{
-      padding: 14px 14px 12px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .mHead h3{ margin:0; font-family:"Playfair Display", serif; font-size: 18px; }
-    .mHead p{ margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height:1.4; }
-    .x{
-      width: 40px; height: 40px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      display:grid; place-items:center;
-      cursor:pointer;
-      font-size: 18px;
-      user-select:none;
-    }
-    .mBody{
-      padding: 14px;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    @media (max-width: 560px){ .row2{ grid-template-columns: 1fr; } }
-    label{
-      display:flex;
-      flex-direction:column;
-      gap:7px;
-      font-size: 12px;
-      font-weight:900;
-      color: rgba(255,255,255,.86);
-    }
-    [data-theme="light"] label{ color: rgba(15,15,25,.78); }
-    select, input, textarea{
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 12px 12px;
-      outline:none;
-      font-size: 16px;
-      font-weight:700;
-    }
-    [data-theme="light"] select, [data-theme="light"] input, [data-theme="light"] textarea{
-      background: rgba(15,15,25,.04);
-      border-color: rgba(15,15,25,.12);
-    }
-    textarea{ min-height: 90px; resize:none; line-height:1.45; }
-
-    .timeField{ display:flex; gap:10px; align-items:center; }
-    .timeBtn{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:900;
-      font-size: 16px;
-    }
-    [data-theme="light"] .timeBtn{
-      background: rgba(15,15,25,.04);
-      border-color: rgba(15,15,25,.12);
-    }
-    .timeBtn small{ opacity:.70; font-weight:800; }
-
-    .mFoot{
-      padding: 12px 14px;
-      border-top: 1px solid rgba(255,255,255,.10);
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      background: rgba(0,0,0,.16);
-    }
-    [data-theme="light"] .mFoot{ background: rgba(255,255,255,.65); }
-    .submit{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid rgba(255,79,216,.26);
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(255,210,122,.12));
-      cursor:pointer;
-      font-weight:1000;
-      letter-spacing:.2px;
-      min-width: 160px;
-      text-align:center;
-    }
-    .cancel{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:1000;
-      min-width: 120px;
-      text-align:center;
-    }
-
-    /* ===== Time sheet (custom) ===== */
-    .sheetOverlay{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      z-index: 140;
-      padding: 12px;
-      padding-bottom: calc(var(--safeBot) + 12px);
-    }
-    .sheetOverlay.on{ display:flex; }
-    .sheet{
-      width: min(520px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,10,16,.94), rgba(10,10,16,.86));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: 78vh;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="light"] .sheet{
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.10), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.90));
-    }
-    .sheetHead{
-      padding: 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .sheetHead b{ font-size: 14px; }
-    .sheetBody{
-      padding: 10px 12px 14px;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .timeItem{
-      padding: 12px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      font-weight:1000;
-    }
-    [data-theme="light"] .timeItem{
-      background: rgba(15,15,25,.04);
-      border-color: rgba(15,15,25,.12);
-    }
-    .timeItem small{ opacity:.70; font-weight:900; }
-    .timeItem:hover{ filter: brightness(1.04); }
-    .timeItem:active{ transform: scale(.99); }
-
-    /* ===== Concierge drawer ===== */
-    .drawerOverlay{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      z-index: 160;
-      padding: 12px;
-      padding-bottom: calc(var(--safeBot) + 12px);
-    }
-    .drawerOverlay.on{ display:flex; }
-    .drawer{
-      width: min(720px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(139,92,246,.14), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,79,216,.12), transparent 60%),
-        linear-gradient(180deg, rgba(10,10,16,.94), rgba(10,10,16,.86));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: 82vh;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="light"] .drawer{
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(139,92,246,.10), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,79,216,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.90));
-    }
-    .drawerHead{ padding: 14px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; border-bottom:1px solid rgba(255,255,255,.10); }
-    .drawerHead h3{ margin:0; font-family:"Playfair Display", serif; font-size: 18px; }
-    .drawerHead p{ margin:4px 0 0; color:var(--muted); font-size: 13px; line-height:1.45; }
-    .drawerBody{ padding: 14px; overflow:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:12px; }
-    .aiInput{ width:100%; }
-    .aiPicks{ display:flex; flex-direction:column; gap:10px; }
-    .pick{
-      padding: 12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    [data-theme="light"] .pick{ background: rgba(15,15,25,.04); border-color: rgba(15,15,25,.12); }
-    .pick b{ font-size: 14px; }
-    .pick small{ color: var(--muted); font-weight:800; line-height:1.35; }
-    .pick .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 6px; }
-    .pick .row button{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,79,216,.22);
-      background: linear-gradient(135deg, rgba(255,79,216,.18), rgba(255,210,122,.10));
-      cursor:pointer;
-      font-weight:1000;
-    }
-
-    /* ===== Footer ===== */
-    .footer{
-      margin-top: 22px;
-      padding: 18px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      color: var(--muted);
-      font-size: 13px;
-      line-height:1.55;
-    }
-    .footer b{ color: var(--text); }
-    .footerGrid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 12px;
-      margin-top: 10px;
-    }
-    @media (max-width: 760px){ .footerGrid{ grid-template-columns: 1fr; } }
-    .footerCard{
-      padding: 14px;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-    }
-    .muted{ color: var(--muted); }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ transition:none !important; scroll-behavior:auto !important; }
-    }
-  </style>
-</head>
-
-<body>
-  <!-- netbar -->
-  <div class="netbar" id="netbar">
-    <div id="netbarText"><b>—</b></div>
-    <div class="btns">
-      <button id="netbarOk">OK</button>
-      <button id="netbarRefresh">Refresh</button>
-    </div>
-  </div>
-
-  <header class="topbar">
-    <div class="topbarRow">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"><span>BB</span></div>
-        <div class="brandTitle">
-          <b id="t_brand">Beauty Booking</b>
-          <small id="t_tagline">Lux salons & masters — book in seconds</small>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="iconBtn" id="btnFav" title="Only favorites">
-          <span class="iconDot">❤️</span>
-          <span class="lbl" id="t_onlyfav">Only</span>
-        </button>
-
-        <button class="iconBtn pill" id="btnAI" title="AI help">
-          <span class="iconDot">✨</span>
-          <span class="lbl" id="t_ai">AI help</span>
-        </button>
-
-        <button class="iconBtn" id="btnTheme" title="Theme">
-          <span class="iconDot">🌙</span>
-          <span class="lbl" id="t_theme">Theme</span>
-        </button>
-
-        <button class="iconBtn" id="btnLang" title="Language">
-          <span class="iconDot">🌐</span>
-          <span class="lbl" id="t_lang">UA</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <!-- HERO -->
-    <section class="hero glass">
-      <div class="heroInner">
-        <div class="heroLeft">
-          <h1 class="heroTitle" id="t_hero_title">Book beauty services in seconds.</h1>
-          <p class="heroSub" id="t_hero_sub">
-            Verified salons & masters in Montréal. Choose a service, pick a time, and get confirmation instantly.
-          </p>
-
-          <div class="heroControls">
-            <button class="cta" id="btnQuickBook"><span id="t_quickbook">Quick booking</span></button>
-            <button class="ghost" id="btnReset"><span id="t_reset">Reset filters</span></button>
-          </div>
-
-          <div class="chips" id="serviceChips"></div>
-        </div>
-
-        <div class="heroRight">
-          <div class="nextHdr">
-            <b id="t_next">Next available near you</b>
-            <div class="dots" id="nextDots"></div>
-          </div>
-
-          <div class="nextCard" id="nextCard" role="button" tabindex="0" aria-label="Next available">
-            <div class="nextImg" id="nextImg"></div>
-            <div class="nextBody">
-              <div class="nextTitle">
-                <h3 id="nextName">—</h3>
-                <div class="badgeRow">
-                  <span class="badge pink" id="nextWhen">—</span>
-                  <span class="badge gold" id="nextFrom">—</span>
-                </div>
-              </div>
-              <div class="nextMeta" id="nextMeta">—</div>
-              <div class="nextActions">
-                <button class="miniBtn primary" id="btnNextBook"><span id="t_book_this">Book this slot</span></button>
-                <button class="miniBtn" id="btnNextWhy"><span id="t_why">Why this one?</span></button>
-              </div>
-            </div>
-          </div>
-
-          <div class="muted" style="font-size:12px; line-height:1.35">
-            <span id="t_next_hint">Auto-rotates every ~10s. Tap to book instantly.</span>
-          </div>
-
-          <!-- Last booking -->
-          <div class="smallCard" id="lastBookingCard" style="display:none">
-            <div class="smallLabel" id="t_last_label">YOUR LAST BOOKING</div>
-            <div class="smallLine" id="lastBookingLine">—</div>
-            <div class="muted" style="font-size:12px; margin-top:6px" id="t_last_hint">Tap to book again</div>
-          </div>
-
-          <!-- Trust -->
-          <div class="smallCard">
-            <div class="smallLabel" id="t_trust_label">TRUST</div>
-            <div class="trustRow" id="trustRow">
-              <span>✅ <b>Verified</b></span>
-              <span>🧼 <b>Sterile tools</b></span>
-              <span>⚡ <b>Instant confirmation</b></span>
-              <span>🔒 <b>No spam</b></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FILTERS -->
-    <section class="filters">
-      <div class="searchBox">
-        <span style="font-size:18px">🔎</span>
-        <input id="search" type="search" autocomplete="off" inputmode="search"
-               placeholder="Search salon, master, address…" />
-      </div>
-
-      <div class="sortBox">
-        <div class="seg">
-          <button id="sortSmart" class="on">Smart</button>
-          <button id="sortPrice">Price</button>
-          <button id="sortSoon">Soonest</button>
-        </div>
-        <div class="seg">
-          <button id="btnLocate">📍 <span id="t_nearme">Near me</span></button>
-        </div>
-      </div>
-    </section>
-
-    <!-- TOP -->
-    <section class="section">
-      <h2 id="t_top">Top salons / partners</h2>
-      <p id="t_top_sub">Priority partners (premium placements) — still respects your filters.</p>
-      <div class="grid" id="gridTop"></div>
-      <div class="empty" id="emptyTop" style="display:none"></div>
-    </section>
-
-    <!-- RECOMMENDED -->
-    <section class="section">
-      <h2 id="t_rec">Recommended</h2>
-      <p id="t_rec_sub">Curated picks based on availability, distance & value.</p>
-      <div class="grid" id="gridRec"></div>
-      <div class="empty" id="emptyRec" style="display:none"></div>
-    </section>
-
-    <!-- OTHERS -->
-    <section class="section">
-      <h2 id="t_all">All others</h2>
-      <p id="t_all_sub">Everything else — still verified/curated demo data.</p>
-      <div class="grid" id="gridAll"></div>
-      <div class="empty" id="emptyAll" style="display:none"></div>
-    </section>
-
-    <!-- FOOTER -->
-    <section class="footer">
-      <b id="t_footer_title">Your self-care place</b> — <span id="t_footer_sub">book fast, feel premium.</span>
-      <div class="footerGrid">
-        <div class="footerCard">
-          <b id="t_how">How it works</b>
-          <div class="muted" id="t_how_text" style="margin-top:8px">
-            Choose a service → pick a salon/master → select a date/time → confirm. You’ll get a Telegram notification instantly.
-          </div>
-        </div>
-        <div class="footerCard">
-          <b id="t_policies">Policies</b>
-          <div class="muted" id="t_policies_text" style="margin-top:8px">
-            Demo mode. Real payments are not enabled. Always confirm details with the salon/master.
-          </div>
-        </div>
-      </div>
-      <div class="muted" style="margin-top:10px">
-        <span id="t_pwa_hint">Tip:</span> <span id="t_pwa_hint2">On iPhone — Share → “Add to Home Screen” for app-like mode.</span>
-      </div>
-    </section>
-  </main>
-
-  <div class="floating">
-    <div class="fab" id="fab"><span>⚡</span> <small id="t_fab">Quick book</small></div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <!-- Booking modal -->
-  <div class="overlay" id="overlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Booking">
-      <div class="mHead">
-        <div>
-          <h3 id="mTitle">Booking</h3>
-          <p id="mSub">—</p>
-        </div>
-        <div class="x" id="mClose">✕</div>
-      </div>
-
-      <div class="mBody" id="mBody">
-        <div class="row2">
-          <label>
-            <span id="t_service">Service</span>
-            <select id="mService"></select>
-          </label>
-          <label>
-            <span id="t_date">Date</span>
-            <input id="mDate" type="date" />
-          </label>
-        </div>
-
-        <label>
-          <span id="t_time">Time</span>
-          <div class="timeField">
-            <button class="timeBtn" id="mTimeBtn" type="button">
-              <span id="mTimeText">—</span>
-              <small>Tap</small>
-            </button>
-          </div>
-        </label>
-
-        <div class="row2">
-          <label>
-            <span id="t_name">Name</span>
-            <input id="mName" type="text" autocomplete="name" placeholder="Your name" />
-          </label>
-          <label>
-            <span id="t_phone">Phone</span>
-            <input id="mPhone" type="tel" autocomplete="tel" placeholder="+1 (___) ___-____" />
-          </label>
-        </div>
-
-        <label>
-          <span id="t_email">Email</span>
-          <input id="mEmail" type="email" autocomplete="email" placeholder="you@email.com" />
-        </label>
-
-        <label>
-          <span id="t_notes">Notes (optional)</span>
-          <textarea id="mNotes" placeholder="Anything to mention?"></textarea>
-        </label>
-
-        <div class="why" id="mInfo">—</div>
-      </div>
-
-      <div class="mFoot">
-        <div class="cancel" id="mCancel"><span id="t_cancel">Cancel</span></div>
-        <div class="submit" id="mSubmit"><span id="t_confirm">Confirm booking</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Time picker sheet -->
-  <div class="sheetOverlay" id="sheetOverlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Pick time">
-      <div class="sheetHead">
-        <b id="t_pick_time">Pick a time</b>
-        <div class="x" id="sheetClose">✕</div>
-      </div>
-      <div class="sheetBody" id="sheetBody"></div>
-    </div>
-  </div>
-
-  <!-- AI concierge drawer -->
-  <div class="drawerOverlay" id="drawerOverlay" aria-hidden="true">
-    <div class="drawer" role="dialog" aria-modal="true" aria-label="AI help">
-      <div class="drawerHead">
-        <div>
-          <h3 id="t_ai_title">AI Concierge</h3>
-          <p id="t_ai_sub">Tell me what you need — I’ll pick the best options (strictly by service).</p>
-        </div>
-        <div class="x" id="drawerClose">✕</div>
-      </div>
-      <div class="drawerBody">
-        <label style="margin:0">
-          <span id="t_ai_ask">Ask</span>
-          <input id="aiText" class="aiInput" type="text" placeholder="e.g. brows under 40 after 15" />
-        </label>
-        <div class="seg">
-          <button id="aiGo" class="on">✨ <span id="t_ai_find">Find best</span></button>
-          <button id="aiClear">✕ <span id="t_ai_clear">Clear</span></button>
-        </div>
-
-        <div class="aiPicks" id="aiPicks"></div>
-        <div class="muted" id="aiHint" style="font-size:12px; line-height:1.45">
-          Tip: “манік до 25”, “брови до 40 після 15”, “чоловіча стрижка”.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DATA -->
-  <script src="./data.js"></script>
-
-  <script>
-    (function(){
-      "use strict";
-
-      // ✅ SET YOUR WORKER URL HERE
-      window.WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
-
-      /* =========================
-         Safety helpers (anti-crash)
-      ========================== */
-      const $ = (q, el=document) => el.querySelector(q);
-      const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
-      const safe = (fn) => { try { return fn(); } catch(e){ console.error(e); return null; } };
-      const safeSetText = (el, txt) => { if(!el) return; el.textContent = (txt==null?"":String(txt)); };
-      const safeSetHTML = (el, html) => { if(!el) return; el.innerHTML = (html==null?"":String(html)); };
-
-      /* =========================
-         State + storage
-      ========================== */
-      const LS = {
-        theme: "bb_theme",
-        lang: "bb_lang",
-        favs: "bb_favs",
-        onlyFav: "bb_onlyfav",
-        search: "bb_search",
-        service: "bb_service",
-        sort: "bb_sort",
-        lastBooking: "bb_last_booking"
-      };
-
-      const state = {
-        theme: localStorage.getItem(LS.theme) || "dark",
-        lang: localStorage.getItem(LS.lang) || "uk",
-        favs: new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]")),
-        onlyFav: (localStorage.getItem(LS.onlyFav) || "0") === "1",
-        search: localStorage.getItem(LS.search) || "",
-        serviceId: localStorage.getItem(LS.service) || "",
-        sort: localStorage.getItem(LS.sort) || "smart",
-        userLoc: null,
-
-        // booking
-        bookingListingId: null,
-        bookingServiceId: null,
-        bookingDateISO: null,
-        bookingTime: null,
-        holdUntil: null,
-
-        // next available hero
-        nextPool: [],
-        nextIndex: 0,
-        nextTimer: null
-      };
-
-      document.documentElement.setAttribute("data-theme", state.theme);
-
-      /* =========================
-         i18n
-      ========================== */
-      const T = {
-        uk: {
-          brand: "Beauty Booking",
-          tagline: "Люкс салони та майстри — запис за секунди",
-          only: "Only",
-          ai: "AI help",
-          theme: "Theme",
-          lang: "UA",
-
-          heroTitle: "Записуйся на бʼюті-послуги за секунди.",
-          heroSub: "Перевірені салони та майстри в Montréal. Вибери послугу, час — і отримай підтвердження.",
-          quickbook: "Швидкий запис",
-          reset: "Скинути фільтри",
-
-          next: "Найближчий слот поруч",
-          nextHint: "Авто-ротація ~кожні 10с. Натисни, щоб записатися.",
-          bookThis: "Записатися",
-          why: "Чому цей?",
-
-          lastLabel: "YOUR LAST BOOKING",
-          lastHint: "Натисни — повторити запис",
-
-          trustLabel: "TRUST",
-
-          searchPh: "Пошук салону/майстра/адреси…",
-          nearme: "Near me",
-
-          top: "Top salons / partners",
-          topSub: "Партнери з пріоритетом — але фільтри діють.",
-          rec: "Recommended",
-          recSub: "Підбір по доступності, відстані та ціні.",
-          all: "All others",
-          allSub: "Все інше — перевірені демо-дані.",
-
-          footerTitle: "Твоє місце для self-care",
-          footerSub: "швидко, красиво, преміально.",
-          how: "Як це працює",
-          howText: "Обери послугу → салон/майстра → дату/час → підтверди. Telegram-сповіщення приходить одразу.",
-          policies: "Політики",
-          policiesText: "Демо-режим. Оплати вимкнені. Завжди уточнюй деталі у салону/майстра.",
-          pwaHint: "Порада:",
-          pwaHint2: "На iPhone — Share → “Add to Home Screen” для режиму додатку.",
-
-          fab: "Швидкий запис",
-
-          // modal
-          service: "Послуга",
-          date: "Дата",
-          time: "Час",
-          name: "Імʼя",
-          phone: "Телефон",
-          email: "Email",
-          notes: "Коментар (необовʼязково)",
-          cancel: "Скасувати",
-          confirm: "Підтвердити запис",
-          pickTime: "Обери час",
-
-          // ai
-          aiTitle: "AI Консьєрж",
-          aiSub: "Опиши що треба — підберу найкраще (строго по послузі).",
-          aiAsk: "Запит",
-          aiFind: "Підібрати",
-          aiClear: "Очистити",
-
-          // empty
-          emptyTitle: "Немає результатів",
-          emptyText: "Спробуй іншу послугу, вимкни ❤️ або скинь фільтри.",
-          resetFilters: "Скинути фільтри"
-        },
-        en: {
-          brand: "Beauty Booking",
-          tagline: "Lux salons & masters — book in seconds",
-          only: "Only",
-          ai: "AI help",
-          theme: "Theme",
-          lang: "EN",
-
-          heroTitle: "Book beauty services in seconds.",
-          heroSub: "Verified salons & masters in Montréal. Choose a service, pick a time, get confirmation.",
-          quickbook: "Quick booking",
-          reset: "Reset filters",
-
-          next: "Next available near you",
-          nextHint: "Auto-rotates every ~10s. Tap to book instantly.",
-          bookThis: "Book this slot",
-          why: "Why this one?",
-
-          lastLabel: "YOUR LAST BOOKING",
-          lastHint: "Tap to book again",
-
-          trustLabel: "TRUST",
-
-          searchPh: "Search salon, master, address…",
-          nearme: "Near me",
-
-          top: "Top salons / partners",
-          topSub: "Priority partners — filters still apply.",
-          rec: "Recommended",
-          recSub: "Based on availability, distance & value.",
-          all: "All others",
-          allSub: "Everything else — curated demo data.",
-
-          footerTitle: "Your self-care place",
-          footerSub: "book fast, feel premium.",
-          how: "How it works",
-          howText: "Choose service → pick salon/master → select date/time → confirm. Telegram notification comes instantly.",
-          policies: "Policies",
-          policiesText: "Demo mode. Payments disabled. Always confirm details with salon/master.",
-          pwaHint: "Tip:",
-          pwaHint2: "On iPhone — Share → “Add to Home Screen” for app-like mode.",
-
-          fab: "Quick book",
-
-          // modal
-          service: "Service",
-          date: "Date",
-          time: "Time",
-          name: "Name",
-          phone: "Phone",
-          email: "Email",
-          notes: "Notes (optional)",
-          cancel: "Cancel",
-          confirm: "Confirm booking",
-          pickTime: "Pick a time",
-
-          // ai
-          aiTitle: "AI Concierge",
-          aiSub: "Tell me what you need — I’ll pick best options (strictly by service).",
-          aiAsk: "Ask",
-          aiFind: "Find best",
-          aiClear: "Clear",
-
-          // empty
-          emptyTitle: "No results",
-          emptyText: "Try another service, disable ❤️ or reset filters.",
-          resetFilters: "Reset filters"
-        }
-      };
-
-      function tr(key){
-        const lang = state.lang === "en" ? "en" : "uk";
-        return (T[lang] && T[lang][key]) || (T.uk[key] || key);
-      }
-
-      function applyTexts(){
-        safeSetText($("#t_brand"), tr("brand"));
-        safeSetText($("#t_tagline"), tr("tagline"));
-        safeSetText($("#t_onlyfav"), tr("only"));
-        safeSetText($("#t_ai"), tr("ai"));
-        safeSetText($("#t_theme"), tr("theme"));
-        safeSetText($("#t_lang"), state.lang === "en" ? "EN" : "UA");
-
-        safeSetText($("#t_hero_title"), tr("heroTitle"));
-        safeSetText($("#t_hero_sub"), tr("heroSub"));
-        safeSetText($("#t_quickbook"), tr("quickbook"));
-        safeSetText($("#t_reset"), tr("reset"));
-
-        safeSetText($("#t_next"), tr("next"));
-        safeSetText($("#t_next_hint"), tr("nextHint"));
-        safeSetText($("#t_book_this"), tr("bookThis"));
-        safeSetText($("#t_why"), tr("why"));
-
-        safeSetText($("#t_last_label"), tr("lastLabel"));
-        safeSetText($("#t_last_hint"), tr("lastHint"));
-        safeSetText($("#t_trust_label"), tr("trustLabel"));
-
-        const s = $("#search");
-        if(s) s.placeholder = tr("searchPh");
-        safeSetText($("#t_nearme"), tr("nearme"));
-
-        safeSetText($("#t_top"), tr("top"));
-        safeSetText($("#t_top_sub"), tr("topSub"));
-        safeSetText($("#t_rec"), tr("rec"));
-        safeSetText($("#t_rec_sub"), tr("recSub"));
-        safeSetText($("#t_all"), tr("all"));
-        safeSetText($("#t_all_sub"), tr("allSub"));
-
-        safeSetText($("#t_footer_title"), tr("footerTitle"));
-        safeSetText($("#t_footer_sub"), tr("footerSub"));
-        safeSetText($("#t_how"), tr("how"));
-        safeSetText($("#t_how_text"), tr("howText"));
-        safeSetText($("#t_policies"), tr("policies"));
-        safeSetText($("#t_policies_text"), tr("policiesText"));
-        safeSetText($("#t_pwa_hint"), tr("pwaHint"));
-        safeSetText($("#t_pwa_hint2"), tr("pwaHint2"));
-
-        safeSetText($("#t_fab"), tr("fab"));
-
-        safeSetText($("#t_service"), tr("service"));
-        safeSetText($("#t_date"), tr("date"));
-        safeSetText($("#t_time"), tr("time"));
-        safeSetText($("#t_name"), tr("name"));
-        safeSetText($("#t_phone"), tr("phone"));
-        safeSetText($("#t_email"), tr("email"));
-        safeSetText($("#t_notes"), tr("notes"));
-        safeSetText($("#t_cancel"), tr("cancel"));
-        safeSetText($("#t_confirm"), tr("confirm"));
-        safeSetText($("#t_pick_time"), tr("pickTime"));
-
-        safeSetText($("#t_ai_title"), tr("aiTitle"));
-        safeSetText($("#t_ai_sub"), tr("aiSub"));
-        safeSetText($("#t_ai_ask"), tr("aiAsk"));
-        safeSetText($("#t_ai_find"), tr("aiFind"));
-        safeSetText($("#t_ai_clear"), tr("aiClear"));
-
-        // trust row text (simple)
-        const trust = $("#trustRow");
-        if(trust){
-          trust.innerHTML = state.lang==="en"
-            ? `<span>✅ <b>Verified</b></span><span>🧼 <b>Sterile tools</b></span><span>⚡ <b>Instant confirmation</b></span><span>🔒 <b>No spam</b></span>`
-            : `<span>✅ <b>Verified</b></span><span>🧼 <b>Sterile tools</b></span><span>⚡ <b>Instant confirmation</b></span><span>🔒 <b>No spam</b></span>`;
-        }
-      }
-
-      /* =========================
-         Utilities
-      ========================== */
-      const pad = (n)=> String(n).padStart(2,"0");
-      const isoLocal = (d)=>{
-        const y = d.getFullYear();
-        const m = pad(d.getMonth()+1);
-        const day = pad(d.getDate());
-        return `${y}-${m}-${day}`;
-      };
-      const fmtDate = (dateISO)=>{
-        if(!dateISO) return "";
-        const [y,m,d] = dateISO.split("-").map(x=>parseInt(x,10));
-        const dt = new Date(y, (m||1)-1, d||1);
-        const lang = state.lang === "en" ? "en-CA" : "uk-UA";
-        return dt.toLocaleDateString(lang, { weekday:"short", month:"short", day:"numeric" });
-      };
-      const money = (n)=> (n==null ? "—" : `$${Math.round(n)}`);
-
-      const toastEl = $("#toast");
-      let toastTimer = null;
-      function toast(msg){
-        if(!toastEl) return;
-        safeSetText(toastEl, msg);
-        toastEl.classList.add("on");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(()=> toastEl.classList.remove("on"), 2200);
-      }
-
-      function save(){
-        localStorage.setItem(LS.theme, state.theme);
-        localStorage.setItem(LS.lang, state.lang);
-        localStorage.setItem(LS.favs, JSON.stringify(Array.from(state.favs)));
-        localStorage.setItem(LS.onlyFav, state.onlyFav ? "1" : "0");
-        localStorage.setItem(LS.search, state.search);
-        localStorage.setItem(LS.service, state.serviceId || "");
-        localStorage.setItem(LS.sort, state.sort);
-      }
-
-      function escapeHtml(s){
-        return String(s||"")
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
-      }
-
-      function getServiceName(serviceId){
-        const s = (window.SERVICES||[]).find(x=>x.id===serviceId);
-        if(!s) return serviceId || "";
-        return state.lang === "en" ? (s.en || s.ua || s.id) : (s.ua || s.en || s.id);
-      }
-
-      function listingService(listing, serviceId){
-        if(window.bb?.util?.listingService) return window.bb.util.listingService(listing, serviceId);
-        return (listing.services||[]).find(s=>s.serviceId===serviceId) || null;
-      }
-
-      function minPriceFor(listing, serviceId){
-        if(window.bb?.util?.minPriceFor) return window.bb.util.minPriceFor(listing, serviceId);
-        let m=null;
-        for(const s of (listing.services||[])){
-          if(serviceId && s.serviceId!==serviceId) continue;
-          if(m==null || s.from<m) m=s.from;
-        }
-        return m;
-      }
-
-      function nextAvailable(listing, serviceId){
-        if(window.bb?.util?.nextAvailable) return window.bb.util.nextAvailable(listing, serviceId);
-        const av = listing.availability || {};
-        const dates = Object.keys(av).sort();
-        for(const d of dates){
-          const times = (av[d]||[]).slice().sort();
-          if(times.length) return { dateISO:d, time:times[0], fromPrice:null };
-        }
-        // fallback: availabilityByService slots
-        const bySvc = listing.availabilityByService || {};
-        const slots = bySvc[serviceId] || [];
-        const sorted = slots.slice().sort();
-        if(sorted.length){
-          const s = sorted[0];
-          return { dateISO: s.slice(0,10), time: s.slice(11,16), fromPrice:null };
-        }
-        return null;
-      }
-
-      function computeWhy(listing, serviceId){
-        if(window.bb?.util?.computeWhy) return window.bb.util.computeWhy(listing, state.userLoc, serviceId);
-        const parts = [];
-        if(listing.partner) parts.push("Partner");
-        if(listing.verified) parts.push("Verified");
-        if(listing.sterile) parts.push("Sterile");
-        const p = minPriceFor(listing, serviceId);
-        if(p!=null) parts.push(p<=30 ? "Best value" : "Premium");
-        return parts.slice(0,3).join(" · ");
-      }
-
-      function smartSort(list){
-        if(window.bb?.util?.smartRecommend){
-          return window.bb.util.smartRecommend(list, state.userLoc, state.serviceId || null);
-        }
-        return list.slice();
-      }
-
-      /* =========================
-         Service chips
-      ========================== */
-      function renderChips(){
-        const box = $("#serviceChips");
-        if(!box) return;
-        const services = window.SERVICES || [];
-        let html = "";
-        html += `<div class="chip ${!state.serviceId ? "chipActive":""}" data-svc="">✨ ${state.lang==="en"?"All":"Усі"}</div>`;
-        for(const s of services){
-          const name = state.lang==="en" ? s.en : s.ua;
-          const on = state.serviceId === s.id ? "chipActive" : "";
-          html += `<div class="chip ${on}" data-svc="${s.id}">${s.icon||"•"} ${escapeHtml(name)}</div>`;
-        }
-        safeSetHTML(box, html);
-        $$(".chip", box).forEach(ch=>{
-          ch.addEventListener("click", ()=>{
-            const sid = ch.getAttribute("data-svc") || "";
-            state.serviceId = sid;
-            save();
-            renderChips();
-            renderAll();
-          }, {passive:true});
-        });
-      }
-
-      /* =========================
-         Filtering + sorting
-      ========================== */
-      function matchesSearch(listing){
-        const q = (state.search||"").trim().toLowerCase();
-        if(!q) return true;
-        const blob = [
-          listing.name, listing.brand, listing.city, listing.address
-        ].filter(Boolean).join(" ").toLowerCase();
-        return blob.includes(q);
-      }
-
-      function matchesService(listing){
-        if(!state.serviceId) return true;
-        return !!listingService(listing, state.serviceId);
-      }
-
-      function matchesFav(listing){
-        if(!state.onlyFav) return true;
-        return state.favs.has(listing.id);
-      }
-
-      function soonestKey(listing){
-        const slot = nextAvailable(listing, state.serviceId || null);
-        if(!slot) return 1e18;
-        const dt = new Date(`${slot.dateISO}T${slot.time}:00`);
-        return dt.getTime();
-      }
-
-      function sortListings(list){
-        const out = list.slice();
-        if(state.sort === "price"){
-          out.sort((a,b)=>{
-            const pa = minPriceFor(a, state.serviceId||null); const pb = minPriceFor(b, state.serviceId||null);
-            return (pa==null?1e9:pa) - (pb==null?1e9:pb);
-          });
-        } else if(state.sort === "soon"){
-          out.sort((a,b)=> soonestKey(a) - soonestKey(b));
-        } else {
-          return smartSort(out);
-        }
-        return out;<!doctype html>
-<html lang="uk">
-<head>
-  <meta charset="utf-8" />
-  <!-- ✅ iOS/PWA: app-like scale + safe-area -->
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0b0f" />
-  <title>Beauty Booking</title>
-
-  <meta property="og:title" content="Beauty Booking" />
-  <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
-
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-
-  <!-- iOS standalone -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Beauty Booking" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg:#07070b;
-      --bg2:#0b0b11;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.10);
-      --stroke2:rgba(255,255,255,.14);
-      --text:#f4f4f8;
-      --muted:rgba(255,255,255,.72);
-
-      --pink:#ff4fd8;
-      --gold:#ffd27a;
-      --violet:#8b5cf6;
-      --mint:#7cf7d4;
-
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --shadow2: 0 14px 40px rgba(0,0,0,.45);
-      --r: 18px;
-      --r2: 24px;
-
-      --safeTop: env(safe-area-inset-top, 0px);
-      --safeBot: env(safe-area-inset-bottom, 0px);
-
-      --topbarPad: 12px;
-      --contentPad: 14px;
-      --max: 1120px;
-
-      /* header icons a bit bigger + comfy */
+      /* header icons bigger + comfy */
       --iconSize: 20px;
       --iconPad: 11px;
     }
@@ -1894,6 +74,7 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
+    html{ overflow-x:hidden; }
     body{
       margin:0;
       color:var(--text);
@@ -1904,8 +85,21 @@
         radial-gradient(900px 700px at 50% 110%, rgba(255,210,122,.12), transparent 55%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       overflow-x:hidden;
+      overscroll-behavior: none;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
     a{color:inherit}
+
+    /* ✅ HARD scroll lock (fix modal “sliding”) */
+    body.locked{
+      position: fixed;
+      left: 0;
+      right: 0;
+      width: 100%;
+      overflow: hidden;
+      touch-action: none;
+    }
 
     .wrap{max-width:var(--max); margin:0 auto; padding: calc(var(--safeTop) + 10px) var(--contentPad) calc(var(--safeBot) + 120px);}
     .glass{
@@ -1923,7 +117,6 @@
       top: 0;
       z-index: 50;
       margin: 0 auto 12px;
-      /* lowered content a bit */
       padding: calc(var(--safeTop) + 14px) var(--topbarPad) 14px;
       border-radius: 0 0 26px 26px;
       background: linear-gradient(180deg, rgba(8,8,14,.92), rgba(8,8,14,.65));
@@ -2172,6 +365,7 @@
       flex:1;
       min-height: 160px;
       box-shadow: 0 14px 40px rgba(0,0,0,.25);
+      cursor:pointer;
     }
     .nextImg{
       position:absolute; inset:0;
@@ -2334,7 +528,9 @@
       display:grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
+      animation: fadeIn .18s ease both;
     }
+    @keyframes fadeIn{ from{opacity:.82; transform: translateY(2px);} to{opacity:1; transform: translateY(0);} }
     @media (max-width: 960px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } }
 
@@ -2912,7 +1108,7 @@
     .muted{ color: var(--muted); }
 
     @media (prefers-reduced-motion: reduce){
-      *{ transition:none !important; scroll-behavior:auto !important; }
+      *{ transition:none !important; scroll-behavior:auto !important; animation:none !important; }
     }
   </style>
 </head>
@@ -3046,6 +1242,14 @@
           <button id="btnLocate">📍 <span id="t_nearme">Near me</span></button>
         </div>
       </div>
+    </section>
+
+    <!-- ✅ YOUR SAVED (shows only if there are favorites) -->
+    <section class="section" id="secSaved" style="display:none">
+      <h2 id="t_saved">Your saved</h2>
+      <p id="t_saved_sub">Your ❤️ list — fast access to your favorites.</p>
+      <div class="grid" id="gridSaved"></div>
+      <div class="empty" id="emptySaved" style="display:none"></div>
     </section>
 
     <!-- TOP -->
@@ -3267,6 +1471,24 @@
       document.documentElement.setAttribute("data-theme", state.theme);
 
       /* =========================
+         ✅ Scroll lock (fix modal sliding)
+      ========================== */
+      let _scrollY = 0;
+      function lockScroll(){
+        if(document.body.classList.contains("locked")) return;
+        _scrollY = window.scrollY || 0;
+        document.body.style.top = `-${_scrollY}px`;
+        document.body.classList.add("locked");
+      }
+      function unlockScroll(){
+        if(!document.body.classList.contains("locked")) return;
+        document.body.classList.remove("locked");
+        const y = _scrollY || 0;
+        document.body.style.top = "";
+        window.scrollTo(0, y);
+      }
+
+      /* =========================
          i18n
       ========================== */
       const T = {
@@ -3287,6 +1509,9 @@
           nextHint: "Авто-ротація ~кожні 10с. Натисни, щоб записатися.",
           bookThis: "Записатися",
           why: "Чому цей?",
+
+          saved: "Your saved",
+          savedSub: "Твої ❤️ — швидкий доступ до улюблених.",
 
           lastLabel: "YOUR LAST BOOKING",
           lastHint: "Натисни — повторити запис",
@@ -3342,8 +1567,6 @@
           openProfile: "Профіль",
           share: "Share",
           book: "Book",
-          hold: "Hold",
-          held: "Held",
           expired: "Hold expired — pick time again"
         },
         en: {
@@ -3363,6 +1586,9 @@
           nextHint: "Auto-rotates every ~10s. Tap to book instantly.",
           bookThis: "Book this slot",
           why: "Why this one?",
+
+          saved: "Your saved",
+          savedSub: "Your ❤️ list — fast access to favorites.",
 
           lastLabel: "YOUR LAST BOOKING",
           lastHint: "Tap to book again",
@@ -3418,8 +1644,6 @@
           openProfile: "Profile",
           share: "Share",
           book: "Book",
-          hold: "Hold",
-          held: "Held",
           expired: "Hold expired — pick time again"
         }
       };
@@ -3446,6 +1670,9 @@
         safeSetText($("#t_next_hint"), tr("nextHint"));
         safeSetText($("#t_book_this"), tr("bookThis"));
         safeSetText($("#t_why"), tr("why"));
+
+        safeSetText($("#t_saved"), tr("saved"));
+        safeSetText($("#t_saved_sub"), tr("savedSub"));
 
         safeSetText($("#t_last_label"), tr("lastLabel"));
         safeSetText($("#t_last_hint"), tr("lastHint"));
@@ -3500,13 +1727,6 @@
         const m = pad(d.getMonth()+1);
         const day = pad(d.getDate());
         return `${y}-${m}-${day}`;
-      };
-      const fmtDate = (dateISO)=>{
-        if(!dateISO) return "";
-        const [y,m,d] = dateISO.split("-").map(x=>parseInt(x,10));
-        const dt = new Date(y, (m||1)-1, d||1);
-        const lang = state.lang === "en" ? "en-CA" : "uk-UA";
-        return dt.toLocaleDateString(lang, { weekday:"short", month:"short", day:"numeric" });
       };
       const fmtDateTime = (dateISO, time)=>{
         if(!dateISO || !time) return "";
@@ -3982,28 +2202,28 @@
         overlay?.setAttribute("aria-hidden","true");
         sheetOverlay?.setAttribute("aria-hidden","true");
         drawerOverlay?.setAttribute("aria-hidden","true");
-        document.body.style.overflow = "";
+        unlockScroll();
       }
 
       function openModal(){
         if(!overlay) return;
+        lockScroll();
         overlay.classList.add("on");
         overlay.setAttribute("aria-hidden","false");
-        document.body.style.overflow = "hidden";
       }
 
       function openSheet(){
         if(!sheetOverlay) return;
+        lockScroll();
         sheetOverlay.classList.add("on");
         sheetOverlay.setAttribute("aria-hidden","false");
-        document.body.style.overflow = "hidden";
       }
 
       function openDrawer(){
         if(!drawerOverlay) return;
+        lockScroll();
         drawerOverlay.classList.add("on");
         drawerOverlay.setAttribute("aria-hidden","false");
-        document.body.style.overflow = "hidden";
       }
 
       function fillBooking(listing, serviceId, dateISO, time){
@@ -4021,30 +2241,13 @@
         const svcName = getServiceName(serviceId);
         const dt = fmtDateTime(dateISO, time);
         safeSetText(title, state.lang==="en" ? "Booking" : "Запис");
-        safeSetText(sub, `${listing.name} · ${svcName} · ${dt || fmtDate(dateISO)}`);
+        safeSetText(sub, `${listing.name} · ${svcName} · ${dt || dateISO}`);
         safeSetText(info, (state.lang==="en" ? "Address: " : "Адреса: ") + (listing.address||"—"));
 
         state.bookingListingId = listing.id;
         state.bookingServiceId = serviceId;
         state.bookingDateISO = dateISO;
         state.bookingTime = time || null;
-
-        setHold(time ? Date.now() + 2*60*1000 : null);
-      }
-
-      function setHold(ts){
-        state.holdUntil = ts;
-        clearInterval(state.holdTimer);
-        if(!ts) return;
-        state.holdTimer = setInterval(()=>{
-          if(Date.now() > state.holdUntil){
-            clearInterval(state.holdTimer);
-            state.holdUntil = null;
-            toast(tr("expired"));
-            state.bookingTime = null;
-            safeSetText($("#mTimeText"), "—");
-          }
-        }, 1000);
       }
 
       function listAvailableTimes(listing, serviceId, dateISO){
@@ -4058,8 +2261,7 @@
         if(out.length) return out;
 
         const av = listing.availability || {};
-        const times = (av[dateISO] || []).slice().sort();
-        return times;
+        return (av[dateISO] || []).slice().sort();
       }
 
       function renderTimeSheet(listing, serviceId, dateISO){
@@ -4086,7 +2288,6 @@
           const t = item.getAttribute("data-time");
           state.bookingTime = t;
           safeSetText($("#mTimeText"), t);
-          setHold(Date.now() + 2*60*1000);
           sheetOverlay?.classList.remove("on");
           sheetOverlay?.setAttribute("aria-hidden","true");
         };
@@ -4097,20 +2298,13 @@
         if(!listing) return;
 
         let sid = serviceId;
-        if(!sid){
-          sid = state.serviceId || (listing.services?.[0]?.serviceId || (SERVICES[0]?.id || ""));
-        }
+        if(!sid) sid = state.serviceId || (listing.services?.[0]?.serviceId || (SERVICES[0]?.id || ""));
 
         let d = dateISO, t = time;
         if(!d || !t){
           const n = nextAvailable(listing, sid);
-          if(n){
-            d = n.dateISO;
-            t = n.time;
-          } else {
-            d = isoLocal(new Date());
-            t = null;
-          }
+          if(n){ d = n.dateISO; t = n.time; }
+          else { d = isoLocal(new Date()); t = null; }
         }
 
         fillBooking(listing, sid, d, t);
@@ -4118,13 +2312,13 @@
 
         const serviceSel = $("#mService");
         const dateIn = $("#mDate");
+
         if(serviceSel){
           serviceSel.onchange = ()=>{
             state.bookingServiceId = serviceSel.value;
             const times = listAvailableTimes(listing, state.bookingServiceId, $("#mDate").value);
             state.bookingTime = times[0] || null;
             safeSetText($("#mTimeText"), state.bookingTime || "—");
-            setHold(state.bookingTime ? Date.now()+2*60*1000 : null);
             fillBooking(listing, state.bookingServiceId, $("#mDate").value, state.bookingTime);
           };
         }
@@ -4135,18 +2329,14 @@
             const times = listAvailableTimes(listing, state.bookingServiceId, newISO);
             state.bookingTime = times[0] || null;
             safeSetText($("#mTimeText"), state.bookingTime || "—");
-            setHold(state.bookingTime ? Date.now()+2*60*1000 : null);
             fillBooking(listing, state.bookingServiceId, newISO, state.bookingTime);
           };
         }
 
-        const timeBtn = $("#mTimeBtn");
-        if(timeBtn){
-          timeBtn.onclick = ()=>{
-            renderTimeSheet(listing, state.bookingServiceId, $("#mDate").value);
-            openSheet();
-          };
-        }
+        $("#mTimeBtn") && ($("#mTimeBtn").onclick = ()=>{
+          renderTimeSheet(listing, state.bookingServiceId, $("#mDate").value);
+          openSheet();
+        });
 
         safeSetText($("#mInfo"), (state.lang==="en" ? "Address: " : "Адреса: ") + (listing.address||"—"));
       }
@@ -4172,12 +2362,7 @@
           return;
         }
 
-        localStorage.setItem(LS.lastBooking, JSON.stringify({
-          listingId: listing.id,
-          serviceId,
-          dateISO,
-          time
-        }));
+        localStorage.setItem(LS.lastBooking, JSON.stringify({ listingId: listing.id, serviceId, dateISO, time }));
         renderLastBooking();
 
         const payload = {
@@ -4221,7 +2406,6 @@
       ========================== */
       function detectServiceFromText(txt){
         const t = (txt||"").toLowerCase();
-
         const map = [
           { id:"manicure", keys:["манік","маник","manic","nails","ногт"] },
           { id:"pedicure", keys:["педик","pedi","feet","нож"] },
@@ -4229,12 +2413,10 @@
           { id:"haircut_m", keys:["чолов","mens","men","barber"] },
           { id:"haircut_w", keys:["жіноч","womens","women","haircut","стриж"] }
         ];
-
         for(const s of SERVICES){
           const name = ((s.ua||"") + " " + (s.en||"") + " " + s.id).toLowerCase();
           if(name && t.includes(name.split(" ")[0])) return s.id;
         }
-
         for(const m of map){
           if(m.keys.some(k=>t.includes(k))){
             if(SERVICES.some(s=>s.id===m.id)) return m.id;
@@ -4278,7 +2460,6 @@
         }
 
         let list = LISTINGS.filter(l => (l.services||[]).some(s=>s.serviceId===serviceId));
-
         if(maxPrice!=null){
           list = list.filter(l=>{
             const s = listingService(l, serviceId);
@@ -4286,7 +2467,6 @@
             return p!=null && p<=maxPrice;
           });
         }
-
         if(after){
           list = list.filter(l=>{
             const n = nextAvailable(l, serviceId);
@@ -4307,7 +2487,6 @@
         });
 
         const top = list.slice(0,3);
-
         if(!top.length){
           picksEl.innerHTML = `<div class="empty" style="margin:0"><b>${state.lang==="en"?"No matches":"Нема збігів"}</b><div style="margin-top:6px">${state.lang==="en"?"Try removing constraints":"Спробуй прибрати обмеження"}</div></div>`;
           return;
@@ -4318,7 +2497,6 @@
           const when = n ? fmtDateTime(n.dateISO,n.time) : "—";
           const p = minPriceFor(l, serviceId);
           const why = computeWhy(l, serviceId);
-
           return `
             <div class="pick" data-id="${escapeHtml(l.id)}">
               <b>${escapeHtml(l.name)}</b>
@@ -4337,9 +2515,7 @@
           const card = e.target.closest(".pick");
           if(!act || !card) return;
           const id = card.getAttribute("data-id");
-          if(act==="open"){
-            window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
-          }
+          if(act==="open") window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
           if(act==="book"){
             const l = LISTINGS.find(x=>x.id===id);
             const n = l ? nextAvailable(l, serviceId) : null;
@@ -4366,7 +2542,22 @@
         $("#sortSoon")?.classList.toggle("on", state.sort==="soon");
 
         const filtered = LISTINGS.filter(matches);
-        const sorted = sortList(filtered);
+        const sorted = (state.sort==="price") ? priceSort(filtered)
+                    : (state.sort==="soon") ? soonSort(filtered)
+                    : smartSort(filtered);
+
+        // ✅ Your saved section
+        const savedSec = $("#secSaved");
+        const saved = sorted.filter(l=>state.favs.has(l.id));
+        if(savedSec){
+          if(state.favs.size>0){
+            savedSec.style.display = "";
+            renderGrid($("#gridSaved"), $("#emptySaved"), saved);
+          } else {
+            savedSec.style.display = "none";
+          }
+        }
+
         const {top, rec, all} = splitSections(sorted);
 
         renderGrid($("#gridTop"), $("#emptyTop"), top);
@@ -4414,15 +2605,13 @@
             if(first){
               const sid = state.serviceId || (first.services?.[0]?.serviceId || SERVICES[0]?.id);
               openBooking(first.id, sid);
-            } else {
-              toast(state.lang==="en" ? "No listings" : "Нема салонів");
-            }
+            } else toast(state.lang==="en" ? "No listings" : "Нема салонів");
           }
         });
 
         $("#fab")?.addEventListener("click", ()=> $("#btnQuickBook")?.click());
 
-        // ✅ Reset filters: DOES NOT clear search or Only ❤️ (as requested)
+        // ✅ Reset filters: DOES NOT clear search or Only ❤️
         $("#btnReset")?.addEventListener("click", ()=>{
           state.serviceId = "";
           state.sort = "smart";
@@ -4497,6 +2686,7 @@
           }
         };
 
+        $("#gridSaved")?.addEventListener("click", onGridClick);
         $("#gridTop")?.addEventListener("click", onGridClick);
         $("#gridRec")?.addEventListener("click", onGridClick);
         $("#gridAll")?.addEventListener("click", onGridClick);
@@ -4538,9 +2728,7 @@
         });
         $("#aiText")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); aiPick(); } });
 
-        window.addEventListener("keydown", (e)=>{
-          if(e.key==="Escape") closeAll();
-        });
+        window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeAll(); });
       }
 
       /* =========================
@@ -4553,13 +2741,8 @@
         const rf = $("#netbarRefresh");
         if(!bar || !txt || !ok || !rf) return;
 
-        function show(msg){
-          safeSetHTML(txt, msg);
-          bar.classList.add("on");
-        }
-        function hide(){
-          bar.classList.remove("on");
-        }
+        function show(msg){ safeSetHTML(txt, msg); bar.classList.add("on"); }
+        function hide(){ bar.classList.remove("on"); }
 
         function updateOnline(){
           if(!navigator.onLine){
@@ -4572,9 +2755,7 @@
             }catch(e){}
             if(cached){
               show(`<b>${state.lang==="en"?"Cached":"Кеш"}</b> — ${state.lang==="en"?"Refresh if you deployed updates":"Онови, якщо ти задеплоїв апдейт"}`);
-            } else {
-              hide();
-            }
+            } else hide();
           }
         }
 
@@ -4625,9 +2806,7 @@
       }
 
       init();
-
     })();
   </script>
 </body>
 </html>
-
