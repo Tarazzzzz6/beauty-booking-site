@@ -1,170 +1,121 @@
-/* worker.js — Beauty Booking PWA Service Worker (stable production) */
-const CACHE = "bb-cache-v4"; // bump when you deploy changes
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
 
-// Core app shell (same-origin)
-const CORE = [
-  "./",
-  "./index.html",
-  "./profile.html",
-  "./data.js",
-  "./manifest.webmanifest",
-  "./favicon.svg",
-
-  // iOS / PWA icons (add if you have them)
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-192-maskable.png",
-  "./icons/icon-512-maskable.png",
-  "./icons/apple-touch-icon.png",
-];
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    (async () => {
-      const cache = await caches.open(CACHE);
-      // AddAll can fail if some icon doesn't exist -> be resilient:
-      await Promise.all(
-        CORE.map(async (u) => {
-          try {
-            await cache.add(u);
-          } catch (_) {
-            // ignore missing optional files
-          }
-        })
-      );
-      await self.skipWaiting();
-    })()
-  );
-});
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    (async () => {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((k) => (k === CACHE ? null : caches.delete(k))));
-      await self.clients.claim();
-    })()
-  );
-});
-
-function isHTMLRequest(req) {
-  return req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
-}
-function isJSRequest(url) {
-  return url.pathname.endsWith(".js");
-}
-function isCSSRequest(url) {
-  return url.pathname.endsWith(".css");
-}
-function isSameOrigin(url) {
-  return url.origin === self.location.origin;
-}
-function isIconOrManifest(url) {
-  return (
-    url.pathname.endsWith("manifest.webmanifest") ||
-    url.pathname.endsWith("favicon.svg") ||
-    url.pathname.includes("/icons/")
-  );
-}
-
-// For caching keys: normalize same-origin navigations w/ query params to the clean path
-function cacheKeyForRequest(req) {
-  const url = new URL(req.url);
-  if (isSameOrigin(url) && isHTMLRequest(req)) {
-    // Always store navigations as their pathname only (no search)
-    return new Request(url.pathname === "/" ? "./index.html" : url.pathname, {
-      headers: req.headers,
-      method: "GET",
+    // ---------- CORS ----------
+    const corsHeaders = (origin) => ({
+      "Access-Control-Allow-Origin": origin || "*",
+      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Max-Age": "86400",
     });
-  }
-  return req;
-}
 
-// Network-first for HTML/JS/CSS (updates come fast), fallback to cache
-async function networkFirst(req) {
-  const cache = await caches.open(CACHE);
-  const key = cacheKeyForRequest(req);
-
-  try {
-    const res = await fetch(req);
-    // Only cache good responses
-    if (res && res.ok) {
-      try {
-        await cache.put(key, res.clone());
-      } catch (_) {}
+    if (request.method === "OPTIONS") {
+      return new Response("", { status: 204, headers: corsHeaders(request.headers.get("Origin")) });
     }
-    return res;
-  } catch (_) {
-    const cached = await cache.match(key);
-    if (cached) return cached;
 
-    // last resort for navigation: app shell
-    if (isHTMLRequest(req)) {
-      const shell = await cache.match("./index.html");
-      if (shell) return shell;
+    // ---------- health ----------
+    if (url.pathname === "/health") {
+      return new Response("ok", {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(request.headers.get("Origin")) },
+      });
     }
-    throw _;
-  }
-}
 
-// Cache-first for images/fonts/media
-async function cacheFirst(req) {
-  const cache = await caches.open(CACHE);
-  const cached = await cache.match(req);
-  if (cached) return cached;
-
-  const res = await fetch(req);
-  // Cache only successful, basic/opaque responses
-  if (res && (res.ok || res.type === "opaque")) {
-    try {
-      await cache.put(req, res.clone());
-    } catch (_) {}
-  }
-  return res;
-}
-
-self.addEventListener("fetch", (event) => {
-  const req = event.request;
-
-  // Only GET
-  if (req.method !== "GET") return;
-
-  const url = new URL(req.url);
-
-  // Always ignore non-http(s)
-  if (url.protocol !== "http:" && url.protocol !== "https:") return;
-
-  const html = isHTMLRequest(req);
-  const js = isJSRequest(url);
-  const css = isCSSRequest(url);
-
-  // Same-origin important assets: keep them fresh
-  if (isSameOrigin(url) && (html || js || css || isIconOrManifest(url))) {
-    event.respondWith(networkFirst(req));
-    return;
-  }
-
-  // Images / fonts / media (including Unsplash): cache-first
-  const isImage = req.destination === "image" || /\.(png|jpg|jpeg|webp|gif|svg)$/i.test(url.pathname);
-  const isFont = req.destination === "font" || /\.(woff2?|ttf|otf)$/i.test(url.pathname);
-
-  if (isImage || isFont) {
-    event.respondWith(cacheFirst(req));
-    return;
-  }
-
-  // Default: try network, fallback cache
-  event.respondWith(
-    (async () => {
+    // ---------- book ----------
+    if (url.pathname === "/book" && request.method === "POST") {
       try {
-        return await fetch(req);
-      } catch (_) {
-        const cached = await caches.match(req);
-        if (cached) return cached;
-        // If it's navigation, fallback to index
-        if (html) return (await caches.match("./index.html")) || Response.error();
-        return Response.error();
+        const origin = request.headers.get("Origin") || "*";
+
+        if (!env.TG_BOT_TOKEN || !env.TG_CHAT_ID) {
+          return new Response("Missing TG secrets", {
+            status: 500,
+            headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(origin) },
+          });
+        }
+
+        const data = await request.json().catch(() => ({}));
+
+        // Fields we expect from index.html
+        const name = (data.name || "").trim() || "—";
+        const phone = (data.phone || "").trim() || "—";
+        const email = (data.email || "").trim() || "—";
+        const notes = (data.notes || "").trim() || "—";
+
+        const listingName = (data.listingName || "").trim() || "—";
+        const address = (data.address || "").trim() || "—";
+
+        const serviceName = (data.serviceName || data.serviceId || "").trim() || "—";
+        const priceFrom = (data.priceFrom != null) ? `$${Math.round(Number(data.priceFrom))}` : "—";
+        const durationMin = (data.durationMin != null) ? `${Number(data.durationMin)} min` : "—";
+
+        // ✅ FIX: time + date must show
+        const dateISO = (data.dateISO || "").trim();
+        const time = (data.time || "").trim();
+        const datetimeLocal =
+          (data.datetimeLocal || "").trim() ||
+          ((dateISO && time) ? `${dateISO} ${time}` : "—");
+
+        const profileUrl = (data.profileUrl || "").trim();
+        const siteUrl = origin && origin !== "null" ? origin : "";
+
+        const title = "✨ Нове бронювання (Beauty Booking)";
+        const lines = [
+          title,
+          "",
+          `👤 Імʼя: ${name}`,
+          `📞 Телефон: ${phone}`,
+          `✉️ Email: ${email}`,
+          "",
+          `💅 Послуга: ${serviceName} · ${priceFrom} · ${durationMin}`,
+          `⏰ Час: ${datetimeLocal}`,
+          "",
+          `🏛️ Салон/Майстер: ${listingName}`,
+          `📍 Адреса: ${address}`,
+          "",
+          profileUrl ? `🔗 Профіль: ${profileUrl}` : (siteUrl ? `🔗 Сайт: ${siteUrl}` : ""),
+          notes !== "—" ? `📝 Коментар: ${notes}` : "",
+        ].filter(Boolean);
+
+        const text = lines.join("\n");
+
+        const tgUrl = `https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage`;
+        const tgPayload = {
+          chat_id: env.TG_CHAT_ID,
+          text,
+          disable_web_page_preview: false,
+        };
+
+        const tgRes = await fetch(tgUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tgPayload),
+        });
+
+        const tgText = await tgRes.text().catch(() => "");
+        if (!tgRes.ok) {
+          return new Response(`Telegram error: ${tgRes.status}\n${tgText}`, {
+            status: 500,
+            headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(origin) },
+          });
+        }
+
+        return new Response("ok", {
+          status: 200,
+          headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(origin) },
+        });
+      } catch (e) {
+        return new Response(`Error: ${e?.message || e}`, {
+          status: 500,
+          headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(request.headers.get("Origin")) },
+        });
       }
-    })()
-  );
-});
+    }
+
+    return new Response("Not found", {
+      status: 404,
+      headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(request.headers.get("Origin")) },
+    });
+  },
+};
+
