@@ -1,7 +1,6 @@
 /* worker.js — Beauty Booking PWA Service Worker (stable) */
-const CACHE = "bb-cache-v4";
+const CACHE = "bb-cache-v5"; // <-- було v4, підняли на v5
 
-// Core shell
 const CORE = [
   "./",
   "./index.html",
@@ -31,12 +30,9 @@ self.addEventListener("activate", (event) => {
   })());
 });
 
-// Network-first for HTML/JS, cache-first for images/fonts, stale-while-revalidate for others
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
-
-  // Only same-origin
   if (url.origin !== location.origin) return;
 
   const isHTML = req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
@@ -45,16 +41,8 @@ self.addEventListener("fetch", (event) => {
   const isIMG = /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(url.pathname);
   const isFONT = /\.(woff2?|ttf|otf)$/i.test(url.pathname);
 
-  if (isHTML || isJS || isCSS) {
-    event.respondWith(networkFirst(req));
-    return;
-  }
-
-  if (isIMG || isFONT) {
-    event.respondWith(cacheFirst(req));
-    return;
-  }
-
+  if (isHTML || isJS || isCSS) return event.respondWith(networkFirst(req));
+  if (isIMG || isFONT) return event.respondWith(cacheFirst(req));
   event.respondWith(staleWhileRevalidate(req));
 });
 
@@ -89,5 +77,4 @@ async function staleWhileRevalidate(req) {
 
   return cached || (await fetchPromise) || new Response("Offline", { status: 503 });
 }
-
 
