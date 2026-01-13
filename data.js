@@ -1,34 +1,16 @@
-/* Beauty Booking — data.js (global, LIVE + backward compatible) */
-(function(){
-  // ===== Worker endpoint (fallback used by profile booking) =====
-  window.WORKER_URL = window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev";
-
-  // ---- SERVICES ----
-  window.SERVICES = [
-    { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
-    { id:"pedicure", ua:"Педикюр", en:"Pedicure", icon:"🦶" },
-    { id:"brows", ua:"Брови", en:"Brows", icon:"✨" },
-    { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
-    { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" },
-  ];
-
-  // ===== Helpers =====
-  const pad = (n)=> String(n).padStart(2,"0");
-
-  // ✅ LOCAL ISO date (YYYY-MM-DD) — no UTC shift
-  const isoLocal = (d) => {/* data.js — Beauty Booking (stable)
+/* data.js — Beauty Booking (stable)
    Provides: window.SERVICES, window.LISTINGS, window.bb.util
 */
 (function () {
   "use strict";
 
-  // ===== Services =====
+  // ===== Services (IDs must match everywhere) =====
   const SERVICES = [
-    { id: "manicure",   ua: "Манікюр",            en: "Manicure" },
-    { id: "pedicure",   ua: "Педикюр",            en: "Pedicure" },
-    { id: "brows",      ua: "Брови",              en: "Brows" },
-    { id: "haircut_m",  ua: "Чоловіча стрижка",   en: "Men's haircut" },
-    { id: "haircut_w",  ua: "Жіноча стрижка",     en: "Women's haircut" }
+    { id: "manicure",   ua: "Манікюр",            en: "Manicure",        icon:"💅" },
+    { id: "pedicure",   ua: "Педикюр",            en: "Pedicure",        icon:"🦶" },
+    { id: "brows",      ua: "Брови",              en: "Brows",           icon:"✨" },
+    { id: "haircut_m",  ua: "Чоловіча стрижка",   en: "Men's haircut",   icon:"✂️" },
+    { id: "haircut_w",  ua: "Жіноча стрижка",     en: "Women's haircut", icon:"💇‍♀️" }
   ];
 
   // ===== Helpers: deterministic demo availability =====
@@ -46,12 +28,10 @@
     return times.map((t) => `${dateISO} ${t}`);
   }
 
-  // Build a simple rolling schedule for each listing/service
   function buildAvailabilityByService(serviceIds, patternTimesByService) {
     const bySvc = {};
     for (const sid of serviceIds) bySvc[sid] = [];
 
-    // next 7 days
     for (let i = 0; i < 7; i++) {
       const d = daysFromToday(i);
       for (const sid of serviceIds) {
@@ -59,7 +39,6 @@
         bySvc[sid].push(...mkSlots(d, times));
       }
     }
-    // sort ISO-ish strings
     for (const sid of Object.keys(bySvc)) bySvc[sid].sort();
     return bySvc;
   }
@@ -74,14 +53,11 @@
         map[dateISO].push(time);
       }
     }
-    for (const d of Object.keys(map)) {
-      map[d] = Array.from(new Set(map[d])).sort();
-    }
+    for (const d of Object.keys(map)) map[d] = Array.from(new Set(map[d])).sort();
     return map;
   }
 
   // ===== Listings (Montréal demo curated) =====
-  // NOTE: photos are safe fallbacks (unsplash). Replace anytime.
   const LISTINGS = [
     {
       id: "romanukova",
@@ -99,17 +75,15 @@
       sterile: true,
       rating: 4.9,
       instagram: "https://instagram.com/",
-
       services: [
         { serviceId: "manicure", from: 60, durMin: 75 },
         { serviceId: "pedicure", from: 70, durMin: 90 }
       ]
     },
-
     {
       id: "irynastovban",
       name: "Iryna Stovban — Home Master",
-      subtitle: "Models welcome • аккуратно та стерильно",
+      subtitle: "Models welcome • акуратно та стерильно",
       city: "Montréal",
       address: "6740 Bd Décarie, Montréal, QC H3X 0A7",
       lat: 45.4949,
@@ -122,12 +96,10 @@
       sterile: true,
       rating: 4.6,
       instagram: "https://share.google/eQ0wgkzDtTdM8v4Y0",
-
       services: [
         { serviceId: "manicure", from: 20, durMin: 60 }
       ]
     },
-
     {
       id: "browbar_mtl",
       name: "BrowBar Montréal",
@@ -144,12 +116,10 @@
       sterile: true,
       rating: 4.8,
       instagram: "https://instagram.com/",
-
       services: [
         { serviceId: "brows", from: 35, durMin: 45 }
       ]
     },
-
     {
       id: "barber_mtl",
       name: "Old-Money Barber",
@@ -158,7 +128,7 @@
       address: "Boulevard Saint-Laurent, Montreal, QC",
       lat: 45.5216,
       lng: -73.5865,
-      photo: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1400&q=80",
+      photo: "https://images.unsplash.com/photo-1521497615361-1b1fd9f5b78b?auto=format&fit=crop&w=1400&q=80",
       tags: ["barber", "mens", "classic"],
       partner: false,
       recommended: true,
@@ -166,12 +136,10 @@
       sterile: true,
       rating: 4.7,
       instagram: "https://instagram.com/",
-
       services: [
         { serviceId: "haircut_m", from: 35, durMin: 45 }
       ]
     },
-
     {
       id: "hairstudio_mtl",
       name: "Velvet Hair Studio",
@@ -188,22 +156,17 @@
       sterile: true,
       rating: 4.5,
       instagram: "https://instagram.com/",
-
       services: [
         { serviceId: "haircut_w", from: 55, durMin: 60 }
       ]
     }
   ];
 
-  // ===== Attach rolling availability =====
-  // Pattern per service: array[dayIndex] -> array of times
   function attachAvailability(listing) {
     const sids = (listing.services || []).map((s) => s.serviceId);
     const pat = {};
     for (const sid of sids) pat[sid] = new Array(7).fill(0).map(() => []);
 
-    // Simple curated patterns (feel "alive")
-    // day 0=today ... day 6
     if (listing.id === "romanukova") {
       pat.manicure[0] = ["11:00", "14:30", "18:00"];
       pat.manicure[1] = ["10:30", "13:00", "17:30"];
