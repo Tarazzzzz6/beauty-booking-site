@@ -1,3 +1,4 @@
+window.WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev/book";
 /* data.js — Beauty Booking (stable)
    Provides: window.SERVICES, window.LISTINGS, window.bb.util
 */
