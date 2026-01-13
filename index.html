@@ -19,3080 +19,1874 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Beauty Booking" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <meta name="format-detection" content="telephone=no,email=no,address=no" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --bg:#07070b;
       --bg2:#0b0b11;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.10);
-      --stroke2:rgba(255,255,255,.14);
-      --text:#f4f4f8;
-      --muted:rgba(255,255,255,.72);
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.085);
+      --line: rgba(255,255,255,.10);
+      --text:#f5f6fb;
+      --muted:rgba(245,246,251,.72);
+      --muted2:rgba(245,246,251,.55);
 
       --pink:#ff4fd8;
       --gold:#ffd27a;
       --violet:#8b5cf6;
-      --mint:#7cf7d4;
+      --mint:#5cf6c7;
 
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --shadow2: 0 14px 40px rgba(0,0,0,.45);
-      --r: 18px;
-      --r2: 24px;
+      --r: 22px;
+      --r2: 26px;
 
-      --safeTop: env(safe-area-inset-top, 0px);
-      --safeBot: env(safe-area-inset-bottom, 0px);
+      --shadow: 0 22px 60px rgba(0,0,0,.55);
+      --shadow2: 0 12px 30px rgba(0,0,0,.40);
 
-      --topbarPad: 12px;
-      --contentPad: 14px;
-      --max: 1120px;
+      --glow: 0 0 0 1px rgba(255,255,255,.06), 0 10px 50px rgba(255,79,216,.12);
+      --glow2: 0 0 0 1px rgba(255,255,255,.08), 0 18px 60px rgba(139,92,246,.10);
 
-      /* header icons bigger + comfy */
-      --iconSize: 20px;
-      --iconPad: 11px;
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+      --safe-left: env(safe-area-inset-left);
+      --safe-right: env(safe-area-inset-right);
 
-      /* ✅ extra breathing for iPhone PWA */
-      --topbarDrop: 12px;
-    }
+      --topbarH: 78px; /* header height */
+      --topbarPadTop: calc(10px + var(--safe-top));
+      --contentPad: 16px;
 
-    [data-theme="light"]{
-      --bg:#faf7ff;
-      --bg2:#ffffff;
-      --card:rgba(15,15,25,.05);
-      --card2:rgba(15,15,25,.07);
-      --stroke:rgba(15,15,25,.10);
-      --stroke2:rgba(15,15,25,.14);
-      --text:#17171d;
-      --muted:rgba(15,15,25,.72);
-      --shadow: 0 20px 60px rgba(10,10,20,.18);
-      --shadow2: 0 14px 40px rgba(10,10,20,.14);
+      --font-title: "Playfair Display", ui-serif, Georgia, serif;
+      --font-ui: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
-    html{ overflow-x:hidden; }
     body{
       margin:0;
       color:var(--text);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:var(--font-ui);
       background:
-        radial-gradient(1200px 800px at 15% -10%, rgba(255,79,216,.20), transparent 55%),
-        radial-gradient(900px 700px at 90% 0%, rgba(139,92,246,.18), transparent 55%),
-        radial-gradient(900px 700px at 50% 110%, rgba(255,210,122,.12), transparent 55%),
+        radial-gradient(900px 450px at 10% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(700px 420px at 92% 10%, rgba(139,92,246,.14), transparent 62%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.12), transparent 65%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       overflow-x:hidden;
-      overscroll-behavior: none;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-    a{color:inherit}
-
-    /* ✅ HARD scroll lock (fix modal “sliding”) */
-    body.locked{
-      position: fixed;
-      left: 0;
-      right: 0;
-      width: 100%;
-      overflow: hidden;
-      touch-action: none;
     }
 
-    /* ✅ IMPORTANT: safe-top moved to topbar (not wrap) */
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding: 10px var(--contentPad) calc(var(--safeBot) + 120px);
-    }
+    a{color:inherit;text-decoration:none}
+    button, input{font-family:inherit}
+    button{cursor:pointer}
 
-    .glass{
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      border-radius: var(--r2);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    /* ===== Topbar ===== */
+    /* ====== Topbar (icons bigger & lower) ====== */
     .topbar{
-      position: sticky;
-      top: 0;
-      z-index: 80;
-
-      /* ✅ iPhone/PWA: push header DOWN under safe-area + extra drop */
-      padding:
-        calc(var(--safeTop) + var(--topbarDrop))
-        var(--topbarPad)
-        14px;
-
-      margin: 0 auto 12px;
-
-      border-radius: 0 0 26px 26px;
-      background: linear-gradient(180deg, rgba(8,8,14,.92), rgba(8,8,14,.65));
-      border-bottom:1px solid var(--stroke);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    [data-theme="light"] .topbar{
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
+      position:sticky; top:0; z-index:50;
+      padding: var(--topbarPadTop) calc(var(--contentPad) + var(--safe-right)) 10px calc(var(--contentPad) + var(--safe-left));
+      backdrop-filter: blur(18px);
+      background: linear-gradient(180deg, rgba(10,10,16,.88), rgba(10,10,16,.55));
+      border-bottom: 1px solid rgba(255,255,255,.06);
     }
     .topbarRow{
-      max-width:var(--max);
-      margin:0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      display:flex; align-items:center; justify-content:space-between;
       gap:12px;
-      padding: 0 var(--contentPad);
+      margin-top: 8px; /* ⬅️ lower the whole header content a bit */
     }
-
     .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 0;
-      flex: 1;
+      display:flex; align-items:center; gap:10px;
+      min-width: 170px;
     }
     .logo{
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display:grid; place-items:center;
+      width:38px; height:38px; border-radius:14px;
       background:
-        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.35), transparent 60%),
-        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.88));
-      box-shadow: 0 14px 40px rgba(255,79,216,.10), 0 18px 60px rgba(255,210,122,.08);
-      border:1px solid rgba(255,255,255,.20);
-      flex: 0 0 auto;
+        radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.85), rgba(139,92,246,.90));
+      box-shadow: 0 10px 35px rgba(255,79,216,.18), 0 0 0 1px rgba(255,255,255,.10);
+      position:relative; overflow:hidden;
     }
-    .logo span{
-      font-family: "Playfair Display", serif;
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 55%);
+      transform: rotate(25deg);
+    }
+    .brandText{
+      display:flex; flex-direction:column; line-height:1.05;
+    }
+    .brandText .name{
+      font-family:var(--font-title);
       font-weight:700;
-      font-size: 20px;
-      color: rgba(10,10,14,.92);
-      letter-spacing: .3px;
+      letter-spacing:.2px;
+      font-size: 18px; /* bigger */
     }
-    .brandTitle{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width: 0;
-    }
-    .brandTitle b{
-      font-family:"Playfair Display", serif;
-      font-size: 26px;
-      letter-spacing: .2px;
-      line-height:1.05;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 52vw;
-    }
-    .brandTitle small{
-      color:var(--muted);
-      font-size: 12px;
-      letter-spacing: .2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 52vw;
+    .brandText .sub{
+      font-size:12px;
+      color:var(--muted2);
+      margin-top:2px;
     }
 
     .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap: nowrap;
-      justify-content:flex-end;
-      max-width: 58vw;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding-bottom: 2px;
+      display:flex; align-items:center; gap:10px;
     }
-    .actions::-webkit-scrollbar{ display:none; }
-
     .iconBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding: var(--iconPad) 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      box-shadow: 0 8px 20px rgba(0,0,0,.22);
-      font-size: 14px;
-      line-height:1;
-      white-space: nowrap;
-      flex: 0 0 auto;
+      width:44px; height:44px; /* bigger */
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      transform: translateY(2px); /* ⬅️ slightly lower */
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
     }
-    .iconBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); border-color: var(--stroke2); }
-    .iconBtn:active{ transform: translateY(0px) scale(.98); }
-    .iconDot{
-      width: var(--iconSize);
-      height: var(--iconSize);
-      display:grid;
-      place-items:center;
-      font-size: 20px;
-      line-height:1;
+    .iconBtn:active{transform: translateY(3px) scale(.98)}
+    .iconBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
+    .pillBtn{
+      height:44px;
+      padding:0 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex; align-items:center; gap:10px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      transform: translateY(2px);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
     }
-    .iconBtn .lbl{ font-weight:600; opacity:.92; }
-    .pill{
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(139,92,246,.20));
-      border-color: rgba(255,79,216,.25);
-    }
-    .heartOn{
-      background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,210,122,.16));
-      border-color: rgba(255,79,216,.30);
+    .pillBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
+    .pillBtn:active{transform: translateY(3px) scale(.98)}
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,79,216,.9));
+      box-shadow: 0 0 20px rgba(255,79,216,.35);
     }
 
-    /* ===== Hero ===== */
-    .hero{ padding: 14px; border-radius: var(--r2); position:relative; overflow:hidden; }
-    .hero::before{
-      content:"";
-      position:absolute; inset:-2px;
+    /* ====== Layout ====== */
+    .wrap{
+      padding: 14px calc(var(--contentPad) + var(--safe-right)) calc(120px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    /* ====== Hero ====== */
+    .hero{
+      margin-top: 12px;
+      border-radius: var(--r2);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
       background:
-        radial-gradient(600px 260px at 10% 20%, rgba(255,79,216,.22), transparent 55%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.14), transparent 60%),
-        radial-gradient(520px 260px at 70% 120%, rgba(139,92,246,.14), transparent 60%);
-      pointer-events:none;
+        radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.20), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      position:relative;
     }
     .heroInner{
-      position:relative;
+      padding: 18px;
       display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 14px;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 16px;
       align-items:stretch;
     }
-    @media (max-width: 880px){ .heroInner{ grid-template-columns: 1fr; } }
-    .heroLeft{
-      padding: 18px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      position:relative;
-      min-height: 240px;
+    @media (max-width: 840px){
+      .heroInner{grid-template-columns:1fr}
     }
     .heroTitle{
-      font-family:"Playfair Display", serif;
-      font-size: 34px;
-      line-height:1.05;
-      margin:0 0 8px;
+      font-family:var(--font-title);
+      font-weight:700;
+      font-size: 30px;
       letter-spacing:.2px;
+      margin: 4px 0 6px;
     }
-    @media (max-width: 520px){ .heroTitle{ font-size: 28px; } }
-    .heroSub{
+    .heroLead{
       color: var(--muted);
       font-size: 14px;
-      line-height:1.5;
-      margin:0 0 14px;
-      max-width: 58ch;
+      line-height: 1.5;
+      margin: 0 0 14px;
     }
-    .heroControls{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top: 10px;
-    }
+    .heroCtas{display:flex; gap:10px; flex-wrap:wrap}
     .cta{
-      padding: 12px 14px;
+      height:44px;
+      padding:0 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      display:flex; align-items:center; gap:10px;
+      box-shadow: var(--shadow2);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .cta.primary{
+      background: linear-gradient(135deg, rgba(255,79,216,.85), rgba(255,210,122,.65), rgba(139,92,246,.75));
+      border-color: rgba(255,255,255,.14);
+    }
+    .cta:hover{background: rgba(255,255,255,.085); border-color: rgba(255,255,255,.16)}
+    .cta.primary:hover{filter: brightness(1.03)}
+    .cta:active{transform: scale(.985)}
+
+    .chips{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    .chip{
+      height:34px;
+      padding:0 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.045);
+      color: var(--text);
+      font-size: 13px;
+      display:flex; align-items:center; gap:8px;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .chip:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14)}
+    .chip:active{transform: scale(.985)}
+    .chip.active{
+      background: rgba(255,79,216,.18);
+      border-color: rgba(255,79,216,.35);
+      box-shadow: 0 14px 40px rgba(255,79,216,.10);
+    }
+
+    /* Next available block */
+    .nextCard{
+      border-radius: var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      box-shadow: var(--glow2);
+      padding: 14px;
+      display:flex; flex-direction:column; gap:10px;
+      min-height: 182px;
+      position:relative;
+      overflow:hidden;
+    }
+    .nextTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .nextLabel{
+      font-size:12px; color: var(--muted2);
+      display:flex; align-items:center; gap:8px;
+    }
+    .pulse{
+      width:10px;height:10px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.9));
+      box-shadow: 0 0 20px rgba(92,246,199,.25);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.85}
+      50%{transform:scale(1.25); opacity:1}
+    }
+    .nextBody{display:flex; flex-direction:column; gap:6px}
+    .nextName{
+      font-weight:700;
+      letter-spacing:.1px;
+    }
+    .nextMeta{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .nextAction{
+      margin-top:auto;
+      display:flex; gap:10px; align-items:center;
+    }
+    .miniBtn{
+      height:40px;
+      padding:0 12px;
       border-radius: 14px;
-      border:1px solid rgba(255,79,216,.30);
-      background: linear-gradient(135deg, rgba(255,79,216,.30), rgba(255,210,122,.18));
-      box-shadow: 0 18px 60px rgba(255,79,216,.10);
-      cursor:pointer;
-      font-weight:800;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      display:flex; align-items:center; gap:10px;
+      box-shadow: var(--shadow2);
+    }
+    .miniBtn.primary{
+      background: linear-gradient(135deg, rgba(92,246,199,.35), rgba(255,255,255,.08));
+      border-color: rgba(92,246,199,.30);
+    }
+
+    /* ====== Search + tabs ====== */
+    .controls{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items:center;
+    }
+    @media (max-width: 720px){
+      .controls{grid-template-columns: 1fr}
+    }
+    .search{
+      height: 48px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 0 14px;
+      outline:none;
+      box-shadow: 0 14px 40px rgba(0,0,0,.28);
+    }
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .tab{
+      height:48px;
+      padding:0 14px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      display:flex; align-items:center; gap:10px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.28);
+    }
+    .tab.active{
+      background: rgba(139,92,246,.18);
+      border-color: rgba(139,92,246,.35);
+      box-shadow: 0 18px 60px rgba(139,92,246,.12);
+    }
+
+    /* ====== Sections & cards ====== */
+    .section{margin-top: 18px}
+    .sectionHead{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+      margin-bottom: 10px;
+    }
+    .h2{
+      font-family:var(--font-title);
+      font-size: 20px;
+      margin:0;
       letter-spacing:.2px;
     }
-    .cta:hover{ filter: brightness(1.03); }
-    .ghost{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:700;
+    .hint{color:var(--muted2); font-size:12px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
     }
-    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
-    .chip{
-      padding: 9px 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      cursor:pointer;
-      font-weight:700;
-      font-size: 13px;
-      color: var(--text);
-      opacity:.95;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: var(--stroke2); }
-    .chipActive{
-      border-color: rgba(255,79,216,.30);
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(139,92,246,.18));
-    }
+    @media (max-width: 980px){ .grid{grid-template-columns: repeat(2,minmax(0,1fr));} }
+    @media (max-width: 620px){ .grid{grid-template-columns: 1fr;} }
 
-    .heroRight{
-      padding: 18px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
+    .card{
+      border-radius: var(--r);
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
       box-shadow: var(--shadow2);
-      overflow:hidden;
       position:relative;
-      min-height: 240px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
     }
-    .nextHdr{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .nextHdr b{ font-size: 14px; letter-spacing:.2px; }
-    .dots{ display:flex; gap:6px; align-items:center; }
-    .dot{
-      width:6px; height:6px; border-radius:99px;
-      background: rgba(255,255,255,.28);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .dot.on{ background: rgba(255,79,216,.75); border-color: rgba(255,79,216,.30); }
-
-    .nextCard{
+    .card:hover{transform: translateY(-2px); background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.12)}
+    .img{
+      height: 150px;
+      background: linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,210,122,.10), rgba(139,92,246,.18));
       position:relative;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.20);
       overflow:hidden;
-      flex:1;
-      min-height: 160px;
-      box-shadow: 0 14px 40px rgba(0,0,0,.25);
-      cursor:pointer;
     }
-    .nextImg{
-      position:absolute; inset:0;
-      background-size:cover;
-      background-position:center;
-      filter: saturate(1.05) contrast(1.03);
-      transform: scale(1.03);
+    .img img{
+      width:100%; height:100%;
+      object-fit:cover;
+      transform: scale(1.02);
+      transition: transform .55s ease;
+      filter: saturate(1.05) contrast(1.02);
     }
-    .nextImg::after{
+    .card:hover .img img{transform: scale(1.10)}
+    .img:after{
       content:"";
       position:absolute; inset:0;
       background:
-        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.62)),
-        radial-gradient(420px 240px at 30% 20%, rgba(255,79,216,.18), transparent 60%),
-        radial-gradient(420px 240px at 80% 80%, rgba(255,210,122,.12), transparent 60%);
-    }
-    .nextBody{
-      position:relative;
-      padding: 14px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .nextTitle{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .nextTitle h3{
-      margin:0;
-      font-family:"Playfair Display", serif;
-      font-size: 18px;
-      line-height:1.12;
-    }
-    .badgeRow{ display:flex; gap:8px; flex-wrap:wrap; }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
-      font-size: 12px;
-      color: rgba(255,255,255,.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      white-space: nowrap;
-    }
-    .badge.pink{ border-color: rgba(255,79,216,.22); }
-    .badge.gold{ border-color: rgba(255,210,122,.22); }
-    .nextMeta{ color: rgba(255,255,255,.86); font-size: 13px; line-height:1.45; }
-    .nextActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 6px; }
-    .miniBtn{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.22);
-      cursor:pointer;
-      font-weight:800;
-      box-shadow: 0 14px 40px rgba(0,0,0,.22);
-    }
-    .miniBtn.primary{
-      border-color: rgba(255,79,216,.28);
-      background: linear-gradient(135deg, rgba(255,79,216,.25), rgba(255,210,122,.14));
-    }
-
-    .smallCard{
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding: 12px;
-    }
-    [data-theme="light"] .smallCard{ background: rgba(255,255,255,.55); }
-    .smallLabel{
-      font-size: 11px;
-      letter-spacing: .24em;
-      text-transform: uppercase;
-      opacity: .75;
-      margin-bottom: 6px;
-    }
-    .smallLine{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:baseline;
-      font-weight:900;
-    }
-    .smallLine span{ opacity:.92; font-weight:800; }
-    .trustRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      font-size: 12px;
-      opacity: .92;
-      margin-top: 4px;
-    }
-    .trustRow b{ font-weight:1000; }
-
-    /* ===== Filters ===== */
-    .filters{
-      margin: 12px 0 14px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 12px;
-      align-items:stretch;
-    }
-    @media (max-width: 880px){ .filters{ grid-template-columns: 1fr; } }
-    .searchBox, .sortBox{
-      padding: 12px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow2);
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .searchBox input{
-      width:100%;
-      border:0;
-      outline:none;
-      background: transparent;
-      color: var(--text);
-      font-size: 16px;
-      padding: 10px 8px;
-    }
-    .searchBox input::placeholder{ color: rgba(255,255,255,.55); }
-    [data-theme="light"] .searchBox input::placeholder{ color: rgba(15,15,25,.45); }
-
-    .sortBox{ justify-content:space-between; flex-wrap:wrap; }
-    .seg{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .seg button{
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:800;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .seg button.on{
-      border-color: rgba(255,79,216,.30);
-      background: linear-gradient(135deg, rgba(255,79,216,.20), rgba(139,92,246,.16));
-    }
-
-    /* ===== Sections & grid ===== */
-    .section{ margin-top: 16px; }
-    .section h2{
-      margin: 0 0 10px;
-      font-family: "Playfair Display", serif;
-      font-size: 22px;
-      letter-spacing:.2px;
-    }
-    .section p{
-      margin: -6px 0 10px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      animation: fadeIn .18s ease both;
-    }
-    @keyframes fadeIn{ from{opacity:.82; transform: translateY(2px);} to{opacity:1; transform: translateY(0);} }
-    @media (max-width: 960px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } }
-
-    /* ===== Cards ===== */
-    .card{
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-      box-shadow: var(--shadow2);
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      min-height: 360px; /* a bit more room for info */
-      transform: translateZ(0);
-    }
-    .imgWrap{
-      position:relative;
-      height: 178px;
-      overflow:hidden;
-      background: rgba(255,255,255,.05);
-    }
-    .img{
-      position:absolute; inset:0;
-      background-size:cover;
-      background-position:center;
-      transform: scale(1.02);
-      transition: transform .6s ease;
-      filter: saturate(1.05) contrast(1.03);
-    }
-    .card:hover .img{ transform: scale(1.08); }
-    .shine{
-      position:absolute; inset:-20%;
-      background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.18) 50%, transparent 65%);
-      transform: translateX(-35%) rotate(10deg);
-      opacity:0;
-      transition: opacity .25s ease, transform .8s ease;
+        radial-gradient(220px 120px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.52));
       pointer-events:none;
     }
-    .card:hover .shine{ opacity:.25; transform: translateX(35%) rotate(10deg); }
 
-    .topBadges{
-      position:absolute;
-      left: 10px;
-      top: 10px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      z-index:3;
+    .badges{
+      position:absolute; left:10px; top:10px;
+      display:flex; gap:6px; flex-wrap:wrap;
+      z-index:2;
     }
-    .cornerActions{
-      position:absolute;
-      right: 10px;
-      top: 10px;
-      display:flex;
-      gap:8px;
-      z-index:3;
-    }
-    .cbtn{
-      width: 38px; height: 38px;
+    .badge{
+      font-size:11px;
+      padding: 6px 9px;
       border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.12);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: transform .12s ease, background .12s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
     }
-    .cbtn:hover{ transform: translateY(-1px); background: rgba(0,0,0,.30); }
-    .cbtn:active{ transform: translateY(0px) scale(.98); }
-    .cbtn .h{ font-size: 18px; line-height:1; }
+    .badge.partner{border-color: rgba(255,210,122,.30); background: rgba(255,210,122,.10)}
+    .badge.today{border-color: rgba(92,246,199,.30); background: rgba(92,246,199,.10)}
+    .badge.verified{border-color: rgba(139,92,246,.32); background: rgba(139,92,246,.10)}
 
-    .body{
-      padding: 12px 12px 14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      flex:1;
+    .cardBody{padding: 12px}
+    .row1{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
     }
-    .titleRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .titleRow h3{
-      margin:0;
-      font-size: 16px;
-      line-height:1.15;
-      font-weight: 900;
+    .title{
+      font-weight: 800;
       letter-spacing:.1px;
+      line-height:1.15;
+      margin:0;
+      font-size: 15px;
     }
-    .titleRow .price{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      gap:2px;
-      min-width: 122px;
+    .subline{
+      margin-top:6px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.25;
     }
-    .price b{ font-size: 14px; letter-spacing:.2px; white-space:nowrap; }
-    .price small{ font-size: 11px; color: var(--muted); white-space:nowrap; }
-    .addr{ color: var(--muted); font-size: 13px; line-height:1.35; }
-    .metaRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 2px;
+    .rightMeta{
+      display:flex; flex-direction:column; align-items:flex-end; gap:6px;
+      min-width: 96px;
     }
-    .miniBadges{ display:flex; gap:8px; flex-wrap:wrap; }
-    .mini{
-      padding: 7px 10px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      font-size: 12px;
+    .price{
       font-weight:800;
-      color: var(--text);
-      opacity:.95;
-      white-space: nowrap;
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
     }
-    .mini.ok{ border-color: rgba(124,247,212,.22); background: rgba(124,247,212,.10); }
-    .mini.v{ border-color: rgba(255,210,122,.22); background: rgba(255,210,122,.10); }
-    .mini.p{ border-color: rgba(255,79,216,.22); background: rgba(255,79,216,.10); }
-    .mini.d{ border-color: rgba(139,92,246,.22); background: rgba(139,92,246,.10); }
-
-    /* ✅ extra info block (more salon info) */
-    .facts{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-      color: rgba(255,255,255,.88);
+    .rating{
       font-size: 12px;
-      line-height:1.35;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    [data-theme="light"] .facts{ color: rgba(15,15,25,.88); background: rgba(255,255,255,.55); }
-    .facts .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .facts .k{ opacity:.78; font-weight:900; letter-spacing:.06em; text-transform:uppercase; font-size: 10px; }
-    .facts .v{ font-weight:900; }
-
-    .why{
-      color: rgba(255,255,255,.88);
-      font-size: 12px;
-      line-height:1.35;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-    }
-    [data-theme="light"] .why{ color: rgba(15,15,25,.88); background: rgba(255,255,255,.55); }
-
-    .btnRow{
-      margin-top:auto;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .btn{
-      flex:1;
-      min-width: 120px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:900;
-      letter-spacing:.15px;
-      box-shadow: 0 16px 50px rgba(0,0,0,.18);
-    }
-    .btn.primary{
-      border-color: rgba(255,79,216,.26);
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(255,210,122,.12));
-    }
-    .btn:active{ transform: scale(.99); }
-
-    /* ===== Skeleton ===== */
-    .sk{
-      background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.10), rgba(255,255,255,.06));
-      background-size: 220% 100%;
-      animation: sk 1.1s ease-in-out infinite;
-      border:1px solid var(--stroke);
-      border-radius: var(--r2);
-      height: 360px;
-    }
-    @keyframes sk{ 0%{background-position: 0% 0;} 100%{background-position: 220% 0;} }
-
-    /* ===== Empty states ===== */
-    .empty{
-      margin-top: 12px;
-      padding: 16px;
-      border-radius: var(--r2);
-      border:1px dashed rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
       color: var(--muted);
     }
-    .empty b{ color: var(--text); }
-    .emptyActions{ margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap; }
-    .linkBtn{
-      padding: 10px 12px;
+
+    .cardActions{
+      margin-top: 10px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .small{
+      height: 38px;
+      padding: 0 12px;
       border-radius: 14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:900;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      display:flex; align-items:center; gap:10px;
+    }
+    .small.primary{
+      background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,255,255,.06));
+      border-color: rgba(255,79,216,.26);
     }
 
-    /* ===== Floating quick book ===== */
-    .floating{
-      position: fixed;
-      right: 14px;
-      bottom: calc(var(--safeBot) + 14px);
-      z-index: 80;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
+    /* ====== Floating quick-book ====== */
     .fab{
-      padding: 14px 16px;
-      border-radius: 999px;
-      border:1px solid rgba(255,79,216,.26);
-      background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,210,122,.12));
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      cursor:pointer;
-      font-weight:1000;
-      letter-spacing:.2px;
-      display:flex;
-      gap:10px;
-      align-items:center;
+      position: fixed;
+      right: calc(14px + var(--safe-right));
+      bottom: calc(14px + var(--safe-bottom));
+      z-index: 60;
+      height: 56px;
+      padding: 0 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(135deg, rgba(255,79,216,.72), rgba(255,210,122,.46), rgba(139,92,246,.60));
+      color: var(--text);
+      box-shadow: 0 22px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
+      display:flex; align-items:center; gap:10px;
     }
-    .fab span{ font-size: 18px; line-height:1; }
-    .fab small{ font-weight:900; opacity:.92; }
+    .fab:active{transform: scale(.985)}
 
+    /* ====== Modal ====== */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(10px);
+      z-index: 80;
+      display:none;
+      align-items:flex-end;
+      padding: 14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
+    }
+    .overlay.show{display:flex}
+    .modal{
+      width: min(720px, 100%);
+      margin: 0 auto;
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.20), transparent 55%),
+        radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.20), transparent 58%),
+        linear-gradient(180deg, rgba(20,20,30,.95), rgba(12,12,18,.92));
+      box-shadow: 0 30px 120px rgba(0,0,0,.72);
+      overflow:hidden;
+      max-height: calc(92vh);
+      display:flex;
+      flex-direction:column;
+    }
+    .modalHead{
+      padding: 14px 14px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .modalTitle{
+      font-family: var(--font-title);
+      font-weight:700;
+      font-size: 18px;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .closeBtn{
+      width:42px; height:42px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+    }
+    .modalBody{
+      padding: 14px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .field{margin-bottom: 12px}
+    .label{font-size:12px;color:var(--muted2); margin-bottom: 6px}
+    .input{
+      width:100%;
+      height:46px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 0 12px;
+      outline:none;
+    }
+    .row2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 520px){ .row2{grid-template-columns:1fr} }
+
+    .timeBtn{
+      height:46px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 0 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+
+    .quickPicks{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-top: 8px;
+    }
+    .pickBtn{
+      height:34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .modalFoot{
+      padding: 12px 14px 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display:flex; gap:10px; justify-content:space-between; align-items:center;
+    }
+    .bookBtn{
+      height:48px;
+      padding: 0 14px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(135deg, rgba(92,246,199,.34), rgba(255,255,255,.07));
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing:.2px;
+      display:flex; align-items:center; gap:10px;
+      flex:1;
+      justify-content:center;
+      box-shadow: 0 18px 60px rgba(92,246,199,.12);
+    }
+    .ghostBtn{
+      height:48px;
+      padding: 0 14px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      min-width: 140px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .hold{
+      font-size: 12px;
+      color: var(--muted2);
+      margin-left: 6px;
+    }
+
+    /* ====== Time picker bottom sheet ====== */
+    .sheet{
+      position: fixed; inset:0;
+      z-index: 90;
+      display:none;
+      align-items:flex-end;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      padding: 14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
+    }
+    .sheet.show{display:flex}
+    .sheetCard{
+      width: min(560px, 100%);
+      margin: 0 auto;
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,16,.94));
+      box-shadow: 0 30px 120px rgba(0,0,0,.75);
+      overflow:hidden;
+    }
+    .sheetHead{
+      padding: 12px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sheetTitle{
+      margin:0;
+      font-family: var(--font-title);
+      font-size: 16px;
+      letter-spacing:.2px;
+    }
+    .sheetBody{
+      padding: 10px;
+      max-height: 52vh;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .timeGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+    }
+    @media (max-width: 520px){ .timeGrid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    .timeItem{
+      height:44px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 800;
+      letter-spacing:.2px;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease;
+    }
+    .timeItem:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14)}
+    .timeItem:active{transform: scale(.985)}
+    .timeItem.disabled{
+      opacity:.35;
+      pointer-events:none;
+    }
+    .timeItem.active{
+      background: rgba(92,246,199,.16);
+      border-color: rgba(92,246,199,.30);
+      box-shadow: 0 18px 60px rgba(92,246,199,.10);
+    }
+
+    /* ====== Toast ====== */
     .toast{
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      bottom: calc(var(--safeBot) + 90px);
-      z-index: 200;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.16);
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: rgba(255,255,255,.92);
-      font-weight:900;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      max-width: min(560px, calc(100vw - 24px));
-      white-space: pre-line;
+      bottom: calc(90px + var(--safe-bottom));
+      z-index: 95;
+      min-width: 260px;
+      max-width: min(680px, calc(100% - 24px));
+      padding: 12px 14px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,10,16,.86);
+      box-shadow: 0 22px 70px rgba(0,0,0,.60);
+      color: var(--text);
+      display:none;
+      backdrop-filter: blur(14px);
     }
-    [data-theme="light"] .toast{ background: rgba(255,255,255,.75); color: rgba(15,15,25,.92); }
-    .toast.on{ opacity:1; transform: translateX(-50%) translateY(-2px); }
+    .toast.show{display:block; animation: toastIn .22s ease}
+    @keyframes toastIn{from{opacity:0; transform: translateX(-50%) translateY(10px)}to{opacity:1; transform: translateX(-50%) translateY(0)}}
+    .toast .t1{font-weight:800; margin-bottom:4px}
+    .toast .t2{color: var(--muted); font-size: 13px; line-height:1.35}
 
-    /* ===== Netbar (offline / update) ===== */
+    /* ====== Offline / update banner (netbar) ====== */
     .netbar{
       position: fixed;
-      left: 14px;
-      right: 14px;
-      top: calc(var(--safeTop) + 10px);
-      z-index: 999;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 10px 12px;
-      display:none;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      box-shadow: 0 16px 50px rgba(0,0,0,.30);
-    }
-    [data-theme="light"] .netbar{ background: rgba(255,255,255,.80); }
-    .netbar.on{ display:flex; }
-    .netbar b{ font-weight:1000; }
-    .netbar .btns{ display:flex; gap:10px; flex-wrap:wrap; }
-    .netbar button{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      font-weight:1000;
-      white-space:nowrap;
-    }
-
-    /* ===== Modal ===== */
-    .overlay{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(10px + var(--safe-top));
       z-index: 120;
-      padding: 12px;
-      padding-bottom: calc(var(--safeBot) + 12px);
-    }
-    .overlay.on{ display:flex; }
-    .modal{
-      width: min(680px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,10,16,.92), rgba(10,10,16,.84));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: 84vh;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="light"] .modal{
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.10), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88));
-    }
-    .mHead{
-      padding: 14px 14px 12px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .mHead h3{ margin:0; font-family:"Playfair Display", serif; font-size: 18px; }
-    .mHead p{ margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height:1.4; }
-    .x{
-      width: 40px; height: 40px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      display:grid; place-items:center;
-      cursor:pointer;
-      font-size: 18px;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mBody{
-      padding: 14px;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    @media (max-width: 560px){ .row2{ grid-template-columns: 1fr; } }
-    label{
-      display:flex;
-      flex-direction:column;
-      gap:7px;
-      font-size: 12px;
-      font-weight:900;
-      color: rgba(255,255,255,.86);
-    }
-    [data-theme="light"] label{ color: rgba(15,15,25,.78); }
-    select, input, textarea{
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 12px 12px;
-      outline:none;
-      font-size: 16px;
-      font-weight:700;
-    }
-    [data-theme="light"] select, [data-theme="light"] input, [data-theme="light"] textarea{
-      background: rgba(15,15,25,.04);
-      border-color: rgba(15,15,25,.12);
-    }
-    textarea{ min-height: 90px; resize:none; line-height:1.45; }
-
-    .timeField{ display:flex; gap:10px; align-items:center; }
-    .timeBtn{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:900;
-      font-size: 16px;
-    }
-    [data-theme="light"] .timeBtn{
-      background: rgba(15,15,25,.04);
-      border-color: rgba(15,15,25,.12);
-    }
-    .timeBtn small{ opacity:.70; font-weight:800; }
-
-    .mFoot{
-      padding: 12px 14px;
-      border-top: 1px solid rgba(255,255,255,.10);
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      background: rgba(0,0,0,.16);
-    }
-    [data-theme="light"] .mFoot{ background: rgba(255,255,255,.65); }
-    .submit{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid rgba(255,79,216,.26);
-      background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(255,210,122,.12));
-      cursor:pointer;
-      font-weight:1000;
-      letter-spacing:.2px;
-      min-width: 160px;
-      text-align:center;
-    }
-    .cancel{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:1000;
-      min-width: 120px;
-      text-align:center;
-    }
-
-    /* ===== Time sheet (custom) ===== */
-    .sheetOverlay{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      z-index: 140;
-      padding: 12px;
-      padding-bottom: calc(var(--safeBot) + 12px);
-    }
-    .sheetOverlay.on{ display:flex; }
-    .sheet{
-      width: min(520px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,10,16,.94), rgba(10,10,16,.86));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: 78vh;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="light"] .sheet{
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(255,79,216,.10), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,210,122,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.90));
-    }
-    .sheetHead{
-      padding: 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .sheetHead b{ font-size: 14px; }
-    .sheetBody{
-      padding: 10px 12px 14px;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .timeItem{
-      padding: 12px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      font-weight:1000;
-    }
-    [data-theme="light"] .timeItem{
-      background: rgba(15,15,25,.04);
-      border-color: rgba(15,15,25,.12);
-    }
-    .timeItem small{ opacity:.70; font-weight:900; }
-    .timeItem:hover{ filter: brightness(1.04); }
-    .timeItem:active{ transform: scale(.99); }
-
-    /* ===== Concierge drawer ===== */
-    .drawerOverlay{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      z-index: 160;
-      padding: 12px;
-      padding-bottom: calc(var(--safeBot) + 12px);
-    }
-    .drawerOverlay.on{ display:flex; }
-    .drawer{
-      width: min(720px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(139,92,246,.14), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,79,216,.12), transparent 60%),
-        linear-gradient(180deg, rgba(10,10,16,.94), rgba(10,10,16,.86));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      max-height: 82vh;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="light"] .drawer{
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(139,92,246,.10), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,79,216,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.90));
-    }
-    .drawerHead{ padding: 14px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; border-bottom:1px solid rgba(255,255,255,.10); }
-    .drawerHead h3{ margin:0; font-family:"Playfair Display", serif; font-size: 18px; }
-    .drawerHead p{ margin:4px 0 0; color:var(--muted); font-size: 13px; line-height:1.45; }
-    .drawerBody{ padding: 14px; overflow:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:12px; }
-    .aiInput{ width:100%; }
-    .aiPicks{ display:flex; flex-direction:column; gap:10px; }
-    .pick{
-      padding: 12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    [data-theme="light"] .pick{ background: rgba(15,15,25,.04); border-color: rgba(15,15,25,.12); }
-    .pick b{ font-size: 14px; }
-    .pick small{ color: var(--muted); font-weight:800; line-height:1.35; }
-    .pick .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 6px; }
-    .pick .row button{
+      width: min(860px, calc(100% - 24px));
       padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,79,216,.22);
-      background: linear-gradient(135deg, rgba(255,79,216,.18), rgba(255,210,122,.10));
-      cursor:pointer;
-      font-weight:1000;
-    }
-
-    /* ===== Footer ===== */
-    .footer{
-      margin-top: 22px;
-      padding: 18px;
-      border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      color: var(--muted);
-      font-size: 13px;
-      line-height:1.55;
-    }
-    .footer b{ color: var(--text); }
-    .footerGrid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 12px;
-      margin-top: 10px;
-    }
-    @media (max-width: 760px){ .footerGrid{ grid-template-columns: 1fr; } }
-    .footerCard{
-      padding: 14px;
       border-radius: 18px;
-      border:1px solid var(--stroke);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(10,10,16,.82);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 22px 70px rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .netbar.show{display:flex}
+    .netbar .txt{font-size:13px; color: var(--text)}
+    .netbar .btns{display:flex; gap:8px; flex-wrap:wrap}
+    .netbar .nb{
+      height:36px; padding:0 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
+      color: var(--text);
     }
-    .muted{ color: var(--muted); }
 
-    @media (prefers-reduced-motion: reduce){
-      *{ transition:none !important; scroll-behavior:auto !important; animation:none !important; }
-    }
+    /* ====== Helpers ====== */
+    .muted{color:var(--muted)}
+    .sep{height:1px; background: rgba(255,255,255,.06); margin: 16px 0}
+    .hidden{display:none}
   </style>
 </head>
 
 <body>
   <!-- netbar -->
   <div class="netbar" id="netbar">
-    <div id="netbarText"><b>—</b></div>
+    <div class="txt" id="netbarText">…</div>
     <div class="btns">
-      <button id="netbarOk">OK</button>
-      <button id="netbarRefresh">Refresh</button>
+      <button class="nb" id="netbarOk">OK</button>
+      <button class="nb" id="netbarRefresh">Refresh</button>
     </div>
   </div>
 
   <header class="topbar">
     <div class="topbarRow">
       <div class="brand">
-        <div class="logo" aria-hidden="true"><span>BB</span></div>
-        <div class="brandTitle">
-          <b id="t_brand">Beauty Booking</b>
-          <small id="t_tagline">Lux salons & masters — book in seconds</small>
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brandText">
+          <div class="name" id="t_brand">Beauty Booking</div>
+          <div class="sub" id="t_sub">Verified salons & masters</div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="iconBtn" id="btnFav" title="Only favorites">
-          <span class="iconDot">❤️</span>
-          <span class="lbl" id="t_onlyfav">Only</span>
+        <button class="pillBtn" id="btnFavOnly" title="Only favorites">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="t_favOnly">Only ❤️</span>
         </button>
 
-        <button class="iconBtn pill" id="btnAI" title="AI help">
-          <span class="iconDot">✨</span>
-          <span class="lbl" id="t_ai">AI help</span>
-        </button>
-
-        <button class="iconBtn" id="btnTheme" title="Theme">
-          <span class="iconDot">🌙</span>
-          <span class="lbl" id="t_theme">Theme</span>
+        <button class="iconBtn" id="btnAI" title="AI help">
+          ✨
         </button>
 
         <button class="iconBtn" id="btnLang" title="Language">
-          <span class="iconDot">🌐</span>
-          <span class="lbl" id="t_lang">UA</span>
+          🌐
+        </button>
+
+        <button class="iconBtn" id="btnTheme" title="Theme">
+          🌓
         </button>
       </div>
     </div>
   </header>
 
   <main class="wrap">
-    <!-- HERO -->
-    <section class="hero glass">
+    <section class="hero">
       <div class="heroInner">
-        <div class="heroLeft">
-          <h1 class="heroTitle" id="t_hero_title">Book beauty services in seconds.</h1>
-          <p class="heroSub" id="t_hero_sub">
-            Verified salons & masters in Montréal. Choose a service, pick a time, and get confirmation instantly.
-          </p>
+        <div>
+          <div class="heroTitle" id="t_heroTitle">Book beauty in seconds.</div>
+          <div class="heroLead" id="t_heroLead">Premium picks in Montréal — verified salons, home masters, fast booking.</div>
 
-          <div class="heroControls">
-            <button class="cta" id="btnQuickBook"><span id="t_quickbook">Quick booking</span></button>
-            <button class="ghost" id="btnReset"><span id="t_reset">Reset filters</span></button>
+          <div class="heroCtas">
+            <button class="cta primary" id="ctaQuick">
+              <span>⚡</span><span id="t_quick">Quick book</span>
+            </button>
+            <a class="cta" href="./profile.html?id=romanukova" target="_blank" rel="noopener">
+              <span>🏛</span><span id="t_openProfile">Open profile</span>
+            </a>
           </div>
 
           <div class="chips" id="serviceChips"></div>
         </div>
 
-        <div class="heroRight">
-          <div class="nextHdr">
-            <b id="t_next">Next available near you</b>
-            <div class="dots" id="nextDots"></div>
+        <div class="nextCard" id="nextCard">
+          <div class="nextTop">
+            <div class="nextLabel"><span class="pulse"></span><span id="t_nextLabel">Next available near you</span></div>
+            <div class="hint" id="nextDots">● ○ ○</div>
           </div>
-
-          <div class="nextCard" id="nextCard" role="button" tabindex="0" aria-label="Next available">
-            <div class="nextImg" id="nextImg"></div>
-            <div class="nextBody">
-              <div class="nextTitle">
-                <h3 id="nextName">—</h3>
-                <div class="badgeRow">
-                  <span class="badge pink" id="nextWhen">—</span>
-                  <span class="badge gold" id="nextFrom">—</span>
-                </div>
-              </div>
-              <div class="nextMeta" id="nextMeta">—</div>
-              <div class="nextActions">
-                <button class="miniBtn primary" id="btnNextBook"><span id="t_book_this">Book this slot</span></button>
-                <button class="miniBtn" id="btnNextWhy"><span id="t_why">Why this one?</span></button>
-              </div>
-            </div>
+          <div class="nextBody">
+            <div class="nextName" id="nextName">—</div>
+            <div class="nextMeta" id="nextMeta">—</div>
           </div>
-
-          <div class="muted" style="font-size:12px; line-height:1.35">
-            <span id="t_next_hint">Auto-rotates every ~10s. Tap to book instantly.</span>
-          </div>
-
-          <!-- Last booking -->
-          <div class="smallCard" id="lastBookingCard" style="display:none">
-            <div class="smallLabel" id="t_last_label">YOUR LAST BOOKING</div>
-            <div class="smallLine" id="lastBookingLine">—</div>
-            <div class="muted" style="font-size:12px; margin-top:6px" id="t_last_hint">Tap to book again</div>
-          </div>
-
-          <!-- Trust -->
-          <div class="smallCard">
-            <div class="smallLabel" id="t_trust_label">TRUST</div>
-            <div class="trustRow" id="trustRow">
-              <span>✅ <b>Verified</b></span>
-              <span>🧼 <b>Sterile tools</b></span>
-              <span>⚡ <b>Instant confirmation</b></span>
-              <span>🔒 <b>No spam</b></span>
-            </div>
+          <div class="nextAction">
+            <button class="miniBtn primary" id="nextBook"><span>📅</span><span id="t_bookSlot">Book this slot</span></button>
+            <button class="miniBtn" id="nextWhy"><span>💡</span><span id="t_why">Why this one?</span></button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FILTERS -->
-    <section class="filters">
-      <div class="searchBox">
-        <span style="font-size:18px">🔎</span>
-        <input id="search" type="search" autocomplete="off" inputmode="search"
-               placeholder="Search salon, master, address…" />
+    <div class="controls">
+      <input class="search" id="search" placeholder="Search salon, master, service…" />
+      <div class="tabs">
+        <button class="tab active" id="tabAll"><span>🏛</span><span id="t_tabAll">All</span></button>
+        <button class="tab" id="tabPartners"><span>⭐</span><span id="t_tabPartners">Top</span></button>
+        <button class="tab" id="tabRecommended"><span>✨</span><span id="t_tabRec">Recommended</span></button>
       </div>
+    </div>
 
-      <div class="sortBox">
-        <div class="seg">
-          <button id="sortSmart" class="on">Smart</button>
-          <button id="sortPrice">Price</button>
-          <button id="sortSoon">Soonest</button>
-        </div>
-        <div class="seg">
-          <button id="btnLocate">📍 <span id="t_nearme">Near me</span></button>
-        </div>
+    <!-- Order: Top partners -> Recommended -> All others -->
+    <section class="section" id="secPartners">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_partners">Top salons / partners</h2>
+        <div class="hint" id="t_partnersHint">Paid partners</div>
       </div>
+      <div class="grid" id="gridPartners"></div>
     </section>
 
-    <!-- ✅ YOUR SAVED (shows only if there are favorites) -->
-    <section class="section" id="secSaved" style="display:none">
-      <h2 id="t_saved">Your saved</h2>
-      <p id="t_saved_sub">Your ❤️ list — fast access to your favorites.</p>
-      <div class="grid" id="gridSaved"></div>
-      <div class="empty" id="emptySaved" style="display:none"></div>
-    </section>
-
-    <!-- TOP -->
-    <section class="section">
-      <h2 id="t_top">Top salons / partners</h2>
-      <p id="t_top_sub">Priority partners (premium placements) — still respects your filters.</p>
-      <div class="grid" id="gridTop"></div>
-      <div class="empty" id="emptyTop" style="display:none"></div>
-    </section>
-
-    <!-- RECOMMENDED -->
-    <section class="section">
-      <h2 id="t_rec">Recommended</h2>
-      <p id="t_rec_sub">Curated picks based on availability, distance & value.</p>
+    <section class="section" id="secRec">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_recommended">Recommended</h2>
+        <div class="hint" id="t_recHint">Smart picks for you</div>
+      </div>
       <div class="grid" id="gridRec"></div>
-      <div class="empty" id="emptyRec" style="display:none"></div>
     </section>
 
-    <!-- OTHERS -->
-    <section class="section">
-      <h2 id="t_all">All others</h2>
-      <p id="t_all_sub">Everything else — still verified/curated demo data.</p>
+    <section class="section" id="secAll">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_allOthers">All others</h2>
+        <div class="hint" id="t_allHint">Browse everything</div>
+      </div>
       <div class="grid" id="gridAll"></div>
-      <div class="empty" id="emptyAll" style="display:none"></div>
     </section>
 
-    <!-- FOOTER -->
-    <section class="footer">
-      <b id="t_footer_title">Your self-care place</b> — <span id="t_footer_sub">book fast, feel premium.</span>
-      <div class="footerGrid">
-        <div class="footerCard">
-          <b id="t_how">How it works</b>
-          <div class="muted" id="t_how_text" style="margin-top:8px">
-            Choose a service → pick a salon/master → select a date/time → confirm. You’ll get a Telegram notification instantly.
-          </div>
-        </div>
-        <div class="footerCard">
-          <b id="t_policies">Policies</b>
-          <div class="muted" id="t_policies_text" style="margin-top:8px">
-            Demo mode. Real payments are not enabled. Always confirm details with the salon/master.
-          </div>
-        </div>
-      </div>
-      <div class="muted" style="margin-top:10px">
-        <span id="t_pwa_hint">Tip:</span> <span id="t_pwa_hint2">On iPhone — Share → “Add to Home Screen” for app-like mode.</span>
-      </div>
-    </section>
+    <div class="sep"></div>
+    <div class="muted" id="t_footer">
+      Your place for self-care — fast booking, clean UI, premium feel.
+    </div>
   </main>
 
-  <div class="floating">
-    <div class="fab" id="fab"><span>⚡</span> <small id="t_fab">Quick book</small></div>
-  </div>
-
-  <div class="toast" id="toast"></div>
+  <button class="fab" id="fab"><span>⚡</span><span id="t_fab">Quick book</span></button>
 
   <!-- Booking modal -->
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Booking">
-      <div class="mHead">
-        <div>
-          <h3 id="mTitle">Booking</h3>
-          <p id="mSub">—</p>
-        </div>
-        <div class="x" id="mClose">✕</div>
+      <div class="modalHead">
+        <h3 class="modalTitle" id="m_title">Booking</h3>
+        <button class="closeBtn" id="m_close">✕</button>
       </div>
 
-      <div class="mBody" id="mBody">
-        <div class="row2">
-          <label>
-            <span id="t_service">Service</span>
-            <select id="mService"></select>
-          </label>
-          <label>
-            <span id="t_date">Date</span>
-            <input id="mDate" type="date" />
-          </label>
-        </div>
-
-        <label>
-          <span id="t_time">Time</span>
-          <div class="timeField">
-            <button class="timeBtn" id="mTimeBtn" type="button">
-              <span id="mTimeText">—</span>
-              <small id="mTimeHint">Tap</small>
-            </button>
+      <div class="modalBody">
+        <div class="field">
+          <div class="label" id="m_lblListing">Salon / Master</div>
+          <div class="input" id="m_listing" style="display:flex;align-items:center;gap:10px">
+            <span id="m_listingName">—</span>
           </div>
-        </label>
-
-        <div class="row2">
-          <label>
-            <span id="t_name">Name</span>
-            <input id="mName" type="text" autocomplete="name" placeholder="Your name" />
-          </label>
-          <label>
-            <span id="t_phone">Phone</span>
-            <input id="mPhone" type="tel" autocomplete="tel" placeholder="+1 (___) ___-____" />
-          </label>
+          <div class="muted" style="font-size:12px;margin-top:6px" id="m_listingInfo">—</div>
         </div>
 
-        <label>
-          <span id="t_email">Email</span>
-          <input id="mEmail" type="email" autocomplete="email" placeholder="you@email.com" />
-        </label>
+        <div class="field">
+          <div class="label" id="m_lblService">Service</div>
+          <select class="input" id="m_service"></select>
+        </div>
 
-        <label>
-          <span id="t_notes">Notes (optional)</span>
-          <textarea id="mNotes" placeholder="Anything to mention?"></textarea>
-        </label>
+        <div class="row2">
+          <div class="field">
+            <div class="label" id="m_lblDate">Date</div>
+            <input class="input" type="date" id="m_date" />
+          </div>
 
-        <div class="why" id="mInfo">—</div>
+          <div class="field">
+            <div class="label" id="m_lblTime">Time</div>
+            <button class="timeBtn" id="m_timeBtn">
+              <span id="m_timeText">—</span>
+              <span>▾</span>
+            </button>
+
+            <div class="quickPicks">
+              <button class="pickBtn" id="pickFast" type="button">⚡ <span id="t_pickFast">Fastest</span></button>
+              <button class="pickBtn" id="pickCheap" type="button">💸 <span id="t_pickCheap">Cheapest</span></button>
+              <button class="pickBtn" id="pickNear" type="button">📍 <span id="t_pickNear">Nearest</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label" id="m_lblName">Your name</div>
+            <input class="input" id="m_name" placeholder="Name" />
+          </div>
+          <div class="field">
+            <div class="label" id="m_lblPhone">Phone</div>
+            <input class="input" id="m_phone" placeholder="(438)..." inputmode="tel" />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label" id="m_lblEmail">Email</div>
+            <input class="input" id="m_email" placeholder="email@example.com" inputmode="email" />
+          </div>
+          <div class="field">
+            <div class="label" id="m_lblNotes">Notes</div>
+            <input class="input" id="m_notes" placeholder="Optional" />
+          </div>
+        </div>
+
+        <div class="muted" style="font-size:12px" id="m_addrLine">—</div>
       </div>
 
-      <div class="mFoot">
-        <div class="cancel" id="mCancel"><span id="t_cancel">Cancel</span></div>
-        <div class="submit" id="mSubmit"><span id="t_confirm">Confirm booking</span></div>
+      <div class="modalFoot">
+        <button class="ghostBtn" id="m_openProfileBtn">Profile</button>
+        <button class="bookBtn" id="m_bookBtn">
+          <span>✅</span><span id="t_confirm">Confirm booking</span>
+          <span class="hold" id="holdText"></span>
+        </button>
       </div>
     </div>
   </div>
 
   <!-- Time picker sheet -->
-  <div class="sheetOverlay" id="sheetOverlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Pick time">
+  <div class="sheet" id="sheet">
+    <div class="sheetCard">
       <div class="sheetHead">
-        <b id="t_pick_time">Pick a time</b>
-        <div class="x" id="sheetClose">✕</div>
+        <h4 class="sheetTitle" id="t_sheetTitle">Choose time</h4>
+        <button class="closeBtn" id="sheetClose">✕</button>
       </div>
-      <div class="sheetBody" id="sheetBody"></div>
-    </div>
-  </div>
-
-  <!-- AI concierge drawer -->
-  <div class="drawerOverlay" id="drawerOverlay" aria-hidden="true">
-    <div class="drawer" role="dialog" aria-modal="true" aria-label="AI help">
-      <div class="drawerHead">
-        <div>
-          <h3 id="t_ai_title">AI Concierge</h3>
-          <p id="t_ai_sub">Tell me what you need — I’ll pick the best options (strictly by service).</p>
-        </div>
-        <div class="x" id="drawerClose">✕</div>
-      </div>
-      <div class="drawerBody">
-        <label style="margin:0">
-          <span id="t_ai_ask">Ask</span>
-          <input id="aiText" class="aiInput" type="text" placeholder="e.g. brows under 40 after 15" />
-        </label>
-        <div class="seg">
-          <button id="aiGo" class="on">✨ <span id="t_ai_find">Find best</span></button>
-          <button id="aiClear">✕ <span id="t_ai_clear">Clear</span></button>
-        </div>
-
-        <div class="aiPicks" id="aiPicks"></div>
-        <div class="muted" id="aiHint" style="font-size:12px; line-height:1.45">
-          Tip: “манік до 25”, “брови до 40 після 15”, “чоловіча стрижка”.
-        </div>
+      <div class="sheetBody">
+        <div class="timeGrid" id="timeGrid"></div>
       </div>
     </div>
   </div>
 
-  <!-- DATA -->
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="t1" id="toastT1">—</div>
+    <div class="t2" id="toastT2">—</div>
+  </div>
+
+  <!-- data.js must expose SERVICES, LISTINGS, and (optionally) window.bb.util -->
   <script src="./data.js"></script>
 
   <script>
-    (function(){
-      "use strict";
+  ;(() => {
+    /* =========================
+       Ultra-safe helpers
+    ========================== */
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
 
-      // ✅ SET YOUR WORKER URL HERE (Cloudflare Worker API that sends Telegram)
-      window.WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
+    const safeSetText = (el, txt) => { if (el) el.textContent = (txt ?? "").toString(); };
+    const safeSetHTML = (el, html) => { if (el) el.innerHTML = (html ?? "").toString(); };
 
-      /* =========================
-         Safety helpers (anti-crash)
-      ========================== */
-      const $ = (q, el=document) => el.querySelector(q);
-      const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
-      const safe = (fn) => { try { return fn(); } catch(e){ console.error(e); return null; } };
-      const safeSetText = (el, txt) => { if(!el) return; el.textContent = (txt==null?"":String(txt)); };
-      const safeSetHTML = (el, html) => { if(!el) return; el.innerHTML = (html==null?"":String(html)); };
+    const clamp = (n,a,b)=>Math.max(a,Math.min(b,n));
+    const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
 
-      /* =========================
-         State + storage
-      ========================== */
-      const LS = {
-        theme: "bb_theme",
-        lang: "bb_lang",
-        favs: "bb_favs",
-        onlyFav: "bb_onlyfav",
-        search: "bb_search",
-        service: "bb_service",
-        sort: "bb_sort",
-        lastBooking: "bb_last_booking",
+    const now = () => new Date();
+    const pad = n => String(n).padStart(2,"0");
+    const isoLocal = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const fmtPretty = (dateISO, time, lang) => {
+      try{
+        const [y,m,d] = (dateISO||"").split("-").map(x=>parseInt(x,10));
+        const [hh,mm] = (time||"").split(":").map(x=>parseInt(x,10));
+        if(!y||!m||!d||isNaN(hh)||isNaN(mm)) return `${dateISO||""} ${time||""}`.trim() || "—";
+        const dt = new Date(y, m-1, d, hh, mm, 0, 0);
+        const locale = (lang==="en") ? "en-CA" : "uk-UA";
+        return dt.toLocaleString(locale, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
+      }catch(e){ return `${dateISO||""} ${time||""}`.trim() || "—"; }
+    };
 
-        // ✅ geo cache (safe for PWA)
-        locCache: "bb_loc_cache",
-        locTs: "bb_loc_ts"
-      };
+    const lsGet = (k, fallback=null) => {
+      try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
+    };
+    const lsSet = (k, v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
 
-      const state = {
-        theme: localStorage.getItem(LS.theme) || "dark",
-        lang: localStorage.getItem(LS.lang) || "uk",
-        favs: new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]")),
-        onlyFav: (localStorage.getItem(LS.onlyFav) || "0") === "1",
-        search: localStorage.getItem(LS.search) || "",
-        serviceId: localStorage.getItem(LS.service) || "",
-        sort: localStorage.getItem(LS.sort) || "smart",
-        userLoc: null,
+    /* =========================
+       Config / State
+    ========================== */
+    const STATE = {
+      lang: lsGet("bb.lang","uk") === "en" ? "en" : "uk",
+      theme: lsGet("bb.theme","lux") || "lux",
+      favOnly: !!lsGet("bb.favOnly", false),
+      favorites: new Set(lsGet("bb.favorites", [])),
+      serviceId: lsGet("bb.serviceId", ""),
+      search: lsGet("bb.search",""),
+      tab: lsGet("bb.tab","all"), // all | partners | rec
+      lastNextIndex: 0,
 
-        // booking
-        bookingListingId: null,
-        bookingServiceId: null,
-        bookingDateISO: null,
-        bookingTime: null,
-        holdUntil: null,
-        holdTimer: null,
+      booking: {
+        open: false,
+        listingId: "",
+        serviceId: "",
+        dateISO: "",
+        time: "",
+      },
 
-        // next available hero
-        nextPool: [],
-        nextIndex: 0,
-        nextTimer: null,
-
-        // skeleton
-        firstPaintDone: false
-      };
-
-      document.documentElement.setAttribute("data-theme", state.theme);
-
-      /* =========================
-         ✅ Scroll lock (fix modal sliding)
-      ========================== */
-      let _scrollY = 0;
-      function lockScroll(){
-        if(document.body.classList.contains("locked")) return;
-        _scrollY = window.scrollY || 0;
-        document.body.style.top = `-${_scrollY}px`;
-        document.body.classList.add("locked");
+      hold: {
+        until: 0,
+        key: ""
       }
-      function unlockScroll(){
-        if(!document.body.classList.contains("locked")) return;
-        document.body.classList.remove("locked");
-        const y = _scrollY || 0;
-        document.body.style.top = "";
-        window.scrollTo(0, y);
+    };
+
+    // Worker endpoint: keep your existing WORKER_URL if in data.js; fallback to same-origin /book
+    const WORKER_URL = (window.WORKER_URL || window.bb?.WORKER_URL || "/book");
+
+    const SERVICES = (window.SERVICES || []).slice();
+    const LISTINGS = (window.LISTINGS || []).slice();
+
+    /* =========================
+       Texts
+    ========================== */
+    const T = {
+      uk: {
+        brand: "Beauty Booking",
+        sub: "Перевірені салони & майстри",
+        heroTitle: "Запис за секунди.",
+        heroLead: "Преміальні варіанти в Montréal — салони, home masters, швидке бронювання.",
+        quick: "Швидкий запис",
+        openProfile: "Відкрити профіль",
+        nextLabel: "Найближчий слот поруч",
+        bookSlot: "Записати цей слот",
+        why: "Чому цей?",
+        tabAll: "Всі",
+        tabPartners: "Топ",
+        tabRec: "Рекомендовано",
+        partners: "Top salons / partners",
+        partnersHint: "Платні партнери",
+        recommended: "Recommended",
+        recHint: "Smart picks для тебе",
+        allOthers: "All others",
+        allHint: "Переглянути всіх",
+        footer: "Твоє місце для self-care — швидкий запис, чистий UI, преміум відчуття.",
+        favOnly: "Only ❤️",
+        ai: "AI help",
+        pickFast: "Найшвидше",
+        pickCheap: "Найдешевше",
+        pickNear: "Найближче",
+        sheetTitle: "Обери час",
+        confirm: "Підтвердити бронювання",
+        booking: "Бронювання",
+        listing: "Салон / Майстер",
+        service: "Послуга",
+        date: "Дата",
+        time: "Час",
+        yourName: "Імʼя",
+        phone: "Телефон",
+        email: "Email",
+        notes: "Нотатки",
+        profile: "Профіль",
+        toastWhyTitle: "Why this one?",
+        toastWhyText: "Бо підходить твоїй послузі, має хороший рейтинг і найближчий слот сьогодні.",
+        toastAI: "AI help",
+        toastAIText: "Напиши: “брови”, “стрижка”, “манікюр” — і я підберу топ-варіанти.",
+        missing: "Заповни дату/час/імʼя/телефон 🙏",
+        sent: "Відправлено ✅",
+        sentText: "Ми надіслали бронювання в Telegram. Скоро підтвердять.",
+        failed: "Помилка ❌",
+        failedText: "Не вдалось надіслати. Перевір Worker /book та інтернет.",
+        hold: "Hold 2 min",
+        offline: "Ти офлайн — деякі фічі можуть не працювати.",
+        cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh."
+      },
+      en: {
+        brand: "Beauty Booking",
+        sub: "Verified salons & masters",
+        heroTitle: "Book in seconds.",
+        heroLead: "Premium picks in Montréal — verified salons, home masters, fast booking.",
+        quick: "Quick book",
+        openProfile: "Open profile",
+        nextLabel: "Next available near you",
+        bookSlot: "Book this slot",
+        why: "Why this one?",
+        tabAll: "All",
+        tabPartners: "Top",
+        tabRec: "Recommended",
+        partners: "Top salons / partners",
+        partnersHint: "Paid partners",
+        recommended: "Recommended",
+        recHint: "Smart picks for you",
+        allOthers: "All others",
+        allHint: "Browse everything",
+        footer: "Your place for self-care — fast booking, clean UI, premium feel.",
+        favOnly: "Only ❤️",
+        ai: "AI help",
+        pickFast: "Fastest",
+        pickCheap: "Cheapest",
+        pickNear: "Nearest",
+        sheetTitle: "Choose time",
+        confirm: "Confirm booking",
+        booking: "Booking",
+        listing: "Salon / Master",
+        service: "Service",
+        date: "Date",
+        time: "Time",
+        yourName: "Your name",
+        phone: "Phone",
+        email: "Email",
+        notes: "Notes",
+        profile: "Profile",
+        toastWhyTitle: "Why this one?",
+        toastWhyText: "Because it matches your service, has strong rating and the nearest slot today.",
+        toastAI: "AI help",
+        toastAIText: "Type: “brows”, “haircut”, “manicure” — I’ll pick the best options.",
+        missing: "Fill date/time/name/phone 🙏",
+        sent: "Sent ✅",
+        sentText: "We sent your booking to Telegram. You’ll get confirmation soon.",
+        failed: "Error ❌",
+        failedText: "Couldn’t send. Check Worker /book and internet connection.",
+        hold: "Hold 2 min",
+        offline: "You’re offline — some features may not work.",
+        cached: "Loaded from cache. If something didn’t update — press Refresh."
       }
+    };
 
-      /* =========================
-         i18n
-      ========================== */
-      const T = {
-        uk: {
-          brand: "Beauty Booking",
-          tagline: "Люкс салони та майстри — запис за секунди",
-          only: "Only",
-          ai: "AI help",
-          theme: "Theme",
-          lang: "UA",
+    const txt = () => T[STATE.lang];
 
-          heroTitle: "Записуйся на бʼюті-послуги за секунди.",
-          heroSub: "Перевірені салони та майстри в Montréal. Вибери послугу, час — і отримай підтвердження.",
-          quickbook: "Швидкий запис",
-          reset: "Скинути фільтри",
+    function applyTexts(){
+      safeSetText($("#t_brand"), txt().brand);
+      safeSetText($("#t_sub"), txt().sub);
+      safeSetText($("#t_heroTitle"), txt().heroTitle);
+      safeSetText($("#t_heroLead"), txt().heroLead);
+      safeSetText($("#t_quick"), txt().quick);
+      safeSetText($("#t_openProfile"), txt().openProfile);
+      safeSetText($("#t_nextLabel"), txt().nextLabel);
+      safeSetText($("#t_bookSlot"), txt().bookSlot);
+      safeSetText($("#t_why"), txt().why);
+      safeSetText($("#t_tabAll"), txt().tabAll);
+      safeSetText($("#t_tabPartners"), txt().tabPartners);
+      safeSetText($("#t_tabRec"), txt().tabRec);
+      safeSetText($("#t_partners"), txt().partners);
+      safeSetText($("#t_partnersHint"), txt().partnersHint);
+      safeSetText($("#t_recommended"), txt().recommended);
+      safeSetText($("#t_recHint"), txt().recHint);
+      safeSetText($("#t_allOthers"), txt().allOthers);
+      safeSetText($("#t_allHint"), txt().allHint);
+      safeSetText($("#t_footer"), txt().footer);
+      safeSetText($("#t_favOnly"), txt().favOnly);
+      safeSetText($("#t_pickFast"), txt().pickFast);
+      safeSetText($("#t_pickCheap"), txt().pickCheap);
+      safeSetText($("#t_pickNear"), txt().pickNear);
+      safeSetText($("#t_sheetTitle"), txt().sheetTitle);
+      safeSetText($("#t_confirm"), txt().confirm);
+      safeSetText($("#m_title"), txt().booking);
+      safeSetText($("#m_lblListing"), txt().listing);
+      safeSetText($("#m_lblService"), txt().service);
+      safeSetText($("#m_lblDate"), txt().date);
+      safeSetText($("#m_lblTime"), txt().time);
+      safeSetText($("#m_lblName"), txt().yourName);
+      safeSetText($("#m_lblPhone"), txt().phone);
+      safeSetText($("#m_lblEmail"), txt().email);
+      safeSetText($("#m_lblNotes"), txt().notes);
+      safeSetText($("#m_openProfileBtn"), txt().profile);
 
-          next: "Найближчий слот поруч",
-          nextHint: "Авто-ротація ~кожні 10с. Натисни, щоб записатися.",
-          bookThis: "Записатися",
-          why: "Чому цей?",
+      // placeholders
+      $("#search").placeholder = (STATE.lang==="en") ? "Search salon, master, service…" : "Пошук салон/майстер/послуга…";
+      $("#m_name").placeholder = (STATE.lang==="en") ? "Name" : "Імʼя";
+      $("#m_phone").placeholder = (STATE.lang==="en") ? "(438)..." : "(438)...";
+      $("#m_email").placeholder = (STATE.lang==="en") ? "email@example.com" : "email@example.com";
+      $("#m_notes").placeholder = (STATE.lang==="en") ? "Optional" : "Опційно";
+    }
 
-          saved: "Your saved",
-          savedSub: "Твої ❤️ — швидкий доступ до улюблених.",
+    /* =========================
+       Netbar (offline / cached)
+    ========================== */
+    function showNetbar(msg){
+      safeSetText($("#netbarText"), msg);
+      $("#netbar").classList.add("show");
+    }
+    function hideNetbar(){ $("#netbar").classList.remove("show"); }
+    $("#netbarOk").addEventListener("click", hideNetbar);
+    $("#netbarRefresh").addEventListener("click", () => location.reload());
 
-          lastLabel: "YOUR LAST BOOKING",
-          lastHint: "Натисни — повторити запис",
+    function initNetbar(){
+      const onOnline = () => hideNetbar();
+      const onOffline = () => showNetbar(txt().offline);
 
-          trustLabel: "TRUST",
+      window.addEventListener("online", onOnline);
+      window.addEventListener("offline", onOffline);
 
-          searchPh: "Пошук салону/майстра/адреси…",
-          nearme: "Near me",
+      if(!navigator.onLine) onOffline();
 
-          top: "Top salons / partners",
-          topSub: "Партнери з пріоритетом — але фільтри діють.",
-          rec: "Recommended",
-          recSub: "Підбір по доступності, відстані та ціні.",
-          all: "All others",
-          allSub: "Все інше — перевірені демо-дані.",
-
-          footerTitle: "Твоє місце для self-care",
-          footerSub: "швидко, красиво, преміально.",
-          how: "Як це працює",
-          howText: "Обери послугу → салон/майстра → дату/час → підтверди. Telegram-сповіщення приходить одразу.",
-          policies: "Політики",
-          policiesText: "Демо-режим. Оплати вимкнені. Завжди уточнюй деталі у салону/майстра.",
-          pwaHint: "Порада:",
-          pwaHint2: "На iPhone — Share → “Add to Home Screen” для режиму додатку.",
-
-          fab: "Швидкий запис",
-
-          // modal
-          service: "Послуга",
-          date: "Дата",
-          time: "Час",
-          name: "Імʼя",
-          phone: "Телефон",
-          email: "Email",
-          notes: "Коментар (необовʼязково)",
-          cancel: "Скасувати",
-          confirm: "Підтвердити запис",
-          pickTime: "Обери час",
-
-          // ai
-          aiTitle: "AI Консьєрж",
-          aiSub: "Опиши що треба — підберу найкраще (строго по послузі).",
-          aiAsk: "Запит",
-          aiFind: "Підібрати",
-          aiClear: "Очистити",
-
-          // empty
-          emptyTitle: "Немає результатів",
-          emptyText: "Спробуй іншу послугу, вимкни ❤️ або скинь фільтри.",
-          resetFilters: "Скинути фільтри",
-
-          // misc
-          openProfile: "Профіль",
-          share: "Share",
-          book: "Book",
-          expired: "Hold expired — pick time again",
-
-          // new bits
-          facts: "Швидко",
-          nextSlot: "Найближче",
-          services: "Послуги",
-          vibe: "Vibe"
-        },
-        en: {
-          brand: "Beauty Booking",
-          tagline: "Lux salons & masters — book in seconds",
-          only: "Only",
-          ai: "AI help",
-          theme: "Theme",
-          lang: "EN",
-
-          heroTitle: "Book beauty services in seconds.",
-          heroSub: "Verified salons & masters in Montréal. Choose a service, pick a time, get confirmation.",
-          quickbook: "Quick booking",
-          reset: "Reset filters",
-
-          next: "Next available near you",
-          nextHint: "Auto-rotates every ~10s. Tap to book instantly.",
-          bookThis: "Book this slot",
-          why: "Why this one?",
-
-          saved: "Your saved",
-          savedSub: "Your ❤️ list — fast access to favorites.",
-
-          lastLabel: "YOUR LAST BOOKING",
-          lastHint: "Tap to book again",
-
-          trustLabel: "TRUST",
-
-          searchPh: "Search salon, master, address…",
-          nearme: "Near me",
-
-          top: "Top salons / partners",
-          topSub: "Priority partners — filters still apply.",
-          rec: "Recommended",
-          recSub: "Based on availability, distance & value.",
-          all: "All others",
-          allSub: "Everything else — curated demo data.",
-
-          footerTitle: "Your self-care place",
-          footerSub: "book fast, feel premium.",
-          how: "How it works",
-          howText: "Choose service → pick salon/master → select date/time → confirm. Telegram notification comes instantly.",
-          policies: "Policies",
-          policiesText: "Demo mode. Payments disabled. Always confirm details with salon/master.",
-          pwaHint: "Tip:",
-          pwaHint2: "On iPhone — Share → “Add to Home Screen” for app-like mode.",
-
-          fab: "Quick book",
-
-          // modal
-          service: "Service",
-          date: "Date",
-          time: "Time",
-          name: "Name",
-          phone: "Phone",
-          email: "Email",
-          notes: "Notes (optional)",
-          cancel: "Cancel",
-          confirm: "Confirm booking",
-          pickTime: "Pick a time",
-
-          // ai
-          aiTitle: "AI Concierge",
-          aiSub: "Tell me what you need — I’ll pick best options (strictly by service).",
-          aiAsk: "Ask",
-          aiFind: "Find best",
-          aiClear: "Clear",
-
-          // empty
-          emptyTitle: "No results",
-          emptyText: "Try another service, disable ❤️ or reset filters.",
-          resetFilters: "Reset filters",
-
-          // misc
-          openProfile: "Profile",
-          share: "Share",
-          book: "Book",
-          expired: "Hold expired — pick time again",
-
-          // new bits
-          facts: "Quick facts",
-          nextSlot: "Next",
-          services: "Services",
-          vibe: "Vibe"
+      // cached detection
+      try{
+        const nav = performance.getEntriesByType?.("navigation")?.[0];
+        if(nav && typeof nav.transferSize === "number" && nav.transferSize === 0){
+          showNetbar(txt().cached);
         }
-      };
+      }catch(e){}
+    }
 
-      function tr(key){
-        const lang = state.lang === "en" ? "en" : "uk";
-        return (T[lang] && T[lang][key]) || (T.uk[key] || key);
-      }
+    /* =========================
+       Toast
+    ========================== */
+    let toastTimer = null;
+    function toast(t1, t2, ms=2600){
+      safeSetText($("#toastT1"), t1);
+      safeSetText($("#toastT2"), t2);
+      $("#toast").classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>$("#toast").classList.remove("show"), ms);
+    }
 
-      function applyTexts(){
-        safeSetText($("#t_brand"), tr("brand"));
-        safeSetText($("#t_tagline"), tr("tagline"));
-        safeSetText($("#t_onlyfav"), tr("only"));
-        safeSetText($("#t_ai"), tr("ai"));
-        safeSetText($("#t_theme"), tr("theme"));
-        safeSetText($("#t_lang"), state.lang === "en" ? "EN" : "UA");
+    /* =========================
+       Random short salon info (requested)
+    ========================== */
+    const INFO_UK = [
+      "Стерильні інструменти • одноразові пилочки • чистий люкс-сервіс.",
+      "Топ майстер • акуратні кутикули • стійке покриття.",
+      "Комфортна атмосфера • швидкий запис • love it.",
+      "Преміум догляд • уважність до деталей • без поспіху.",
+      "Мʼякі техніки • мінімальна травматизація • чиста робота.",
+      "Сьогодні є слоти • можна записатись за 30 сек."
+    ];
+    const INFO_EN = [
+      "Sterile tools • premium care • clean results.",
+      "Top master • attention to detail • long-lasting finish.",
+      "Comfort vibe • quick booking • you’ll love it.",
+      "Premium care • precise work • no rush.",
+      "Gentle technique • clean cuticle • neat shape.",
+      "Slots available today • book in 30 sec."
+    ];
+    const pickInfo = () => {
+      const arr = (STATE.lang==="en") ? INFO_EN : INFO_UK;
+      return arr[Math.floor(Math.random()*arr.length)];
+    };
 
-        safeSetText($("#t_hero_title"), tr("heroTitle"));
-        safeSetText($("#t_hero_sub"), tr("heroSub"));
-        safeSetText($("#t_quickbook"), tr("quickbook"));
-        safeSetText($("#t_reset"), tr("reset"));
+    /* =========================
+       Filters / ranking
+    ========================== */
+    function normalize(s){ return (s||"").toString().toLowerCase().trim(); }
 
-        safeSetText($("#t_next"), tr("next"));
-        safeSetText($("#t_next_hint"), tr("nextHint"));
-        safeSetText($("#t_book_this"), tr("bookThis"));
-        safeSetText($("#t_why"), tr("why"));
+    function listingServices(listing){
+      // supports: listing.services[] or listing.serviceIds[] or listing.tags
+      const ids = (listing?.services || listing?.serviceIds || []);
+      return Array.isArray(ids) ? ids : [];
+    }
 
-        safeSetText($("#t_saved"), tr("saved"));
-        safeSetText($("#t_saved_sub"), tr("savedSub"));
+    function matchesService(listing){
+      if(!STATE.serviceId) return true;
+      const ids = listingServices(listing).map(String);
+      return ids.includes(String(STATE.serviceId));
+    }
 
-        safeSetText($("#t_last_label"), tr("lastLabel"));
-        safeSetText($("#t_last_hint"), tr("lastHint"));
-        safeSetText($("#t_trust_label"), tr("trustLabel"));
+    function matchesSearch(listing){
+      const q = normalize(STATE.search);
+      if(!q) return true;
+      const blob = [
+        listing?.name, listing?.title, listing?.address, listing?.city,
+        ...(listing?.tags||[])
+      ].join(" ");
+      return normalize(blob).includes(q);
+    }
 
-        const s = $("#search");
-        if(s) s.placeholder = tr("searchPh");
-        safeSetText($("#t_nearme"), tr("nearme"));
+    function isPartner(listing){
+      return !!(listing?.partner || listing?.isPartner || listing?.paidPartner);
+    }
 
-        safeSetText($("#t_top"), tr("top"));
-        safeSetText($("#t_top_sub"), tr("topSub"));
-        safeSetText($("#t_rec"), tr("rec"));
-        safeSetText($("#t_rec_sub"), tr("recSub"));
-        safeSetText($("#t_all"), tr("all"));
-        safeSetText($("#t_all_sub"), tr("allSub"));
+    function isRecommended(listing){
+      // simple algo: high rating or flagged recommended
+      if(listing?.recommended) return true;
+      const r = Number(listing?.rating || 0);
+      return r >= 4.8;
+    }
 
-        safeSetText($("#t_footer_title"), tr("footerTitle"));
-        safeSetText($("#t_footer_sub"), tr("footerSub"));
-        safeSetText($("#t_how"), tr("how"));
-        safeSetText($("#t_how_text"), tr("howText"));
-        safeSetText($("#t_policies"), tr("policies"));
-        safeSetText($("#t_policies_text"), tr("policiesText"));
-        safeSetText($("#t_pwa_hint"), tr("pwaHint"));
-        safeSetText($("#t_pwa_hint2"), tr("pwaHint2"));
+    function byScore(a,b){
+      const ra = Number(a.rating||0), rb = Number(b.rating||0);
+      const pa = Number(a.fromPrice||a.priceFrom||a.price||0), pb = Number(b.fromPrice||b.priceFrom||b.price||0);
+      // prefer rating, then cheaper, then partner
+      const sa = (ra*10) + (isPartner(a)?2:0) - (pa/50);
+      const sb = (rb*10) + (isPartner(b)?2:0) - (pb/50);
+      return sb - sa;
+    }
 
-        safeSetText($("#t_fab"), tr("fab"));
+    function filtered(){
+      let arr = LISTINGS.slice();
+      if(STATE.favOnly) arr = arr.filter(x => STATE.favorites.has(x.id));
+      arr = arr.filter(matchesService).filter(matchesSearch);
+      arr.sort(byScore);
+      return arr;
+    }
 
-        safeSetText($("#t_service"), tr("service"));
-        safeSetText($("#t_date"), tr("date"));
-        safeSetText($("#t_time"), tr("time"));
-        safeSetText($("#t_name"), tr("name"));
-        safeSetText($("#t_phone"), tr("phone"));
-        safeSetText($("#t_email"), tr("email"));
-        safeSetText($("#t_notes"), tr("notes"));
-        safeSetText($("#t_cancel"), tr("cancel"));
-        safeSetText($("#t_confirm"), tr("confirm"));
-        safeSetText($("#t_pick_time"), tr("pickTime"));
+    /* =========================
+       Cards render
+    ========================== */
+    function cardBadgeHTML(listing){
+      const b = [];
+      if(isPartner(listing)) b.push(`<span class="badge partner">Partner</span>`);
+      if(Number(listing.rating||0) >= 4.8) b.push(`<span class="badge verified">${STATE.lang==="en"?"Verified":"Verified"}</span>`);
+      if((listing.todaySlots && listing.todaySlots.length) || listing.today === true) b.push(`<span class="badge today">${STATE.lang==="en"?"Today":"Today"}</span>`);
+      return b.length ? `<div class="badges">${b.join("")}</div>` : "";
+    }
 
-        safeSetText($("#t_ai_title"), tr("aiTitle"));
-        safeSetText($("#t_ai_sub"), tr("aiSub"));
-        safeSetText($("#t_ai_ask"), tr("aiAsk"));
-        safeSetText($("#t_ai_find"), tr("aiFind"));
-        safeSetText($("#t_ai_clear"), tr("aiClear"));
-      }
+    function cardHTML(listing){
+      const img = listing.image || listing.photo || listing.cover ||
+        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
+      const name = listing.name || listing.title || "—";
+      const addr = listing.address || "Montréal, QC";
+      const r = Number(listing.rating||0);
+      const price = Number(listing.fromPrice || listing.priceFrom || listing.price || 0);
+      const priceText = price ? `$${Math.round(price)}+` : "$—";
 
-      /* =========================
-         Utilities
-      ========================== */
-      const pad = (n)=> String(n).padStart(2,"0");
-      const isoLocal = (d)=>{
-        const y = d.getFullYear();
-        const m = pad(d.getMonth()+1);
-        const day = pad(d.getDate());
-        return `${y}-${m}-${day}`;
-      };
-      const fmtDateTime = (dateISO, time)=>{
-        if(!dateISO || !time) return "";
-        const [y,m,d] = dateISO.split("-").map(x=>parseInt(x,10));
-        const [hh,mm] = time.split(":").map(x=>parseInt(x,10));
-        const dt = new Date(y,(m||1)-1,d||1,hh||0,mm||0,0);
-        const lang = state.lang === "en" ? "en-CA" : "uk-UA";
-        return dt.toLocaleString(lang, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
-      };
-      const money = (n)=> (n==null ? "—" : `$${Math.round(n)}`);
-
-      const toastEl = $("#toast");
-      let toastTimer = null;
-      function toast(msg){
-        if(!toastEl) return;
-        safeSetText(toastEl, msg);
-        toastEl.classList.add("on");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(()=> toastEl.classList.remove("on"), 2600);
-      }
-
-      function save(){
-        localStorage.setItem(LS.theme, state.theme);
-        localStorage.setItem(LS.lang, state.lang);
-        localStorage.setItem(LS.favs, JSON.stringify(Array.from(state.favs)));
-        localStorage.setItem(LS.onlyFav, state.onlyFav ? "1" : "0");
-        localStorage.setItem(LS.search, state.search);
-        localStorage.setItem(LS.service, state.serviceId || "");
-        localStorage.setItem(LS.sort, state.sort);
-      }
-
-      function escapeHtml(s){
-        return String(s||"")
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
-      }
-
-      function getServiceName(serviceId){
-        const s = (window.SERVICES||[]).find(x=>x.id===serviceId);
-        if(!s) return serviceId || "";
-        return state.lang === "en" ? (s.en || s.ua || s.id) : (s.ua || s.en || s.id);
-      }
-
-      function servicesPreview(listing, max=3){
-        const ids = (listing.services||[]).map(x=>x.serviceId).filter(Boolean);
-        const names = ids.map(getServiceName).filter(Boolean);
-        const uniq = Array.from(new Set(names));
-        const take = uniq.slice(0, max);
-        const rest = Math.max(0, uniq.length - take.length);
-        if(!take.length) return "—";
-        return rest>0 ? `${take.join(", ")} +${rest}` : take.join(", ");
-      }
-
-      /* ===== distance ===== */
-      function haversineKm(a, b){
-        if(!a || !b) return null;
-        const R = 6371;
-        const toRad = (x)=> x*Math.PI/180;
-        const dLat = toRad((b.lat||0)-(a.lat||0));
-        const dLng = toRad((b.lng||0)-(a.lng||0));
-        const lat1 = toRad(a.lat||0);
-        const lat2 = toRad(b.lat||0);
-        const s1 = Math.sin(dLat/2), s2 = Math.sin(dLng/2);
-        const h = s1*s1 + Math.cos(lat1)*Math.cos(lat2)*s2*s2;
-        return 2*R*Math.asin(Math.min(1, Math.sqrt(h)));
-      }
-
-      function listingService(listing, serviceId){
-        if(window.bb?.util?.listingService) return window.bb.util.listingService(listing, serviceId);
-        return (listing.services||[]).find(s=>s.serviceId===serviceId) || null;
-      }
-
-      function minPriceFor(listing, serviceId){
-        if(window.bb?.util?.minPriceFor) return window.bb.util.minPriceFor(listing, serviceId);
-        let m=null;
-        for(const s of (listing.services||[])){
-          if(serviceId && s.serviceId!==serviceId) continue;
-          if(m==null || s.from<m) m=s.from;
-        }
-        return m;
-      }
-
-      function nextAvailable(listing, serviceId){
-        if(window.bb?.util?.nextAvailable) return window.bb.util.nextAvailable(listing, serviceId);
-        const bySvc = listing.availabilityByService || {};
-        if(serviceId && bySvc[serviceId] && bySvc[serviceId].length){
-          const s = bySvc[serviceId].slice().sort()[0];
-          return { dateISO: s.slice(0,10), time: s.slice(11,16) };
-        }
-        const av = listing.availability || {};
-        const dates = Object.keys(av).sort();
-        for(const d of dates){
-          const times = (av[d]||[]).slice().sort();
-          if(times.length) return { dateISO:d, time:times[0] };
-        }
-        if(!serviceId){
-          let best=null;
-          for(const k of Object.keys(bySvc)){
-            const arr = bySvc[k]||[];
-            if(!arr.length) continue;
-            const s = arr.slice().sort()[0];
-            if(!best || s < best.slot) best = { slot:s, serviceId:k };
-          }
-          if(best){
-            return { dateISO: best.slot.slice(0,10), time: best.slot.slice(11,16), serviceId: best.serviceId };
-          }
-        }
-        return null;
-      }
-
-      function computeWhy(listing, serviceId){
-        const parts = [];
-        if(listing.partner) parts.push("Partner");
-        if(listing.verified) parts.push("Verified");
-        if(listing.sterile) parts.push("Sterile");
-        const p = minPriceFor(listing, serviceId);
-        if(p!=null) parts.push(p<=30 ? "Best value" : "Premium");
-        const km = state.userLoc && listing.lat && listing.lng
-          ? haversineKm(state.userLoc, {lat:listing.lat, lng:listing.lng})
-          : null;
-        if(km!=null) parts.push(`${km.toFixed(1)} km`);
-        if(listing.tags?.length){
-          const t = listing.tags[0];
-          if(t) parts.push(String(t).slice(0,18));
-        }
-        return parts.slice(0,5).join(" · ");
-      }
-
-      function soonestKey(listing){
-        const n = nextAvailable(listing, state.serviceId);
-        if(!n) return 999999999;
-        const k = (n.dateISO||"").replaceAll("-","") + (n.time||"").replaceAll(":","");
-        const num = parseInt(k, 10);
-        return Number.isFinite(num) ? num : 999999999;
-      }
-
-      function smartSort(list){
-        const out = list.slice();
-        out.sort((a,b)=>{
-          const pa = a.partner ? 1 : 0;
-          const pb = b.partner ? 1 : 0;
-          if(pa!==pb) return pb - pa;
-
-          const da = (state.userLoc && a.lat && a.lng) ? haversineKm(state.userLoc, {lat:a.lat, lng:a.lng}) : null;
-          const db = (state.userLoc && b.lat && b.lng) ? haversineKm(state.userLoc, {lat:b.lat, lng:b.lng}) : null;
-          if(da!=null && db!=null && da!==db) return da - db;
-
-          const sa = soonestKey(a);
-          const sb = soonestKey(b);
-          if(sa!==sb) return sa - sb;
-
-          const pra = minPriceFor(a, state.serviceId);
-          const prb = minPriceFor(b, state.serviceId);
-          if(pra!=null && prb!=null && pra!==prb) return pra - prb;
-
-          return (a.name||"").localeCompare(b.name||"");
-        });
-        return out;
-      }
-
-      function priceSort(list){
-        const out = list.slice();
-        out.sort((a,b)=>{
-          const pra = minPriceFor(a, state.serviceId);
-          const prb = minPriceFor(b, state.serviceId);
-          const aa = (pra==null)? 999999 : pra;
-          const bb = (prb==null)? 999999 : prb;
-          if(aa!==bb) return aa-bb;
-          return soonestKey(a)-soonestKey(b);
-        });
-        return out;
-      }
-
-      function soonSort(list){
-        const out = list.slice();
-        out.sort((a,b)=>{
-          const sa = soonestKey(a);
-          const sb = soonestKey(b);
-          if(sa!==sb) return sa-sb;
-          const pra = minPriceFor(a, state.serviceId);
-          const prb = minPriceFor(b, state.serviceId);
-          const aa = (pra==null)? 999999 : pra;
-          const bb = (prb==null)? 999999 : prb;
-          return aa-bb;
-        });
-        return out;
-      }
-
-      /* =========================
-         Data (from data.js)
-      ========================== */
-      const LISTINGS = Array.isArray(window.LISTINGS) ? window.LISTINGS : [];
-      const SERVICES = Array.isArray(window.SERVICES) ? window.SERVICES : [];
-
-      /* =========================
-         Render chips + modal select
-      ========================== */
-      function renderServicesUI(){
-        const chips = $("#serviceChips");
-        const sel = $("#mService");
-        if(chips){
-          chips.innerHTML = "";
-          const all = document.createElement("button");
-          all.className = "chip" + (!state.serviceId ? " chipActive":"");
-          all.textContent = state.lang==="en" ? "All services" : "Всі послуги";
-          all.onclick = ()=>{ state.serviceId=""; save(); renderAll(); };
-          chips.appendChild(all);
-
-          for(const s of SERVICES){
-            const btn = document.createElement("button");
-            btn.className = "chip" + (state.serviceId===s.id ? " chipActive":"");
-            btn.textContent = state.lang==="en" ? (s.en||s.ua||s.id) : (s.ua||s.en||s.id);
-            btn.onclick = ()=>{ state.serviceId = s.id; save(); renderAll(); };
-            chips.appendChild(btn);
-          }
-        }
-
-        if(sel){
-          sel.innerHTML = "";
-          for(const s of SERVICES){
-            const opt = document.createElement("option");
-            opt.value = s.id;
-            opt.textContent = state.lang==="en" ? (s.en||s.ua||s.id) : (s.ua||s.en||s.id);
-            sel.appendChild(opt);
-          }
-        }
-      }
-
-      /* =========================
-         Filtering
-      ========================== */
-      function matches(listing){
-        if(state.onlyFav && !state.favs.has(listing.id)) return false;
-
-        if(state.serviceId){
-          const ok = (listing.services||[]).some(x=>x.serviceId===state.serviceId);
-          if(!ok) return false;
-        }
-
-        const q = (state.search||"").trim().toLowerCase();
-        if(q){
-          const hay = [
-            listing.name, listing.subtitle, listing.address, listing.city,
-            (listing.tags||[]).join(" "),
-            (listing.services||[]).map(s=> getServiceName(s.serviceId)).join(" ")
-          ].join(" ").toLowerCase();
-          if(!hay.includes(q)) return false;
-        }
-
-        return true;
-      }
-
-      function splitSections(list){
-        const top = [];
-        const rec = [];
-        const all = [];
-        for(const it of list){
-          if(it.partner) top.push(it);
-          else if(it.recommended) rec.push(it);
-          else all.push(it);
-        }
-        return {top, rec, all};
-      }
-
-      /* =========================
-         Random info (bigger)
-      ========================== */
-      function randomInfo(listing, serviceId){
-        const sid = serviceId || state.serviceId || (listing.services?.[0]?.serviceId || "");
-        const n = nextAvailable(listing, sid);
-        const when = n ? fmtDateTime(n.dateISO, n.time) : (state.lang==="en"?"No slot yet":"Поки без слоту");
-        const svcs = servicesPreview(listing, 3);
-        const why = computeWhy(listing, sid) || (state.lang==="en"?"Curated pick":"Підібрано");
-
-        const line1 = `⚡ ${tr("nextSlot")}: ${when}`;
-        const line2 = `💅 ${tr("services")}: ${svcs}`;
-        const line3 = `✨ ${why}`;
-        const addr = listing.address ? `📍 ${listing.address}` : "";
-
-        return [line1, addr || line2, addr ? line2 : line3, addr ? line3 : ""].filter(Boolean).join("\n");
-      }
-
-      /* =========================
-         Card HTML (more info)
-      ========================== */
-      function cardHTML(listing){
-        const img = listing.photo || listing.image || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=70";
-        const p = minPriceFor(listing, state.serviceId);
-        const soon = nextAvailable(listing, state.serviceId);
-        const soonTxt = soon ? fmtDateTime(soon.dateISO, soon.time) : (state.lang==="en" ? "No slots" : "Нема слотів");
-        const why = computeWhy(listing, state.serviceId);
-        const rating = listing.rating ? `${listing.rating.toFixed(1)}★` : "—";
-        const dist = (state.userLoc && listing.lat && listing.lng) ? haversineKm(state.userLoc,{lat:listing.lat,lng:listing.lng}) : null;
-
-        const badges = [];
-        if(listing.verified) badges.push(`<span class="mini v">✅ Verified</span>`);
-        if(listing.sterile) badges.push(`<span class="mini ok">🧼 Sterile</span>`);
-        if(dist!=null) badges.push(`<span class="mini d">📍 ${dist.toFixed(1)} km</span>`);
-        badges.push(`<span class="mini p">⭐ ${rating}</span>`);
-
-        const title = escapeHtml(listing.name||"—");
-        const addr = escapeHtml(listing.address||"");
-        const sub = escapeHtml(listing.subtitle||"");
-        const from = p!=null ? `${money(p)}` : "—";
-
-        const timeHint = soon ? soonTxt : (state.lang==="en" ? "Pick any day" : "Обери день");
-        const favOn = state.favs.has(listing.id);
-
-        const svcs = escapeHtml(servicesPreview(listing, 3));
-        const soonLine = escapeHtml(soon ? soonTxt : (state.lang==="en"?"No slots":"Нема слотів"));
-        const vibe = escapeHtml((listing.tags && listing.tags.length) ? String(listing.tags[0]) : (state.lang==="en"?"Premium feel":"Преміум вайб"));
-
-        return `
-          <article class="card" data-id="${escapeHtml(listing.id)}">
-            <div class="imgWrap">
-              <div class="img" style="background-image:url('${escapeHtml(img)}')"></div>
-              <div class="shine"></div>
-
-              <div class="topBadges">
-                ${listing.partner ? `<span class="badge pink">Partner</span>` : ``}
-                ${listing.recommended ? `<span class="badge gold">Trending</span>` : ``}
-              </div>
-
-              <div class="cornerActions">
-                <div class="cbtn" data-act="fav" title="Favorite"><span class="h">${favOn?"❤️":"🤍"}</span></div>
-                <div class="cbtn" data-act="share" title="Share"><span class="h">↗️</span></div>
-              </div>
+      return `
+      <div class="card" data-id="${listing.id}">
+        <div class="img">
+          ${cardBadgeHTML(listing)}
+          <img src="${img}" alt="" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="cardBody">
+          <div class="row1">
+            <div>
+              <p class="title">${escapeHtml(name)}</p>
+              <div class="subline">${escapeHtml(addr)}</div>
             </div>
-
-            <div class="body">
-              <div class="titleRow">
-                <div style="min-width:0">
-                  <h3>${title}</h3>
-                  <div class="muted" style="font-size:12px; margin-top:3px; line-height:1.35">${sub}</div>
-                </div>
-                <div class="price">
-                  <b>${from}</b>
-                  <small>${timeHint}</small>
-                </div>
-              </div>
-
-              <div class="addr">${addr}</div>
-
-              <div class="metaRow">
-                <div class="miniBadges">
-                  ${badges.join("")}
-                </div>
-              </div>
-
-              <div class="facts">
-                <div class="row"><span class="k">${escapeHtml(tr("facts"))}</span></div>
-                <div class="row"><span class="k">${escapeHtml(tr("nextSlot"))}:</span> <span class="v">${soonLine}</span></div>
-                <div class="row"><span class="k">${escapeHtml(tr("services"))}:</span> <span class="v">${svcs}</span></div>
-                <div class="row"><span class="k">${escapeHtml(tr("vibe"))}:</span> <span class="v">${vibe}</span></div>
-              </div>
-
-              <div class="why">${escapeHtml(why || (state.lang==="en"?"Curated pick":"Підібрано"))}</div>
-
-              <div class="btnRow">
-                <button class="btn" data-act="profile">${escapeHtml(tr("openProfile"))}</button>
-                <button class="btn primary" data-act="book">${escapeHtml(tr("book"))}</button>
-              </div>
+            <div class="rightMeta">
+              <div class="price">${priceText}</div>
+              <div class="rating">${r ? `⭐ ${r.toFixed(1)}` : "⭐ —"}</div>
             </div>
-          </article>
-        `;
-      }
-
-      function renderGrid(el, emptyEl, list){
-        if(!el) return;
-        if(!state.firstPaintDone){
-          el.innerHTML = `<div class="sk"></div><div class="sk"></div><div class="sk"></div>`;
-        }
-        const html = list.map(cardHTML).join("");
-        el.innerHTML = html || "";
-        if(emptyEl){
-          if(list.length){
-            emptyEl.style.display="none";
-          } else {
-            emptyEl.style.display="block";
-            emptyEl.innerHTML = `<b>${tr("emptyTitle")}</b><div style="margin-top:6px">${tr("emptyText")}</div>
-              <div class="emptyActions">
-                <button class="linkBtn" data-act="resetOnly">${tr("resetFilters")}</button>
-              </div>`;
-          }
-        }
-      }
-
-      /* =========================
-         Next available hero rotation (NEAREST if geo)
-      ========================== */
-      function buildNextPool(allFiltered){
-        const pool = [];
-        for(const l of allFiltered){
-          const n = nextAvailable(l, state.serviceId);
-          if(!n) continue;
-
-          const sid = state.serviceId || n.serviceId || (l.services?.[0]?.serviceId || "");
-          const dist = (state.userLoc && l.lat && l.lng)
-            ? haversineKm(state.userLoc, {lat:l.lat, lng:l.lng})
-            : null;
-
-          pool.push({
-            listing: l,
-            dateISO: n.dateISO,
-            time: n.time,
-            serviceId: sid,
-            distKm: dist
-          });
-        }
-
-        if(state.userLoc){
-          pool.sort((a,b)=>{
-            const da = (a.distKm==null) ? 999999 : a.distKm;
-            const db = (b.distKm==null) ? 999999 : b.distKm;
-            if(da !== db) return da - db;
-
-            const ka = (a.dateISO||"").replaceAll("-","") + (a.time||"").replaceAll(":","");
-            const kb = (b.dateISO||"").replaceAll("-","") + (b.time||"").replaceAll(":","");
-            if(ka !== kb) return ka < kb ? -1 : 1;
-
-            const pra = minPriceFor(a.listing, a.serviceId) ?? 999999;
-            const prb = minPriceFor(b.listing, b.serviceId) ?? 999999;
-            return pra - prb;
-          });
-        } else {
-          pool.sort((a,b)=>{
-            const ka = (a.dateISO||"").replaceAll("-","") + (a.time||"").replaceAll(":","");
-            const kb = (b.dateISO||"").replaceAll("-","") + (b.time||"").replaceAll(":","");
-            return (ka<kb?-1:ka>kb?1:0);
-          });
-        }
-
-        state.nextPool = pool.slice(0, 8);
-        state.nextIndex = 0;
-
-        const dots = $("#nextDots");
-        if(dots){
-          dots.innerHTML = "";
-          for(let i=0;i<state.nextPool.length;i++){
-            const d = document.createElement("div");
-            d.className = "dot" + (i===0?" on":"");
-            dots.appendChild(d);
-          }
-        }
-      }
-
-      function showNext(idx){
-        const item = state.nextPool[idx];
-        const card = $("#nextCard");
-        if(!item || !card){
-          safeSetText($("#nextName"), "—");
-          safeSetText($("#nextWhen"), "—");
-          safeSetText($("#nextFrom"), "—");
-          safeSetText($("#nextMeta"), "—");
-          const dots = $$("#nextDots .dot");
-          dots.forEach(d=>d.classList.remove("on"));
-          return;
-        }
-
-        const l = item.listing;
-        const img = l.photo || l.image || "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=70";
-        const p = minPriceFor(l, item.serviceId);
-        const when = fmtDateTime(item.dateISO, item.time);
-        const meta1 = getServiceName(item.serviceId) || (state.lang==="en"?"Service":"Послуга");
-        const meta2 = l.address || "";
-        const why = computeWhy(l, item.serviceId);
-
-        const nextImg = $("#nextImg");
-        if(nextImg) nextImg.style.backgroundImage = `url('${img}')`;
-
-        safeSetText($("#nextName"), l.name || "—");
-        safeSetText($("#nextWhen"), when || "—");
-        safeSetText($("#nextFrom"), p!=null ? `${state.lang==="en"?"From":"Від"} ${money(p)}` : "—");
-
-        // ✅ add nearest hint + distance
-        if(!state.userLoc){
-          safeSetText($("#nextMeta"),
-            `${meta1} · ${meta2} · ${why} · ${state.lang==="en" ? "Tap Near me for closest" : "Натисни Near me для найближчих"}`
-          );
-        } else {
-          const d = (item.distKm!=null) ? ` · ${item.distKm.toFixed(1)} km` : "";
-          safeSetText($("#nextMeta"), `${meta1} · ${meta2} · ${why}${d}`);
-        }
-
-        const dots = $$("#nextDots .dot");
-        dots.forEach((d,i)=> d.classList.toggle("on", i===idx));
-
-        card.onclick = ()=> openBooking(l.id, item.serviceId, item.dateISO, item.time);
-        card.onkeydown = (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openBooking(l.id, item.serviceId, item.dateISO, item.time); } };
-
-        const btnBook = $("#btnNextBook");
-        if(btnBook) btnBook.onclick = (e)=>{ e.stopPropagation(); openBooking(l.id, item.serviceId, item.dateISO, item.time); };
-
-        const btnWhy = $("#btnNextWhy");
-        if(btnWhy) btnWhy.onclick = (e)=>{ e.stopPropagation(); toast(randomInfo(l, item.serviceId)); };
-      }
-
-      function startNextRotation(){
-        clearInterval(state.nextTimer);
-        if(!state.nextPool.length){ showNext(0); return; }
-        showNext(0);
-        state.nextTimer = setInterval(()=>{
-          if(!state.nextPool.length) return;
-          state.nextIndex = (state.nextIndex + 1) % state.nextPool.length;
-          showNext(state.nextIndex);
-        }, 10000);
-      }
-
-      /* =========================
-         Last booking card
-      ========================== */
-      function renderLastBooking(){
-        const box = $("#lastBookingCard");
-        const line = $("#lastBookingLine");
-        if(!box || !line) return;
-
-        const raw = localStorage.getItem(LS.lastBooking);
-        if(!raw){ box.style.display="none"; return; }
-
-        let last=null;
-        try{ last = JSON.parse(raw); } catch(e){ box.style.display="none"; return; }
-        if(!last || !last.listingId || !last.serviceId){ box.style.display="none"; return; }
-
-        const l = LISTINGS.find(x=>x.id===last.listingId);
-        if(!l){ box.style.display="none"; return; }
-
-        box.style.display="block";
-        const txt = `${l.name} · ${getServiceName(last.serviceId)} · ${fmtDateTime(last.dateISO, last.time)}`;
-        safeSetText(line, txt);
-
-        box.onclick = ()=> openBooking(last.listingId, last.serviceId, last.dateISO, last.time);
-      }
-
-      /* =========================
-         Booking modal + time sheet
-      ========================== */
-      const overlay = $("#overlay");
-      const sheetOverlay = $("#sheetOverlay");
-      const drawerOverlay = $("#drawerOverlay");
-
-      function closeAll(){
-        overlay?.classList.remove("on");
-        sheetOverlay?.classList.remove("on");
-        drawerOverlay?.classList.remove("on");
-        overlay?.setAttribute("aria-hidden","true");
-        sheetOverlay?.setAttribute("aria-hidden","true");
-        drawerOverlay?.setAttribute("aria-hidden","true");
-        unlockScroll();
-      }
-
-      function openModal(){
-        if(!overlay) return;
-        lockScroll();
-        overlay.classList.add("on");
-        overlay.setAttribute("aria-hidden","false");
-      }
-
-      function openSheet(){
-        if(!sheetOverlay) return;
-        lockScroll();
-        sheetOverlay.classList.add("on");
-        sheetOverlay.setAttribute("aria-hidden","false");
-      }
-
-      function openDrawer(){
-        if(!drawerOverlay) return;
-        lockScroll();
-        drawerOverlay.classList.add("on");
-        drawerOverlay.setAttribute("aria-hidden","false");
-      }
-
-      function fillBooking(listing, serviceId, dateISO, time){
-        const serviceSel = $("#mService");
-        const dateIn = $("#mDate");
-        const timeText = $("#mTimeText");
-        const sub = $("#mSub");
-        const info = $("#mInfo");
-        const title = $("#mTitle");
-
-        if(serviceSel) serviceSel.value = serviceId || (SERVICES[0]?.id || "");
-        if(dateIn) dateIn.value = dateISO || isoLocal(new Date());
-        if(timeText) safeSetText(timeText, time || "—");
-
-        const svcName = getServiceName(serviceId);
-        const dt = fmtDateTime(dateISO, time);
-        safeSetText(title, state.lang==="en" ? "Booking" : "Запис");
-        safeSetText(sub, `${listing.name} · ${svcName} · ${dt || dateISO}`);
-        safeSetText(info, (state.lang==="en" ? "Address: " : "Адреса: ") + (listing.address||"—"));
-
-        state.bookingListingId = listing.id;
-        state.bookingServiceId = serviceId;
-        state.bookingDateISO = dateISO;
-        state.bookingTime = time || null;
-      }
-
-      function listAvailableTimes(listing, serviceId, dateISO){
-        const bySvc = listing.availabilityByService || {};
-        const out = [];
-        const slots = (bySvc[serviceId] || []);
-        for(const s of slots){
-          if(s.slice(0,10)===dateISO) out.push(s.slice(11,16));
-        }
-        out.sort();
-        if(out.length) return out;
-
-        const av = listing.availability || {};
-        return (av[dateISO] || []).slice().sort();
-      }
-
-      function renderTimeSheet(listing, serviceId, dateISO){
-        const body = $("#sheetBody");
-        if(!body) return;
-
-        const times = listAvailableTimes(listing, serviceId, dateISO);
-        if(!times.length){
-          body.innerHTML = `<div class="empty" style="margin:0"><b>${state.lang==="en"?"No times":"Нема часу"}</b><div style="margin-top:6px">${state.lang==="en"?"Try another date":"Спробуй іншу дату"}</div></div>`;
-          return;
-        }
-
-        body.innerHTML = times.map(t=>{
-          const dt = fmtDateTime(dateISO, t);
-          return `<div class="timeItem" data-time="${t}">
-            <span>${t}</span>
-            <small>${dt}</small>
-          </div>`;
-        }).join("");
-
-        body.onclick = (e)=>{
-          const item = e.target.closest(".timeItem");
-          if(!item) return;
-          const t = item.getAttribute("data-time");
-          state.bookingTime = t;
-          safeSetText($("#mTimeText"), t);
-          sheetOverlay?.classList.remove("on");
-          sheetOverlay?.setAttribute("aria-hidden","true");
-        };
-      }
-
-      function openBooking(listingId, serviceId, dateISO, time){
-        const listing = LISTINGS.find(x=>x.id===listingId);
-        if(!listing) return;
-
-        let sid = serviceId;
-        if(!sid) sid = state.serviceId || (listing.services?.[0]?.serviceId || (SERVICES[0]?.id || ""));
-
-        let d = dateISO, t = time;
-        if(!d || !t){
-          const n = nextAvailable(listing, sid);
-          if(n){ d = n.dateISO; t = n.time; }
-          else { d = isoLocal(new Date()); t = null; }
-        }
-
-        fillBooking(listing, sid, d, t);
-        openModal();
-
-        const serviceSel = $("#mService");
-        const dateIn = $("#mDate");
-
-        if(serviceSel){
-          serviceSel.onchange = ()=>{
-            state.bookingServiceId = serviceSel.value;
-            const times = listAvailableTimes(listing, state.bookingServiceId, $("#mDate").value);
-            state.bookingTime = times[0] || null;
-            safeSetText($("#mTimeText"), state.bookingTime || "—");
-            fillBooking(listing, state.bookingServiceId, $("#mDate").value, state.bookingTime);
-          };
-        }
-        if(dateIn){
-          dateIn.onchange = ()=>{
-            const newISO = dateIn.value;
-            state.bookingDateISO = newISO;
-            const times = listAvailableTimes(listing, state.bookingServiceId, newISO);
-            state.bookingTime = times[0] || null;
-            safeSetText($("#mTimeText"), state.bookingTime || "—");
-            fillBooking(listing, state.bookingServiceId, newISO, state.bookingTime);
-          };
-        }
-
-        const timeBtn = $("#mTimeBtn");
-        if(timeBtn){
-          timeBtn.onclick = ()=>{
-            renderTimeSheet(listing, state.bookingServiceId, $("#mDate").value);
-            openSheet();
-          };
-        }
-
-        toast(randomInfo(listing, sid));
-      }
-
-      /* =========================
-         Hold slot (2 min local)
-      ========================== */
-      function startHold(){
-        clearInterval(state.holdTimer);
-        state.holdUntil = Date.now() + 2*60*1000;
-        state.holdTimer = setInterval(()=>{
-          if(Date.now() > state.holdUntil){
-            clearInterval(state.holdTimer);
-            state.holdUntil = null;
-            toast(tr("expired"));
-          }
-        }, 1000);
-      }
-
-      /* =========================
-         Share
-      ========================== */
-      async function shareListing(listing){
-        const url = `${location.origin}${location.pathname.replace(/\/[^\/]*$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`;
-        const title = listing.name || "Beauty Booking";
-        const text = state.lang === "en"
-          ? `Check this on Beauty Booking: ${listing.name}`
-          : `Подивись у Beauty Booking: ${listing.name}`;
-
-        if(navigator.share){
-          try{ await navigator.share({title, text, url}); } catch(e){}
-        } else {
-          try{
-            await navigator.clipboard.writeText(url);
-            toast(state.lang==="en" ? "Link copied" : "Лінк скопійовано");
-          } catch(e){
-            prompt("Copy link:", url);
-          }
-        }
-      }
-
-      /* =========================
-         Reset filters (special rule)
-      ========================== */
-      function currentFiltered(){
-        return LISTINGS.filter(matches);
-      }
-
-      function resetFiltersSmart(){
-        const filteredNow = currentFiltered();
-        const zero = filteredNow.length === 0;
-
-        state.serviceId = "";
-        state.sort = "smart";
-
-        if(!zero){
-          state.search = "";
-          state.onlyFav = false;
-          const s = $("#search");
-          if(s) s.value = "";
-        }
-        save();
-        renderAll();
-        toast(state.lang==="en" ? "Filters reset" : "Фільтри скинуто");
-      }
-
-      /* =========================
-         Render
-      ========================== */
-      function renderSavedSection(){
-        const sec = $("#secSaved");
-        const grid = $("#gridSaved");
-        const empty = $("#emptySaved");
-
-        const favsArr = LISTINGS.filter(x=> state.favs.has(x.id) && matches(x));
-        if(!state.favs.size){
-          if(sec) sec.style.display="none";
-          return;
-        }
-        if(sec) sec.style.display="block";
-
-        renderGrid(grid, empty, favsArr);
-      }
-
-      function renderAll(){
-        renderServicesUI();
-        applyTexts();
-
-        $("#btnFav")?.classList.toggle("heartOn", state.onlyFav);
-
-        $("#sortSmart")?.classList.toggle("on", state.sort==="smart");
-        $("#sortPrice")?.classList.toggle("on", state.sort==="price");
-        $("#sortSoon")?.classList.toggle("on", state.sort==="soon");
-
-        let filtered = LISTINGS.filter(matches);
-
-        if(state.sort==="price") filtered = priceSort(filtered);
-        else if(state.sort==="soon") filtered = soonSort(filtered);
-        else filtered = smartSort(filtered);
-
-        const {top, rec, all} = splitSections(filtered);
-
-        renderLastBooking();
-        renderSavedSection();
-
-        renderGrid($("#gridTop"), $("#emptyTop"), top);
-        renderGrid($("#gridRec"), $("#emptyRec"), rec);
-        renderGrid($("#gridAll"), $("#emptyAll"), all);
-
-        buildNextPool(filtered);
-        startNextRotation();
-
-        state.firstPaintDone = true;
-
-        wireCards();
-      }
-
-      /* =========================
-         Cards wiring
-      ========================== */
-      function wireCards(){
-        const allCards = $$(".card");
-        for(const card of allCards){
+          </div>
+
+          <div class="cardActions">
+            <button class="small primary" data-act="book">📅 <span>${STATE.lang==="en"?"Book":"Book"}</span></button>
+            <button class="small" data-act="fav">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>${STATE.lang==="en"?"Save":"Save"}</span></button>
+            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>${STATE.lang==="en"?"Profile":"Profile"}</span></a>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function render(){
+      const arr = filtered();
+
+      const partners = arr.filter(isPartner);
+      const rec = arr.filter(x => !isPartner(x) && isRecommended(x));
+      const others = arr.filter(x => !isPartner(x) && !isRecommended(x));
+
+      safeSetHTML($("#gridPartners"), partners.map(cardHTML).join(""));
+      safeSetHTML($("#gridRec"), rec.map(cardHTML).join(""));
+      safeSetHTML($("#gridAll"), others.map(cardHTML).join(""));
+
+      // tab visibility
+      $("#secPartners").classList.toggle("hidden", STATE.tab !== "partners" && STATE.tab !== "all");
+      $("#secRec").classList.toggle("hidden", STATE.tab !== "rec" && STATE.tab !== "all");
+      $("#secAll").classList.toggle("hidden", STATE.tab !== "all");
+
+      // attach card handlers
+      $$(".card").forEach(card => {
+        card.addEventListener("click", (e) => {
           const id = card.getAttribute("data-id");
-          const listing = LISTINGS.find(x=>x.id===id);
-          if(!listing) continue;
+          const act = e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
+          if(act === "fav"){
+            e.preventDefault(); e.stopPropagation();
+            toggleFav(id);
+            render();
+            return;
+          }
+          if(act === "book"){
+            e.preventDefault(); e.stopPropagation();
+            openBooking({ listingId:id });
+            return;
+          }
+          if(act === "open"){
+            // let link open
+            return;
+          }
 
-          card.addEventListener("click", (e)=>{
-            const act = e.target.closest("[data-act]");
-            if(act) return;
-            toast(randomInfo(listing, state.serviceId || listing.services?.[0]?.serviceId));
+          // ✅ requested: when click on salon card -> show short random info (toast)
+          const listing = LISTINGS.find(x => x.id === id);
+          toast(listing?.name || "Beauty Booking", pickInfo(), 2600);
+        });
+      });
+    }
+
+    function toggleFav(id){
+      if(STATE.favorites.has(id)) STATE.favorites.delete(id);
+      else STATE.favorites.add(id);
+      lsSet("bb.favorites", Array.from(STATE.favorites));
+    }
+
+    /* =========================
+       Service chips
+    ========================== */
+    function renderServiceChips(){
+      const el = $("#serviceChips");
+      if(!el) return;
+
+      const base = SERVICES.length ? SERVICES : [
+        { id:"manicure", name:{uk:"Манікюр", en:"Manicure"} },
+        { id:"pedicure", name:{uk:"Педикюр", en:"Pedicure"} },
+        { id:"brows", name:{uk:"Брови", en:"Brows"} },
+        { id:"haircut_w", name:{uk:"Жіноча стрижка", en:"Women haircut"} },
+        { id:"haircut_m", name:{uk:"Чоловіча стрижка", en:"Men haircut"} }
+      ];
+
+      safeSetHTML(el, base.map(s => {
+        const label = (typeof s.name === "object") ? (s.name[STATE.lang] || s.name.uk || s.name.en) : (s.name || s.title || s.id);
+        const active = String(STATE.serviceId||"") === String(s.id);
+        return `<button class="chip ${active?"active":""}" data-sid="${escapeHtml(s.id)}">💅 ${escapeHtml(label)}</button>`;
+      }).join(""));
+
+      $$(".chip", el).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sid = btn.getAttribute("data-sid");
+          STATE.serviceId = (STATE.serviceId === sid) ? "" : sid;
+          lsSet("bb.serviceId", STATE.serviceId);
+          renderServiceChips();
+          render();
+          buildNextAvailable(true);
+        });
+      });
+    }
+
+    /* =========================
+       Tabs, search, toggles
+    ========================== */
+    function setTab(v){
+      STATE.tab = v;
+      lsSet("bb.tab", v);
+      $("#tabAll").classList.toggle("active", v==="all");
+      $("#tabPartners").classList.toggle("active", v==="partners");
+      $("#tabRecommended").classList.toggle("active", v==="rec");
+      render();
+    }
+
+    $("#tabAll").addEventListener("click", ()=>setTab("all"));
+    $("#tabPartners").addEventListener("click", ()=>setTab("partners"));
+    $("#tabRecommended").addEventListener("click", ()=>setTab("rec"));
+
+    $("#search").value = STATE.search || "";
+    $("#search").addEventListener("input", (e)=>{
+      STATE.search = e.target.value || "";
+      lsSet("bb.search", STATE.search);
+      render();
+      buildNextAvailable(true);
+    });
+
+    $("#btnFavOnly").addEventListener("click", ()=>{
+      STATE.favOnly = !STATE.favOnly;
+      lsSet("bb.favOnly", STATE.favOnly);
+      $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
+      render();
+      buildNextAvailable(true);
+    });
+    $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
+
+    $("#btnLang").addEventListener("click", ()=>{
+      STATE.lang = (STATE.lang==="uk") ? "en" : "uk";
+      lsSet("bb.lang", STATE.lang);
+      applyTexts();
+      renderServiceChips();
+      render();
+      buildNextAvailable(true);
+    });
+
+    $("#btnTheme").addEventListener("click", ()=>{
+      // (keep one theme, but toggle a tiny variant if you want later)
+      toast("Theme", "Lux mode ✨", 1400);
+      lsSet("bb.theme", STATE.theme);
+    });
+
+    $("#btnAI").addEventListener("click", ()=>{
+      toast(txt().toastAI, txt().toastAIText, 3200);
+    });
+
+    $("#ctaQuick").addEventListener("click", ()=>openBooking({}));
+    $("#fab").addEventListener("click", ()=>openBooking({}));
+
+    /* =========================
+       Next available hero rotation
+    ========================== */
+    let nextTimer = null;
+    function candidateSlots(){
+      // Build candidates from filtered listings.
+      // We use simple synthetic slots if data.js doesn't provide.
+      const arr = filtered();
+      const today = now();
+      const dateISO = isoLocal(today);
+
+      const slots = [];
+      arr.forEach(listing => {
+        // try listing.todaySlots first (array of times)
+        const times = Array.isArray(listing.todaySlots) && listing.todaySlots.length
+          ? listing.todaySlots.slice(0,6)
+          : ["10:30","11:00","12:00","13:30","15:00","17:00","18:30"];
+
+        // choose service: selected or first matching
+        const serviceId = STATE.serviceId || (listingServices(listing)[0] || (SERVICES[0]?.id || "manicure"));
+        const serviceName = resolveServiceName(serviceId);
+
+        // score: higher rating, earlier time, partners
+        times.slice(0,4).forEach(t => {
+          const rating = Number(listing.rating||0);
+          const price = Number(listing.fromPrice || listing.priceFrom || listing.price || 0);
+          const partnerBoost = isPartner(listing) ? 1.5 : 0;
+          const hour = parseInt(String(t).split(":")[0],10) || 12;
+          const earlyBoost = (20 - hour) / 10; // earlier better
+          const score = rating + partnerBoost + earlyBoost - (price/200);
+          slots.push({
+            id: uid(),
+            listing,
+            serviceId,
+            serviceName,
+            dateISO,
+            time: t,
+            score
           });
+        });
+      });
 
-          card.addEventListener("click", (e)=>{
-            const btn = e.target.closest("[data-act]");
-            if(!btn) return;
-            const act = btn.getAttribute("data-act");
+      slots.sort((a,b)=>b.score-a.score);
+      // Show only nearest slots (no “how many slots” indicator) ✅
+      return slots.slice(0, 8);
+    }
 
-            if(act==="fav"){
-              if(state.favs.has(id)) state.favs.delete(id); else state.favs.add(id);
-              save();
-              renderAll();
-              toast(state.favs.has(id) ? "❤️" : "🤍");
-            }
+    function resolveServiceName(serviceId){
+      const s = SERVICES.find(x => String(x.id)===String(serviceId));
+      if(!s) return (STATE.lang==="en") ? "Service" : "Послуга";
+      if(typeof s.name === "object") return s.name[STATE.lang] || s.name.uk || s.name.en || s.id;
+      return s.name || s.title || s.id;
+    }
 
-            if(act==="share"){
-              shareListing(listing);
-            }
+    function buildNextAvailable(reset=false){
+      const list = candidateSlots();
+      if(!list.length){
+        safeSetText($("#nextName"), "—");
+        safeSetText($("#nextMeta"), "—");
+        return;
+      }
+      if(reset) STATE.lastNextIndex = 0;
+      const i = clamp(STATE.lastNextIndex, 0, list.length-1);
+      const item = list[i];
 
-            if(act==="profile"){
-              window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
-            }
+      safeSetText($("#nextName"), item.listing.name || item.listing.title || "—");
+      const price = Number(item.listing.fromPrice || item.listing.priceFrom || item.listing.price || 0);
+      const priceText = price ? `$${Math.round(price)}+` : "$—";
+      const pretty = fmtPretty(item.dateISO, item.time, STATE.lang);
+      safeSetText($("#nextMeta"), `${item.serviceName} • ${pretty} • ${priceText}`);
 
-            if(act==="book"){
-              const sid = state.serviceId || (listing.services?.[0]?.serviceId || SERVICES[0]?.id || "");
-              openBooking(id, sid);
-            }
-          });
+      // progress dots (up to 3)
+      const dots = ["○","○","○"];
+      dots[i%3] = "●";
+      safeSetText($("#nextDots"), dots.join(" "));
+
+      $("#nextBook").onclick = () => openBooking({
+        listingId: item.listing.id,
+        serviceId: item.serviceId,
+        dateISO: item.dateISO,
+        time: item.time
+      });
+
+      $("#nextWhy").onclick = () => toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
+
+      // rotate every ~10s ✅
+      clearInterval(nextTimer);
+      nextTimer = setInterval(() => {
+        const list2 = candidateSlots();
+        if(!list2.length) return;
+        STATE.lastNextIndex = (STATE.lastNextIndex + 1) % Math.min(list2.length, 3);
+        buildNextAvailable(false);
+      }, 10000);
+    }
+
+    /* =========================
+       Booking modal
+    ========================== */
+    const overlay = $("#overlay");
+    const sheet = $("#sheet");
+    const timeGrid = $("#timeGrid");
+
+    function openOverlay(){
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeOverlay(){
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+      closeSheet();
+      STATE.booking.open = false;
+    }
+    $("#m_close").addEventListener("click", closeOverlay);
+    overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeOverlay(); });
+
+    function openSheet(){
+      sheet.classList.add("show");
+    }
+    function closeSheet(){
+      sheet.classList.remove("show");
+    }
+    $("#sheetClose").addEventListener("click", closeSheet);
+    sheet.addEventListener("click", (e)=>{ if(e.target === sheet) closeSheet(); });
+
+    function availableTimesFor(listing, dateISO, serviceId){
+      // If you have bb.util availability in data.js, use it
+      try{
+        const util = window.bb?.util;
+        if(util && typeof util.getAvailableTimes === "function"){
+          return util.getAvailableTimes(listing, dateISO, serviceId) || [];
+        }
+      }catch(e){}
+      // fallback synthetic
+      const base = ["10:00","10:30","11:00","11:30","12:00","13:00","14:00","15:00","16:00","17:00","18:00","18:30"];
+      // slightly vary by listing
+      const seed = (listing?.id || "x").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+      return base.filter((t, idx)=> (idx + seed) % 3 !== 0);
+    }
+
+    function renderTimeGrid(times){
+      const selected = STATE.booking.time;
+      safeSetHTML(timeGrid, times.map(t => {
+        const active = (t === selected);
+        return `<button class="timeItem ${active?'active':''}" data-time="${t}">${t}</button>`;
+      }).join(""));
+
+      $$(".timeItem", timeGrid).forEach(btn => {
+        btn.addEventListener("click", ()=>{
+          const t = btn.getAttribute("data-time");
+          STATE.booking.time = t;
+          safeSetText($("#m_timeText"), t);
+          renderTimeGrid(times);
+          closeSheet();
+          refreshHold();
+        });
+      });
+    }
+
+    function refreshHold(){
+      // local 2 min hold ✅
+      const ok = STATE.booking.listingId && STATE.booking.dateISO && STATE.booking.time;
+      const nowMs = Date.now();
+      if(ok){
+        if(STATE.hold.until < nowMs){
+          STATE.hold.until = nowMs + 2*60*1000;
+          STATE.hold.key = `${STATE.booking.listingId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+          lsSet("bb.hold", STATE.hold);
         }
       }
+      updateHoldText();
+    }
 
-      /* =========================
-         AI concierge
-      ========================== */
-      function parseAI(q){
-        const txt = (q||"").toLowerCase();
+    function updateHoldText(){
+      const el = $("#holdText");
+      const nowMs = Date.now();
+      const valid = STATE.hold.until > nowMs && STATE.hold.key === `${STATE.booking.listingId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+      if(!valid){
+        safeSetText(el, "");
+        return;
+      }
+      const left = Math.ceil((STATE.hold.until - nowMs)/1000);
+      safeSetText(el, `${txt().hold}: ${left}s`);
+    }
 
-        const s = SERVICES.find(svc=>{
-          const nameUA = (svc.ua||"").toLowerCase();
-                const nameEN = (svc.en||"").toLowerCase();
-          const id = (svc.id||"").toLowerCase();
-          return txt.includes(nameUA) || txt.includes(nameEN) || txt.includes(id);
+    setInterval(updateHoldText, 1000);
+
+    function openBooking(opts={}){
+      const listingId = opts.listingId || STATE.booking.listingId || LISTINGS[0]?.id || "";
+      const listing = LISTINGS.find(x=>x.id===listingId) || LISTINGS[0] || {};
+
+      STATE.booking.open = true;
+      STATE.booking.listingId = listingId;
+      STATE.booking.serviceId = opts.serviceId || STATE.serviceId || listingServices(listing)[0] || SERVICES[0]?.id || "";
+      STATE.booking.dateISO = opts.dateISO || STATE.booking.dateISO || isoLocal(new Date());
+      STATE.booking.time = opts.time || "";
+
+      // fill UI
+      safeSetText($("#m_listingName"), listing.name || listing.title || "—");
+      safeSetText($("#m_listingInfo"), pickInfo());
+      safeSetText($("#m_addrLine"), `📍 ${(listing.address||"Montréal, QC")} • ${(listing.city||"Montréal")}`);
+
+      // address line for TG payload
+      $("#m_addrLine").dataset.address = (listing.address||"");
+      $("#m_addrLine").dataset.city = (listing.city||"Montréal");
+
+      // services select
+      const allowed = (listingServices(listing).length ? listingServices(listing) : SERVICES.map(s=>s.id)).map(String);
+      const list = SERVICES.length ? SERVICES : allowed.map(id=>({id, name:{uk:id,en:id}}));
+      safeSetHTML($("#m_service"), list
+        .filter(s => !allowed.length || allowed.includes(String(s.id)))
+        .map(s=>{
+          const label = (typeof s.name==="object") ? (s.name[STATE.lang]||s.name.uk||s.name.en||s.id) : (s.name||s.title||s.id);
+          const sel = String(s.id)===String(STATE.booking.serviceId) ? "selected" : "";
+          return `<option value="${escapeHtml(s.id)}" ${sel}>${escapeHtml(label)}</option>`;
+        }).join(""));
+
+      $("#m_service").onchange = () => {
+        STATE.booking.serviceId = $("#m_service").value;
+        // refresh available times when service changes
+        const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
+        const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
+        // keep selected only if available
+        if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
+        safeSetText($("#m_timeText"), STATE.booking.time || "—");
+        refreshHold();
+      };
+
+      // date input
+      $("#m_date").value = STATE.booking.dateISO;
+      $("#m_date").onchange = () => {
+        STATE.booking.dateISO = $("#m_date").value;
+        // refresh available times (avoid UTC bug by using date input directly local ISO)
+        const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
+        const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
+        if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
+        safeSetText($("#m_timeText"), STATE.booking.time || "—");
+        renderTimeGrid(times);
+        refreshHold();
+      };
+
+      // time picker
+      $("#m_timeBtn").onclick = () => {
+        const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
+        const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
+        renderTimeGrid(times);
+        openSheet();
+      };
+
+      // quick picks
+      $("#pickFast").onclick = () => {
+        const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
+        const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
+        STATE.booking.time = times[0] || "";
+        safeSetText($("#m_timeText"), STATE.booking.time || "—");
+        refreshHold();
+      };
+      $("#pickCheap").onclick = () => {
+        // cheapest listing among filtered -> reopen booking for it
+        const arr = filtered().slice().sort((a,b)=>Number(a.fromPrice||a.price||999)-Number(b.fromPrice||b.price||999));
+        const best = arr[0] || listing;
+        openBooking({ listingId: best.id });
+      };
+      $("#pickNear").onclick = () => {
+        // if listing has distance, pick smallest; else keep current
+        const arr = filtered().slice().sort((a,b)=>Number(a.distance||999)-Number(b.distance||999));
+        const best = arr[0] || listing;
+        openBooking({ listingId: best.id });
+      };
+
+      // profile button
+      $("#m_openProfileBtn").onclick = () => {
+        const id = STATE.booking.listingId;
+        window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
+      };
+
+      // set time text
+      safeSetText($("#m_timeText"), STATE.booking.time || "—");
+
+      // restore hold state
+      const hold = lsGet("bb.hold", null);
+      if(hold && typeof hold === "object"){
+        STATE.hold = hold;
+      }
+      refreshHold();
+
+      openOverlay();
+    }
+
+    /* =========================
+       Booking submit -> Worker /book
+    ========================== */
+    async function sendBooking(){
+      const listing = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
+      const serviceId = STATE.booking.serviceId;
+      const serviceName = resolveServiceName(serviceId);
+
+      const name = ($("#m_name").value || "").trim();
+      const phone = ($("#m_phone").value || "").trim();
+      const email = ($("#m_email").value || "").trim();
+      const notes = ($("#m_notes").value || "").trim();
+
+      const dateISO = STATE.booking.dateISO;
+      const time = STATE.booking.time;
+
+      if(!name || !phone || !dateISO || !time){
+        toast("⚠️", txt().missing, 2600);
+        return;
+      }
+
+      const datetimeText = fmtPretty(dateISO, time, STATE.lang);
+      const profileUrl = `${location.origin}/profile.html?id=${encodeURIComponent(listing.id||"")}`;
+
+      const payload = {
+        lang: STATE.lang,
+        name,
+        phone,
+        email,
+        notes,
+        serviceId,
+        serviceName,
+        listingId: listing.id,
+        listingName: listing.name || listing.title || "—",
+        address: listing.address || "",
+        city: listing.city || "Montréal",
+        dateISO,
+        time,
+        datetimeText,
+        profileUrl
+      };
+
+      $("#m_bookBtn").disabled = true;
+      $("#m_bookBtn").style.opacity = .8;
+
+      try{
+        const res = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
         });
 
-        // price: "до 40", "under 40", "$40"
-        let maxPrice = null;
-        const m1 = txt.match(/(?:до|under)\s*\$?\s*(\d{2,3})/);
-        const m2 = txt.match(/\$?\s*(\d{2,3})\s*(?:cad)?\s*(?:max|мікс|maximum)?/);
-        if(m1) maxPrice = parseInt(m1[1],10);
-        else if(txt.includes("до") || txt.includes("under")) {
-          if(m2) maxPrice = parseInt(m2[1],10);
+        const out = await res.json().catch(()=>({}));
+        if(!res.ok || out.ok !== true){
+          throw new Error("send failed");
         }
 
-        // after time: "після 15", "after 15", "after 15:30"
-        let afterTime = null;
-        const t1 = txt.match(/(?:після|after)\s*(\d{1,2})(?::(\d{2}))?/);
-        if(t1){
-          const hh = Math.max(0, Math.min(23, parseInt(t1[1],10)));
-          const mm = t1[2] ? Math.max(0, Math.min(59, parseInt(t1[2],10))) : 0;
-          afterTime = `${pad(hh)}:${pad(mm)}`;
-        }
-
-        return { serviceId: s?.id || null, maxPrice, afterTime };
+        toast(txt().sent, txt().sentText, 3200);
+        closeOverlay();
+      }catch(e){
+        toast(txt().failed, txt().failedText, 3400);
+      }finally{
+        $("#m_bookBtn").disabled = false;
+        $("#m_bookBtn").style.opacity = 1;
       }
+    }
 
-      function aiFind(){
-        const q = ($("#aiText")?.value || "").trim();
-        const picksEl = $("#aiPicks");
-        if(!picksEl) return;
+    $("#m_bookBtn").addEventListener("click", sendBooking);
 
-        const parsed = parseAI(q);
-
-        // ✅ strict by service:
-        let sid = parsed.serviceId || state.serviceId;
-        if(!sid){
-          picksEl.innerHTML = `<div class="empty" style="margin:0">
-            <b>${state.lang==="en"?"Tell me the service":"Напиши послугу"}</b>
-            <div style="margin-top:6px">${state.lang==="en"?"Example: brows under 40":"Приклад: брови до 40"}</div>
-          </div>`;
-          return;
-        }
-
-        const candidates = LISTINGS.filter(l=>{
-          if(!(l.services||[]).some(x=>x.serviceId===sid)) return false;
-          if(state.onlyFav && !state.favs.has(l.id)) return false;
-          const q2 = (state.search||"").trim().toLowerCase();
-          if(q2){
-            const hay = [l.name,l.subtitle,l.address,l.city,(l.tags||[]).join(" ")].join(" ").toLowerCase();
-            if(!hay.includes(q2)) return false;
-          }
-          if(parsed.maxPrice!=null){
-            const svc = listingService(l, sid);
-            const from = svc?.from ?? minPriceFor(l, sid);
-            if(from!=null && from > parsed.maxPrice) return false;
-          }
-          if(parsed.afterTime){
-            const n = nextAvailable(l, sid);
-            if(!n) return false;
-            if(n.time < parsed.afterTime) return false;
-          }
-          return true;
-        });
-
-        // score: distance (if we have), soonest, price
-        const scored = candidates.map(l=>{
-          const n = nextAvailable(l, sid);
-          const dist = (state.userLoc && l.lat && l.lng) ? haversineKm(state.userLoc, {lat:l.lat,lng:l.lng}) : null;
-          const pr = minPriceFor(l, sid);
-          const soonKey = n ? parseInt(n.dateISO.replaceAll("-","")+n.time.replaceAll(":",""),10) : 999999999;
-          return { l, n, dist, pr, soonKey };
-        });
-
-        scored.sort((a,b)=>{
-          const da = (a.dist==null)? 999999 : a.dist;
-          const db = (b.dist==null)? 999999 : b.dist;
-          if(da!==db) return da-db;
-          if(a.soonKey!==b.soonKey) return a.soonKey-b.soonKey;
-          const pa = (a.pr==null)? 999999 : a.pr;
-          const pb = (b.pr==null)? 999999 : b.pr;
-          if(pa!==pb) return pa-pb;
-          return (a.l.name||"").localeCompare(b.l.name||"");
-        });
-
-        const top = scored.slice(0, 4);
-
-        if(!top.length){
-          picksEl.innerHTML = `<div class="empty" style="margin:0">
-            <b>${state.lang==="en"?"No matches":"Немає збігів"}</b>
-            <div style="margin-top:6px">${state.lang==="en"?"Try higher price or remove time":"Спробуй більшу ціну або прибери час"}</div>
-          </div>`;
-          return;
-        }
-
-        picksEl.innerHTML = top.map(x=>{
-          const l = x.l;
-          const n = x.n;
-          const dt = n ? fmtDateTime(n.dateISO, n.time) : "—";
-          const pr = x.pr!=null ? money(x.pr) : "—";
-          const dist = x.dist!=null ? `${x.dist.toFixed(1)} km` : (state.lang==="en" ? "Tap Near me" : "Натисни Near me");
-          const why = computeWhy(l, sid);
-          return `
-            <div class="pick">
-              <b>${escapeHtml(l.name||"—")}</b>
-              <small>${escapeHtml(getServiceName(sid))} · ${escapeHtml(dt)} · ${escapeHtml(pr)} · ${escapeHtml(dist)}</small>
-              <small>${escapeHtml(why || "")}</small>
-              <div class="row">
-                <button data-ai="book" data-id="${escapeHtml(l.id)}" data-sid="${escapeHtml(sid)}">${escapeHtml(tr("book"))}</button>
-                <button data-ai="profile" data-id="${escapeHtml(l.id)}">${escapeHtml(tr("openProfile"))}</button>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        picksEl.onclick = (e)=>{
-          const b = e.target.closest("button[data-ai]");
-          if(!b) return;
-          const act = b.getAttribute("data-ai");
-          const id = b.getAttribute("data-id");
-          const sid2 = b.getAttribute("data-sid") || sid;
-          if(act==="profile"){
-            window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
-          }
-          if(act==="book"){
-            closeAll();
-            openBooking(id, sid2);
-          }
-        };
+    /* =========================
+       Deep-link booking from profile redirect:
+       index.html?book=1&id=...&service=...
+    ========================== */
+    function readParams(){
+      const p = new URLSearchParams(location.search);
+      const shouldBook = p.get("book")==="1";
+      const id = p.get("id") || "";
+      const service = p.get("service") || "";
+      if(shouldBook){
+        setTimeout(()=>openBooking({ listingId:id, serviceId: service }), 120);
       }
+    }
 
-      /* =========================
-         ✅ GEO / Near me
-      ========================== */
-      function getLocCached(){
-        try{
-          const raw = localStorage.getItem(LS.locCache);
-          const ts = parseInt(localStorage.getItem(LS.locTs)||"0",10);
-          if(!raw || !ts) return null;
-          // cache for 24h
-          if(Date.now() - ts > 24*60*60*1000) return null;
-          const obj = JSON.parse(raw);
-          if(obj && typeof obj.lat==="number" && typeof obj.lng==="number") return obj;
-        }catch(e){}
-        return null;
+    /* =========================
+       Init
+    ========================== */
+    function init(){
+      // validate data.js loaded
+      if(!Array.isArray(LISTINGS) || !LISTINGS.length){
+        toast("⚠️", "LISTINGS missing in data.js", 4000);
       }
+      applyTexts();
 
-      function setLocCache(loc){
-        try{
-          localStorage.setItem(LS.locCache, JSON.stringify(loc));
-          localStorage.setItem(LS.locTs, String(Date.now()));
-        }catch(e){}
-      }
+      // restore tab UI
+      setTab(STATE.tab);
 
-      function requestLocation(){
-        return new Promise((resolve, reject)=>{
-          const cached = getLocCached();
-          if(cached) return resolve(cached);
-          if(!navigator.geolocation) return reject(new Error("no-geo"));
-          navigator.geolocation.getCurrentPosition(
-            (pos)=>{
-              const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-              setLocCache(loc);
-              resolve(loc);
-            },
-            (err)=> reject(err),
-            { enableHighAccuracy: true, timeout: 9000, maximumAge: 120000 }
-          );
-        });
-      }
+      renderServiceChips();
+      render();
+      buildNextAvailable(true);
 
-      async function locateMe(){
-        try{
-          const loc = await requestLocation();
-          state.userLoc = loc;
-          toast(state.lang==="en" ? "Location set" : "Локацію встановлено");
-          renderAll();
-        }catch(e){
-          toast(state.lang==="en"
-            ? "Location blocked — enable it in browser settings"
-            : "Геолокацію заблоковано — увімкни в налаштуваннях браузера"
-          );
-        }
-      }
+      initNetbar();
+      readParams();
+    }
 
-      /* =========================
-         ✅ Netbar (offline / cached)
-      ========================== */
-      function showNetbar(kind){
-        const nb = $("#netbar");
-        const t = $("#netbarText");
-        if(!nb || !t) return;
-        if(kind==="offline"){
-          safeSetHTML(t, `<b>${state.lang==="en"?"Offline":"Офлайн"}</b> — ${state.lang==="en"?"Some data may be cached":"Дані можуть бути з кешу"}`);
-          nb.classList.add("on");
-        } else if(kind==="cached"){
-          safeSetHTML(t, `<b>${state.lang==="en"?"Cached load":"З кешу"}</b> — ${state.lang==="en"?"Tap Refresh for latest":"Натисни Refresh для оновлення"}`);
-          nb.classList.add("on");
-        } else {
-          nb.classList.remove("on");
-        }
-      }
-
-      function initNetbar(){
-        const ok = $("#netbarOk");
-        const rf = $("#netbarRefresh");
-        ok && (ok.onclick = ()=> showNetbar("hide"));
-        rf && (rf.onclick = ()=> location.reload());
-
-        window.addEventListener("online", ()=> showNetbar("hide"));
-        window.addEventListener("offline", ()=> showNetbar("offline"));
-
-        // cached detection
-        safe(()=>{
-          const nav = performance.getEntriesByType("navigation")[0];
-          if(nav && "transferSize" in nav && nav.transferSize === 0){
-            showNetbar("cached");
-          }
-        });
-        if(!navigator.onLine) showNetbar("offline");
-      }
-
-      /* =========================
-         ✅ Submit booking -> Worker (/book)
-      ========================== */
-      async function submitBooking(){
-        const listing = LISTINGS.find(x=>x.id===state.bookingListingId);
-        if(!listing) return;
-
-        const name = ($("#mName")?.value || "").trim();
-        const phone = ($("#mPhone")?.value || "").trim();
-        const email = ($("#mEmail")?.value || "").trim();
-        const notes = ($("#mNotes")?.value || "").trim();
-
-        const serviceId = $("#mService")?.value || state.bookingServiceId;
-        const dateISO = $("#mDate")?.value || state.bookingDateISO || isoLocal(new Date());
-        const time = state.bookingTime || ($("#mTimeText")?.textContent || "").trim();
-
-        if(!name || !phone){
-          toast(state.lang==="en" ? "Name + phone required" : "Потрібні імʼя і телефон");
-          return;
-        }
-        if(!serviceId){
-          toast(state.lang==="en" ? "Pick service" : "Обери послугу");
-          return;
-        }
-        if(!time || time==="—"){
-          toast(state.lang==="en" ? "Pick time" : "Обери час");
-          return;
-        }
-
-        // Hold slot 2 min (local)
-        startHold();
-
-        const svcName = getServiceName(serviceId);
-        const profileUrl = `${location.origin}${location.pathname.replace(/\/[^\/]*$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`;
-
-        const payload = {
-          name, phone, email,
-          notes,
-          serviceId,
-          serviceName: svcName,
-          listingId: listing.id,
-          listingName: listing.name,
-          address: listing.address || "",
-          dateISO,
-          time,
-          datetimeText: fmtDateTime(dateISO, time),
-          profileUrl,
-          city: listing.city || "",
-          lang: state.lang
-        };
-
-        const btn = $("#mSubmit");
-        if(btn){ btn.style.opacity = ".75"; btn.style.pointerEvents="none"; }
-
-        try{
-          const res = await fetch(`${window.WORKER_URL}/book`, {
-            method: "POST",
-            headers: { "content-type":"application/json" },
-            body: JSON.stringify(payload)
-          });
-
-          if(!res.ok){
-            let msg = "";
-            try{ msg = await res.text(); }catch(e){}
-            throw new Error(msg || "HTTP "+res.status);
-          }
-
-          // save last booking
-          try{
-            localStorage.setItem(LS.lastBooking, JSON.stringify({
-              listingId: listing.id,
-              serviceId,
-              dateISO,
-              time
-            }));
-          }catch(e){}
-
-          toast(state.lang==="en" ? "Booked! Telegram sent." : "Запис створено! Telegram відправлено.");
-          closeAll();
-          renderLastBooking();
-        }catch(e){
-          console.error(e);
-          toast(state.lang==="en" ? "Booking failed — check Worker URL" : "Не відправилось — перевір WORKER_URL");
-        }finally{
-          if(btn){ btn.style.opacity = ""; btn.style.pointerEvents=""; }
-        }
-      }
-
-      /* =========================
-         Events + init
-      ========================== */
-      function bindUI(){
-        // top actions
-        $("#btnTheme") && ($("#btnTheme").onclick = ()=>{
-          state.theme = (state.theme==="dark") ? "light" : "dark";
-          document.documentElement.setAttribute("data-theme", state.theme);
-          save();
-          renderAll();
-        });
-
-        $("#btnLang") && ($("#btnLang").onclick = ()=>{
-          state.lang = (state.lang==="en") ? "uk" : "en";
-          save();
-          renderAll();
-        });
-
-        $("#btnFav") && ($("#btnFav").onclick = ()=>{
-          state.onlyFav = !state.onlyFav;
-          save();
-          renderAll();
-        });
-
-        $("#btnAI") && ($("#btnAI").onclick = ()=>{ openDrawer(); });
-
-        // filters
-        const s = $("#search");
-        if(s){
-          s.value = state.search;
-          s.oninput = ()=>{
-            state.search = s.value;
-            save();
-            renderAll();
-          };
-        }
-
-        $("#sortSmart") && ($("#sortSmart").onclick = ()=>{ state.sort="smart"; save(); renderAll(); });
-        $("#sortPrice") && ($("#sortPrice").onclick = ()=>{ state.sort="price"; save(); renderAll(); });
-        $("#sortSoon") && ($("#sortSoon").onclick = ()=>{ state.sort="soon"; save(); renderAll(); });
-
-        $("#btnLocate") && ($("#btnLocate").onclick = ()=> locateMe());
-
-        // reset
-        $("#btnReset") && ($("#btnReset").onclick = ()=> resetFiltersSmart());
-
-        // quick booking
-        $("#btnQuickBook") && ($("#btnQuickBook").onclick = ()=>{
-          const first = state.nextPool[0];
-          if(first) openBooking(first.listing.id, first.serviceId, first.dateISO, first.time);
-          else{
-            const any = currentFiltered()[0];
-            if(any){
-              const sid = state.serviceId || (any.services?.[0]?.serviceId || SERVICES[0]?.id || "");
-              openBooking(any.id, sid);
-            }
-          }
-        });
-
-        $("#fab") && ($("#fab").onclick = ()=> $("#btnQuickBook")?.click());
-
-        // modal close
-        $("#mClose") && ($("#mClose").onclick = closeAll);
-        $("#mCancel") && ($("#mCancel").onclick = closeAll);
-        overlay && (overlay.onclick = (e)=>{ if(e.target===overlay) closeAll(); });
-
-        // sheet close
-        $("#sheetClose") && ($("#sheetClose").onclick = ()=>{ sheetOverlay?.classList.remove("on"); sheetOverlay?.setAttribute("aria-hidden","true"); unlockScroll(); });
-        sheetOverlay && (sheetOverlay.onclick = (e)=>{ if(e.target===sheetOverlay){ sheetOverlay.classList.remove("on"); sheetOverlay.setAttribute("aria-hidden","true"); unlockScroll(); } });
-
-        // drawer close
-        $("#drawerClose") && ($("#drawerClose").onclick = closeAll);
-        drawerOverlay && (drawerOverlay.onclick = (e)=>{ if(e.target===drawerOverlay) closeAll(); });
-
-        // ai buttons
-        $("#aiGo") && ($("#aiGo").onclick = aiFind);
-        $("#aiClear") && ($("#aiClear").onclick = ()=>{
-          const t = $("#aiText"); if(t) t.value="";
-          const p = $("#aiPicks"); if(p) p.innerHTML="";
-        });
-        $("#aiText") && ($("#aiText").onkeydown = (e)=>{ if(e.key==="Enter"){ e.preventDefault(); aiFind(); } });
-
-        // submit
-        $("#mSubmit") && ($("#mSubmit").onclick = submitBooking);
-
-        // empty reset button (delegated)
-        document.addEventListener("click", (e)=>{
-          const b = e.target.closest("[data-act='resetOnly']");
-          if(!b) return;
-          resetFiltersSmart();
-        });
-
-        // keyboard
-        window.addEventListener("keydown", (e)=>{
-          if(e.key==="Escape") closeAll();
-        });
-      }
-
-      /* =========================
-         URL params: ?book=1&id=...&service=...
-      ========================== */
-      function handleParams(){
-        const p = new URLSearchParams(location.search);
-        if(p.get("book")==="1" && p.get("id")){
-          const id = p.get("id");
-          const svc = p.get("service") || "";
-          // clean URL (no refresh confusion)
-          history.replaceState({}, "", location.pathname);
-          openBooking(id, svc || state.serviceId);
-        }
-      }
-
-      /* =========================
-         PWA Service worker
-      ========================== */
-      function registerSW(){
-        if("serviceWorker" in navigator){
-          navigator.serviceWorker.register("./worker.js").catch(()=>{});
-        }
-      }
-
-      function init(){
-        // restore state UI bits
-        const s = $("#search");
-        if(s) s.value = state.search;
-
-        applyTexts();
-        renderServicesUI();
-        initNetbar();
-
-        // preload cached loc (optional)
-        state.userLoc = getLocCached();
-
-        // first render
-        renderAll();
-
-        // set buttons states
-        $("#btnFav")?.classList.toggle("heartOn", state.onlyFav);
-
-        // attach UI handlers
-        bindUI();
-
-        // params auto-book
-        handleParams();
-
-        // SW
-        registerSW();
-      }
-
-      init();
-    })();
+    init();
+  })();
   </script>
 </body>
 </html>
