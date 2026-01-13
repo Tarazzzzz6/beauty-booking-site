@@ -117,7 +117,8 @@
       top: 0;
       z-index: 50;
       margin: 0 auto 12px;
-      padding: calc(var(--safeTop) + 14px) var(--topbarPad) 14px;
+      /* ✅ lower header a bit */
+      padding: calc(var(--safeTop) + 24px) var(--topbarPad) 16px;
       border-radius: 0 0 26px 26px;
       background: linear-gradient(180deg, rgba(8,8,14,.92), rgba(8,8,14,.65));
       border-bottom:1px solid var(--stroke);
@@ -145,7 +146,8 @@
       flex: 1;
     }
     .logo{
-      width: 44px; height: 44px;
+      /* ✅ bigger */
+      width: 50px; height: 50px;
       border-radius: 14px;
       display:grid; place-items:center;
       background:
@@ -159,7 +161,7 @@
     .logo span{
       font-family: "Playfair Display", serif;
       font-weight:700;
-      font-size: 19px;
+      font-size: 20px;
       color: rgba(10,10,14,.92);
       letter-spacing: .3px;
     }
@@ -172,7 +174,8 @@
     }
     .brandTitle b{
       font-family:"Playfair Display", serif;
-      font-size: 24px;
+      /* ✅ bigger */
+      font-size: 26px;
       letter-spacing: .2px;
       line-height:1.05;
       white-space: nowrap;
@@ -773,6 +776,8 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       max-width: min(520px, calc(100vw - 24px));
+      /* ✅ allow line breaks in random info */
+      white-space: pre-line;
     }
     [data-theme="light"] .toast{ background: rgba(255,255,255,.75); color: rgba(15,15,25,.92); }
     .toast.on{ opacity:1; transform: translateX(-50%) translateY(-2px); }
@@ -1745,7 +1750,7 @@
         safeSetText(toastEl, msg);
         toastEl.classList.add("on");
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(()=> toastEl.classList.remove("on"), 2200);
+        toastTimer = setTimeout(()=> toastEl.classList.remove("on"), 2300);
       }
 
       function save(){
@@ -1978,12 +1983,6 @@
           else all.push(it);
         }
         return {top, rec, all};
-      }
-
-      function sortList(list){
-        if(state.sort==="price") return priceSort(list);
-        if(state.sort==="soon") return soonSort(list);
-        return smartSort(list);
       }
 
       /* =========================
@@ -2649,6 +2648,34 @@
           }, { enableHighAccuracy:true, timeout: 8000 });
         });
 
+        /* ✅ Random short info when tapping a card (not buttons) */
+        function randomCardInfo(listing){
+          const bits = [];
+
+          const sid = state.serviceId || (listing.services?.[0]?.serviceId || "");
+          const sName = sid ? getServiceName(sid) : (state.lang==="en" ? "Service" : "Послуга");
+
+          const n = nextAvailable(listing, sid);
+          if(n) bits.push(`${state.lang==="en"?"Next:":"Найближче:"} ${fmtDateTime(n.dateISO, n.time)}`);
+
+          const p = minPriceFor(listing, sid);
+          if(p!=null) bits.push(`${state.lang==="en"?"From":"Від"} ${money(p)}`);
+
+          if(listing.verified) bits.push(state.lang==="en" ? "Verified" : "Verified");
+          if(listing.sterile) bits.push(state.lang==="en" ? "Sterile tools" : "Стерильні інструменти");
+          if(listing.partner) bits.push(state.lang==="en" ? "Partner pick" : "Partner pick");
+
+          const tails = state.lang==="en"
+            ? ["Fast confirmation", "Clean, premium vibe", "Great value today", "Top pick nearby", "Instant booking"]
+            : ["Швидке підтвердження", "Преміум вайб", "Топ варіант сьогодні", "Найкраща ціна/якість", "Миттєвий запис"];
+
+          const tail = tails[Math.floor(Math.random()*tails.length)];
+
+          const head = `${listing.name} · ${sName}`;
+          const mid = bits.slice(0,3).join(" · ");
+          return mid ? `${head}\n${mid}\n${tail}` : `${head}\n${tail}`;
+        }
+
         const onGridClick = (e)=>{
           const card = e.target.closest(".card");
           if(!card) return;
@@ -2657,6 +2684,12 @@
 
           const listing = LISTINGS.find(x=>x.id===id);
           if(!listing) return;
+
+          // ✅ tap card anywhere (except buttons) → show short info
+          if(!act){
+            toast(randomCardInfo(listing));
+            return;
+          }
 
           if(act==="fav"){
             if(state.favs.has(id)) state.favs.delete(id); else state.favs.add(id);
