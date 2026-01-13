@@ -57,7 +57,10 @@
       --safe-right: env(safe-area-inset-right);
 
       --topbarH: 78px;
-      --topbarPadTop: calc(10px + var(--safe-top));
+    /* iOS/PWA header sits too high -> push it down */
+--topbarPadTop: calc(18px + var(--safe-top)); /* було 10px */
+--topbarH: 88px; /* трохи більше простору */
+
       --contentPad: 16px;
 
       --font-title: "Playfair Display", ui-serif, Georgia, serif;
@@ -93,11 +96,11 @@
       background: linear-gradient(180deg, rgba(10,10,16,.88), rgba(10,10,16,.55));
       border-bottom: 1px solid rgba(255,255,255,.06);
     }
-    .topbarRow{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px;
-      margin-top: 8px;
-    }
+   .topbarRow{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px;
+  margin-top: 14px; /* було 8px — нижче на iPhone */
+}
     .brand{
       display:flex; align-items:center; gap:10px;
       min-width: 170px;
@@ -130,39 +133,29 @@
     }
 
     .actions{display:flex; align-items:center; gap:10px}
-    .iconBtn{
-      width:44px; height:44px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color:var(--text);
-      display:grid; place-items:center;
-      box-shadow: 0 10px 26px rgba(0,0,0,.28);
-      transform: translateY(2px);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .iconBtn:active{transform: translateY(3px) scale(.98)}
-    .iconBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
-    .pillBtn{
-      height:44px;
-      padding:0 14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color:var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow: 0 10px 26px rgba(0,0,0,.28);
-      transform: translateY(2px);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .pillBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
-    .pillBtn:active{transform: translateY(3px) scale(.98)}
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,79,216,.9));
-      box-shadow: 0 0 20px rgba(255,79,216,.35);
-    }
-
+   .iconBtn{
+  width:44px; height:44px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  color:var(--text);
+  display:grid; place-items:center;
+  box-shadow: 0 10px 26px rgba(0,0,0,.28);
+  transform: translateY(5px); /* було 2px */
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.pillBtn{
+  height:44px;
+  padding:0 14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  color:var(--text);
+  display:flex; align-items:center; gap:10px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.28);
+  transform: translateY(5px); /* було 2px */
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
     /* ====== Layout ====== */
     .wrap{
       padding: 14px calc(var(--contentPad) + var(--safe-right)) calc(120px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
@@ -735,6 +728,16 @@
     .muted{color:var(--muted)}
     .sep{height:1px; background: rgba(255,255,255,.06); margin: 16px 0}
     .hidden{display:none}
+    /* iOS standalone often feels too close to notch */
+@supports (padding: max(0px)) {
+  @media (max-width: 520px) {
+    .topbar{
+      padding-top: calc(var(--safe-top) + 22px); /* ще нижче на iPhone */
+    }
+    .brandText .name{ font-size: 19px; }
+  }
+}
+
   </style>
 </head>
 
