@@ -16,494 +16,303 @@
   const pad = (n)=> String(n).padStart(2,"0");
 
   // ✅ LOCAL ISO date (YYYY-MM-DD) — no UTC shift
-  const isoLocal = (d) => {
-    const y = d.getFullYear();
-    const m = pad(d.getMonth() + 1);
-    const day = pad(d.getDate());
-    return `${y}-${m}-${day}`;
-  };
+  const isoLocal = (d) => {/* data.js — Beauty Booking (stable)
+   Provides: window.SERVICES, window.LISTINGS, window.bb.util
+*/
+(function () {
+  "use strict";
 
-  // ✅ create a local date at "day precision" (stable across DST)
-  const addDaysLocal = (base, add) =>
-    new Date(base.getFullYear(), base.getMonth(), base.getDate() + add);
+  // ===== Services =====
+  const SERVICES = [
+    { id: "manicure",   ua: "Манікюр",            en: "Manicure" },
+    { id: "pedicure",   ua: "Педикюр",            en: "Pedicure" },
+    { id: "brows",      ua: "Брови",              en: "Brows" },
+    { id: "haircut_m",  ua: "Чоловіча стрижка",   en: "Men's haircut" },
+    { id: "haircut_w",  ua: "Жіноча стрижка",     en: "Women's haircut" }
+  ];
 
-  // Create local-ish ISO datetime string
-  // NOTE: "YYYY-MM-DDTHH:mm:00" is parsed as local time in most engines.
-  const toLocalIso = (dateISO, hhmm) => `${dateISO}T${hhmm}:00`;
+  // ===== Helpers: deterministic demo availability =====
+  const pad = (n) => String(n).padStart(2, "0");
+  const isoLocal = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-  function randInt(a,b){ return Math.floor(a + Math.random()*(b-a+1)); }
-  function uniqSorted(arr){ return Array.from(new Set(arr)).sort(); }
-
-  function makeTimesForDay(){
-    // premium vibe: 2–6 slots/day, between 10:00–20:00
-    const count = randInt(2,6);
-    const out = [];
-    for(let i=0;i<count;i++){
-      const h = randInt(10,20);
-      const m = [0,10,20,30,40,50][randInt(0,5)];
-      out.push(`${pad(h)}:${pad(m)}`);
-    }
-    return uniqSorted(out);
+  function daysFromToday(n) {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + n);
+    return isoLocal(d);
   }
 
-  // Expand date->["11:00"] into ISO datetime list
-  function expandAvailabilityToIso(avByDate){
-    const out = [];
-    const dates = Object.keys(avByDate||{}).sort();
-    for(const d of dates){
-      const times = (avByDate[d]||[]).slice().sort();
-      for(const t of times){
-        out.push(toLocalIso(d,t));
+  function mkSlots(dateISO, times) {
+    return times.map((t) => `${dateISO} ${t}`);
+  }
+
+  // Build a simple rolling schedule for each listing/service
+  function buildAvailabilityByService(serviceIds, patternTimesByService) {
+    const bySvc = {};
+    for (const sid of serviceIds) bySvc[sid] = [];
+
+    // next 7 days
+    for (let i = 0; i < 7; i++) {
+      const d = daysFromToday(i);
+      for (const sid of serviceIds) {
+        const times = (patternTimesByService[sid] && patternTimesByService[sid][i]) || [];
+        bySvc[sid].push(...mkSlots(d, times));
       }
     }
-    // Sort by datetime
-    out.sort((a,b)=> new Date(a) - new Date(b));
-    return out;
+    // sort ISO-ish strings
+    for (const sid of Object.keys(bySvc)) bySvc[sid].sort();
+    return bySvc;
   }
 
-  // Build per-service ISO slots (same schedule for each service of that listing)
-  function buildAvailabilityByService(listing){
-    const byService = {};
-    const serviceIds = (listing.services||[]).map(s=>s.serviceId);
-    const baseIsoSlots = expandAvailabilityToIso(listing.availability || {});
-    for(const sid of serviceIds){
-      byService[sid] = baseIsoSlots.slice();
+  function flattenAvailability(bySvc) {
+    const map = {};
+    for (const sid of Object.keys(bySvc)) {
+      for (const slot of bySvc[sid]) {
+        const dateISO = slot.slice(0, 10);
+        const time = slot.slice(11, 16);
+        if (!map[dateISO]) map[dateISO] = [];
+        map[dateISO].push(time);
+      }
     }
-    return byService;
+    for (const d of Object.keys(map)) {
+      map[d] = Array.from(new Set(map[d])).sort();
+    }
+    return map;
   }
 
-  // ===== LISTINGS =====
-  window.LISTINGS = [
+  // ===== Listings (Montréal demo curated) =====
+  // NOTE: photos are safe fallbacks (unsplash). Replace anytime.
+  const LISTINGS = [
     {
-      id:"romanukova-nails",
-      name:"Romanukova Nail Studio",
-      brand:"Romanukova",
-      city:"Montréal",
-      address:"4810 Rue Jean-Talon O #221, Montreal, QC H4P 2N5",
-      lat:45.5027, lng:-73.6601,
-      partner:true, recommended:true,
-      verified:true, sterile:true,
-      phone:"+1 (438) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"manicure", from:30, to:55, durationMin:60 },
-        { serviceId:"pedicure", from:45, to:75, durationMin:75 },
-        { serviceId:"brows", from:25, to:45, durationMin:45 },
-      ],
-      availability:{} // date -> ["HH:MM"]
+      id: "romanukova",
+      name: "Romanukova Nail Studio",
+      subtitle: "Premium nails • Gel • Clean shape",
+      city: "Montréal",
+      address: "4810 Rue Jean-Talon O #221, Montreal, QC H4P 2N5",
+      lat: 45.4997,
+      lng: -73.6239,
+      photo: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80",
+      tags: ["nails", "studio", "premium"],
+      partner: true,
+      recommended: true,
+      verified: true,
+      sterile: true,
+      rating: 4.9,
+      instagram: "https://instagram.com/",
+
+      services: [
+        { serviceId: "manicure", from: 60, durMin: 75 },
+        { serviceId: "pedicure", from: 70, durMin: 90 }
+      ]
     },
 
     {
-      id:"iryna-stovban-home",
-      name:"Iryna Stovban · Home master",
-      brand:"Iryna Stovban",
-      city:"Montréal",
-      address:"6740 Bd Décarie, Montréal, QC H3X 0A7, Canada",
-      lat:45.4929, lng:-73.6545,
-      partner:false, recommended:true,
-      verified:true, sterile:true,
-      phone:"+1 (438) 233-3457",
-      instagram:"https://share.google/eQ0wgWkzDtTdM8v4Y0",
-      images:[
-        "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1556228724-4b3c5c0ea90c?auto=format&fit=crop&w=1400&q=80"
-      ],
-      bio_ua:
-`Привіт 🌸
-Я початківець у сфері манікюру та зараз активно набираю моделей для відпрацювання навичок.
+      id: "irynastovban",
+      name: "Iryna Stovban — Home Master",
+      subtitle: "Models welcome • аккуратно та стерильно",
+      city: "Montréal",
+      address: "6740 Bd Décarie, Montréal, QC H3X 0A7",
+      lat: 45.4949,
+      lng: -73.6496,
+      photo: "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1400&q=80",
+      tags: ["home", "nails", "budget"],
+      partner: false,
+      recommended: true,
+      verified: true,
+      sterile: true,
+      rating: 4.6,
+      instagram: "https://share.google/eQ0wgkzDtTdM8v4Y0",
 
-Працюю акуратно, уважно до деталей, з дотриманням гігієни та стерильності інструментів.
-Для мене важлива якість роботи та комфорт клієнта 🤍
-
-💅 Що пропоную:
-• класичний / комбінований манікюр
-• покриття гель-лаком
-• акуратна форма та чиста кутикула
-
-💰 Оплата — тільки за матеріали`,
-      services:[
-        { serviceId:"manicure", from:20, to:25, durationMin:60 },
-      ],
-      availability:{} // date -> ["HH:MM"]
+      services: [
+        { serviceId: "manicure", from: 20, durMin: 60 }
+      ]
     },
 
     {
-      id:"maison-atelier",
-      name:"Maison Atelier",
-      brand:"Maison Atelier",
-      city:"Montréal",
-      address:"Rue Saint-Denis, Montréal, QC",
-      lat:45.5212, lng:-73.5717,
-      partner:true, recommended:true,
-      verified:true, sterile:true,
-      phone:"+1 (514) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"womens_haircut", from:70, to:120, durationMin:75 },
-        { serviceId:"brows", from:35, to:60, durationMin:45 },
-      ],
-      availability:{}
+      id: "browbar_mtl",
+      name: "BrowBar Montréal",
+      subtitle: "Brow shaping • lamination • tint",
+      city: "Montréal",
+      address: "Rue Saint-Denis, Montreal, QC",
+      lat: 45.5152,
+      lng: -73.5659,
+      photo: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1400&q=80",
+      tags: ["brows", "lamination", "tint"],
+      partner: true,
+      recommended: false,
+      verified: true,
+      sterile: true,
+      rating: 4.8,
+      instagram: "https://instagram.com/",
+
+      services: [
+        { serviceId: "brows", from: 35, durMin: 45 }
+      ]
     },
 
     {
-      id:"golden-hour-brows",
-      name:"Golden Hour Brows",
-      brand:"Golden Hour",
-      city:"Montréal",
-      address:"Avenue Laurier O, Montréal, QC",
-      lat:45.5127, lng:-73.5967,
-      partner:false, recommended:true,
-      verified:true, sterile:true,
-      phone:"+1 (514) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"brows", from:30, to:55, durationMin:45 },
-        { serviceId:"manicure", from:35, to:60, durationMin:60 },
-      ],
-      availability:{}
+      id: "barber_mtl",
+      name: "Old-Money Barber",
+      subtitle: "Fade • classic • beard tidy",
+      city: "Montréal",
+      address: "Boulevard Saint-Laurent, Montreal, QC",
+      lat: 45.5216,
+      lng: -73.5865,
+      photo: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1400&q=80",
+      tags: ["barber", "mens", "classic"],
+      partner: false,
+      recommended: true,
+      verified: true,
+      sterile: true,
+      rating: 4.7,
+      instagram: "https://instagram.com/",
+
+      services: [
+        { serviceId: "haircut_m", from: 35, durMin: 45 }
+      ]
     },
 
     {
-      id:"atelier-nail-bar",
-      name:"Atelier Nail Bar",
-      brand:"Atelier",
-      city:"Montréal",
-      address:"Boulevard Saint-Laurent, Montréal, QC",
-      lat:45.5171, lng:-73.5796,
-      partner:false, recommended:false,
-      verified:true, sterile:true,
-      phone:"+1 (514) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"manicure", from:35, to:65, durationMin:60 },
-        { serviceId:"pedicure", from:50, to:85, durationMin:75 },
-      ],
-      availability:{}
-    },
+      id: "hairstudio_mtl",
+      name: "Velvet Hair Studio",
+      subtitle: "Women’s cut • blowout • care",
+      city: "Montréal",
+      address: "Rue Sherbrooke O, Montreal, QC",
+      lat: 45.4990,
+      lng: -73.5908,
+      photo: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1400&q=80",
+      tags: ["hair", "women", "studio"],
+      partner: false,
+      recommended: false,
+      verified: true,
+      sterile: true,
+      rating: 4.5,
+      instagram: "https://instagram.com/",
 
-    {
-      id:"gentlemen-atelier",
-      name:"Gentlemen Atelier",
-      brand:"Gentlemen Atelier",
-      city:"Montréal",
-      address:"Rue Sherbrooke O, Montréal, QC",
-      lat:45.5009, lng:-73.5744,
-      partner:true, recommended:true,
-      verified:true, sterile:true,
-      phone:"+1 (514) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1521498542256-5aeb47ba2d16?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"mens_haircut", from:40, to:70, durationMin:45 },
-        { serviceId:"brows", from:25, to:45, durationMin:35 },
-      ],
-      availability:{}
-    },
-
-    {
-      id:"rose-quartz-studio",
-      name:"Rose Quartz Studio",
-      brand:"Rose Quartz",
-      city:"Montréal",
-      address:"Rue Wellington, Montréal, QC",
-      lat:45.4814, lng:-73.5673,
-      partner:false, recommended:false,
-      verified:true, sterile:false,
-      phone:"+1 (514) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"womens_haircut", from:60, to:105, durationMin:70 },
-        { serviceId:"manicure", from:35, to:60, durationMin:60 },
-      ],
-      availability:{}
-    },
-
-    {
-      id:"violet-room",
-      name:"The Violet Room",
-      brand:"Violet Room",
-      city:"Montréal",
-      address:"Rue Peel, Montréal, QC",
-      lat:45.4984, lng:-73.5749,
-      partner:false, recommended:true,
-      verified:true, sterile:true,
-      phone:"+1 (514) 000-0000",
-      instagram:"https://instagram.com/",
-      images:[
-        "https://images.unsplash.com/photo-1527799820374-dcf8a3ff9c40?auto=format&fit=crop&w=1400&q=80"
-      ],
-      services:[
-        { serviceId:"pedicure", from:55, to:95, durationMin:80 },
-        { serviceId:"brows", from:35, to:60, durationMin:45 },
-      ],
-      availability:{}
+      services: [
+        { serviceId: "haircut_w", from: 55, durMin: 60 }
+      ]
     }
   ];
 
-  // ===== LIVE Availability generator (TEST MODE: always has slots for demo) =====
-  (function generateLiveAvailability(){
-    const base = new Date();
-    const days = 45; // більше днів для демо
+  // ===== Attach rolling availability =====
+  // Pattern per service: array[dayIndex] -> array of times
+  function attachAvailability(listing) {
+    const sids = (listing.services || []).map((s) => s.serviceId);
+    const pat = {};
+    for (const sid of sids) pat[sid] = new Array(7).fill(0).map(() => []);
 
-    for(const l of (window.LISTINGS||[])){
-      l.availability = {}; // ✅ перегенеровуємо завжди, щоб демо було стабільне
+    // Simple curated patterns (feel "alive")
+    // day 0=today ... day 6
+    if (listing.id === "romanukova") {
+      pat.manicure[0] = ["11:00", "14:30", "18:00"];
+      pat.manicure[1] = ["10:30", "13:00", "17:30"];
+      pat.manicure[2] = ["12:00", "16:00"];
+      pat.manicure[3] = ["11:30", "15:00", "19:00"];
+      pat.manicure[4] = ["10:00", "13:30", "18:30"];
+      pat.manicure[5] = ["12:30", "16:30"];
+      pat.manicure[6] = ["11:00", "14:00"];
 
-      for(let i=0;i<days;i++){
-        const d = addDaysLocal(base, i);
-        const key = isoLocal(d);
-
-        // ✅ Гарантовано 3–7 слотів щодня (партнери трішки більше)
-        const min = l.partner ? 4 : 3;
-        const max = l.partner ? 8 : 7;
-
-        let times = [];
-        const target = randInt(min, max);
-        for(let k=0;k<target;k++){
-          const h = randInt(10, 20);
-          const m = [0,10,20,30,40,50][randInt(0,5)];
-          times.push(`${pad(h)}:${pad(m)}`);
-        }
-        times = uniqSorted(times);
-
-        // ✅ Якщо today і після фільтра 0 — додаємо найближчі 2 години вручну
-        const now = new Date();
-        if (isoLocal(now) === key){
-          const cur = now.getHours()*60 + now.getMinutes();
-          times = times.filter(t=>{
-            const hh = parseInt(t.slice(0,2),10);
-            const mm = parseInt(t.slice(3),10);
-            return (hh*60 + mm) > (cur + 20);
-          });
-
-          if(!times.length){
-            const hh1 = Math.min(20, now.getHours() + 1);
-            const hh2 = Math.min(20, now.getHours() + 2);
-            times = uniqSorted([`${pad(hh1)}:00`, `${pad(hh2)}:30`]);
-          }
-        }
-
-        l.availability[key] = times;
-      }
-
-      // For profile calendar (service-filtered)
-      l.availabilityByService = buildAvailabilityByService(l);
-      l.slots = expandAvailabilityToIso(l.availability);
+      pat.pedicure[0] = ["12:00", "16:00"];
+      pat.pedicure[1] = ["11:00", "15:30"];
+      pat.pedicure[2] = ["13:30"];
+      pat.pedicure[3] = ["12:30", "17:00"];
+      pat.pedicure[4] = ["11:30", "16:30"];
+      pat.pedicure[5] = ["13:00"];
+      pat.pedicure[6] = ["12:00"];
     }
-  })();
 
-  // ===== UTIL =====
-  function haversineKm(a,b){
-    if(!a||!b) return null;
-    const R=6371;
-    const toRad=(x)=>x*Math.PI/180;
-    const dLat=toRad(b.lat-a.lat);
-    const dLng=toRad(b.lng-a.lng);
-    const s1=Math.sin(dLat/2)**2;
-    const s2=Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
-    const c=2*Math.atan2(Math.sqrt(s1+s2),Math.sqrt(1-(s1+s2)));
-    return R*c;
+    if (listing.id === "irynastovban") {
+      pat.manicure[0] = ["15:00", "18:00"];
+      pat.manicure[1] = ["12:00", "16:00", "19:00"];
+      pat.manicure[2] = ["11:00", "14:00"];
+      pat.manicure[3] = ["13:00", "17:00"];
+      pat.manicure[4] = ["12:30", "18:30"];
+      pat.manicure[5] = ["11:30", "15:30"];
+      pat.manicure[6] = ["12:00", "16:30"];
+    }
+
+    if (listing.id === "browbar_mtl") {
+      pat.brows[0] = ["10:30", "12:30", "15:00", "17:30"];
+      pat.brows[1] = ["11:00", "13:30", "16:00", "18:00"];
+      pat.brows[2] = ["10:00", "12:00", "14:30"];
+      pat.brows[3] = ["11:30", "13:00", "17:00"];
+      pat.brows[4] = ["10:30", "12:30", "15:30"];
+      pat.brows[5] = ["11:00", "14:00"];
+      pat.brows[6] = ["12:00", "16:00"];
+    }
+
+    if (listing.id === "barber_mtl") {
+      pat.haircut_m[0] = ["11:00", "13:00", "16:00", "18:00"];
+      pat.haircut_m[1] = ["10:30", "12:30", "15:30", "17:30"];
+      pat.haircut_m[2] = ["11:30", "14:30", "19:00"];
+      pat.haircut_m[3] = ["12:00", "16:30"];
+      pat.haircut_m[4] = ["10:00", "13:30", "18:30"];
+      pat.haircut_m[5] = ["12:30", "15:00"];
+      pat.haircut_m[6] = ["11:00", "14:00", "17:00"];
+    }
+
+    if (listing.id === "hairstudio_mtl") {
+      pat.haircut_w[0] = ["12:00", "15:00", "18:00"];
+      pat.haircut_w[1] = ["11:00", "14:00", "17:00"];
+      pat.haircut_w[2] = ["12:30", "16:30"];
+      pat.haircut_w[3] = ["10:30", "13:30", "19:00"];
+      pat.haircut_w[4] = ["11:30", "15:30"];
+      pat.haircut_w[5] = ["12:00", "16:00"];
+      pat.haircut_w[6] = ["13:00", "17:30"];
+    }
+
+    const bySvc = buildAvailabilityByService(sids, pat);
+    listing.availabilityByService = bySvc;
+    listing.availability = flattenAvailability(bySvc);
   }
 
-  function listingService(listing, serviceId){
-    return (listing.services||[]).find(s=>s.serviceId===serviceId) || null;
-  }
+  for (const l of LISTINGS) attachAvailability(l);
 
-  function minPriceFor(listing, serviceId){
-    if(serviceId){
-      const s=listingService(listing, serviceId);
-      return s? s.from : null;
-    }
-    let m=null;
-    for(const s of (listing.services||[])){
-      if(m==null || s.from<m) m=s.from;
+  // ===== bb.util (used by index.html) =====
+  const bb = (window.bb = window.bb || {});
+  bb.util = bb.util || {};
+
+  bb.util.listingService = function (listing, serviceId) {
+    return (listing.services || []).find((s) => s.serviceId === serviceId) || null;
+  };
+
+  bb.util.minPriceFor = function (listing, serviceId) {
+    let m = null;
+    for (const s of listing.services || []) {
+      if (serviceId && s.serviceId !== serviceId) continue;
+      if (m == null || s.from < m) m = s.from;
     }
     return m;
-  }
+  };
 
-  // old-style: looks at listing.availability (date -> times)
-  function nextAvailable(listing, serviceId){
+  bb.util.nextAvailable = function (listing, serviceId) {
+    const bySvc = listing.availabilityByService || {};
+    if (serviceId && bySvc[serviceId] && bySvc[serviceId].length) {
+      const s = bySvc[serviceId].slice().sort()[0];
+      return { dateISO: s.slice(0, 10), time: s.slice(11, 16) };
+    }
+
     const av = listing.availability || {};
     const dates = Object.keys(av).sort();
-    for(const d of dates){
-      const times = (av[d]||[]).slice().sort();
-      if(!times.length) continue;
-      const time = times[0];
-      const price = minPriceFor(listing, serviceId);
-      return { dateISO:d, time, fromPrice: price };
+    for (const d of dates) {
+      const times = (av[d] || []).slice().sort();
+      if (times.length) return { dateISO: d, time: times[0] };
+    }
+
+    if (!serviceId) {
+      let best = null;
+      for (const k of Object.keys(bySvc)) {
+        const arr = bySvc[k] || [];
+        if (!arr.length) continue;
+        const s = arr.slice().sort()[0];
+        if (!best || s < best.slot) best = { slot: s, serviceId: k };
+      }
+      if (best) return { dateISO: best.slot.slice(0, 10), time: best.slot.slice(11, 16), serviceId: best.serviceId };
     }
     return null;
-  }
-
-  function isTodaySlot(slot){
-    if(!slot) return false;
-    // ✅ LOCAL today, no UTC shift
-    const t = isoLocal(new Date());
-    return slot.dateISO === t;
-  }
-
-  function smartScore(listing, userLoc, serviceId){
-    let score = 0;
-
-    if(serviceId && !listingService(listing, serviceId)) score += 50;
-    if(listing.partner) score -= 6;
-    if(listing.verified) score -= 3;
-    if(listing.sterile) score -= 2;
-
-    const slot = nextAvailable(listing, serviceId);
-    if(!slot) score += 80;
-    else{
-      if(isTodaySlot(slot)) score -= 8;
-      const hh = parseInt(slot.time.split(":")[0]||"12",10);
-      score += Math.max(0, (hh-10))*0.15;
-    }
-
-    const p = minPriceFor(listing, serviceId);
-    if(p != null) score += (p/25);
-
-    if(userLoc && listing.lat && listing.lng){
-      const km = haversineKm(userLoc, {lat:listing.lat,lng:listing.lng});
-      if(km!=null) score += km*0.6;
-    }
-
-    if(listing.recommended) score -= 4;
-    return score;
-  }
-
-  function smartRecommend(list, userLoc, serviceId){
-    const out = (list||[]).slice().sort((a,b)=> smartScore(a,userLoc,serviceId) - smartScore(b,userLoc,serviceId));
-    out.forEach((l,i)=>{
-      l._rank = i+1;
-      l._score = smartScore(l,userLoc,serviceId);
-      l.recommended = !!l.recommended || i<6;
-    });
-    return out;
-  }
-
-  function computeWhy(listing, userLoc, serviceId){
-    const parts = [];
-    const slot = nextAvailable(listing, serviceId);
-    if(slot){
-      parts.push(isTodaySlot(slot) ? "Available today" : "Next soon");
-    } else {
-      parts.push("Limited availability");
-    }
-
-    if(listing.partner) parts.push("Partner priority");
-    if(listing.sterile) parts.push("Sterile");
-
-    const p = minPriceFor(listing, serviceId);
-    if(p!=null){
-      if(p<=30) parts.push("Best value");
-      else if(p<=45) parts.push("Great value");
-      else parts.push("Premium");
-    }
-
-    if(userLoc && listing.lat && listing.lng){
-      const km = haversineKm(userLoc,{lat:listing.lat,lng:listing.lng});
-      if(km!=null){
-        if(km<2.0) parts.push("Very close");
-        else if(km<5.0) parts.push("Close");
-      }
-    }
-    return parts.slice(0,3).join(" · ");
-  }
-
-  // ---- AI parser (STRICT BY SERVICE) ----
-  function parseConcierge(text){
-    const t = (text||"").toLowerCase();
-    let serviceId = null;
-
-    const hasMen = /(чолов(іча|іч|і|ік)|men)/i.test(t);
-    const hasWomen = /(жін(оча|іча|к|ка)|women|female)/i.test(t);
-    if(hasMen) serviceId = "mens_haircut";
-    else if(hasWomen) serviceId = "womens_haircut";
-    else{
-      const rules = [
-        { id:"brows", re: /(бров|brow)/i },
-        { id:"manicure", re: /(манік|manic)/i },
-        { id:"pedicure", re: /(педик|pedic)/i },
-        { id:"mens_haircut", re: /(men('|s)?\s*hair|mens?\s*hair)/i },
-        { id:"womens_haircut", re: /(women('|s)?\s*hair|female\s*hair)/i },
-        { id:"womens_haircut", re: /(стрижк|haircut|hair\s*cut)/i },
-      ];
-      for(const r of rules){
-        if(r.re.test(t)){ serviceId = r.id; break; }
-      }
-    }
-
-    let maxPrice = null;
-    const m = t.match(/(?:\$|\bдо\b|\bunder\b|\bmax\b)?\s*([0-9]{2,3})\s*\$?/i);
-    if(m) maxPrice = parseInt(m[1],10);
-
-    let afterHour = null;
-    const mh = t.match(/(?:after|після)\s*([0-9]{1,2})/i);
-    if(mh) afterHour = parseInt(mh[1],10);
-
-    return { serviceId, maxPrice, afterHour };
-  }
-
-  function conciergeSuggest(listings, userLoc, text){
-    const q = parseConcierge(text);
-    let pool = (listings||[]).slice();
-
-    if(q.serviceId){
-      pool = pool.filter(l=> !!listingService(l,q.serviceId));
-    }
-
-    if(q.maxPrice != null){
-      pool = pool.filter(l=>{
-        const p = minPriceFor(l, q.serviceId);
-        return p!=null ? p <= q.maxPrice : true;
-      });
-    }
-
-    if(q.afterHour != null){
-      pool = pool.filter(l=>{
-        const slot = nextAvailable(l, q.serviceId);
-        if(!slot) return false;
-        const hh = parseInt(slot.time.split(":")[0]||"0",10);
-        return hh >= q.afterHour;
-      });
-    }
-
-    const ranked = smartRecommend(pool, userLoc, q.serviceId);
-    return {
-      query:q,
-      picks: ranked.slice(0,3).map(l=>({
-        id:l.id,
-        why: computeWhy(l,userLoc,q.serviceId),
-        serviceId: q.serviceId || (l.services?.[0]?.serviceId || null)
-      }))
-    };
-  }
-
-  window.bb = window.bb || {};
-  window.bb.util = {
-    haversineKm,
-    listingService,
-    minPriceFor,
-    nextAvailable,
-    isTodaySlot,
-    smartRecommend,
-    computeWhy,
-    conciergeSuggest
   };
+
+  window.SERVICES = SERVICES;
+  window.LISTINGS = LISTINGS;
 })();
