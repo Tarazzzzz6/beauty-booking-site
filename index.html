@@ -79,7 +79,7 @@
     }
 
     a{color:inherit;text-decoration:none}
-    button, input{font-family:inherit}
+    button, input, select{font-family:inherit}
     button{cursor:pointer}
 
     /* ====== Topbar (icons bigger & lower) ====== */
@@ -93,12 +93,9 @@
     .topbarRow{
       display:flex; align-items:center; justify-content:space-between;
       gap:12px;
-      margin-top: 8px; /* ⬅️ lower the whole header content a bit */
+      margin-top: 8px; /* lower */
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      min-width: 170px;
-    }
+    .brand{display:flex; align-items:center; gap:10px; min-width: 170px;}
     .logo{
       width:38px; height:38px; border-radius:14px;
       background:
@@ -113,34 +110,27 @@
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 55%);
       transform: rotate(25deg);
     }
-    .brandText{
-      display:flex; flex-direction:column; line-height:1.05;
-    }
+    .brandText{display:flex; flex-direction:column; line-height:1.05;}
     .brandText .name{
       font-family:var(--font-title);
       font-weight:700;
       letter-spacing:.2px;
-      font-size: 18px; /* bigger */
+      font-size: 18px;
     }
-    .brandText .sub{
-      font-size:12px;
-      color:var(--muted2);
-      margin-top:2px;
-    }
+    .brandText .sub{font-size:12px;color:var(--muted2);margin-top:2px;}
 
-    .actions{
-      display:flex; align-items:center; gap:10px;
-    }
+    .actions{display:flex; align-items:center; gap:10px;}
     .iconBtn{
-      width:44px; height:44px; /* bigger */
+      width:44px; height:44px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
       color:var(--text);
       display:grid; place-items:center;
       box-shadow: 0 10px 26px rgba(0,0,0,.28);
-      transform: translateY(2px); /* ⬅️ slightly lower */
+      transform: translateY(2px);
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
     }
     .iconBtn:active{transform: translateY(3px) scale(.98)}
     .iconBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
@@ -155,6 +145,7 @@
       box-shadow: 0 10px 26px rgba(0,0,0,.28);
       transform: translateY(2px);
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
     }
     .pillBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
     .pillBtn:active{transform: translateY(3px) scale(.98)}
@@ -191,9 +182,7 @@
       gap: 16px;
       align-items:stretch;
     }
-    @media (max-width: 840px){
-      .heroInner{grid-template-columns:1fr}
-    }
+    @media (max-width: 840px){ .heroInner{grid-template-columns:1fr} }
     .heroTitle{
       font-family:var(--font-title);
       font-weight:700;
@@ -218,6 +207,7 @@
       display:flex; align-items:center; gap:10px;
       box-shadow: var(--shadow2);
       transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
     }
     .cta.primary{
       background: linear-gradient(135deg, rgba(255,79,216,.85), rgba(255,210,122,.65), rgba(139,92,246,.75));
@@ -227,10 +217,7 @@
     .cta.primary:hover{filter: brightness(1.03)}
     .cta:active{transform: scale(.985)}
 
-    .chips{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top: 12px;
-    }
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top: 12px;}
     .chip{
       height:34px;
       padding:0 12px;
@@ -241,6 +228,7 @@
       font-size: 13px;
       display:flex; align-items:center; gap:8px;
       transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      user-select:none;
     }
     .chip:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14)}
     .chip:active{transform: scale(.985)}
@@ -262,13 +250,23 @@
       position:relative;
       overflow:hidden;
     }
-    .nextTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    .nextCard::after{
+      content:"";
+      position:absolute; inset:-40% -70%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(110deg, transparent 35%, rgba(255,255,255,.08) 45%, transparent 55%);
+      transform: translateX(-18%);
+      animation: shimmerHero 3.8s ease-in-out infinite;
+      pointer-events:none;
     }
-    .nextLabel{
-      font-size:12px; color: var(--muted2);
-      display:flex; align-items:center; gap:8px;
+    @keyframes shimmerHero{
+      0%{ transform: translateX(-22%) }
+      50%{ transform: translateX(22%) }
+      100%{ transform: translateX(-22%) }
     }
+    .nextTop{display:flex; align-items:center; justify-content:space-between; gap:10px; position:relative; z-index:2;}
+    .nextLabel{font-size:12px; color: var(--muted2); display:flex; align-items:center; gap:8px;}
     .pulse{
       width:10px;height:10px;border-radius:999px;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.9));
@@ -279,20 +277,10 @@
       0%,100%{transform:scale(1); opacity:.85}
       50%{transform:scale(1.25); opacity:1}
     }
-    .nextBody{display:flex; flex-direction:column; gap:6px}
-    .nextName{
-      font-weight:700;
-      letter-spacing:.1px;
-    }
-    .nextMeta{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.35;
-    }
-    .nextAction{
-      margin-top:auto;
-      display:flex; gap:10px; align-items:center;
-    }
+    .nextBody{display:flex; flex-direction:column; gap:6px; position:relative; z-index:2;}
+    .nextName{font-weight:700; letter-spacing:.1px;}
+    .nextMeta{color:var(--muted); font-size:13px; line-height:1.35;}
+    .nextAction{margin-top:auto; display:flex; gap:10px; align-items:center; position:relative; z-index:2;}
     .miniBtn{
       height:40px;
       padding:0 12px;
@@ -302,6 +290,7 @@
       color: var(--text);
       display:flex; align-items:center; gap:10px;
       box-shadow: var(--shadow2);
+      user-select:none;
     }
     .miniBtn.primary{
       background: linear-gradient(135deg, rgba(92,246,199,.35), rgba(255,255,255,.08));
@@ -316,9 +305,7 @@
       gap: 10px;
       align-items:center;
     }
-    @media (max-width: 720px){
-      .controls{grid-template-columns: 1fr}
-    }
+    @media (max-width: 720px){ .controls{grid-template-columns: 1fr} }
     .search{
       height: 48px;
       border-radius: 18px;
@@ -329,9 +316,7 @@
       outline:none;
       box-shadow: 0 14px 40px rgba(0,0,0,.28);
     }
-    .tabs{
-      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
-    }
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
     .tab{
       height:48px;
       padding:0 14px;
@@ -341,6 +326,7 @@
       color: var(--text);
       display:flex; align-items:center; gap:10px;
       box-shadow: 0 14px 40px rgba(0,0,0,.28);
+      user-select:none;
     }
     .tab.active{
       background: rgba(139,92,246,.18);
@@ -350,17 +336,10 @@
 
     /* ====== Sections & cards ====== */
     .section{margin-top: 18px}
-    .sectionHead{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
-      margin-bottom: 10px;
-    }
-    .h2{
-      font-family:var(--font-title);
-      font-size: 20px;
-      margin:0;
-      letter-spacing:.2px;
-    }
+    .sectionHead{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom: 10px;}
+    .h2{font-family:var(--font-title); font-size: 20px; margin:0; letter-spacing:.2px;}
     .hint{color:var(--muted2); font-size:12px}
+
     .grid{
       display:grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
@@ -369,6 +348,7 @@
     @media (max-width: 980px){ .grid{grid-template-columns: repeat(2,minmax(0,1fr));} }
     @media (max-width: 620px){ .grid{grid-template-columns: 1fr;} }
 
+    /* ✅ Micro-wow (shine + subtle parallax on hover, tactile on mobile) */
     .card{
       border-radius: var(--r);
       border:1px solid rgba(255,255,255,.08);
@@ -377,8 +357,27 @@
       box-shadow: var(--shadow2);
       position:relative;
       transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      will-change: transform;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-40% -70%;
+      background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.10) 50%, transparent 60%);
+      transform: translateX(-28%) rotate(4deg);
+      opacity:0;
+      transition: opacity .25s ease;
+      pointer-events:none;
+      z-index:3;
     }
     .card:hover{transform: translateY(-2px); background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.12)}
+    .card:hover::before{opacity:.9; animation: cardShine 1.6s ease-in-out infinite;}
+    @keyframes cardShine{
+      0%{ transform: translateX(-28%) rotate(4deg); }
+      50%{ transform: translateX(28%) rotate(4deg); }
+      100%{ transform: translateX(-28%) rotate(4deg); }
+    }
+    .card:active{transform: translateY(0) scale(.992);}
+
     .img{
       height: 150px;
       background: linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,210,122,.10), rgba(139,92,246,.18));
@@ -420,26 +419,10 @@
     .badge.verified{border-color: rgba(139,92,246,.32); background: rgba(139,92,246,.10)}
 
     .cardBody{padding: 12px}
-    .row1{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .title{
-      font-weight: 800;
-      letter-spacing:.1px;
-      line-height:1.15;
-      margin:0;
-      font-size: 15px;
-    }
-    .subline{
-      margin-top:6px;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height:1.25;
-    }
-    .rightMeta{
-      display:flex; flex-direction:column; align-items:flex-end; gap:6px;
-      min-width: 96px;
-    }
+    .row1{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+    .title{font-weight: 800; letter-spacing:.1px; line-height:1.15; margin:0; font-size: 15px;}
+    .subline{margin-top:6px; color: var(--muted); font-size: 12.5px; line-height:1.25;}
+    .rightMeta{display:flex; flex-direction:column; align-items:flex-end; gap:6px; min-width: 96px;}
     .price{
       font-weight:800;
       font-size: 13px;
@@ -448,10 +431,7 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
     }
-    .rating{
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .rating{font-size: 12px; color: var(--muted);}
 
     .cardActions{
       margin-top: 10px;
@@ -465,10 +445,65 @@
       background: rgba(255,255,255,.05);
       color: var(--text);
       display:flex; align-items:center; gap:10px;
+      user-select:none;
     }
     .small.primary{
       background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,255,255,.06));
       border-color: rgba(255,79,216,.26);
+    }
+
+    /* ✅ Featured partner strip */
+    .partnerStrip{
+      display:flex; gap:12px; overflow:auto; padding:10px 2px 14px;
+      scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+    }
+    .partnerStrip::-webkit-scrollbar{height:8px}
+    .partnerStrip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.10); border-radius:999px}
+    .partnerCard{
+      min-width:260px; max-width:320px; flex:0 0 auto;
+      scroll-snap-align:start;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      user-select:none;
+    }
+    .partnerCard::after{
+      content:"";
+      position:absolute; inset:-40% -60%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,210,122,.18), transparent 55%),
+        linear-gradient(110deg, transparent 35%, rgba(255,255,255,.10) 45%, transparent 55%);
+      transform: translateX(-20%);
+      animation: shimmer 3.6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes shimmer{
+      0%{ transform: translateX(-25%) }
+      50%{ transform: translateX(25%) }
+      100%{ transform: translateX(-25%) }
+    }
+    .badgePartner{
+      position:absolute; top:10px; left:10px;
+      padding:6px 10px; font-size:12px; border-radius:999px;
+      background: rgba(255,210,122,.14);
+      border:1px solid rgba(255,210,122,.28);
+      backdrop-filter: blur(10px);
+      z-index:2;
+    }
+    .partnerInner{padding:12px; position:relative; z-index:2;}
+    .partnerTitle{font-weight:900; letter-spacing:.1px;}
+    .partnerMeta{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.25;}
+    .partnerMini{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
+    .partnerPill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
     }
 
     /* ====== Floating quick-book ====== */
@@ -485,6 +520,7 @@
       color: var(--text);
       box-shadow: 0 22px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
       display:flex; align-items:center; gap:10px;
+      user-select:none;
     }
     .fab:active{transform: scale(.985)}
 
@@ -532,6 +568,7 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
       color:var(--text);
+      user-select:none;
     }
     .modalBody{
       padding: 14px;
@@ -562,12 +599,10 @@
       color: var(--text);
       padding: 0 12px;
       display:flex; align-items:center; justify-content:space-between; gap:10px;
+      user-select:none;
     }
 
-    .quickPicks{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top: 8px;
-    }
+    .quickPicks{display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px;}
     .pickBtn{
       height:34px;
       padding: 0 12px;
@@ -576,6 +611,7 @@
       background: rgba(255,255,255,.05);
       color: var(--text);
       font-size: 13px;
+      user-select:none;
     }
 
     .modalFoot{
@@ -596,6 +632,7 @@
       flex:1;
       justify-content:center;
       box-shadow: 0 18px 60px rgba(92,246,199,.12);
+      user-select:none;
     }
     .ghostBtn{
       height:48px;
@@ -606,12 +643,9 @@
       color: var(--text);
       min-width: 140px;
       display:flex; align-items:center; justify-content:center;
+      user-select:none;
     }
-    .hold{
-      font-size: 12px;
-      color: var(--muted2);
-      margin-left: 6px;
-    }
+    .hold{font-size: 12px; color: var(--muted2); margin-left: 6px;}
 
     /* ====== Time picker bottom sheet ====== */
     .sheet{
@@ -666,13 +700,11 @@
       font-weight: 800;
       letter-spacing:.2px;
       transition: transform .16s ease, background .16s ease, border-color .16s ease;
+      user-select:none;
     }
     .timeItem:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14)}
     .timeItem:active{transform: scale(.985)}
-    .timeItem.disabled{
-      opacity:.35;
-      pointer-events:none;
-    }
+    .timeItem.disabled{opacity:.35; pointer-events:none;}
     .timeItem.active{
       background: rgba(92,246,199,.16);
       border-color: rgba(92,246,199,.30);
@@ -730,6 +762,7 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
       color: var(--text);
+      user-select:none;
     }
 
     /* ====== Helpers ====== */
@@ -765,17 +798,9 @@
           <span id="t_favOnly">Only ❤️</span>
         </button>
 
-        <button class="iconBtn" id="btnAI" title="AI help">
-          ✨
-        </button>
-
-        <button class="iconBtn" id="btnLang" title="Language">
-          🌐
-        </button>
-
-        <button class="iconBtn" id="btnTheme" title="Theme">
-          🌓
-        </button>
+        <button class="iconBtn" id="btnAI" title="AI help">✨</button>
+        <button class="iconBtn" id="btnLang" title="Language">🌐</button>
+        <button class="iconBtn" id="btnTheme" title="Theme">🌓</button>
       </div>
     </div>
   </header>
@@ -831,6 +856,10 @@
         <h2 class="h2" id="t_partners">Top salons / partners</h2>
         <div class="hint" id="t_partnersHint">Paid partners</div>
       </div>
+
+      <!-- ✅ Featured strip -->
+      <div class="partnerStrip" id="partnerStrip"></div>
+
       <div class="grid" id="gridPartners"></div>
     </section>
 
@@ -1004,6 +1033,9 @@
       tab: lsGet("bb.tab","all"), // all | partners | rec
       lastNextIndex: 0,
 
+      // ✅ AI help mode: top -> recommended -> nearest
+      aiMode: lsGet("bb.aiMode","top") || "top",
+
       booking: {
         open: false,
         listingId: "",
@@ -1065,10 +1097,6 @@
         email: "Email",
         notes: "Нотатки",
         profile: "Профіль",
-        toastWhyTitle: "Why this one?",
-        toastWhyText: "Бо підходить твоїй послузі, має хороший рейтинг і найближчий слот сьогодні.",
-        toastAI: "AI help",
-        toastAIText: "Напиши: “брови”, “стрижка”, “манікюр” — і я підберу топ-варіанти.",
         missing: "Заповни дату/час/імʼя/телефон 🙏",
         sent: "Відправлено ✅",
         sentText: "Ми надіслали бронювання в Telegram. Скоро підтвердять.",
@@ -1076,7 +1104,11 @@
         failedText: "Не вдалось надіслати. Перевір Worker /book та інтернет.",
         hold: "Hold 2 min",
         offline: "Ти офлайн — деякі фічі можуть не працювати.",
-        cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh."
+        cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.",
+        updateReady: "Є нова версія сайту. Натисни Refresh, щоб оновитись.",
+        aiTop: "AI: Top picks",
+        aiRec: "AI: Recommended",
+        aiNear: "AI: Nearest",
       },
       en: {
         brand: "Beauty Booking",
@@ -1115,10 +1147,6 @@
         email: "Email",
         notes: "Notes",
         profile: "Profile",
-        toastWhyTitle: "Why this one?",
-        toastWhyText: "Because it matches your service, has strong rating and the nearest slot today.",
-        toastAI: "AI help",
-        toastAIText: "Type: “brows”, “haircut”, “manicure” — I’ll pick the best options.",
         missing: "Fill date/time/name/phone 🙏",
         sent: "Sent ✅",
         sentText: "We sent your booking to Telegram. You’ll get confirmation soon.",
@@ -1126,7 +1154,11 @@
         failedText: "Couldn’t send. Check Worker /book and internet connection.",
         hold: "Hold 2 min",
         offline: "You’re offline — some features may not work.",
-        cached: "Loaded from cache. If something didn’t update — press Refresh."
+        cached: "Loaded from cache. If something didn’t update — press Refresh.",
+        updateReady: "A new version is ready. Press Refresh to update.",
+        aiTop: "AI: Top picks",
+        aiRec: "AI: Recommended",
+        aiNear: "AI: Nearest",
       }
     };
 
@@ -1173,12 +1205,12 @@
       $("#search").placeholder = (STATE.lang==="en") ? "Search salon, master, service…" : "Пошук салон/майстер/послуга…";
       $("#m_name").placeholder = (STATE.lang==="en") ? "Name" : "Імʼя";
       $("#m_phone").placeholder = (STATE.lang==="en") ? "(438)..." : "(438)...";
-      $("#m_email").placeholder = (STATE.lang==="en") ? "email@example.com" : "email@example.com";
+      $("#m_email").placeholder = "email@example.com";
       $("#m_notes").placeholder = (STATE.lang==="en") ? "Optional" : "Опційно";
     }
 
     /* =========================
-       Netbar (offline / cached)
+       Netbar (offline / cached / update)
     ========================== */
     function showNetbar(msg){
       safeSetText($("#netbarText"), msg);
@@ -1202,6 +1234,18 @@
         const nav = performance.getEntriesByType?.("navigation")?.[0];
         if(nav && typeof nav.transferSize === "number" && nav.transferSize === 0){
           showNetbar(txt().cached);
+        }
+      }catch(e){}
+
+      // ✅ SW update ready message -> show update banner
+      try{
+        if (navigator.serviceWorker) {
+          navigator.serviceWorker.addEventListener("message", (ev) => {
+            const data = ev?.data || {};
+            if (data && (data.type === "BB_UPDATE_READY" || data === "BB_UPDATE_READY")) {
+              showNetbar(txt().updateReady);
+            }
+          });
         }
       }catch(e){}
     }
@@ -1246,19 +1290,15 @@
        Filters / ranking
     ========================== */
     function normalize(s){ return (s||"").toString().toLowerCase().trim(); }
-
     function listingServices(listing){
-      // supports: listing.services[] or listing.serviceIds[] or listing.tags
       const ids = (listing?.services || listing?.serviceIds || []);
       return Array.isArray(ids) ? ids : [];
     }
-
     function matchesService(listing){
       if(!STATE.serviceId) return true;
       const ids = listingServices(listing).map(String);
       return ids.includes(String(STATE.serviceId));
     }
-
     function matchesSearch(listing){
       const q = normalize(STATE.search);
       if(!q) return true;
@@ -1268,27 +1308,19 @@
       ].join(" ");
       return normalize(blob).includes(q);
     }
-
-    function isPartner(listing){
-      return !!(listing?.partner || listing?.isPartner || listing?.paidPartner);
-    }
-
+    function isPartner(listing){ return !!(listing?.partner || listing?.isPartner || listing?.paidPartner); }
     function isRecommended(listing){
-      // simple algo: high rating or flagged recommended
       if(listing?.recommended) return true;
       const r = Number(listing?.rating || 0);
       return r >= 4.8;
     }
-
     function byScore(a,b){
       const ra = Number(a.rating||0), rb = Number(b.rating||0);
       const pa = Number(a.fromPrice||a.priceFrom||a.price||0), pb = Number(b.fromPrice||b.priceFrom||b.price||0);
-      // prefer rating, then cheaper, then partner
       const sa = (ra*10) + (isPartner(a)?2:0) - (pa/50);
       const sb = (rb*10) + (isPartner(b)?2:0) - (pb/50);
       return sb - sa;
     }
-
     function filtered(){
       let arr = LISTINGS.slice();
       if(STATE.favOnly) arr = arr.filter(x => STATE.favorites.has(x.id));
@@ -1298,16 +1330,62 @@
     }
 
     /* =========================
+       AI picks by selected service (no random)
+    ========================== */
+    function serviceKey(v){ return normalize(typeof v === "object" ? (v?.id || v?.name) : v); }
+    function listingHasService(listing, serviceId){
+      if(!serviceId) return true;
+      const key = serviceKey(serviceId);
+      const ids = listingServices(listing).map(x=>serviceKey(x));
+      const names = (listing?.serviceNames || listing?.servicesOffered || []).map(x=>serviceKey(x));
+      const title = serviceKey(listing?.title || listing?.name);
+      return ids.includes(key) || names.includes(key) || title.includes(key);
+    }
+    function pickAiSuggestions({serviceId, mode="top"}){
+      const all = filtered();
+      const f = serviceId ? all.filter(l => listingHasService(l, serviceId)) : all;
+
+      const score = (l)=>{
+        const rating = Number(l.rating || l.stars || 0);
+        const priceFrom = Number(l.fromPrice || l.priceFrom || l.price || 0);
+        const partner = isPartner(l);
+        const recommended = isRecommended(l);
+        const distance = Number(l.distanceKm || l.distance || 999);
+        const nextTs = Number(l.nextSlotTs || 0);
+
+        if(mode==="nearest") return (999-distance) + (nextTs? 50 : 0) + (rating*2) + (partner?3:0);
+        if(mode==="recommended") return (recommended?50:0) + (partner?10:0) + (rating*4) - (priceFrom? priceFrom/20 : 0);
+        return (partner?30:0) + (rating*5) + (recommended?10:0);
+      };
+
+      f.sort((a,b)=>score(b)-score(a));
+      return f.slice(0, 6);
+    }
+
+    function aiModeLabel(){
+      if(STATE.aiMode==="recommended") return txt().aiRec;
+      if(STATE.aiMode==="nearest") return txt().aiNear;
+      return txt().aiTop;
+    }
+
+    /* =========================
        Cards render
     ========================== */
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
     function cardBadgeHTML(listing){
       const b = [];
       if(isPartner(listing)) b.push(`<span class="badge partner">Partner</span>`);
-      if(Number(listing.rating||0) >= 4.8) b.push(`<span class="badge verified">${STATE.lang==="en"?"Verified":"Verified"}</span>`);
-      if((listing.todaySlots && listing.todaySlots.length) || listing.today === true) b.push(`<span class="badge today">${STATE.lang==="en"?"Today":"Today"}</span>`);
+      if(Number(listing.rating||0) >= 4.8) b.push(`<span class="badge verified">Verified</span>`);
+      if((listing.todaySlots && listing.todaySlots.length) || listing.today === true) b.push(`<span class="badge today">Today</span>`);
       return b.length ? `<div class="badges">${b.join("")}</div>` : "";
     }
-
     function cardHTML(listing){
       const img = listing.image || listing.photo || listing.cover ||
         "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
@@ -1336,21 +1414,51 @@
           </div>
 
           <div class="cardActions">
-            <button class="small primary" data-act="book">📅 <span>${STATE.lang==="en"?"Book":"Book"}</span></button>
-            <button class="small" data-act="fav">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>${STATE.lang==="en"?"Save":"Save"}</span></button>
-            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>${STATE.lang==="en"?"Profile":"Profile"}</span></a>
+            <button class="small primary" data-act="book">📅 <span>Book</span></button>
+            <button class="small" data-act="fav">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>Save</span></button>
+            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>Profile</span></a>
           </div>
         </div>
       </div>`;
     }
 
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    /* =========================
+       Featured Partner strip renderer
+    ========================== */
+    function partnerStripHTML(listing){
+      const name = listing.name || listing.title || "—";
+      const r = Number(listing.rating||0);
+      const price = Number(listing.fromPrice || listing.priceFrom || listing.price || 0);
+      const priceText = price ? `$${Math.round(price)}+` : "$—";
+      const serviceName = resolveServiceName(STATE.serviceId || listingServices(listing)[0] || SERVICES[0]?.id || "");
+      const meta = `${serviceName} • ${priceText} • ${r ? `⭐ ${r.toFixed(1)}` : "⭐ —"}`;
+
+      return `
+        <div class="partnerCard" data-id="${listing.id}">
+          <div class="badgePartner">Partner</div>
+          <div class="partnerInner">
+            <div class="partnerTitle">${escapeHtml(name)}</div>
+            <div class="partnerMeta">${escapeHtml(listing.address || "Montréal, QC")}</div>
+            <div class="partnerMini">
+              <span class="partnerPill">${escapeHtml(meta)}</span>
+              <span class="partnerPill">${STATE.lang==="en" ? "Fast booking" : "Швидкий запис"}</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderPartnerStrip(partners){
+      const strip = $("#partnerStrip");
+      if(!strip) return;
+      const top = partners.slice(0, 10); // top 10 only
+      safeSetHTML(strip, top.map(partnerStripHTML).join(""));
+
+      $$(".partnerCard", strip).forEach(card => {
+        card.addEventListener("click", () => {
+          const id = card.getAttribute("data-id");
+          openBooking({ listingId: id });
+        });
+      });
     }
 
     function render(){
@@ -1359,6 +1467,9 @@
       const partners = arr.filter(isPartner);
       const rec = arr.filter(x => !isPartner(x) && isRecommended(x));
       const others = arr.filter(x => !isPartner(x) && !isRecommended(x));
+
+      // ✅ featured strip
+      renderPartnerStrip(partners);
 
       safeSetHTML($("#gridPartners"), partners.map(cardHTML).join(""));
       safeSetHTML($("#gridRec"), rec.map(cardHTML).join(""));
@@ -1385,12 +1496,9 @@
             openBooking({ listingId:id });
             return;
           }
-          if(act === "open"){
-            // let link open
-            return;
-          }
+          if(act === "open"){ return; }
 
-          // ✅ requested: when click on salon card -> show short random info (toast)
+          // short random info toast ✅
           const listing = LISTINGS.find(x => x.id === id);
           toast(listing?.name || "Beauty Booking", pickInfo(), 2600);
         });
@@ -1406,6 +1514,14 @@
     /* =========================
        Service chips
     ========================== */
+    function resolveServiceName(serviceId){
+      if(!serviceId) return (STATE.lang==="en") ? "Service" : "Послуга";
+      const s = SERVICES.find(x => String(x.id)===String(serviceId));
+      if(!s) return (STATE.lang==="en") ? "Service" : "Послуга";
+      if(typeof s.name === "object") return s.name[STATE.lang] || s.name.uk || s.name.en || s.id;
+      return s.name || s.title || s.id;
+    }
+
     function renderServiceChips(){
       const el = $("#serviceChips");
       if(!el) return;
@@ -1479,13 +1595,18 @@
     });
 
     $("#btnTheme").addEventListener("click", ()=>{
-      // (keep one theme, but toggle a tiny variant if you want later)
       toast("Theme", "Lux mode ✨", 1400);
       lsSet("bb.theme", STATE.theme);
     });
 
+    // ✅ AI help: cycle mode + show picks summary
     $("#btnAI").addEventListener("click", ()=>{
-      toast(txt().toastAI, txt().toastAIText, 3200);
+      STATE.aiMode = (STATE.aiMode === "top") ? "recommended" : (STATE.aiMode === "recommended" ? "nearest" : "top");
+      lsSet("bb.aiMode", STATE.aiMode);
+
+      const picks = pickAiSuggestions({ serviceId: STATE.serviceId, mode: STATE.aiMode });
+      const names = picks.slice(0,3).map(x=>x.name||x.title).filter(Boolean).join(" • ") || "—";
+      toast(aiModeLabel(), names, 3200);
     });
 
     $("#ctaQuick").addEventListener("click", ()=>openBooking({}));
@@ -1495,54 +1616,53 @@
        Next available hero rotation
     ========================== */
     let nextTimer = null;
+
     function candidateSlots(){
-      // Build candidates from filtered listings.
-      // We use simple synthetic slots if data.js doesn't provide.
       const arr = filtered();
       const today = now();
       const dateISO = isoLocal(today);
 
       const slots = [];
       arr.forEach(listing => {
-        // try listing.todaySlots first (array of times)
         const times = Array.isArray(listing.todaySlots) && listing.todaySlots.length
           ? listing.todaySlots.slice(0,6)
           : ["10:30","11:00","12:00","13:30","15:00","17:00","18:30"];
 
-        // choose service: selected or first matching
         const serviceId = STATE.serviceId || (listingServices(listing)[0] || (SERVICES[0]?.id || "manicure"));
         const serviceName = resolveServiceName(serviceId);
 
-        // score: higher rating, earlier time, partners
         times.slice(0,4).forEach(t => {
           const rating = Number(listing.rating||0);
           const price = Number(listing.fromPrice || listing.priceFrom || listing.price || 0);
           const partnerBoost = isPartner(listing) ? 1.5 : 0;
           const hour = parseInt(String(t).split(":")[0],10) || 12;
-          const earlyBoost = (20 - hour) / 10; // earlier better
+          const earlyBoost = (20 - hour) / 10;
           const score = rating + partnerBoost + earlyBoost - (price/200);
-          slots.push({
-            id: uid(),
-            listing,
-            serviceId,
-            serviceName,
-            dateISO,
-            time: t,
-            score
-          });
+          slots.push({ id: uid(), listing, serviceId, serviceName, dateISO, time: t, score });
         });
       });
 
       slots.sort((a,b)=>b.score-a.score);
-      // Show only nearest slots (no “how many slots” indicator) ✅
       return slots.slice(0, 8);
     }
 
-    function resolveServiceName(serviceId){
-      const s = SERVICES.find(x => String(x.id)===String(serviceId));
-      if(!s) return (STATE.lang==="en") ? "Service" : "Послуга";
-      if(typeof s.name === "object") return s.name[STATE.lang] || s.name.uk || s.name.en || s.id;
-      return s.name || s.title || s.id;
+    function whyReasons(item){
+      const listing = item?.listing || {};
+      const reasons = [];
+      // 1) service match
+      const svc = item?.serviceName || resolveServiceName(item?.serviceId);
+      reasons.push((STATE.lang==="en") ? `Matches your service: ${svc}` : `Підходить по послузі: ${svc}`);
+      // 2) rating/price
+      const r = Number(listing.rating||0);
+      const price = Number(listing.fromPrice || listing.priceFrom || listing.price || 0);
+      const rp = (STATE.lang==="en")
+        ? `Strong rating ${r?`⭐ ${r.toFixed(1)}`:"⭐ —"} and from $${price?Math.round(price):"—"}`
+        : `Хороший рейтинг ${r?`⭐ ${r.toFixed(1)}`:"⭐ —"} і ціна від $${price?Math.round(price):"—"}`;
+      reasons.push(rp);
+      // 3) nearest time
+      const pretty = fmtPretty(item.dateISO, item.time, STATE.lang);
+      reasons.push((STATE.lang==="en") ? `Nearest slot: ${pretty}` : `Найближчий слот: ${pretty}`);
+      return reasons;
     }
 
     function buildNextAvailable(reset=false){
@@ -1553,7 +1673,7 @@
         return;
       }
       if(reset) STATE.lastNextIndex = 0;
-      const i = clamp(STATE.lastNextIndex, 0, list.length-1);
+      const i = clamp(STATE.lastNextIndex, 0, Math.min(list.length-1, 2)); // only 3 dots
       const item = list[i];
 
       safeSetText($("#nextName"), item.listing.name || item.listing.title || "—");
@@ -1562,7 +1682,6 @@
       const pretty = fmtPretty(item.dateISO, item.time, STATE.lang);
       safeSetText($("#nextMeta"), `${item.serviceName} • ${pretty} • ${priceText}`);
 
-      // progress dots (up to 3)
       const dots = ["○","○","○"];
       dots[i%3] = "●";
       safeSetText($("#nextDots"), dots.join(" "));
@@ -1574,14 +1693,17 @@
         time: item.time
       });
 
-      $("#nextWhy").onclick = () => toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
+      // ✅ Why this one? -> 3 concrete reasons
+      $("#nextWhy").onclick = () => {
+        const r = whyReasons(item);
+        toast("Why this one?", `${r[0]}\n${r[1]}\n${r[2]}`, 4200);
+      };
 
-      // rotate every ~10s ✅
       clearInterval(nextTimer);
       nextTimer = setInterval(() => {
         const list2 = candidateSlots();
         if(!list2.length) return;
-        STATE.lastNextIndex = (STATE.lastNextIndex + 1) % Math.min(list2.length, 3);
+        STATE.lastNextIndex = (STATE.lastNextIndex + 1) % 3;
         buildNextAvailable(false);
       }, 10000);
     }
@@ -1608,26 +1730,19 @@
     $("#m_close").addEventListener("click", closeOverlay);
     overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeOverlay(); });
 
-    function openSheet(){
-      sheet.classList.add("show");
-    }
-    function closeSheet(){
-      sheet.classList.remove("show");
-    }
+    function openSheet(){ sheet.classList.add("show"); }
+    function closeSheet(){ sheet.classList.remove("show"); }
     $("#sheetClose").addEventListener("click", closeSheet);
     sheet.addEventListener("click", (e)=>{ if(e.target === sheet) closeSheet(); });
 
     function availableTimesFor(listing, dateISO, serviceId){
-      // If you have bb.util availability in data.js, use it
       try{
         const util = window.bb?.util;
         if(util && typeof util.getAvailableTimes === "function"){
           return util.getAvailableTimes(listing, dateISO, serviceId) || [];
         }
       }catch(e){}
-      // fallback synthetic
       const base = ["10:00","10:30","11:00","11:30","12:00","13:00","14:00","15:00","16:00","17:00","18:00","18:30"];
-      // slightly vary by listing
       const seed = (listing?.id || "x").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
       return base.filter((t, idx)=> (idx + seed) % 3 !== 0);
     }
@@ -1652,7 +1767,6 @@
     }
 
     function refreshHold(){
-      // local 2 min hold ✅
       const ok = STATE.booking.listingId && STATE.booking.dateISO && STATE.booking.time;
       const nowMs = Date.now();
       if(ok){
@@ -1676,7 +1790,6 @@
       const left = Math.ceil((STATE.hold.until - nowMs)/1000);
       safeSetText(el, `${txt().hold}: ${left}s`);
     }
-
     setInterval(updateHoldText, 1000);
 
     function openBooking(opts={}){
@@ -1689,42 +1802,35 @@
       STATE.booking.dateISO = opts.dateISO || STATE.booking.dateISO || isoLocal(new Date());
       STATE.booking.time = opts.time || "";
 
-      // fill UI
       safeSetText($("#m_listingName"), listing.name || listing.title || "—");
       safeSetText($("#m_listingInfo"), pickInfo());
       safeSetText($("#m_addrLine"), `📍 ${(listing.address||"Montréal, QC")} • ${(listing.city||"Montréal")}`);
 
-      // address line for TG payload
       $("#m_addrLine").dataset.address = (listing.address||"");
       $("#m_addrLine").dataset.city = (listing.city||"Montréal");
 
-      // services select
       const allowed = (listingServices(listing).length ? listingServices(listing) : SERVICES.map(s=>s.id)).map(String);
       const list = SERVICES.length ? SERVICES : allowed.map(id=>({id, name:{uk:id,en:id}}));
       safeSetHTML($("#m_service"), list
         .filter(s => !allowed.length || allowed.includes(String(s.id)))
         .map(s=>{
-          const label = (typeof s.name==="object") ? (s.name[STATE.lang]||s.name.uk||s.name.en||s.id) : (s.name||s.title||s.id);
+          const label = (typeof s.name === "object") ? (s.name[STATE.lang]||s.name.uk||s.name.en||s.id) : (s.name||s.title||s.id);
           const sel = String(s.id)===String(STATE.booking.serviceId) ? "selected" : "";
           return `<option value="${escapeHtml(s.id)}" ${sel}>${escapeHtml(label)}</option>`;
         }).join(""));
 
       $("#m_service").onchange = () => {
         STATE.booking.serviceId = $("#m_service").value;
-        // refresh available times when service changes
         const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
         const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
-        // keep selected only if available
         if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
         safeSetText($("#m_timeText"), STATE.booking.time || "—");
         refreshHold();
       };
 
-      // date input
       $("#m_date").value = STATE.booking.dateISO;
       $("#m_date").onchange = () => {
         STATE.booking.dateISO = $("#m_date").value;
-        // refresh available times (avoid UTC bug by using date input directly local ISO)
         const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
         const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
         if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
@@ -1733,7 +1839,6 @@
         refreshHold();
       };
 
-      // time picker
       $("#m_timeBtn").onclick = () => {
         const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
         const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
@@ -1741,7 +1846,6 @@
         openSheet();
       };
 
-      // quick picks
       $("#pickFast").onclick = () => {
         const listing2 = LISTINGS.find(x=>x.id===STATE.booking.listingId) || {};
         const times = availableTimesFor(listing2, STATE.booking.dateISO, STATE.booking.serviceId);
@@ -1750,32 +1854,25 @@
         refreshHold();
       };
       $("#pickCheap").onclick = () => {
-        // cheapest listing among filtered -> reopen booking for it
         const arr = filtered().slice().sort((a,b)=>Number(a.fromPrice||a.price||999)-Number(b.fromPrice||b.price||999));
         const best = arr[0] || listing;
         openBooking({ listingId: best.id });
       };
       $("#pickNear").onclick = () => {
-        // if listing has distance, pick smallest; else keep current
         const arr = filtered().slice().sort((a,b)=>Number(a.distance||999)-Number(b.distance||999));
         const best = arr[0] || listing;
         openBooking({ listingId: best.id });
       };
 
-      // profile button
       $("#m_openProfileBtn").onclick = () => {
         const id = STATE.booking.listingId;
         window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
       };
 
-      // set time text
       safeSetText($("#m_timeText"), STATE.booking.time || "—");
 
-      // restore hold state
       const hold = lsGet("bb.hold", null);
-      if(hold && typeof hold === "object"){
-        STATE.hold = hold;
-      }
+      if(hold && typeof hold === "object"){ STATE.hold = hold; }
       refreshHold();
 
       openOverlay();
@@ -1834,9 +1931,7 @@
         });
 
         const out = await res.json().catch(()=>({}));
-        if(!res.ok || out.ok !== true){
-          throw new Error("send failed");
-        }
+        if(!res.ok || out.ok !== true){ throw new Error("send failed"); }
 
         toast(txt().sent, txt().sentText, 3200);
         closeOverlay();
@@ -1847,7 +1942,6 @@
         $("#m_bookBtn").style.opacity = 1;
       }
     }
-
     $("#m_bookBtn").addEventListener("click", sendBooking);
 
     /* =========================
@@ -1868,23 +1962,14 @@
        Init
     ========================== */
     function init(){
-      // validate data.js loaded
-      if(!Array.isArray(LISTINGS) || !LISTINGS.length){
-        toast("⚠️", "LISTINGS missing in data.js", 4000);
-      }
       applyTexts();
-
-      // restore tab UI
       setTab(STATE.tab);
-
       renderServiceChips();
       render();
       buildNextAvailable(true);
-
       initNetbar();
       readParams();
     }
-
     init();
   })();
   </script>
