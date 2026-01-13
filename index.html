@@ -1471,7 +1471,11 @@
         search: "bb_search",
         service: "bb_service",
         sort: "bb_sort",
-        lastBooking: "bb_last_booking"
+        lastBooking: "bb_last_booking",
+
+        // ✅ geo cache (safe for PWA)
+        locCache: "bb_loc_cache",
+        locTs: "bb_loc_ts"
       };
 
       const state = {
@@ -1824,7 +1828,7 @@
         const uniq = Array.from(new Set(names));
         const take = uniq.slice(0, max);
         const rest = Math.max(0, uniq.length - take.length);
-        if(!take.length) return state.lang==="en" ? "—" : "—";
+        if(!take.length) return "—";
         return rest>0 ? `${take.join(", ")} +${rest}` : take.join(", ");
       }
 
@@ -1896,7 +1900,6 @@
           ? haversineKm(state.userLoc, {lat:listing.lat, lng:listing.lng})
           : null;
         if(km!=null) parts.push(`${km.toFixed(1)} km`);
-        // add vibe from tags if present
         if(listing.tags?.length){
           const t = listing.tags[0];
           if(t) parts.push(String(t).slice(0,18));
@@ -2045,7 +2048,6 @@
       ========================== */
       function randomInfo(listing, serviceId){
         const sid = serviceId || state.serviceId || (listing.services?.[0]?.serviceId || "");
-        const svc = getServiceName(sid) || (state.lang==="en"?"Service":"Послуга");
         const n = nextAvailable(listing, sid);
         const when = n ? fmtDateTime(n.dateISO, n.time) : (state.lang==="en"?"No slot yet":"Поки без слоту");
         const svcs = servicesPreview(listing, 3);
@@ -2056,7 +2058,6 @@
         const line3 = `✨ ${why}`;
         const addr = listing.address ? `📍 ${listing.address}` : "";
 
-        // 3-4 lines, modern feel (more info)
         return [line1, addr || line2, addr ? line2 : line3, addr ? line3 : ""].filter(Boolean).join("\n");
       }
 
@@ -2166,21 +2167,50 @@
       }
 
       /* =========================
-         Next available hero rotation
+         Next available hero rotation (NEAREST if geo)
       ========================== */
       function buildNextPool(allFiltered){
         const pool = [];
         for(const l of allFiltered){
           const n = nextAvailable(l, state.serviceId);
           if(!n) continue;
+
           const sid = state.serviceId || n.serviceId || (l.services?.[0]?.serviceId || "");
-          pool.push({ listing:l, dateISO:n.dateISO, time:n.time, serviceId:sid });
+          const dist = (state.userLoc && l.lat && l.lng)
+            ? haversineKm(state.userLoc, {lat:l.lat, lng:l.lng})
+            : null;
+
+          pool.push({
+            listing: l,
+            dateISO: n.dateISO,
+            time: n.time,
+            serviceId: sid,
+            distKm: dist
+          });
         }
-        pool.sort((a,b)=>{
-          const ka = (a.dateISO||"").replaceAll("-","") + (a.time||"").replaceAll(":","");
-          const kb = (b.dateISO||"").replaceAll("-","") + (b.time||"").replaceAll(":","");
-          return (ka<kb?-1:ka>kb?1:0);
-        });
+
+        if(state.userLoc){
+          pool.sort((a,b)=>{
+            const da = (a.distKm==null) ? 999999 : a.distKm;
+            const db = (b.distKm==null) ? 999999 : b.distKm;
+            if(da !== db) return da - db;
+
+            const ka = (a.dateISO||"").replaceAll("-","") + (a.time||"").replaceAll(":","");
+            const kb = (b.dateISO||"").replaceAll("-","") + (b.time||"").replaceAll(":","");
+            if(ka !== kb) return ka < kb ? -1 : 1;
+
+            const pra = minPriceFor(a.listing, a.serviceId) ?? 999999;
+            const prb = minPriceFor(b.listing, b.serviceId) ?? 999999;
+            return pra - prb;
+          });
+        } else {
+          pool.sort((a,b)=>{
+            const ka = (a.dateISO||"").replaceAll("-","") + (a.time||"").replaceAll(":","");
+            const kb = (b.dateISO||"").replaceAll("-","") + (b.time||"").replaceAll(":","");
+            return (ka<kb?-1:ka>kb?1:0);
+          });
+        }
+
         state.nextPool = pool.slice(0, 8);
         state.nextIndex = 0;
 
@@ -2222,7 +2252,16 @@
         safeSetText($("#nextName"), l.name || "—");
         safeSetText($("#nextWhen"), when || "—");
         safeSetText($("#nextFrom"), p!=null ? `${state.lang==="en"?"From":"Від"} ${money(p)}` : "—");
-        safeSetText($("#nextMeta"), `${meta1} · ${meta2} · ${why}`);
+
+        // ✅ add nearest hint + distance
+        if(!state.userLoc){
+          safeSetText($("#nextMeta"),
+            `${meta1} · ${meta2} · ${why} · ${state.lang==="en" ? "Tap Near me for closest" : "Натисни Near me для найближчих"}`
+          );
+        } else {
+          const d = (item.distKm!=null) ? ` · ${item.distKm.toFixed(1)} km` : "";
+          safeSetText($("#nextMeta"), `${meta1} · ${meta2} · ${why}${d}`);
+        }
 
         const dots = $$("#nextDots .dot");
         dots.forEach((d,i)=> d.classList.toggle("on", i===idx));
@@ -2444,11 +2483,6 @@
         }, 1000);
       }
 
-      function holdRemainingSec(){
-        if(!state.holdUntil) return 0;
-        return Math.max(0, Math.floor((state.holdUntil - Date.now())/1000));
-      }
-
       /* =========================
          Share
       ========================== */
@@ -2557,7 +2591,6 @@
           const listing = LISTINGS.find(x=>x.id===id);
           if(!listing) continue;
 
-          // tap card body → more info toast (modern)
           card.addEventListener("click", (e)=>{
             const act = e.target.closest("[data-act]");
             if(act) return;
@@ -2600,389 +2633,462 @@
 
         const s = SERVICES.find(svc=>{
           const nameUA = (svc.ua||"").toLowerCase();
-          const nameEN = (svc.en||"").toLowerCase();
-          return (nameUA && txt.includes(nameUA)) || (nameEN && txt.includes(nameEN)) || txt.includes(svc.id.toLowerCase());
+                const nameEN = (svc.en||"").toLowerCase();
+          const id = (svc.id||"").toLowerCase();
+          return txt.includes(nameUA) || txt.includes(nameEN) || txt.includes(id);
         });
 
+        // price: "до 40", "under 40", "$40"
         let maxPrice = null;
-        const m = txt.match(/(\d{2,3})/);
-        if(m) maxPrice = parseInt(m[1],10);
-
-        let after = null;
-        const t = txt.match(/(?:after|після)\s*(\d{1,2})(?::(\d{2}))?/);
-        if(t){
-          const hh = parseInt(t[1],10);
-          const mm = t[2]?parseInt(t[2],10):0;
-          after = `${pad(hh)}:${pad(mm)}`;
+        const m1 = txt.match(/(?:до|under)\s*\$?\s*(\d{2,3})/);
+        const m2 = txt.match(/\$?\s*(\d{2,3})\s*(?:cad)?\s*(?:max|мікс|maximum)?/);
+        if(m1) maxPrice = parseInt(m1[1],10);
+        else if(txt.includes("до") || txt.includes("under")) {
+          if(m2) maxPrice = parseInt(m2[1],10);
         }
 
-        return { serviceId: s ? s.id : null, maxPrice, after };
+        // after time: "після 15", "after 15", "after 15:30"
+        let afterTime = null;
+        const t1 = txt.match(/(?:після|after)\s*(\d{1,2})(?::(\d{2}))?/);
+        if(t1){
+          const hh = Math.max(0, Math.min(23, parseInt(t1[1],10)));
+          const mm = t1[2] ? Math.max(0, Math.min(59, parseInt(t1[2],10))) : 0;
+          afterTime = `${pad(hh)}:${pad(mm)}`;
+        }
+
+        return { serviceId: s?.id || null, maxPrice, afterTime };
       }
 
-      function aiPick(){
-        const box = $("#aiPicks");
-        const hint = $("#aiHint");
-        if(!box) return;
+      function aiFind(){
+        const q = ($("#aiText")?.value || "").trim();
+        const picksEl = $("#aiPicks");
+        if(!picksEl) return;
 
-        const q = $("#aiText")?.value || "";
-        const p = parseAI(q);
+        const parsed = parseAI(q);
 
-        if(!p.serviceId){
-          box.innerHTML = "";
-          if(hint) hint.textContent = state.lang==="en"
-            ? "Please mention the service (e.g. brows / manicure / haircut)."
-            : "Напиши послугу (наприклад: брови / манікюр / стрижка).";
-          toast(state.lang==="en" ? "Pick a service first" : "Спочатку обери послугу");
+        // ✅ strict by service:
+        let sid = parsed.serviceId || state.serviceId;
+        if(!sid){
+          picksEl.innerHTML = `<div class="empty" style="margin:0">
+            <b>${state.lang==="en"?"Tell me the service":"Напиши послугу"}</b>
+            <div style="margin-top:6px">${state.lang==="en"?"Example: brows under 40":"Приклад: брови до 40"}</div>
+          </div>`;
           return;
         }
 
-        let list = LISTINGS.filter(l=> (l.services||[]).some(x=>x.serviceId===p.serviceId));
-
-        if(p.maxPrice!=null){
-          list = list.filter(l=>{
-            const svc = listingService(l, p.serviceId);
-            return svc && svc.from != null && svc.from <= p.maxPrice;
-          });
-        }
-
-        list.sort((a,b)=>{
-          const na = nextAvailable(a, p.serviceId);
-          const nb = nextAvailable(b, p.serviceId);
-          const ka = na ? (na.dateISO.replaceAll("-","")+na.time.replaceAll(":","")) : "999999999999";
-          const kb = nb ? (nb.dateISO.replaceAll("-","")+nb.time.replaceAll(":","")) : "999999999999";
-          if(ka!==kb) return ka<kb?-1:1;
-          const pa = minPriceFor(a, p.serviceId) ?? 999999;
-          const pb = minPriceFor(b, p.serviceId) ?? 999999;
-          return pa-pb;
+        const candidates = LISTINGS.filter(l=>{
+          if(!(l.services||[]).some(x=>x.serviceId===sid)) return false;
+          if(state.onlyFav && !state.favs.has(l.id)) return false;
+          const q2 = (state.search||"").trim().toLowerCase();
+          if(q2){
+            const hay = [l.name,l.subtitle,l.address,l.city,(l.tags||[]).join(" ")].join(" ").toLowerCase();
+            if(!hay.includes(q2)) return false;
+          }
+          if(parsed.maxPrice!=null){
+            const svc = listingService(l, sid);
+            const from = svc?.from ?? minPriceFor(l, sid);
+            if(from!=null && from > parsed.maxPrice) return false;
+          }
+          if(parsed.afterTime){
+            const n = nextAvailable(l, sid);
+            if(!n) return false;
+            if(n.time < parsed.afterTime) return false;
+          }
+          return true;
         });
 
-        if(p.after){
-          const afterKey = parseInt(p.after.replace(":",""),10);
-          list = list.filter(l=>{
-            const n = nextAvailable(l, p.serviceId);
-            if(!n) return false;
-            const k = parseInt(n.time.replace(":",""),10);
-            return k >= afterKey;
-          });
-        }
+        // score: distance (if we have), soonest, price
+        const scored = candidates.map(l=>{
+          const n = nextAvailable(l, sid);
+          const dist = (state.userLoc && l.lat && l.lng) ? haversineKm(state.userLoc, {lat:l.lat,lng:l.lng}) : null;
+          const pr = minPriceFor(l, sid);
+          const soonKey = n ? parseInt(n.dateISO.replaceAll("-","")+n.time.replaceAll(":",""),10) : 999999999;
+          return { l, n, dist, pr, soonKey };
+        });
 
-        const top = list.slice(0, 3);
+        scored.sort((a,b)=>{
+          const da = (a.dist==null)? 999999 : a.dist;
+          const db = (b.dist==null)? 999999 : b.dist;
+          if(da!==db) return da-db;
+          if(a.soonKey!==b.soonKey) return a.soonKey-b.soonKey;
+          const pa = (a.pr==null)? 999999 : a.pr;
+          const pb = (b.pr==null)? 999999 : b.pr;
+          if(pa!==pb) return pa-pb;
+          return (a.l.name||"").localeCompare(b.l.name||"");
+        });
+
+        const top = scored.slice(0, 4);
+
         if(!top.length){
-          box.innerHTML = "";
-          if(hint) hint.textContent = state.lang==="en"
-            ? "No matches. Try removing constraints."
-            : "Нема збігів. Спробуй прибрати умови.";
+          picksEl.innerHTML = `<div class="empty" style="margin:0">
+            <b>${state.lang==="en"?"No matches":"Немає збігів"}</b>
+            <div style="margin-top:6px">${state.lang==="en"?"Try higher price or remove time":"Спробуй більшу ціну або прибери час"}</div>
+          </div>`;
           return;
         }
 
-               if(hint) hint.textContent = state.lang==="en"
-          ? `Top picks for ${getServiceName(p.serviceId)}:`
-          : `Топ підбір для «${getServiceName(p.serviceId)}»:`;
-
-        box.innerHTML = top.map(l=>{
-          const n = nextAvailable(l, p.serviceId);
-          const when = n ? fmtDateTime(n.dateISO, n.time) : (state.lang==="en"?"No slot yet":"Поки без слоту");
-          const price = minPriceFor(l, p.serviceId);
-          const why = computeWhy(l, p.serviceId);
-          const addr = l.address || "";
+        picksEl.innerHTML = top.map(x=>{
+          const l = x.l;
+          const n = x.n;
+          const dt = n ? fmtDateTime(n.dateISO, n.time) : "—";
+          const pr = x.pr!=null ? money(x.pr) : "—";
+          const dist = x.dist!=null ? `${x.dist.toFixed(1)} km` : (state.lang==="en" ? "Tap Near me" : "Натисни Near me");
+          const why = computeWhy(l, sid);
           return `
             <div class="pick">
               <b>${escapeHtml(l.name||"—")}</b>
-              <small>${escapeHtml(getServiceName(p.serviceId))} · ${escapeHtml(when)} · ${escapeHtml(price!=null?money(price):"—")}</small>
-              <small>${escapeHtml(addr)} · ${escapeHtml(why||"")}</small>
+              <small>${escapeHtml(getServiceName(sid))} · ${escapeHtml(dt)} · ${escapeHtml(pr)} · ${escapeHtml(dist)}</small>
+              <small>${escapeHtml(why || "")}</small>
               <div class="row">
-                <button data-act="aiBook" data-id="${escapeHtml(l.id)}" data-svc="${escapeHtml(p.serviceId)}">⚡ ${escapeHtml(tr("book"))}</button>
-                <button data-act="aiProfile" data-id="${escapeHtml(l.id)}">↗️ ${escapeHtml(tr("openProfile"))}</button>
+                <button data-ai="book" data-id="${escapeHtml(l.id)}" data-sid="${escapeHtml(sid)}">${escapeHtml(tr("book"))}</button>
+                <button data-ai="profile" data-id="${escapeHtml(l.id)}">${escapeHtml(tr("openProfile"))}</button>
               </div>
             </div>
           `;
         }).join("");
 
-        box.onclick = (e)=>{
-          const b = e.target.closest("button[data-act]");
+        picksEl.onclick = (e)=>{
+          const b = e.target.closest("button[data-ai]");
           if(!b) return;
-          const act = b.getAttribute("data-act");
+          const act = b.getAttribute("data-ai");
           const id = b.getAttribute("data-id");
-          const svc = b.getAttribute("data-svc");
-          if(act==="aiProfile"){
+          const sid2 = b.getAttribute("data-sid") || sid;
+          if(act==="profile"){
             window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
           }
-          if(act==="aiBook"){
-            openBooking(id, svc);
+          if(act==="book"){
+            closeAll();
+            openBooking(id, sid2);
           }
         };
       }
 
       /* =========================
-         ✅ iPhone PWA header push-down (fix: too high under notch)
+         ✅ GEO / Near me
       ========================== */
-      function isIOS(){
-        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      }
-      function isStandalone(){
-        return (window.navigator.standalone === true) || window.matchMedia("(display-mode: standalone)").matches;
-      }
-      function applyIOSHeaderFix(){
-        // On iPhone PWA, sometimes env(safe-area-inset-top) behaves oddly — push content down a bit more.
-        if(isIOS() && isStandalone()){
-          document.documentElement.style.setProperty("--topbarDrop", "22px");  // was 12px
-          // Also keep content comfortably below the sticky header:
-          document.documentElement.style.setProperty("--contentPad", "16px");
-        }
-      }
-
-      /* =========================
-         Telegram booking
-      ========================== */
-      function normalizePhone(p){
-        const s = String(p||"").trim();
-        return s.replace(/[^\d+]/g,"");
-      }
-
-      async function sendBooking(){
-        const listing = LISTINGS.find(x=>x.id===state.bookingListingId);
-        if(!listing) return;
-
-        const serviceId = $("#mService")?.value || state.bookingServiceId || (SERVICES[0]?.id||"");
-        const dateISO = $("#mDate")?.value || state.bookingDateISO || isoLocal(new Date());
-        const time = state.bookingTime || $("#mTimeText")?.textContent || "";
-
-        const name = ($("#mName")?.value || "").trim();
-        const phone = normalizePhone($("#mPhone")?.value || "");
-        const email = ($("#mEmail")?.value || "").trim();
-        const notes = ($("#mNotes")?.value || "").trim();
-
-        if(!name || !phone){
-          toast(state.lang==="en" ? "Name + phone required" : "Потрібні імʼя та телефон");
-          return;
-        }
-        if(!time || time==="—"){
-          toast(state.lang==="en" ? "Pick a time" : "Обери час");
-          return;
-        }
-
-        // local “hold”
-        startHold();
-
-        const payload = {
-          name, phone, email, notes,
-          serviceId,
-          serviceName: getServiceName(serviceId),
-          listingId: listing.id,
-          listingName: listing.name,
-          address: listing.address || "",
-          dateISO,
-          time,
-          profileUrl: `${location.origin}${location.pathname.replace(/\/[^\/]*$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`
-        };
-
-        // store last booking
-        localStorage.setItem(LS.lastBooking, JSON.stringify({
-          listingId: listing.id,
-          serviceId,
-          dateISO,
-          time
-        }));
-
-        // optimistic UI
-        toast(state.lang==="en" ? "Sending…" : "Надсилаю…");
-
+      function getLocCached(){
         try{
-          const res = await fetch(`${window.WORKER_URL}/book`, {
-            method:"POST",
-            headers:{ "Content-Type":"application/json" },
-            body: JSON.stringify(payload)
-          });
+          const raw = localStorage.getItem(LS.locCache);
+          const ts = parseInt(localStorage.getItem(LS.locTs)||"0",10);
+          if(!raw || !ts) return null;
+          // cache for 24h
+          if(Date.now() - ts > 24*60*60*1000) return null;
+          const obj = JSON.parse(raw);
+          if(obj && typeof obj.lat==="number" && typeof obj.lng==="number") return obj;
+        }catch(e){}
+        return null;
+      }
 
-          if(!res.ok){
-            const t = await res.text().catch(()=> "");
-            console.warn("Worker error:", t);
-            toast(state.lang==="en" ? "Telegram failed (worker)" : "Telegram не відправив (worker)");
-            return;
-          }
+      function setLocCache(loc){
+        try{
+          localStorage.setItem(LS.locCache, JSON.stringify(loc));
+          localStorage.setItem(LS.locTs, String(Date.now()));
+        }catch(e){}
+      }
 
-          toast(state.lang==="en" ? "Booked ✅ Check Telegram" : "Запис ✅ Перевір Telegram");
-          closeAll();
-          renderLastBooking();
+      function requestLocation(){
+        return new Promise((resolve, reject)=>{
+          const cached = getLocCached();
+          if(cached) return resolve(cached);
+          if(!navigator.geolocation) return reject(new Error("no-geo"));
+          navigator.geolocation.getCurrentPosition(
+            (pos)=>{
+              const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+              setLocCache(loc);
+              resolve(loc);
+            },
+            (err)=> reject(err),
+            { enableHighAccuracy: true, timeout: 9000, maximumAge: 120000 }
+          );
+        });
+      }
+
+      async function locateMe(){
+        try{
+          const loc = await requestLocation();
+          state.userLoc = loc;
+          toast(state.lang==="en" ? "Location set" : "Локацію встановлено");
+          renderAll();
         }catch(e){
-          console.error(e);
-          toast(state.lang==="en" ? "Network error" : "Помилка мережі");
+          toast(state.lang==="en"
+            ? "Location blocked — enable it in browser settings"
+            : "Геолокацію заблоковано — увімкни в налаштуваннях браузера"
+          );
         }
       }
 
       /* =========================
-         Netbar (offline / cached)
+         ✅ Netbar (offline / cached)
       ========================== */
-      function setNetbar(on, html){
+      function showNetbar(kind){
         const nb = $("#netbar");
-        const txt = $("#netbarText");
-        if(!nb || !txt) return;
-        if(on){
+        const t = $("#netbarText");
+        if(!nb || !t) return;
+        if(kind==="offline"){
+          safeSetHTML(t, `<b>${state.lang==="en"?"Offline":"Офлайн"}</b> — ${state.lang==="en"?"Some data may be cached":"Дані можуть бути з кешу"}`);
           nb.classList.add("on");
-          safeSetHTML(txt, html);
+        } else if(kind==="cached"){
+          safeSetHTML(t, `<b>${state.lang==="en"?"Cached load":"З кешу"}</b> — ${state.lang==="en"?"Tap Refresh for latest":"Натисни Refresh для оновлення"}`);
+          nb.classList.add("on");
         } else {
           nb.classList.remove("on");
         }
       }
 
-      function wireNetbar(){
-        $("#netbarOk")?.addEventListener("click", ()=> setNetbar(false,""));
-        $("#netbarRefresh")?.addEventListener("click", ()=> location.reload());
+      function initNetbar(){
+        const ok = $("#netbarOk");
+        const rf = $("#netbarRefresh");
+        ok && (ok.onclick = ()=> showNetbar("hide"));
+        rf && (rf.onclick = ()=> location.reload());
 
-        const update = ()=>{
-          if(!navigator.onLine){
-            setNetbar(true, `<b>${state.lang==="en"?"Offline":"Офлайн"}</b> — ${state.lang==="en"?"Some features may not work":"Деякі фічі можуть не працювати"}`);
-            return;
+        window.addEventListener("online", ()=> showNetbar("hide"));
+        window.addEventListener("offline", ()=> showNetbar("offline"));
+
+        // cached detection
+        safe(()=>{
+          const nav = performance.getEntriesByType("navigation")[0];
+          if(nav && "transferSize" in nav && nav.transferSize === 0){
+            showNetbar("cached");
           }
-
-          // detect cached nav (PWA often returns transferSize=0 for cached)
-          const nav = performance.getEntriesByType?.("navigation")?.[0];
-          const cached = nav && "transferSize" in nav && nav.transferSize===0;
-          if(cached){
-            setNetbar(true, `<b>${state.lang==="en"?"Cached mode":"Кеш-режим"}</b> — ${state.lang==="en"?"Tap Refresh for newest version":"Натисни Refresh для нової версії"}`);
-          } else {
-            setNetbar(false,"");
-          }
-        };
-
-        window.addEventListener("online", update);
-        window.addEventListener("offline", update);
-        setTimeout(update, 700);
+        });
+        if(!navigator.onLine) showNetbar("offline");
       }
 
       /* =========================
-         Locate (near me)
+         ✅ Submit booking -> Worker (/book)
       ========================== */
-      function locate(){
-        if(!navigator.geolocation){
-          toast(state.lang==="en" ? "Geolocation not supported" : "Геолокація не підтримується");
+      async function submitBooking(){
+        const listing = LISTINGS.find(x=>x.id===state.bookingListingId);
+        if(!listing) return;
+
+        const name = ($("#mName")?.value || "").trim();
+        const phone = ($("#mPhone")?.value || "").trim();
+        const email = ($("#mEmail")?.value || "").trim();
+        const notes = ($("#mNotes")?.value || "").trim();
+
+        const serviceId = $("#mService")?.value || state.bookingServiceId;
+        const dateISO = $("#mDate")?.value || state.bookingDateISO || isoLocal(new Date());
+        const time = state.bookingTime || ($("#mTimeText")?.textContent || "").trim();
+
+        if(!name || !phone){
+          toast(state.lang==="en" ? "Name + phone required" : "Потрібні імʼя і телефон");
           return;
         }
-        navigator.geolocation.getCurrentPosition((pos)=>{
-          state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          toast(state.lang==="en" ? "Location set" : "Локацію визначено");
-          renderAll();
-        }, ()=>{
-          toast(state.lang==="en" ? "Location denied" : "Локацію відхилено");
-        }, { enableHighAccuracy:true, timeout: 8000, maximumAge: 300000 });
+        if(!serviceId){
+          toast(state.lang==="en" ? "Pick service" : "Обери послугу");
+          return;
+        }
+        if(!time || time==="—"){
+          toast(state.lang==="en" ? "Pick time" : "Обери час");
+          return;
+        }
+
+        // Hold slot 2 min (local)
+        startHold();
+
+        const svcName = getServiceName(serviceId);
+        const profileUrl = `${location.origin}${location.pathname.replace(/\/[^\/]*$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`;
+
+        const payload = {
+          name, phone, email,
+          notes,
+          serviceId,
+          serviceName: svcName,
+          listingId: listing.id,
+          listingName: listing.name,
+          address: listing.address || "",
+          dateISO,
+          time,
+          datetimeText: fmtDateTime(dateISO, time),
+          profileUrl,
+          city: listing.city || "",
+          lang: state.lang
+        };
+
+        const btn = $("#mSubmit");
+        if(btn){ btn.style.opacity = ".75"; btn.style.pointerEvents="none"; }
+
+        try{
+          const res = await fetch(`${window.WORKER_URL}/book`, {
+            method: "POST",
+            headers: { "content-type":"application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if(!res.ok){
+            let msg = "";
+            try{ msg = await res.text(); }catch(e){}
+            throw new Error(msg || "HTTP "+res.status);
+          }
+
+          // save last booking
+          try{
+            localStorage.setItem(LS.lastBooking, JSON.stringify({
+              listingId: listing.id,
+              serviceId,
+              dateISO,
+              time
+            }));
+          }catch(e){}
+
+          toast(state.lang==="en" ? "Booked! Telegram sent." : "Запис створено! Telegram відправлено.");
+          closeAll();
+          renderLastBooking();
+        }catch(e){
+          console.error(e);
+          toast(state.lang==="en" ? "Booking failed — check Worker URL" : "Не відправилось — перевір WORKER_URL");
+        }finally{
+          if(btn){ btn.style.opacity = ""; btn.style.pointerEvents=""; }
+        }
       }
 
       /* =========================
-         Wire UI
+         Events + init
       ========================== */
-      function wireUI(){
-        // search
-        const s = $("#search");
-        if(s){
-          s.value = state.search || "";
-          s.addEventListener("input", ()=>{
-            state.search = s.value;
-            save();
-            renderAll();
-          });
-        }
-
-        // sorts
-        $("#sortSmart")?.addEventListener("click", ()=>{ state.sort="smart"; save(); renderAll(); });
-        $("#sortPrice")?.addEventListener("click", ()=>{ state.sort="price"; save(); renderAll(); });
-        $("#sortSoon")?.addEventListener("click", ()=>{ state.sort="soon"; save(); renderAll(); });
-
-        // locate
-        $("#btnLocate")?.addEventListener("click", locate);
-
-        // favorites toggle
-        $("#btnFav")?.addEventListener("click", ()=>{
-          state.onlyFav = !state.onlyFav;
-          save();
-          renderAll();
-        });
-
-        // theme toggle
-        $("#btnTheme")?.addEventListener("click", ()=>{
+      function bindUI(){
+        // top actions
+        $("#btnTheme") && ($("#btnTheme").onclick = ()=>{
           state.theme = (state.theme==="dark") ? "light" : "dark";
           document.documentElement.setAttribute("data-theme", state.theme);
           save();
           renderAll();
         });
 
-        // language toggle
-        $("#btnLang")?.addEventListener("click", ()=>{
+        $("#btnLang") && ($("#btnLang").onclick = ()=>{
           state.lang = (state.lang==="en") ? "uk" : "en";
           save();
           renderAll();
         });
 
-        // AI drawer
-        $("#btnAI")?.addEventListener("click", openDrawer);
-        $("#drawerClose")?.addEventListener("click", closeAll);
-        $("#drawerOverlay")?.addEventListener("click", (e)=>{ if(e.target===drawerOverlay) closeAll(); });
-
-        $("#aiGo")?.addEventListener("click", aiPick);
-        $("#aiClear")?.addEventListener("click", ()=>{
-          const t = $("#aiText");
-          const box = $("#aiPicks");
-          if(t) t.value="";
-          if(box) box.innerHTML="";
-          $("#aiHint") && ( $("#aiHint").textContent = state.lang==="en"
-            ? "Tip: “brows under 40 after 15”, “men haircut”, “manicure”."
-            : "Порада: «брови до 40 після 15», «чоловіча стрижка», «манікюр»." );
+        $("#btnFav") && ($("#btnFav").onclick = ()=>{
+          state.onlyFav = !state.onlyFav;
+          save();
+          renderAll();
         });
-        $("#aiText")?.addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); aiPick(); } });
+
+        $("#btnAI") && ($("#btnAI").onclick = ()=>{ openDrawer(); });
+
+        // filters
+        const s = $("#search");
+        if(s){
+          s.value = state.search;
+          s.oninput = ()=>{
+            state.search = s.value;
+            save();
+            renderAll();
+          };
+        }
+
+        $("#sortSmart") && ($("#sortSmart").onclick = ()=>{ state.sort="smart"; save(); renderAll(); });
+        $("#sortPrice") && ($("#sortPrice").onclick = ()=>{ state.sort="price"; save(); renderAll(); });
+        $("#sortSoon") && ($("#sortSoon").onclick = ()=>{ state.sort="soon"; save(); renderAll(); });
+
+        $("#btnLocate") && ($("#btnLocate").onclick = ()=> locateMe());
+
+        // reset
+        $("#btnReset") && ($("#btnReset").onclick = ()=> resetFiltersSmart());
 
         // quick booking
-        $("#btnQuickBook")?.addEventListener("click", ()=>{
-          // pick best from current nextPool if exists
-          const item = state.nextPool?.[0];
-          if(item) openBooking(item.listing.id, item.serviceId, item.dateISO, item.time);
-          else {
-            const first = currentFiltered()[0];
-            if(first) openBooking(first.id, state.serviceId || first.services?.[0]?.serviceId);
+        $("#btnQuickBook") && ($("#btnQuickBook").onclick = ()=>{
+          const first = state.nextPool[0];
+          if(first) openBooking(first.listing.id, first.serviceId, first.dateISO, first.time);
+          else{
+            const any = currentFiltered()[0];
+            if(any){
+              const sid = state.serviceId || (any.services?.[0]?.serviceId || SERVICES[0]?.id || "");
+              openBooking(any.id, sid);
+            }
           }
         });
 
-        // reset filters
-        $("#btnReset")?.addEventListener("click", resetFiltersSmart);
-
-        // floating
-        $("#fab")?.addEventListener("click", ()=> $("#btnQuickBook")?.click());
+        $("#fab") && ($("#fab").onclick = ()=> $("#btnQuickBook")?.click());
 
         // modal close
-        $("#mClose")?.addEventListener("click", closeAll);
-        $("#mCancel")?.addEventListener("click", closeAll);
-        overlay?.addEventListener("click", (e)=>{ if(e.target===overlay) closeAll(); });
+        $("#mClose") && ($("#mClose").onclick = closeAll);
+        $("#mCancel") && ($("#mCancel").onclick = closeAll);
+        overlay && (overlay.onclick = (e)=>{ if(e.target===overlay) closeAll(); });
 
         // sheet close
-        $("#sheetClose")?.addEventListener("click", closeAll);
-        sheetOverlay?.addEventListener("click", (e)=>{ if(e.target===sheetOverlay) closeAll(); });
+        $("#sheetClose") && ($("#sheetClose").onclick = ()=>{ sheetOverlay?.classList.remove("on"); sheetOverlay?.setAttribute("aria-hidden","true"); unlockScroll(); });
+        sheetOverlay && (sheetOverlay.onclick = (e)=>{ if(e.target===sheetOverlay){ sheetOverlay.classList.remove("on"); sheetOverlay.setAttribute("aria-hidden","true"); unlockScroll(); } });
+
+        // drawer close
+        $("#drawerClose") && ($("#drawerClose").onclick = closeAll);
+        drawerOverlay && (drawerOverlay.onclick = (e)=>{ if(e.target===drawerOverlay) closeAll(); });
+
+        // ai buttons
+        $("#aiGo") && ($("#aiGo").onclick = aiFind);
+        $("#aiClear") && ($("#aiClear").onclick = ()=>{
+          const t = $("#aiText"); if(t) t.value="";
+          const p = $("#aiPicks"); if(p) p.innerHTML="";
+        });
+        $("#aiText") && ($("#aiText").onkeydown = (e)=>{ if(e.key==="Enter"){ e.preventDefault(); aiFind(); } });
 
         // submit
-        $("#mSubmit")?.addEventListener("click", sendBooking);
+        $("#mSubmit") && ($("#mSubmit").onclick = submitBooking);
 
-        // empty reset button
+        // empty reset button (delegated)
         document.addEventListener("click", (e)=>{
-          const b = e.target.closest("button[data-act='resetOnly']");
+          const b = e.target.closest("[data-act='resetOnly']");
           if(!b) return;
-
-          // IMPORTANT rule: when 0 results, keep search + onlyFav
-          // (already handled in resetFiltersSmart())
           resetFiltersSmart();
         });
 
-        // ESC
-        window.addEventListener("keydown",(e)=>{
+        // keyboard
+        window.addEventListener("keydown", (e)=>{
           if(e.key==="Escape") closeAll();
         });
       }
 
       /* =========================
-         Init
+         URL params: ?book=1&id=...&service=...
       ========================== */
+      function handleParams(){
+        const p = new URLSearchParams(location.search);
+        if(p.get("book")==="1" && p.get("id")){
+          const id = p.get("id");
+          const svc = p.get("service") || "";
+          // clean URL (no refresh confusion)
+          history.replaceState({}, "", location.pathname);
+          openBooking(id, svc || state.serviceId);
+        }
+      }
+
+      /* =========================
+         PWA Service worker
+      ========================== */
+      function registerSW(){
+        if("serviceWorker" in navigator){
+          navigator.serviceWorker.register("./worker.js").catch(()=>{});
+        }
+      }
+
       function init(){
-        applyIOSHeaderFix();          // ✅ makes header lower in iPhone PWA
+        // restore state UI bits
+        const s = $("#search");
+        if(s) s.value = state.search;
+
         applyTexts();
-        wireNetbar();
-        wireUI();
+        renderServicesUI();
+        initNetbar();
+
+        // preload cached loc (optional)
+        state.userLoc = getLocCached();
+
+        // first render
         renderAll();
+
+        // set buttons states
+        $("#btnFav")?.classList.toggle("heartOn", state.onlyFav);
+
+        // attach UI handlers
+        bindUI();
+
+        // params auto-book
+        handleParams();
+
+        // SW
+        registerSW();
       }
 
       init();
