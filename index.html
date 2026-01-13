@@ -28,6 +28,49 @@
 
   <style>
     :root{
+      /* ====== Theme: DAY (toggle via body[data-theme="day"]) ====== */
+body[data-theme="day"]{
+  --bg:#f7f3ff;
+  --bg2:#ffffff;
+
+  --card: rgba(10,10,20,.055);
+  --card2: rgba(10,10,20,.08);
+  --line: rgba(10,10,20,.10);
+
+  --text:#0d0d12;
+  --muted:rgba(13,13,18,.72);
+  --muted2:rgba(13,13,18,.55);
+
+  /* keep brand accents, but a bit cleaner on light */
+  --glow: 0 0 0 1px rgba(10,10,20,.06), 0 12px 42px rgba(255,79,216,.10);
+  --glow2: 0 0 0 1px rgba(10,10,20,.08), 0 18px 60px rgba(139,92,246,.10);
+}
+
+/* Make topbar readable on day */
+body[data-theme="day"] .topbar{
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+  border-bottom: 1px solid rgba(10,10,20,.08);
+}
+
+/* Buttons/cards look better on day */
+body[data-theme="day"] .iconBtn,
+body[data-theme="day"] .pillBtn,
+body[data-theme="day"] .search,
+body[data-theme="day"] .tab,
+body[data-theme="day"] .card,
+body[data-theme="day"] .modal,
+body[data-theme="day"] .sheetCard,
+body[data-theme="day"] .netbar,
+body[data-theme="day"] .toast{
+  border-color: rgba(10,10,20,.10);
+  background: rgba(255,255,255,.72);
+  box-shadow: 0 12px 30px rgba(0,0,0,.10);
+}
+
+body[data-theme="day"] .badge{
+  background: rgba(255,255,255,.75);
+  border-color: rgba(10,10,20,.10);
+}
       --bg:#07070b;
       --bg2:#0b0b11;
       --card: rgba(255,255,255,.06);
@@ -1478,11 +1521,17 @@
       buildNextAvailable(true);
     });
 
-    $("#btnTheme").addEventListener("click", ()=>{
-      toast("Theme", "Lux mode ✨", 1400);
-      lsSet("bb.theme", STATE.theme);
-    });
+function applyTheme(){
+  document.body.setAttribute("data-theme", STATE.theme === "day" ? "day" : "lux");
+  lsSet("bb.theme", STATE.theme);
+}
 
+$("#btnTheme").addEventListener("click", ()=>{
+  STATE.theme = (STATE.theme === "day") ? "lux" : "day";
+  applyTheme();
+  applyTheme();
+  toast("Theme", STATE.theme === "day" ? "Day ✨" : "Lux 🌙", 1400);
+});
     $("#btnAI").addEventListener("click", ()=>{
       toast(txt().toastAI, txt().toastAIText, 3200);
     });
