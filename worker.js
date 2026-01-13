@@ -1,121 +1,93 @@
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
+/* worker.js — Beauty Booking PWA Service Worker (stable) */
+const CACHE = "bb-cache-v4";
 
-    // ---------- CORS ----------
-    const corsHeaders = (origin) => ({
-      "Access-Control-Allow-Origin": origin || "*",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Max-Age": "86400",
-    });
+// Core shell
+const CORE = [
+  "./",
+  "./index.html",
+  "./profile.html",
+  "./data.js",
+  "./manifest.webmanifest",
+  "./favicon.svg",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-192-maskable.png",
+  "./icons/icon-512-maskable.png"
+];
 
-    if (request.method === "OPTIONS") {
-      return new Response("", { status: 204, headers: corsHeaders(request.headers.get("Origin")) });
-    }
+self.addEventListener("install", (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await cache.addAll(CORE.map(u => new Request(u, { cache: "reload" })));
+    self.skipWaiting();
+  })());
+});
 
-    // ---------- health ----------
-    if (url.pathname === "/health") {
-      return new Response("ok", {
-        status: 200,
-        headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(request.headers.get("Origin")) },
-      });
-    }
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => (k === CACHE ? null : caches.delete(k))));
+    self.clients.claim();
+  })());
+});
 
-    // ---------- book ----------
-    if (url.pathname === "/book" && request.method === "POST") {
-      try {
-        const origin = request.headers.get("Origin") || "*";
+// Network-first for HTML/JS, cache-first for images/fonts, stale-while-revalidate for others
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
 
-        if (!env.TG_BOT_TOKEN || !env.TG_CHAT_ID) {
-          return new Response("Missing TG secrets", {
-            status: 500,
-            headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(origin) },
-          });
-        }
+  // Only same-origin
+  if (url.origin !== location.origin) return;
 
-        const data = await request.json().catch(() => ({}));
+  const isHTML = req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
+  const isJS = url.pathname.endsWith(".js");
+  const isCSS = url.pathname.endsWith(".css");
+  const isIMG = /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(url.pathname);
+  const isFONT = /\.(woff2?|ttf|otf)$/i.test(url.pathname);
 
-        // Fields we expect from index.html
-        const name = (data.name || "").trim() || "—";
-        const phone = (data.phone || "").trim() || "—";
-        const email = (data.email || "").trim() || "—";
-        const notes = (data.notes || "").trim() || "—";
+  if (isHTML || isJS || isCSS) {
+    event.respondWith(networkFirst(req));
+    return;
+  }
 
-        const listingName = (data.listingName || "").trim() || "—";
-        const address = (data.address || "").trim() || "—";
+  if (isIMG || isFONT) {
+    event.respondWith(cacheFirst(req));
+    return;
+  }
 
-        const serviceName = (data.serviceName || data.serviceId || "").trim() || "—";
-        const priceFrom = (data.priceFrom != null) ? `$${Math.round(Number(data.priceFrom))}` : "—";
-        const durationMin = (data.durationMin != null) ? `${Number(data.durationMin)} min` : "—";
+  event.respondWith(staleWhileRevalidate(req));
+});
 
-        // ✅ FIX: time + date must show
-        const dateISO = (data.dateISO || "").trim();
-        const time = (data.time || "").trim();
-        const datetimeLocal =
-          (data.datetimeLocal || "").trim() ||
-          ((dateISO && time) ? `${dateISO} ${time}` : "—");
+async function networkFirst(req) {
+  const cache = await caches.open(CACHE);
+  try {
+    const fresh = await fetch(req);
+    if (fresh && fresh.ok) cache.put(req, fresh.clone());
+    return fresh;
+  } catch (e) {
+    const cached = await cache.match(req);
+    return cached || new Response("Offline", { status: 503, headers: { "Content-Type": "text/plain" } });
+  }
+}
 
-        const profileUrl = (data.profileUrl || "").trim();
-        const siteUrl = origin && origin !== "null" ? origin : "";
+async function cacheFirst(req) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(req);
+  if (cached) return cached;
+  const fresh = await fetch(req);
+  if (fresh && fresh.ok) cache.put(req, fresh.clone());
+  return fresh;
+}
 
-        const title = "✨ Нове бронювання (Beauty Booking)";
-        const lines = [
-          title,
-          "",
-          `👤 Імʼя: ${name}`,
-          `📞 Телефон: ${phone}`,
-          `✉️ Email: ${email}`,
-          "",
-          `💅 Послуга: ${serviceName} · ${priceFrom} · ${durationMin}`,
-          `⏰ Час: ${datetimeLocal}`,
-          "",
-          `🏛️ Салон/Майстер: ${listingName}`,
-          `📍 Адреса: ${address}`,
-          "",
-          profileUrl ? `🔗 Профіль: ${profileUrl}` : (siteUrl ? `🔗 Сайт: ${siteUrl}` : ""),
-          notes !== "—" ? `📝 Коментар: ${notes}` : "",
-        ].filter(Boolean);
+async function staleWhileRevalidate(req) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(req);
+  const fetchPromise = fetch(req).then((fresh) => {
+    if (fresh && fresh.ok) cache.put(req, fresh.clone());
+    return fresh;
+  }).catch(() => null);
 
-        const text = lines.join("\n");
+  return cached || (await fetchPromise) || new Response("Offline", { status: 503 });
+}
 
-        const tgUrl = `https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage`;
-        const tgPayload = {
-          chat_id: env.TG_CHAT_ID,
-          text,
-          disable_web_page_preview: false,
-        };
-
-        const tgRes = await fetch(tgUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(tgPayload),
-        });
-
-        const tgText = await tgRes.text().catch(() => "");
-        if (!tgRes.ok) {
-          return new Response(`Telegram error: ${tgRes.status}\n${tgText}`, {
-            status: 500,
-            headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(origin) },
-          });
-        }
-
-        return new Response("ok", {
-          status: 200,
-          headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(origin) },
-        });
-      } catch (e) {
-        return new Response(`Error: ${e?.message || e}`, {
-          status: 500,
-          headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(request.headers.get("Origin")) },
-        });
-      }
-    }
-
-    return new Response("Not found", {
-      status: 404,
-      headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders(request.headers.get("Origin")) },
-    });
-  },
-};
 
