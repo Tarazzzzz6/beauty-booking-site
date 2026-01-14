@@ -221,7 +221,7 @@
 
     /* ====== Layout ====== */
     .wrap{
-      padding: 14px calc(var(--contentPad) + var(--safe-right)) calc(120px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
+      padding: 14px calc(var(--contentPad) + var(--safe-right)) calc(140px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
       max-width: 1140px;
       margin: 0 auto;
     }
@@ -1037,6 +1037,95 @@
       border-color: rgba(92,246,199,.30);
     }
 
+    /* ====== Trust footer ====== */
+    .trustWrap{
+      margin-top: 16px;
+      border-radius: var(--r2);
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.18), transparent 55%),
+        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.16), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    html[data-theme="day"] .trustWrap{
+      border-color: rgba(10,10,20,.10);
+      background:
+        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.12), transparent 55%),
+        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+    }
+    .trustInner{padding: 16px}
+    .trustGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+      align-items:start;
+    }
+    @media (max-width: 840px){ .trustGrid{grid-template-columns:1fr} }
+    .trustTitle{
+      font-family: var(--font-title);
+      font-weight: 700;
+      font-size: 20px;
+      margin: 0 0 8px;
+      letter-spacing:.2px;
+    }
+    .trustText{color:var(--muted); font-size:13px; line-height:1.5}
+    .trustBullets{
+      margin: 10px 0 0;
+      padding: 0;
+      list-style:none;
+      display:grid;
+      gap: 8px;
+    }
+    .trustBullets li{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text);
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    html[data-theme="day"] .trustBullets li{
+      border-color: rgba(10,10,20,.12);
+      background: rgba(255,255,255,.72);
+    }
+    .trustRight{
+      border-radius: var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      padding: 12px;
+      box-shadow: var(--glow);
+    }
+    html[data-theme="day"] .trustRight{
+      border-color: rgba(10,10,20,.12);
+      background: rgba(255,255,255,.72);
+    }
+    .socialRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .socialBtn{
+      height:44px;
+      padding:0 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+      box-shadow: var(--shadow2);
+    }
+    html[data-theme="day"] .socialBtn{
+      border-color: rgba(10,10,20,.12);
+      background: rgba(255,255,255,.78);
+    }
+    .trustMini{
+      margin-top:10px;
+      color: var(--muted2);
+      font-size: 12px;
+      line-height:1.4;
+    }
+
     /* ====== Helpers ====== */
     .muted{color:var(--muted)}
     .sep{height:1px; background: rgba(255,255,255,.06); margin: 16px 0}
@@ -1153,6 +1242,41 @@
     <div class="sep"></div>
     <div class="muted" id="t_footer">
       Your place for self-care — fast booking, clean UI, premium feel.
+    </div>
+
+    <!-- Trust / socials -->
+    <div class="trustWrap" id="trustWrap">
+      <div class="trustInner">
+        <div class="trustGrid">
+          <div>
+            <h3 class="trustTitle" id="t_trustTitle">Why people trust Beauty Booking</h3>
+            <div class="trustText" id="t_trustText">
+              Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.
+            </div>
+
+            <ul class="trustBullets" id="trustBullets">
+              <li><span>🛡️</span><span id="t_trustB1">Verified salons & masters — curated quality.</span></li>
+              <li><span>🧼</span><span id="t_trustB2">Sterile tools & hygiene standards highlighted.</span></li>
+              <li><span>⏱️</span><span id="t_trustB3">Fast booking — in ~30 seconds.</span></li>
+              <li><span>📍</span><span id="t_trustB4">Clear address & profile link for every booking.</span></li>
+            </ul>
+          </div>
+
+          <div class="trustRight">
+            <div style="font-weight:900" id="t_socialTitle">Follow us</div>
+            <div class="trustMini" id="t_socialLead">Updates, new partners, and weekly trending picks.</div>
+            <div class="socialRow">
+              <a class="socialBtn" href="https://instagram.com" target="_blank" rel="noopener"><span>📷</span><span id="t_insta">Instagram</span></a>
+              <a class="socialBtn" href="https://facebook.com" target="_blank" rel="noopener"><span>📘</span><span id="t_fb">Facebook</span></a>
+              <button class="socialBtn" id="btnCopyLink" type="button"><span>🔗</span><span id="t_copyLink">Copy site link</span></button>
+            </div>
+
+            <div class="trustMini" id="t_legal">
+              By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -1302,6 +1426,7 @@
     const now = () => new Date();
     const pad = n => String(n).padStart(2,"0");
     const isoLocal = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
     const fmtPretty = (dateISO, time, lang) => {
       try{
         const [y,m,d] = (dateISO||"").split("-").map(x=>parseInt(x,10));
@@ -1357,6 +1482,7 @@
       serviceId: lsGet("bb.serviceId", ""),
       search: lsGet("bb.search",""),
       tab: lsGet("bb.tab","all"), // all | partners | rec
+      aiMode: lsGet("bb.aiMode","top"), // top | rec | near
       lastNextIndex: 0,
 
       booking: {
@@ -1431,7 +1557,7 @@
         tabAll: "Всі",
         tabPartners: "Топ",
         tabRec: "Рекомендовано",
-        partners: "Топ партнери",
+        partners: "Топ салони / партнери",
         partnersHint: "Платні партнери",
         recommended: "Рекомендовано",
         recHint: "Smart picks для тебе",
@@ -1465,9 +1591,6 @@
         aiRec: "Рекомендовано",
         aiNear: "Найближче",
         aiReset: "Скинути",
-        aiKTop: "Топ",
-        aiKRec: "Рекомендовано",
-        aiKNear: "Найближче",
 
         toastWhyTitle: "Чому цей?",
         toastWhyText: "3 причини: 1) збіг по послузі 2) хороший рейтинг/ціна 3) найближчий слот сьогодні.",
@@ -1480,7 +1603,18 @@
         offline: "Ти офлайн — деякі фічі можуть не працювати.",
         cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.",
         update: "Є нова версія. Натисни Update.",
-        reset: "Скинуто ✅"
+        reset: "Скинуто ✅",
+
+        trustTitle: "Чому довіряють Beauty Booking",
+        trustText: "Преміум-досвід бронювання: чистий UI, перевірені партнери, прозорі деталі — щоб ти записувався з впевненістю.",
+        trustB1: "Перевірені салони & майстри — підібрана якість.",
+        trustB2: "Гігієна та стерильність — виділяємо важливе.",
+        trustB3: "Швидкий запис — реально за ~30 сек.",
+        trustB4: "Адреса + профіль-лінк у кожному бронюванні.",
+        socialTitle: "Ми в соцмережах",
+        socialLead: "Оновлення, нові партнери, тренди тижня.",
+        copyLink: "Скопіювати лінк",
+        legal: "Бронюючи, ти погоджуєшся на коректний контакт без спаму. Підтвердження приходить у Telegram."
       },
       en: {
         brand: "Beauty Booking",
@@ -1529,9 +1663,6 @@
         aiRec: "Recommended",
         aiNear: "Nearest",
         aiReset: "Reset",
-        aiKTop: "Top",
-        aiKRec: "Recommended",
-        aiKNear: "Nearest",
 
         toastWhyTitle: "Why this one?",
         toastWhyText: "3 reasons: 1) service match 2) strong rating/price 3) nearest slot today.",
@@ -1544,7 +1675,18 @@
         offline: "You’re offline — some features may not work.",
         cached: "Loaded from cache. If something didn’t update — press Refresh.",
         update: "New version available. Tap Update.",
-        reset: "Reset ✅"
+        reset: "Reset ✅",
+
+        trustTitle: "Why people trust Beauty Booking",
+        trustText: "Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.",
+        trustB1: "Verified salons & masters — curated quality.",
+        trustB2: "Hygiene & sterile tools — what matters is visible.",
+        trustB3: "Fast booking — really ~30 seconds.",
+        trustB4: "Clear address + profile link in each booking.",
+        socialTitle: "Follow us",
+        socialLead: "Updates, new partners, and weekly trending picks.",
+        copyLink: "Copy site link",
+        legal: "By booking you agree to fair no-spam contact. Confirmation arrives via Telegram."
       },
       fr: {
         brand: "Beauty Booking",
@@ -1593,9 +1735,6 @@
         aiRec: "Recommandé",
         aiNear: "Proche",
         aiReset: "Réinitialiser",
-        aiKTop: "Top",
-        aiKRec: "Recommandé",
-        aiKNear: "Proche",
 
         toastWhyTitle: "Pourquoi celui-ci ?",
         toastWhyText: "3 raisons : 1) service correspondant 2) bon rapport note/prix 3) créneau proche aujourd’hui.",
@@ -1608,7 +1747,18 @@
         offline: "Hors ligne — certaines fonctions peuvent ne pas marcher.",
         cached: "Ouvert depuis le cache. Si ça n’a pas bougé — Refresh.",
         update: "Nouvelle version disponible. Appuie sur Update.",
-        reset: "Réinitialisé ✅"
+        reset: "Réinitialisé ✅",
+
+        trustTitle: "Pourquoi on fait confiance à Beauty Booking",
+        trustText: "Expérience premium: UI clean, partenaires vérifiés, détails clairs — pour réserver en confiance.",
+        trustB1: "Salons & artistes vérifiés — qualité sélectionnée.",
+        trustB2: "Hygiène & stérilisation — l’essentiel est visible.",
+        trustB3: "Réservation rapide — ~30 secondes.",
+        trustB4: "Adresse + lien profil dans chaque réservation.",
+        socialTitle: "Nous suivre",
+        socialLead: "Nouveaux partenaires, actus, tendances de la semaine.",
+        copyLink: "Copier le lien",
+        legal: "En réservant, tu acceptes un contact correct sans spam. Confirmation via Telegram."
       },
       ru: {
         brand: "Beauty Booking",
@@ -1623,7 +1773,7 @@
         tabAll: "Все",
         tabPartners: "Топ",
         tabRec: "Рекоменд.",
-        partners: "Топ партнёры",
+        partners: "Топ салоны / партнёры",
         partnersHint: "Платные партнёры",
         recommended: "Рекомендовано",
         recHint: "Подборка для тебя",
@@ -1657,9 +1807,6 @@
         aiRec: "Рекоменд.",
         aiNear: "Ближайшее",
         aiReset: "Сбросить",
-        aiKTop: "Топ",
-        aiKRec: "Рекомендовано",
-        aiKNear: "Ближайшее",
 
         toastWhyTitle: "Почему этот?",
         toastWhyText: "3 причины: 1) совпадает услуга 2) хороший рейтинг/цена 3) ближайший слот сегодня.",
@@ -1672,7 +1819,18 @@
         offline: "Ты офлайн — часть функций может не работать.",
         cached: "Открыто из кеша. Если не обновилось — нажми Refresh.",
         update: "Доступна новая версия. Нажми Update.",
-        reset: "Сброшено ✅"
+        reset: "Сброшено ✅",
+
+        trustTitle: "Почему доверяют Beauty Booking",
+        trustText: "Премиум-опыт: чистый UI, проверенные партнёры, понятные детали — чтобы записываться уверенно.",
+        trustB1: "Проверенные салоны и мастера — отбор качества.",
+        trustB2: "Гигиена и стерильность — важное видно сразу.",
+        trustB3: "Быстрая запись — реально ~30 секунд.",
+        trustB4: "Адрес + ссылка профиля в каждом бронировании.",
+        socialTitle: "Мы в соцсетях",
+        socialLead: "Обновления, новые партнёры и тренды недели.",
+        copyLink: "Скопировать ссылку",
+        legal: "Бронируя, ты соглашаешься на корректный контакт без спама. Подтверждение через Telegram."
       }
     };
 
@@ -1723,6 +1881,18 @@
       safeSetText($("#aiRec"), "✨ " + txt().aiRec);
       safeSetText($("#aiNear"), "📍 " + txt().aiNear);
       safeSetText($("#aiClear"), "↺ " + txt().aiReset);
+
+      // trust/social
+      safeSetText($("#t_trustTitle"), txt().trustTitle);
+      safeSetText($("#t_trustText"), txt().trustText);
+      safeSetText($("#t_trustB1"), txt().trustB1);
+      safeSetText($("#t_trustB2"), txt().trustB2);
+      safeSetText($("#t_trustB3"), txt().trustB3);
+      safeSetText($("#t_trustB4"), txt().trustB4);
+      safeSetText($("#t_socialTitle"), txt().socialTitle);
+      safeSetText($("#t_socialLead"), txt().socialLead);
+      safeSetText($("#t_copyLink"), txt().copyLink);
+      safeSetText($("#t_legal"), txt().legal);
 
       // placeholders
       $("#search").placeholder =
@@ -1783,7 +1953,6 @@
     async function initSWUpdate(){
       try{
         if(!("serviceWorker" in navigator)) return;
-
         swReg = await navigator.serviceWorker.register("./worker.js");
 
         const maybeUpdate = () => {
@@ -1836,7 +2005,7 @@
     }
 
     /* =========================
-       Random short salon info (requested)
+       Random short salon info
     ========================== */
     const INFO = {
       uk: [
@@ -1878,7 +2047,7 @@
     };
 
     /* =========================
-       Service normalization (fix missing services)
+       Service normalization + i18n + icons (FIX CHIPS)
     ========================== */
     function normalizeServiceId(v){
       if(v == null) return "";
@@ -1886,13 +2055,46 @@
       return String(v.id ?? v.serviceId ?? v.key ?? "");
     }
 
+    const SERVICE_I18N = {
+      manicure:   { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" },
+      pedicure:   { uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр", icon:"🦶" },
+      brows:      { uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови", icon:"✨" },
+      haircut_m:  { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
+      haircut_w:  { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
+      hair_m:     { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
+      hair_w:     { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
+      nails:      { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" }
+    };
+
+    function serviceIcon(serviceId){
+      const k = String(serviceId||"").trim();
+      return (SERVICE_I18N[k]?.icon) || "💅";
+    }
+
+    function serviceLabelFromId(serviceId){
+      const k = String(serviceId||"").trim();
+      const m = SERVICE_I18N[k];
+      if(!m) return k || "";
+      return m[STATE.lang] || m.uk || m.en || k;
+    }
+
     function serviceLabel(s){
       if(!s) return (STATE.lang==="en") ? "Service" : (STATE.lang==="fr") ? "Service" : (STATE.lang==="ru") ? "Услуга" : "Послуга";
-      const name = s.name ?? s.title ?? s.label ?? s.id;
-      if(typeof name === "object"){
-        return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || normalizeServiceId(s);
+
+      const sid = normalizeServiceId(s);
+      const name = s.name ?? s.title ?? s.label ?? s.id ?? sid;
+
+      if(typeof name === "object" && name){
+        return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || serviceLabelFromId(sid) || sid;
       }
-      return String(name || normalizeServiceId(s) || "");
+
+      const str = String(name || "").trim();
+      if(!str) return serviceLabelFromId(sid) || sid;
+
+      if(SERVICE_I18N[str]) return serviceLabelFromId(str);
+      if(SERVICE_I18N[sid]) return serviceLabelFromId(sid);
+
+      return str;
     }
 
     function listingServices(listing){
@@ -1908,7 +2110,8 @@
     function resolveServiceName(serviceId){
       const sid = String(serviceId||"");
       const s = SERVICES.find(x => String(x?.id ?? x?.key ?? "") === sid);
-      return serviceLabel(s || { id:sid, name:{uk:sid, en:sid, fr:sid, ru:sid} });
+      if(s) return serviceLabel(s);
+      return serviceLabelFromId(sid) || sid;
     }
 
     /* =========================
@@ -2099,43 +2302,89 @@
     function toggleFav(id){
       if(STATE.favorites.has(id)) STATE.favorites.delete(id);
       else STATE.favorites.add(id);
-      lsSet("bb.favorites", Array.from(STATE.favorites));
+     lsSet("bb.favorites", Array.from(STATE.favorites));
     }
+
+    /* =========================
+       UI: Tabs / FavOnly / Lang / Theme
+    ========================== */
+    function setTab(tab){
+      STATE.tab = tab;
+      lsSet("bb.tab", tab);
+      $("#tabAll").classList.toggle("active", tab==="all");
+      $("#tabPartners").classList.toggle("active", tab==="partners");
+      $("#tabRecommended").classList.toggle("active", tab==="rec");
+      render();
+    }
+
+    function toggleFavOnly(){
+      STATE.favOnly = !STATE.favOnly;
+      lsSet("bb.favOnly", STATE.favOnly);
+      $("#btnFavOnly").style.opacity = STATE.favOnly ? "1" : ".82";
+      $("#btnFavOnly").style.borderColor = STATE.favOnly ? "rgba(255,79,216,.30)" : "rgba(255,255,255,.10)";
+      render();
+      buildNextAvailable(true);
+    }
+
+    function cycleLang(){
+      const i = LANGS.indexOf(STATE.lang);
+      STATE.lang = LANGS[(i+1) % LANGS.length];
+      lsSet("bb.lang", STATE.lang);
+      applyTexts();
+      renderServiceChips();
+      fillBookingServiceSelect();
+      fillBookingListingSelect();
+      buildTimeGrid();
+      buildNextAvailable(true);
+      toast("🌐", `Language: ${STATE.lang.toUpperCase()}`, 1200);
+    }
+
+    $("#tabAll").addEventListener("click", ()=>setTab("all"));
+    $("#tabPartners").addEventListener("click", ()=>setTab("partners"));
+    $("#tabRecommended").addEventListener("click", ()=>setTab("rec"));
+
+    $("#btnFavOnly").addEventListener("click", toggleFavOnly);
+    $("#btnLang").addEventListener("click", cycleLang);
+    $("#btnTheme").addEventListener("click", () => {
+      STATE.theme = (STATE.theme === "day") ? "night" : "day";
+      applyTheme();
+    });
 
     /* =========================
        Service chips
     ========================== */
-    function getServiceBase(){
-      if(SERVICES.length){
-        return SERVICES.map(s => ({ id: normalizeServiceId(s), raw:s })).filter(x=>x.id);
-      }
-      return [
-        { id:"manicure", raw:{ id:"manicure", name:{uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр"} } },
-        { id:"pedicure", raw:{ id:"pedicure", name:{uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр"} } },
-        { id:"brows", raw:{ id:"brows", name:{uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови"} } },
-        { id:"haircut_w", raw:{ id:"haircut_w", name:{uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка"} } },
-        { id:"haircut_m", raw:{ id:"haircut_m", name:{uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка"} } }
-      ];
+    function getAllServiceIds(){
+      // Prefer SERVICES array from data.js, fallback to known ids
+      const idsFromServices = SERVICES.map(s => normalizeServiceId(s)).filter(Boolean);
+      const idsFromListings = LISTINGS.flatMap(l => listingServices(l)).filter(Boolean);
+      const all = Array.from(new Set([...idsFromServices, ...idsFromListings]));
+      if(all.length) return all;
+      return ["manicure","pedicure","brows","haircut_w","haircut_m"];
     }
 
     function renderServiceChips(){
-      const el = $("#serviceChips");
-      if(!el) return;
+      const host = $("#serviceChips");
+      if(!host) return;
+      const ids = getAllServiceIds();
 
-      const base = getServiceBase();
+      const html = ids.map(id => {
+        const active = String(id) === String(STATE.serviceId);
+        const label = resolveServiceName(id) || serviceLabelFromId(id) || String(id);
+        const icon = serviceIcon(id);
+        return `<button class="chip ${active ? "active" : ""}" data-sid="${escapeHtml(id)}" type="button">${icon} ${escapeHtml(label)}</button>`;
+      }).join("");
 
-      safeSetHTML(el, base.map(({id,raw}) => {
-        const label = serviceLabel(raw);
-        const active = String(STATE.serviceId||"") === String(id);
-        return `<button class="chip ${active?"active":""}" data-sid="${escapeHtml(id)}" type="button">💅 ${escapeHtml(label)}</button>`;
-      }).join(""));
+      safeSetHTML(host, html);
 
-      $$(".chip", el).forEach(btn => {
+      $$(".chip", host).forEach(btn => {
         btn.addEventListener("click", () => {
-          const sid = btn.getAttribute("data-sid");
+          const sid = btn.getAttribute("data-sid") || "";
           STATE.serviceId = (STATE.serviceId === sid) ? "" : sid;
           lsSet("bb.serviceId", STATE.serviceId);
+
           renderServiceChips();
+          fillBookingServiceSelect();
+          fillBookingListingSelect();
           render();
           buildNextAvailable(true);
         });
@@ -2143,143 +2392,15 @@
     }
 
     /* =========================
-       Tabs, search, toggles
+       Search
     ========================== */
-    function setTab(v){
-      STATE.tab = v;
-      lsSet("bb.tab", v);
-      $("#tabAll").classList.toggle("active", v==="all");
-      $("#tabPartners").classList.toggle("active", v==="partners");
-      $("#tabRecommended").classList.toggle("active", v==="rec");
-      render();
-    }
-
-    $("#tabAll").addEventListener("click", ()=>setTab("all"));
-    $("#tabPartners").addEventListener("click", ()=>setTab("partners"));
-    $("#tabRecommended").addEventListener("click", ()=>setTab("rec"));
-
     $("#search").value = STATE.search || "";
-    $("#search").addEventListener("input", (e)=>{
+    $("#search").addEventListener("input", (e) => {
       STATE.search = e.target.value || "";
       lsSet("bb.search", STATE.search);
       render();
       buildNextAvailable(true);
     });
-
-    $("#btnFavOnly").addEventListener("click", ()=>{
-      STATE.favOnly = !STATE.favOnly;
-      lsSet("bb.favOnly", STATE.favOnly);
-      $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
-      render();
-      buildNextAvailable(true);
-    });
-    $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
-
-    $("#btnLang").addEventListener("click", ()=>{
-      const i = LANGS.indexOf(STATE.lang);
-      STATE.lang = LANGS[(i >= 0 ? i+1 : 0) % LANGS.length];
-      lsSet("bb.lang", STATE.lang);
-
-      applyTexts();
-      renderServiceChips();
-      renderAIServices();
-      render();
-      buildNextAvailable(true);
-
-      const badge =
-        (STATE.lang==="uk") ? "Українська" :
-        (STATE.lang==="en") ? "English" :
-        (STATE.lang==="fr") ? "Français (QC)" :
-        "Русский";
-      toast("🌐", badge, 1400);
-    });
-
-    $("#btnTheme").addEventListener("click", ()=>{
-      STATE.theme = (STATE.theme === "day") ? "night" : "day";
-      applyTheme();
-      toast("Theme", STATE.theme === "day" ? "Lux Day ☀️" : "Lux Night 🌙", 1400);
-    });
-
-    $("#ctaQuick").addEventListener("click", ()=>openBooking({}));
-    $("#fab").addEventListener("click", ()=>openBooking({}));
-
-    /* =========================
-       Next available hero rotation
-    ========================== */
-    let nextTimer = null;
-
-    function candidateSlots(){
-      const arr = filtered();
-      const today = now();
-      const dateISO = isoLocal(today);
-
-      const slots = [];
-      arr.forEach(listing => {
-        const offered = listingServices(listing);
-        const desired = STATE.serviceId ? String(STATE.serviceId) : "";
-
-        if(desired && offered.length && !offered.includes(desired)) return;
-
-        const times = Array.isArray(listing.todaySlots) && listing.todaySlots.length
-          ? listing.todaySlots.slice(0,6)
-          : ["10:30","11:00","12:00","13:30","15:00","17:00","18:30"];
-
-        const serviceId = desired || (offered[0] || (getServiceBase()[0]?.id || "manicure"));
-        const serviceName = resolveServiceName(serviceId);
-
-        times.slice(0,4).forEach(t => {
-          const rating = Number(listing.rating||0);
-          const price = fromPrice(listing);
-          const partnerBoost = isPartner(listing) ? 1.5 : 0;
-          const hour = parseInt(String(t).split(":")[0],10) || 12;
-          const earlyBoost = (20 - hour) / 10;
-          const score = rating + partnerBoost + earlyBoost - (price/200);
-          slots.push({ id: uid(), listing, serviceId, serviceName, dateISO, time: t, score });
-        });
-      });
-
-      slots.sort((a,b)=>b.score-a.score);
-      return slots.slice(0, 8);
-    }
-
-    function buildNextAvailable(reset=false){
-      const list = candidateSlots();
-      if(!list.length){
-        safeSetText($("#nextName"), "—");
-        safeSetText($("#nextMeta"), "—");
-        return;
-      }
-      if(reset) STATE.lastNextIndex = 0;
-      const i = clamp(STATE.lastNextIndex, 0, list.length-1);
-      const item = list[i];
-
-      safeSetText($("#nextName"), item.listing.name || item.listing.title || "—");
-      const price = fromPrice(item.listing);
-      const priceText = price ? `$${Math.round(price)}+` : "$—";
-      const pretty = fmtPretty(item.dateISO, item.time, STATE.lang);
-      safeSetText($("#nextMeta"), `${item.serviceName} • ${pretty} • ${priceText}`);
-
-      const dots = ["○","○","○"];
-      dots[i%3] = "●";
-      safeSetText($("#nextDots"), dots.join(" "));
-
-      $("#nextBook").onclick = () => openBooking({
-        listingId: item.listing.id,
-        serviceId: item.serviceId,
-        dateISO: item.dateISO,
-        time: item.time
-      });
-
-      $("#nextWhy").onclick = () => toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
-
-      clearInterval(nextTimer);
-      nextTimer = setInterval(() => {
-        const list2 = candidateSlots();
-        if(!list2.length) return;
-        STATE.lastNextIndex = (STATE.lastNextIndex + 1) % Math.min(list2.length, 3);
-        buildNextAvailable(false);
-      }, 10000);
-    }
 
     /* =========================
        Booking modal
@@ -2291,486 +2412,701 @@
     function openOverlay(){
       overlay.classList.add("show");
       overlay.setAttribute("aria-hidden","false");
-      document.body.style.overflow = "hidden";
+      STATE.booking.open = true;
     }
     function closeOverlay(){
       overlay.classList.remove("show");
       overlay.setAttribute("aria-hidden","true");
-      document.body.style.overflow = "";
-      closeSheet();
       STATE.booking.open = false;
+      closeSheet();
+      closeAISheet();
+      lsSet("bb.booking", STATE.booking);
     }
+
     $("#m_close").addEventListener("click", closeOverlay);
     overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeOverlay(); });
 
-    function openSheet(){ sheet.classList.add("show"); }
-    function closeSheet(){ sheet.classList.remove("show"); }
+    function openSheet(){
+      sheet.classList.add("show");
+      buildTimeGrid();
+    }
+    function closeSheet(){
+      sheet.classList.remove("show");
+    }
+    $("#m_timeBtn").addEventListener("click", openSheet);
     $("#sheetClose").addEventListener("click", closeSheet);
-    sheet.addEventListener("click", (e)=>{ if(e.target === sheet) closeSheet(); });
+    sheet.addEventListener("click",(e)=>{ if(e.target===sheet) closeSheet(); });
 
-    function availableTimesFor(listing, dateISO, serviceId){
-      try{
-        const util = window.bb?.util;
-        if(util && typeof util.getAvailableTimes === "function"){
-          return util.getAvailableTimes(listing, dateISO, serviceId) || [];
-        }
-      }catch(e){}
-      const base = ["10:00","10:30","11:00","11:30","12:00","13:00","14:00","15:00","16:00","17:00","18:00","18:30"];
-      const seed = (listing?.id || "x").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-      return base.filter((t, idx)=> (idx + seed) % 3 !== 0);
+    const bookingKey = () => `${STATE.booking.listingId}__${STATE.booking.serviceId}__${STATE.booking.dateISO}__${STATE.booking.time}`;
+
+    function setHold(){
+      STATE.hold.until = Date.now() + 2*60*1000;
+      STATE.hold.key = bookingKey();
+      lsSet("bb.hold", STATE.hold);
+      updateHoldUI();
     }
 
-    function renderTimeGrid(times){
-      const selected = STATE.booking.time;
-      safeSetHTML(timeGrid, times.map(t => {
-        const active = (t === selected);
-        return `<button class="timeItem ${active?'active':''}" data-time="${escapeHtml(t)}" type="button">${escapeHtml(t)}</button>`;
-      }).join(""));
+    function clearHold(){
+      STATE.hold.until = 0;
+      STATE.hold.key = "";
+      lsSet("bb.hold", STATE.hold);
+      updateHoldUI();
+    }
+
+    function updateHoldUI(){
+      const el = $("#holdText");
+      if(!el) return;
+      const same = (STATE.hold.key && STATE.hold.key === bookingKey());
+      const left = Math.max(0, (STATE.hold.until||0) - Date.now());
+      if(same && left > 0){
+        const s = Math.ceil(left/1000);
+        const mm = Math.floor(s/60);
+        const ss = s % 60;
+        safeSetText(el, `${txt().hold}: ${mm}:${pad(ss)}`);
+      }else{
+        safeSetText(el, "");
+        if(same) clearHold();
+      }
+    }
+    setInterval(updateHoldUI, 350);
+
+    // restore hold
+    const holdSaved = lsGet("bb.hold", null);
+    if(holdSaved && typeof holdSaved === "object"){
+      STATE.hold.until = Number(holdSaved.until||0);
+      STATE.hold.key = String(holdSaved.key||"");
+    }
+
+    /* ---------- Availability: best-effort adapters ---------- */
+    function getUtilTimes(listingId, serviceId, dateISO){
+      const u = window.bb?.util;
+      if(!u) return null;
+
+      try{
+        // common shapes
+        if(typeof u.getAvailableTimes === "function") return u.getAvailableTimes(listingId, serviceId, dateISO);
+        if(typeof u.getTimes === "function") return u.getTimes(listingId, serviceId, dateISO);
+        if(typeof u.getSlots === "function") return u.getSlots(listingId, serviceId, dateISO);
+        if(typeof u.availability === "function") return u.availability(listingId, serviceId, dateISO);
+      }catch(e){}
+      return null;
+    }
+
+    function fallbackTimes(dateISO){
+      // simple, stable default
+      return ["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
+    }
+
+    function getTimesFor(listing, serviceId, dateISO){
+      const id = listing?.id;
+      if(!id || !dateISO) return [];
+
+      // 1) util hook
+      const t1 = getUtilTimes(String(id), String(serviceId||""), String(dateISO));
+      if(Array.isArray(t1) && t1.length) return t1.map(String).filter(Boolean);
+
+      // 2) listing-provided
+      const raw = listing?.availability?.[dateISO] || listing?.slots?.[dateISO] || null;
+      if(Array.isArray(raw) && raw.length) return raw.map(String).filter(Boolean);
+
+      // 3) fallback
+      return fallbackTimes(dateISO);
+    }
+
+    function earliestTime(times){
+      const ok = times.map(String).filter(t=>/^\d{2}:\d{2}$/.test(t));
+      ok.sort((a,b)=>a.localeCompare(b));
+      return ok[0] || "";
+    }
+
+    function todayISO(){
+      return isoLocal(new Date());
+    }
+
+    /* ---------- Booking selects ---------- */
+    function fillBookingServiceSelect(){
+      const sel = $("#m_service");
+      if(!sel) return;
+
+      const ids = getAllServiceIds();
+      const options = ids.map(id => {
+        const label = resolveServiceName(id) || serviceLabelFromId(id) || String(id);
+        return `<option value="${escapeHtml(id)}">${escapeHtml(serviceIcon(id) + " " + label)}</option>`;
+      }).join("");
+
+      safeSetHTML(sel, options);
+
+      // pick current
+      const prefer = STATE.booking.serviceId || STATE.serviceId || (ids[0]||"");
+      sel.value = String(prefer || ids[0] || "");
+
+      STATE.booking.serviceId = sel.value;
+      lsSet("bb.booking", STATE.booking);
+    }
+
+    function fillBookingListingSelect(){
+      const sel = $("#m_listingSel");
+      if(!sel) return;
+
+      const svc = String(STATE.booking.serviceId || STATE.serviceId || "");
+      const eligible = LISTINGS
+        .filter(l => !svc || listingServices(l).includes(svc))
+        .sort(byScore);
+
+      const options = eligible.map(l => {
+        const name = l.name || l.title || l.id;
+        return `<option value="${escapeHtml(l.id)}">${escapeHtml(name)}</option>`;
+      }).join("");
+
+      safeSetHTML(sel, options);
+
+      // choose
+      const current = STATE.booking.listingId;
+      const exists = eligible.some(l => String(l.id) === String(current));
+      sel.value = exists ? String(current) : String(eligible[0]?.id || "");
+
+      STATE.booking.listingId = sel.value;
+      lsSet("bb.booking", STATE.booking);
+
+      updateBookingListingInfo();
+      updateAddrLine();
+      buildTimeGrid();
+    }
+
+    function updateBookingListingInfo(){
+      const id = $("#m_listingSel")?.value || "";
+      const listing = LISTINGS.find(x => String(x.id) === String(id));
+      safeSetText($("#m_listingInfo"), listing ? pickInfo() : "—");
+    }
+
+    function updateAddrLine(){
+      const id = $("#m_listingSel")?.value || "";
+      const listing = LISTINGS.find(x => String(x.id) === String(id));
+      const addr = listing?.address || "—";
+      safeSetText($("#m_addrLine"), addr ? `📍 ${addr}` : "—");
+    }
+
+    $("#m_listingSel").addEventListener("change", () => {
+      STATE.booking.listingId = $("#m_listingSel").value || "";
+      lsSet("bb.booking", STATE.booking);
+      updateBookingListingInfo();
+      updateAddrLine();
+      buildTimeGrid();
+    });
+
+    $("#m_service").addEventListener("change", () => {
+      STATE.booking.serviceId = $("#m_service").value || "";
+      lsSet("bb.booking", STATE.booking);
+      // refresh listings to match new service
+      fillBookingListingSelect();
+      buildNextAvailable(true);
+    });
+
+    $("#m_date").addEventListener("change", () => {
+      STATE.booking.dateISO = $("#m_date").value || "";
+      STATE.booking.time = "";
+      safeSetText($("#m_timeText"), "—");
+      lsSet("bb.booking", STATE.booking);
+      buildTimeGrid();
+      clearHold();
+    });
+
+    function setBookingTime(t){
+      STATE.booking.time = t || "";
+      safeSetText($("#m_timeText"), t || "—");
+      lsSet("bb.booking", STATE.booking);
+      if(t) setHold();
+      buildTimeGrid();
+    }
+
+    function openBooking({ listingId="", serviceId="", dateISO="", time="" } = {}){
+      fillBookingServiceSelect();
+
+      // apply incoming
+      if(serviceId) STATE.booking.serviceId = String(serviceId);
+      if(STATE.booking.serviceId) $("#m_service").value = String(STATE.booking.serviceId);
+
+      fillBookingListingSelect();
+      if(listingId){
+        STATE.booking.listingId = String(listingId);
+        $("#m_listingSel").value = String(listingId);
+      }
+      updateBookingListingInfo();
+      updateAddrLine();
+
+      // date
+      const d = dateISO || STATE.booking.dateISO || todayISO();
+      $("#m_date").value = d;
+      STATE.booking.dateISO = d;
+
+      // time
+      setBookingTime(time || "");
+
+      // inputs keep
+      $("#m_name").value = lsGet("bb.form.name","") || "";
+      $("#m_phone").value = lsGet("bb.form.phone","") || "";
+      $("#m_email").value = lsGet("bb.form.email","") || "";
+      $("#m_notes").value = lsGet("bb.form.notes","") || "";
+
+      openOverlay();
+      buildTimeGrid();
+      updateHoldUI();
+    }
+
+    $("#ctaQuick").addEventListener("click", ()=>openBooking({}));
+    $("#fab").addEventListener("click", ()=>openBooking({}));
+
+    $("#m_openProfileBtn").addEventListener("click", () => {
+      const id = $("#m_listingSel").value || "";
+      if(!id) return;
+      window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
+    });
+
+    // quick picks
+    $("#pickFast").addEventListener("click", () => {
+      // choose earliest time for today for best-ranked listing
+      const listing = LISTINGS.find(x => String(x.id) === String($("#m_listingSel").value));
+      if(!listing) return;
+      const d = $("#m_date").value || todayISO();
+      const t = earliestTime(getTimesFor(listing, $("#m_service").value, d));
+      if(t) setBookingTime(t);
+      else toast("⏱️", "—", 1200);
+    });
+
+    $("#pickCheap").addEventListener("click", () => {
+      // choose cheapest eligible listing for current service
+      const svc = $("#m_service").value || "";
+      const eligible = LISTINGS.filter(l => !svc || listingServices(l).includes(svc));
+      eligible.sort((a,b)=>fromPrice(a)-fromPrice(b));
+      const pick = eligible[0];
+      if(!pick) return;
+      $("#m_listingSel").value = String(pick.id);
+      STATE.booking.listingId = String(pick.id);
+      updateBookingListingInfo();
+      updateAddrLine();
+      buildTimeGrid();
+      toast("💸", pick.name || "—", 1300);
+    });
+
+    $("#pickNear").addEventListener("click", () => {
+      // choose by distance if available else by score
+      const svc = $("#m_service").value || "";
+      const eligible = LISTINGS.filter(l => !svc || listingServices(l).includes(svc));
+      eligible.sort((a,b)=>{
+        const da = Number(a.distanceKm ?? a.distance ?? 9999);
+        const db = Number(b.distanceKm ?? b.distance ?? 9999);
+        if(isFinite(da) && isFinite(db) && (da!==9999 || db!==9999)) return da-db;
+        return byScore(a,b);
+      });
+      const pick = eligible[0];
+      if(!pick) return;
+      $("#m_listingSel").value = String(pick.id);
+      STATE.booking.listingId = String(pick.id);
+      updateBookingListingInfo();
+      updateAddrLine();
+      buildTimeGrid();
+      toast("📍", pick.name || "—", 1300);
+    });
+
+    /* ---------- Time grid build ---------- */
+    function buildTimeGrid(){
+      const listingId = $("#m_listingSel")?.value || "";
+      const serviceId = $("#m_service")?.value || "";
+      const dateISO = $("#m_date")?.value || "";
+
+      if(!timeGrid) return;
+
+      if(!listingId || !serviceId || !dateISO){
+        safeSetHTML(timeGrid, `<div class="muted" style="padding:8px">${escapeHtml(txt().missing)}</div>`);
+        return;
+      }
+
+      const listing = LISTINGS.find(x => String(x.id) === String(listingId));
+      const times = listing ? getTimesFor(listing, serviceId, dateISO) : [];
+
+      const cur = String(STATE.booking.time || "");
+      const html = (times.length ? times : []).map(t => {
+        const active = (t === cur);
+        return `<button class="timeItem ${active ? "active" : ""}" data-time="${escapeHtml(t)}" type="button">${escapeHtml(t)}</button>`;
+      }).join("");
+
+      safeSetHTML(timeGrid, html || `<div class="muted" style="padding:8px">—</div>`);
 
       $$(".timeItem", timeGrid).forEach(btn => {
-        btn.addEventListener("click", ()=>{
-          const t = btn.getAttribute("data-time");
-          STATE.booking.time = t;
-          safeSetText($("#m_timeText"), t);
-          renderTimeGrid(times);
+        btn.addEventListener("click", () => {
+          const t = btn.getAttribute("data-time") || "";
+          setBookingTime(t);
           closeSheet();
-          refreshHold();
         });
       });
     }
 
-    function refreshHold(){
-      const ok = STATE.booking.listingId && STATE.booking.dateISO && STATE.booking.time;
-      const nowMs = Date.now();
-      if(ok){
-        if(STATE.hold.until < nowMs){
-          STATE.hold.until = nowMs + 2*60*1000;
-          STATE.hold.key = `${STATE.booking.listingId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
-          lsSet("bb.hold", STATE.hold);
-        }
-      }
-      updateHoldText();
-    }
-
-    function updateHoldText(){
-      const el = $("#holdText");
-      const nowMs = Date.now();
-      const valid = STATE.hold.until > nowMs && STATE.hold.key === `${STATE.booking.listingId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
-      if(!valid){ safeSetText(el, ""); return; }
-      const left = Math.ceil((STATE.hold.until - nowMs)/1000);
-      safeSetText(el, `${txt().hold}: ${left}s`);
-    }
-    setInterval(updateHoldText, 1000);
-
-    function bookingListings(){
-      const arr = filtered();
-      return arr.length ? arr : LISTINGS.slice();
-    }
-
-    function renderListingSelect(selectedId){
-      const arr = bookingListings();
-      const sel = String(selectedId || arr[0]?.id || "");
-      safeSetHTML($("#m_listingSel"), arr.map(l => {
-        const name = l.name || l.title || l.id || "—";
-        return `<option value="${escapeHtml(l.id)}" ${String(l.id)===sel ? "selected":""}>${escapeHtml(name)}</option>`;
-      }).join(""));
-      return sel;
-    }
-
-    function renderServiceSelectForListing(listing, selectedServiceId){
-      const offered = listingServices(listing);
-      const base = getServiceBase();
-
-      let serviceIds;
-      if(offered.length){
-        const baseIds = new Set(base.map(x=>x.id));
-        serviceIds = offered.filter(id=>id).slice();
-        serviceIds.forEach(id => { if(!baseIds.has(id)) base.push({ id, raw:{ id, name:{uk:id,en:id,fr:id,ru:id} } }); });
-      }else{
-        serviceIds = base.map(x=>x.id);
-      }
-
-      let want = String(selectedServiceId || STATE.serviceId || "");
-      if(want && serviceIds.includes(want) === false){
-        want = "";
-      }
-      if(!want){
-        want = String(serviceIds[0] || base[0]?.id || "");
-      }
-
-      safeSetHTML($("#m_service"), serviceIds.map(id=>{
-        const raw = (SERVICES.find(s => String(normalizeServiceId(s))===String(id))) || base.find(x=>x.id===id)?.raw || { id, name:{uk:id,en:id,fr:id,ru:id} };
-        const label = serviceLabel(raw);
-        return `<option value="${escapeHtml(id)}" ${String(id)===String(want) ? "selected":""}>${escapeHtml(label)}</option>`;
-      }).join(""));
-
-      return want;
-    }
-
-    function updateBookingForListing(listing){
-      safeSetText($("#m_listingInfo"), pickInfo());
-      safeSetText($("#m_addrLine"), `📍 ${(listing.address||"Montréal, QC")} • ${(listing.city||"Montréal")}`);
-
-      $("#m_addrLine").dataset.address = (listing.address||"");
-      $("#m_addrLine").dataset.city = (listing.city||"Montréal");
-
-      const sid = renderServiceSelectForListing(listing, STATE.booking.serviceId);
-      STATE.booking.serviceId = sid;
-
-      const times = availableTimesFor(listing, STATE.booking.dateISO, STATE.booking.serviceId);
-      if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
-      safeSetText($("#m_timeText"), STATE.booking.time || "—");
-      refreshHold();
-    }
-
-    function openBooking(opts={}){
-      const arr = bookingListings();
-      const initialId = opts.listingId || STATE.booking.listingId || arr[0]?.id || LISTINGS[0]?.id || "";
-      const listing = LISTINGS.find(x=>String(x.id)===String(initialId)) || arr[0] || LISTINGS[0] || {};
-
-      STATE.booking.open = true;
-      STATE.booking.listingId = String(listing.id || initialId || "");
-      STATE.booking.serviceId = opts.serviceId || STATE.booking.serviceId || STATE.serviceId || "";
-      STATE.booking.dateISO = opts.dateISO || STATE.booking.dateISO || isoLocal(new Date());
-      STATE.booking.time = opts.time || "";
-
-      const chosenId = renderListingSelect(STATE.booking.listingId);
-      STATE.booking.listingId = chosenId;
-
-      $("#m_listingSel").onchange = () => {
-        STATE.booking.listingId = $("#m_listingSel").value;
-        const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
-        updateBookingForListing(l2);
-        renderAISheetList();
-      };
-
-      $("#m_date").value = STATE.booking.dateISO;
-      $("#m_date").onchange = () => {
-        STATE.booking.dateISO = $("#m_date").value;
-        const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
-        const times = availableTimesFor(l2, STATE.booking.dateISO, STATE.booking.serviceId);
-        if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
-        safeSetText($("#m_timeText"), STATE.booking.time || "—");
-        renderTimeGrid(times);
-        refreshHold();
-      };
-
-      $("#m_timeBtn").onclick = () => {
-        const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
-        const times = availableTimesFor(l2, STATE.booking.dateISO, STATE.booking.serviceId);
-        renderTimeGrid(times);
-        openSheet();
-      };
-
-      $("#m_service").onchange = () => {
-        STATE.booking.serviceId = $("#m_service").value;
-        const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
-        const times = availableTimesFor(l2, STATE.booking.dateISO, STATE.booking.serviceId);
-        if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
-        safeSetText($("#m_timeText"), STATE.booking.time || "—");
-        refreshHold();
-        renderAISheetList();
-      };
-
-      $("#pickFast").onclick = () => {
-        const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
-        const times = availableTimesFor(l2, STATE.booking.dateISO, STATE.booking.serviceId);
-        STATE.booking.time = times[0] || "";
-        safeSetText($("#m_timeText"), STATE.booking.time || "—");
-        refreshHold();
-      };
-      $("#pickCheap").onclick = () => {
-        const arr2 = filtered().slice().sort((a,b)=>fromPrice(a)-fromPrice(b));
-        const best = arr2[0] || listing;
-        openBooking({ listingId: best.id });
-      };
-      $("#pickNear").onclick = () => {
-        const arr2 = filtered().slice().sort((a,b)=>Number(a.distance||999)-Number(b.distance||999));
-        const best = arr2[0] || listing;
-        openBooking({ listingId: best.id });
-      };
-
-      $("#m_openProfileBtn").onclick = () => {
-        const id = STATE.booking.listingId;
-        window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
-      };
-
-      const hold = lsGet("bb.hold", null);
-      if(hold && typeof hold === "object") STATE.hold = hold;
-
-      const l0 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || listing;
-      updateBookingForListing(l0);
-
-      safeSetText($("#m_timeText"), STATE.booking.time || "—");
-
-      openOverlay();
-    }
-
     /* =========================
-       Booking submit -> Worker /book
+       Send booking to Worker (/book)
     ========================== */
-    async function sendBooking(){
-      const listing = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
-      const serviceId = STATE.booking.serviceId;
-      const serviceName = resolveServiceName(serviceId);
+    async function sendBooking(payload){
+      const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "content-type":"application/json" },
+        body: JSON.stringify(payload),
+        mode: "cors"
+      });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      let txtRes = "";
+      try{ txtRes = await res.text(); }catch(e){}
+      return txtRes || "ok";
+    }
 
+    function validateBooking(){
+      const dateISO = $("#m_date").value || "";
+      const time = STATE.booking.time || "";
       const name = ($("#m_name").value || "").trim();
       const phone = ($("#m_phone").value || "").trim();
-      const email = ($("#m_email").value || "").trim();
-      const notes = ($("#m_notes").value || "").trim();
 
-      const dateISO = STATE.booking.dateISO;
-      const time = STATE.booking.time;
+      if(!dateISO || !time || !name || !phone) return false;
+      return true;
+    }
 
-      if(!name || !phone || !dateISO || !time){
-        toast("⚠️", txt().missing, 2600);
+    $("#m_bookBtn").addEventListener("click", async () => {
+      // cache form values
+      lsSet("bb.form.name", $("#m_name").value || "");
+      lsSet("bb.form.phone", $("#m_phone").value || "");
+      lsSet("bb.form.email", $("#m_email").value || "");
+      lsSet("bb.form.notes", $("#m_notes").value || "");
+
+      if(!validateBooking()){
+        toast("⚠️", txt().missing, 2300);
         return;
       }
 
-      const datetimeText = fmtPretty(dateISO, time, STATE.lang);
-      const profileUrl = `${location.origin}/profile.html?id=${encodeURIComponent(listing.id||"")}`;
+      const listingId = $("#m_listingSel").value || "";
+      const serviceId = $("#m_service").value || "";
+      const listing = LISTINGS.find(x => String(x.id) === String(listingId));
+      const serviceName = resolveServiceName(serviceId) || serviceLabelFromId(serviceId) || serviceId;
+
+      const dateISO = $("#m_date").value || "";
+      const time = STATE.booking.time || "";
+
+      const profileUrl = `${location.origin}${location.pathname.replace(/\/index\.html$/,"/")}`.replace(/\/$/,"/") + `profile.html?id=${encodeURIComponent(listingId)}`;
 
       const payload = {
+        id: uid(),
         lang: STATE.lang,
-        name, phone, email, notes,
-        serviceId, serviceName,
-        listingId: listing.id,
-        listingName: listing.name || listing.title || "—",
-        address: listing.address || "",
-        city: listing.city || "Montréal",
-        dateISO, time,
-        datetimeText,
+        name: ($("#m_name").value || "").trim(),
+        phone: ($("#m_phone").value || "").trim(),
+        email: ($("#m_email").value || "").trim(),
+        notes: ($("#m_notes").value || "").trim(),
+
+        listingId,
+        listingName: listing?.name || listing?.title || listingId,
+        address: listing?.address || "",
+        serviceId,
+        serviceName,
+
+        date: dateISO,
+        time: time,
+        datetimePretty: fmtPretty(dateISO, time, STATE.lang),
+
         profileUrl
       };
 
-      $("#m_bookBtn").disabled = true;
-      $("#m_bookBtn").style.opacity = .8;
-
       try{
-        const res = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type":"application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const out = await res.json().catch(()=>({}));
-        if(!res.ok || out.ok !== true){
-          throw new Error("send failed");
-        }
-
-        toast(txt().sent, txt().sentText, 3200);
+        await sendBooking(payload);
+        toast(txt().sent, txt().sentText, 2600);
+        clearHold();
         closeOverlay();
       }catch(e){
-        toast(txt().failed, txt().failedText, 3400);
-      }finally{
-        $("#m_bookBtn").disabled = false;
-        $("#m_bookBtn").style.opacity = 1;
+        toast(txt().failed, txt().failedText, 3000);
       }
-    }
-
-    $("#m_bookBtn").addEventListener("click", sendBooking);
+    });
 
     /* =========================
-       Deep-link booking from profile redirect:
-       index.html?book=1&id=...&service=...
-    ========================== */
-    function readParams(){
-      const p = new URLSearchParams(location.search);
-      const shouldBook = p.get("book")==="1";
-      const id = p.get("id") || "";
-      const service = p.get("service") || "";
-      if(shouldBook){
-        setTimeout(()=>openBooking({ listingId:id, serviceId: service }), 120);
-      }
-    }
-
-    /* =========================
-       AI bottom sheet logic
+       AI Sheet
     ========================== */
     const aiSheet = $("#aiSheet");
+
     function openAISheet(){
-      renderAIServices();
-      renderAISheetList();
       aiSheet.classList.add("show");
+      renderAIServiceRow();
+      renderAISheetList();
     }
-    function closeAISheet(){ aiSheet.classList.remove("show"); }
-    $("#aiClose").addEventListener("click", closeAISheet);
-    aiSheet.addEventListener("click", (e)=>{ if(e.target === aiSheet) closeAISheet(); });
-
+    function closeAISheet(){
+      aiSheet.classList.remove("show");
+    }
     $("#btnAI").addEventListener("click", openAISheet);
+    $("#aiClose").addEventListener("click", closeAISheet);
+    aiSheet.addEventListener("click", (e)=>{ if(e.target===aiSheet) closeAISheet(); });
 
-    function renderAIServices(){
-      const row = $("#aiServiceRow");
-      if(!row) return;
-      const base = getServiceBase();
-      safeSetHTML(row, base.map(({id,raw})=>{
-        const active = String(STATE.serviceId||"") === String(id);
-        return `<button class="aiPill ${active?"primary":""}" data-sid="${escapeHtml(id)}" type="button">💅 ${escapeHtml(serviceLabel(raw))}</button>`;
+    function renderAIServiceRow(){
+      const host = $("#aiServiceRow");
+      if(!host) return;
+      const ids = getAllServiceIds();
+      const cur = String(STATE.serviceId || STATE.booking.serviceId || "");
+      safeSetHTML(host, ids.map(id => {
+        const active = String(id) === cur;
+        const label = resolveServiceName(id) || serviceLabelFromId(id) || String(id);
+        return `<button class="aiPill ${active?"primary":""}" data-sid="${escapeHtml(id)}" type="button">${escapeHtml(serviceIcon(id)+" "+label)}</button>`;
       }).join(""));
 
-      $$(".aiPill[data-sid]", row).forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const sid = btn.getAttribute("data-sid");
-          STATE.serviceId = (STATE.serviceId === sid) ? "" : sid;
+      $$(".aiPill[data-sid]", host).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sid = btn.getAttribute("data-sid") || "";
+          STATE.serviceId = sid;
           lsSet("bb.serviceId", STATE.serviceId);
           renderServiceChips();
-          renderAIServices();
+          fillBookingServiceSelect();
+          fillBookingListingSelect();
           render();
           buildNextAvailable(true);
+          renderAIServiceRow();
+          renderAISheetList();
         });
       });
     }
 
-    function pickNearest(list){
-      const withDist = list.some(x => x.distance != null);
-      if(withDist){
-        return list.slice().sort((a,b)=>Number(a.distance||999)-Number(b.distance||999));
+    function aiCandidates(){
+      const svc = String(STATE.serviceId || "");
+      let arr = LISTINGS.slice().filter(l => !svc || listingServices(l).includes(svc));
+      arr.sort(byScore);
+
+      if(STATE.aiMode === "top"){
+        arr = arr.filter(isPartner).concat(arr.filter(x=>!isPartner(x)));
+      }else if(STATE.aiMode === "rec"){
+        const rec = arr.filter(isRecommended);
+        const rest = arr.filter(x=>!isRecommended(x));
+        arr = rec.concat(rest);
+      }else if(STATE.aiMode === "near"){
+        arr.sort((a,b)=>{
+          const da = Number(a.distanceKm ?? a.distance ?? 9999);
+          const db = Number(b.distanceKm ?? b.distance ?? 9999);
+          if(isFinite(da) && isFinite(db) && (da!==9999 || db!==9999)) return da-db;
+          return byScore(a,b);
+        });
       }
-      return list.slice().sort((a,b)=>byScore(a,b));
+      return arr.slice(0, 6);
     }
 
     function renderAISheetList(){
-      const el = $("#aiList");
-      if(!el) return;
+      const host = $("#aiList");
+      if(!host) return;
 
-      const base = filtered();
-      if(!base.length){
-        safeSetHTML(el, `<div class="muted" style="font-size:13px">${escapeHtml(txt().missing)}</div>`);
+      const arr = aiCandidates();
+      if(!arr.length){
+        safeSetHTML(host, `<div class="muted">—</div>`);
         return;
       }
 
-      const serviceName = STATE.serviceId ? resolveServiceName(STATE.serviceId) :
-        (STATE.lang==="en") ? "Any service" :
-        (STATE.lang==="fr") ? "Tout service" :
-               (STATE.lang==="ru") ? "Любая услуга" :
-        "Будь-яка послуга";
-
-      // default mode (remember)
-      const mode = lsGet("bb.aiMode","top"); // top | rec | near
-      const setMode = (m)=>{
-        lsSet("bb.aiMode", m);
-        $("#aiTop").classList.toggle("primary", m==="top");
-        $("#aiRec").classList.toggle("primary", m==="rec");
-        $("#aiNear").classList.toggle("primary", m==="near");
-      };
-      setMode(mode);
-
-      let list = base.slice();
-      if(mode === "top"){
-        list = list.slice().sort(byScore);
-      }else if(mode === "rec"){
-        list = list.slice().sort(byScore).filter(x=>isRecommended(x) || isPartner(x));
-      }else if(mode === "near"){
-        list = pickNearest(list);
-      }
-
-      list = list.slice(0, 6);
-
-      safeSetHTML(el, list.map(l => {
+      safeSetHTML(host, arr.map(l => {
+        const name = l.name || l.title || l.id;
+        const addr = l.address || "Montréal, QC";
         const r = Number(l.rating||0);
         const p = fromPrice(l);
-        const priceText = p ? `$${Math.round(p)}+` : "$—";
-        const offered = listingServices(l);
-        const sHint = STATE.serviceId ? resolveServiceName(STATE.serviceId) : (offered[0] ? resolveServiceName(offered[0]) : serviceName);
-
-        // "Why this one?" reasons (3 concrete)
-        const reasons = [
-          `💅 ${escapeHtml(sHint)}`,
-          `⭐ ${r ? r.toFixed(1) : "—"} • ${escapeHtml(priceText)}`,
-          `⏱ ${escapeHtml((Array.isArray(l.todaySlots) && l.todaySlots[0]) ? l.todaySlots[0] : "Today")}`
-        ].join(" · ");
+        const tISO = todayISO();
+        const tEarliest = earliestTime(getTimesFor(l, STATE.serviceId || listingServices(l)[0] || "", tISO));
+        const hint = `${addr}${r?` • ⭐ ${r.toFixed(1)}`:""}${p?` • $${Math.round(p)}+`:""}${tEarliest?` • ${tEarliest}`:""}`;
 
         return `
           <div class="aiItem" data-id="${escapeHtml(l.id)}">
             <div>
-              <div class="n">${escapeHtml(l.name || l.title || "—")}</div>
-              <div class="m">${escapeHtml(reasons)}</div>
+              <div class="n">${escapeHtml(name)}</div>
+              <div class="m">${escapeHtml(hint)}</div>
             </div>
-            <button class="go" data-go="${escapeHtml(l.id)}" type="button">Go</button>
+            <button class="go" type="button" data-go="${escapeHtml(l.id)}">📅</button>
           </div>
         `;
       }).join(""));
 
-      $$("[data-go]", el).forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const id = btn.getAttribute("data-go");
+      $$(".go[data-go]", host).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-go") || "";
+          const d = todayISO();
+          const listing = LISTINGS.find(x => String(x.id) === String(id));
+          const sid = STATE.serviceId || (listing ? listingServices(listing)[0] : "") || "";
+          const t = listing ? earliestTime(getTimesFor(listing, sid, d)) : "";
           closeAISheet();
-          openBooking({ listingId: id, serviceId: STATE.serviceId || "" });
-        });
-      });
-
-      // tap item -> toast why
-      $$(".aiItem", el).forEach(item=>{
-        item.addEventListener("click", (e)=>{
-          if(e.target?.closest?.("[data-go]")) return;
-          toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
+          openBooking({ listingId:id, serviceId:sid, dateISO:d, time:t });
         });
       });
     }
 
-    $("#aiTop").addEventListener("click", ()=>{ lsSet("bb.aiMode","top"); renderAISheetList(); });
-    $("#aiRec").addEventListener("click", ()=>{ lsSet("bb.aiMode","rec"); renderAISheetList(); });
-    $("#aiNear").addEventListener("click", ()=>{ lsSet("bb.aiMode","near"); renderAISheetList(); });
+    $("#aiTop").addEventListener("click", ()=>{ STATE.aiMode="top"; lsSet("bb.aiMode",STATE.aiMode); renderAISheetList(); });
+    $("#aiRec").addEventListener("click", ()=>{ STATE.aiMode="rec"; lsSet("bb.aiMode",STATE.aiMode); renderAISheetList(); });
+    $("#aiNear").addEventListener("click", ()=>{ STATE.aiMode="near"; lsSet("bb.aiMode",STATE.aiMode); renderAISheetList(); });
     $("#aiClear").addEventListener("click", ()=>{
       STATE.serviceId = "";
       STATE.search = "";
-      STATE.favOnly = false;
+      $("#search").value = "";
       lsSet("bb.serviceId","");
       lsSet("bb.search","");
-      lsSet("bb.favOnly", false);
-      $("#search").value = "";
-      $("#btnFavOnly").style.filter = "none";
       renderServiceChips();
-      renderAIServices();
       render();
       buildNextAvailable(true);
-      toast("↺", txt().reset, 1400);
+      renderAIServiceRow();
+      renderAISheetList();
+      toast("↺", txt().reset, 1300);
     });
 
     /* =========================
-       Init selects (service + listing) fallback safe
+       Next available near you (rotate ~10s)
     ========================== */
-    function initBookingSelectsSafe(){
-      // listing select is rendered on openBooking()
-      // service select is rendered per listing in updateBookingForListing()
-      // nothing required here
+    let nextTimer = null;
+    let nextPool = [];
+
+    function buildNextPool(){
+      // pick from current filtered set, prefer partners+rec
+      const base = filtered();
+
+      // ensure we can compute a "next time"
+      const d = todayISO();
+      const svc = String(STATE.serviceId || "");
+      const pool = base.map(l => {
+        const sid = svc || listingServices(l)[0] || "";
+        const times = getTimesFor(l, sid, d);
+        const t = earliestTime(times);
+        return { l, sid, d, t };
+      }).filter(x => x.t);
+
+      // rank by earliest time, then score
+      pool.sort((a,b)=>{
+        if(a.t !== b.t) return a.t.localeCompare(b.t);
+        return byScore(b.l,a.l);
+      });
+
+      return pool.slice(0, 4);
     }
+
+    function showNext(index=0){
+      if(!nextPool.length){
+        safeSetText($("#nextName"), "—");
+        safeSetText($("#nextMeta"), "—");
+        safeSetText($("#nextDots"), "○ ○ ○");
+        $("#nextCard").dataset.listingId = "";
+        $("#nextCard").dataset.serviceId = "";
+        $("#nextCard").dataset.dateISO = "";
+        $("#nextCard").dataset.time = "";
+        return;
+      }
+
+      const i = clamp(index, 0, nextPool.length-1);
+      const item = nextPool[i];
+
+      const name = item.l.name || item.l.title || item.l.id;
+      const addr = item.l.address || "Montréal, QC";
+      const price = fromPrice(item.l);
+      const r = Number(item.l.rating||0);
+      const svcName = resolveServiceName(item.sid) || item.sid;
+      const pretty = fmtPretty(item.d, item.t, STATE.lang);
+
+      safeSetText($("#nextName"), name);
+      safeSetText($("#nextMeta"), `${svcName} • ${pretty}${price?` • $${Math.round(price)}+`:""}${r?` • ⭐ ${r.toFixed(1)}`:""} • ${addr}`);
+
+      const dots = new Array(nextPool.length).fill("○").map((x,idx)=>idx===i?"●":"○").join(" ");
+      safeSetText($("#nextDots"), dots);
+
+      $("#nextCard").dataset.listingId = String(item.l.id);
+      $("#nextCard").dataset.serviceId = String(item.sid);
+      $("#nextCard").dataset.dateISO = String(item.d);
+      $("#nextCard").dataset.time = String(item.t);
+
+      STATE.lastNextIndex = i;
+      lsSet("bb.lastNextIndex", STATE.lastNextIndex);
+    }
+
+    function buildNextAvailable(reset=false){
+      if(reset){
+        nextPool = buildNextPool();
+        STATE.lastNextIndex = 0;
+      }else{
+        nextPool = buildNextPool();
+      }
+      showNext(STATE.lastNextIndex || 0);
+
+      if(nextTimer) clearInterval(nextTimer);
+      nextTimer = setInterval(()=>{
+        if(!nextPool.length) return;
+        const i = (STATE.lastNextIndex + 1) % nextPool.length;
+        showNext(i);
+      }, 10000);
+    }
+
+    $("#nextBook").addEventListener("click", () => {
+      const id = $("#nextCard").dataset.listingId || "";
+      const sid = $("#nextCard").dataset.serviceId || "";
+      const d = $("#nextCard").dataset.dateISO || todayISO();
+      const t = $("#nextCard").dataset.time || "";
+      openBooking({ listingId:id, serviceId:sid, dateISO:d, time:t });
+    });
+
+    $("#nextWhy").addEventListener("click", () => {
+      toast(txt().toastWhyTitle, txt().toastWhyText, 2800);
+    });
 
     /* =========================
-       Restore UI state
+       Misc buttons
     ========================== */
-    function restoreStateUI(){
-      applyTheme();
-      applyTexts();
-
-      // tabs
-      setTab(STATE.tab || "all");
-
-      // search already set
-      $("#search").value = STATE.search || "";
-
-      // favorites-only indicator already set
-      $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
-    }
+    $("#btnCopyLink").addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(location.origin);
+        toast("🔗", "Copied ✅", 1300);
+      }catch(e){
+        toast("🔗", location.origin, 2200);
+      }
+    });
 
     /* =========================
        Boot
     ========================== */
-    function init(){
-      restoreStateUI();
-      initBookingSelectsSafe();
+    function initFromUrl(){
+      try{
+        const p = new URLSearchParams(location.search);
+        const book = p.get("book");
+        const id = p.get("id");
+        const svc = p.get("service");
+        if(book === "1" || book === "true"){
+          openBooking({ listingId: id || "", serviceId: svc || "" });
+        }
+      }catch(e){}
+    }
 
+    function init(){
+      // restore theme
+      document.documentElement.setAttribute("data-theme", STATE.theme);
+      applyTheme();
+
+      // texts first
+      applyTexts();
+
+      // tab state
+      setTab(STATE.tab || "all");
+
+      // chips + render
       renderServiceChips();
-      renderAIServices();
       render();
 
-      buildNextAvailable(true);
+      // booking selects baseline
+      fillBookingServiceSelect();
+      fillBookingListingSelect();
 
+      // netbar & sw updates
       initNetbar();
       initSWUpdate();
 
-      readParams();
+      // next available
+      STATE.lastNextIndex = Number(lsGet("bb.lastNextIndex", 0) || 0);
+      buildNextAvailable(true);
+
+      // URL deep-link
+      initFromUrl();
     }
+
+    // close on ESC
+    window.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape"){
+        if(aiSheet.classList.contains("show")) closeAISheet();
+        else if(sheet.classList.contains("show")) closeSheet();
+        else if(overlay.classList.contains("show")) closeOverlay();
+      }
+    });
 
     init();
   })();
