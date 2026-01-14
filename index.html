@@ -1455,7 +1455,6 @@
         notes: "Нотатки",
         profile: "Профіль",
 
-        // buttons / AI
         btnBook: "Запис",
         btnSave: "Зберегти",
         btnProfile: "Профіль",
@@ -2598,6 +2597,8 @@
     $("#aiClose").addEventListener("click", closeAISheet);
     aiSheet.addEventListener("click", (e)=>{ if(e.target === aiSheet) closeAISheet(); });
 
+    $("#btnAI").addEventListener("click", openAISheet);
+
     function renderAIServices(){
       const row = $("#aiServiceRow");
       if(!row) return;
@@ -2633,77 +2634,92 @@
       if(!el) return;
 
       const base = filtered();
+      if(!base.length){
+        safeSetHTML(el, `<div class="muted" style="font-size:13px">${escapeHtml(txt().missing)}</div>`);
+        return;
+      }
+
       const serviceName = STATE.serviceId ? resolveServiceName(STATE.serviceId) :
         (STATE.lang==="en") ? "Any service" :
         (STATE.lang==="fr") ? "Tout service" :
-        (STATE.lang==="ru") ? "Любая услуга" :
+               (STATE.lang==="ru") ? "Любая услуга" :
         "Будь-яка послуга";
 
-      const top = base.find(isPartner) || base[0];
-      const rec = base.find(x=>!isPartner(x) && isRecommended(x)) || base[0];
-      const near = pickNearest(base)[0];
+      // default mode (remember)
+      const mode = lsGet("bb.aiMode","top"); // top | rec | near
+      const setMode = (m)=>{
+        lsSet("bb.aiMode", m);
+        $("#aiTop").classList.toggle("primary", m==="top");
+        $("#aiRec").classList.toggle("primary", m==="rec");
+        $("#aiNear").classList.toggle("primary", m==="near");
+      };
+      setMode(mode);
 
-      const items = [
-        { k: txt().aiKTop,  icon:"⭐", l:top,  meta: `${serviceName}` },
-        { k: txt().aiKRec,  icon:"✨", l:rec,  meta: `${serviceName}` },
-        { k: txt().aiKNear, icon:"📍", l:near, meta: `${serviceName}` }
-      ].filter(x=>x.l);
+      let list = base.slice();
+      if(mode === "top"){
+        list = list.slice().sort(byScore);
+      }else if(mode === "rec"){
+        list = list.slice().sort(byScore).filter(x=>isRecommended(x) || isPartner(x));
+      }else if(mode === "near"){
+        list = pickNearest(list);
+      }
 
-      safeSetHTML(el, items.map(x=>{
-        const name = x.l?.name || x.l?.title || "—";
-        const addr = x.l?.address || "Montréal, QC";
-        const price = fromPrice(x.l);
-        const priceText = price ? `$${Math.round(price)}+` : "$—";
+      list = list.slice(0, 6);
+
+      safeSetHTML(el, list.map(l => {
+        const r = Number(l.rating||0);
+        const p = fromPrice(l);
+        const priceText = p ? `$${Math.round(p)}+` : "$—";
+        const offered = listingServices(l);
+        const sHint = STATE.serviceId ? resolveServiceName(STATE.serviceId) : (offered[0] ? resolveServiceName(offered[0]) : serviceName);
+
+        // "Why this one?" reasons (3 concrete)
+        const reasons = [
+          `💅 ${escapeHtml(sHint)}`,
+          `⭐ ${r ? r.toFixed(1) : "—"} • ${escapeHtml(priceText)}`,
+          `⏱ ${escapeHtml((Array.isArray(l.todaySlots) && l.todaySlots[0]) ? l.todaySlots[0] : "Today")}`
+        ].join(" · ");
+
         return `
-          <div class="aiItem">
-            <div style="min-width:0">
-              <div class="n">${escapeHtml(x.icon+" "+x.k)} — ${escapeHtml(name)}</div>
-              <div class="m">${escapeHtml(addr)} • ${escapeHtml(x.meta)} • ${escapeHtml(priceText)}</div>
+          <div class="aiItem" data-id="${escapeHtml(l.id)}">
+            <div>
+              <div class="n">${escapeHtml(l.name || l.title || "—")}</div>
+              <div class="m">${escapeHtml(reasons)}</div>
             </div>
-            <button class="go" data-go="${escapeHtml(x.l.id)}" type="button">📅 ${escapeHtml(txt().btnBook)}</button>
+            <button class="go" data-go="${escapeHtml(l.id)}" type="button">Go</button>
           </div>
         `;
-      }).
-join("")));
+      }).join(""));
 
-      // Go buttons
-      $$(".go[data-go]", el).forEach(btn=>{
+      $$("[data-go]", el).forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const id = btn.getAttribute("data-go");
           closeAISheet();
           openBooking({ listingId: id, serviceId: STATE.serviceId || "" });
         });
       });
+
+      // tap item -> toast why
+      $$(".aiItem", el).forEach(item=>{
+        item.addEventListener("click", (e)=>{
+          if(e.target?.closest?.("[data-go]")) return;
+          toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
+        });
+      });
     }
 
-    // AI mode buttons = switch tabs (Top/Rec/Nearest) + scroll to section
-    function scrollToId(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      const y = el.getBoundingClientRect().top + window.scrollY - 86;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-
-    $("#aiTop").addEventListener("click", ()=>{
-      setTab("partners");
-      closeAISheet();
-      scrollToId("secPartners");
-    });
-    $("#aiRec").addEventListener("click", ()=>{
-      setTab("rec");
-      closeAISheet();
-      scrollToId("secRec");
-    });
-    $("#aiNear").addEventListener("click", ()=>{
-      // nearest is inside "All" context (we keep it simple)
-      setTab("all");
-      closeAISheet();
-      scrollToId("secAll");
-    });
+    $("#aiTop").addEventListener("click", ()=>{ lsSet("bb.aiMode","top"); renderAISheetList(); });
+    $("#aiRec").addEventListener("click", ()=>{ lsSet("bb.aiMode","rec"); renderAISheetList(); });
+    $("#aiNear").addEventListener("click", ()=>{ lsSet("bb.aiMode","near"); renderAISheetList(); });
     $("#aiClear").addEventListener("click", ()=>{
-      // reset only AI filter = service
       STATE.serviceId = "";
-      lsSet("bb.serviceId", "");
+      STATE.search = "";
+      STATE.favOnly = false;
+      lsSet("bb.serviceId","");
+      lsSet("bb.search","");
+      lsSet("bb.favOnly", false);
+      $("#search").value = "";
+      $("#btnFavOnly").style.filter = "none";
       renderServiceChips();
       renderAIServices();
       render();
@@ -2711,39 +2727,54 @@ join("")));
       toast("↺", txt().reset, 1400);
     });
 
-    $("#btnAI").addEventListener("click", openAISheet);
+    /* =========================
+       Init selects (service + listing) fallback safe
+    ========================== */
+    function initBookingSelectsSafe(){
+      // listing select is rendered on openBooking()
+      // service select is rendered per listing in updateBookingForListing()
+      // nothing required here
+    }
 
     /* =========================
-       Init
+       Restore UI state
     ========================== */
-    function init(){
-      // theme + texts
+    function restoreStateUI(){
       applyTheme();
       applyTexts();
 
-      // initial tab visuals
-      setTab(STATE.tab === "partners" ? "partners" : (STATE.tab === "rec" ? "rec" : "all"));
+      // tabs
+      setTab(STATE.tab || "all");
 
-      // service chips
+      // search already set
+      $("#search").value = STATE.search || "";
+
+      // favorites-only indicator already set
+      $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
+    }
+
+    /* =========================
+       Boot
+    ========================== */
+    function init(){
+      restoreStateUI();
+      initBookingSelectsSafe();
+
       renderServiceChips();
-
-      // initial render
+      renderAIServices();
       render();
 
-      // hero next available
       buildNextAvailable(true);
 
-      // netbar + SW updates
       initNetbar();
       initSWUpdate();
 
-      // deep-link from profile
       readParams();
     }
 
     init();
-
   })();
   </script>
 </body>
 </html>
+
