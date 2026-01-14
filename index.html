@@ -1308,7 +1308,11 @@
         const [hh,mm] = (time||"").split(":").map(x=>parseInt(x,10));
         if(!y||!m||!d||isNaN(hh)||isNaN(mm)) return `${dateISO||""} ${time||""}`.trim() || "—";
         const dt = new Date(y, m-1, d, hh, mm, 0, 0);
-        const locale = (lang==="en") ? "en-CA" : "uk-UA";
+        const locale =
+          (lang==="en") ? "en-CA" :
+          (lang==="fr") ? "fr-CA" :
+          (lang==="ru") ? "ru-RU" :
+          "uk-UA";
         return dt.toLocaleString(locale, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
       }catch(e){ return `${dateISO||""} ${time||""}`.trim() || "—"; }
     };
@@ -1342,8 +1346,11 @@
     /* =========================
        Config / State
     ========================== */
+    const LANGS = ["uk","en","fr","ru"];
+    const normalizeLang = (v) => LANGS.includes(v) ? v : "uk";
+
     const STATE = {
-      lang: lsGet("bb.lang","uk") === "en" ? "en" : "uk",
+      lang: normalizeLang(lsGet("bb.lang","uk")),
       theme: (lsGet("bb.theme","night") === "day") ? "day" : "night",
       favOnly: !!lsGet("bb.favOnly", false),
       favorites: new Set(lsGet("bb.favorites", [])),
@@ -1373,7 +1380,6 @@
       const s = String(u || "").trim();
       if(!s) return "/book";
       if(s.startsWith("/")) return s.endsWith("/book") ? s : (s.endsWith("/") ? (s + "book") : (s + "/book"));
-      // absolute URL
       try{
         const url = new URL(s);
         if(url.pathname === "/" || url.pathname === "") url.pathname = "/book";
@@ -1409,7 +1415,7 @@
     }
 
     /* =========================
-       Texts
+       Texts (UK / EN / FR-CA / RU)
     ========================== */
     const T = {
       uk: {
@@ -1425,11 +1431,11 @@
         tabAll: "Всі",
         tabPartners: "Топ",
         tabRec: "Рекомендовано",
-        partners: "Top salons / partners",
+        partners: "Топ партнери",
         partnersHint: "Платні партнери",
-        recommended: "Recommended",
+        recommended: "Рекомендовано",
         recHint: "Smart picks для тебе",
-        allOthers: "All others",
+        allOthers: "Усі інші",
         allHint: "Переглянути всіх",
         footer: "Твоє місце для self-care — швидкий запис, чистий UI, преміум відчуття.",
         favOnly: "Only ❤️",
@@ -1448,8 +1454,24 @@
         email: "Email",
         notes: "Нотатки",
         profile: "Профіль",
-        toastWhyTitle: "Why this one?",
-        toastWhyText: "3 причини: 1) збігається з послугою 2) хороший рейтинг/ціна 3) найближчий слот сьогодні.",
+
+        // buttons / AI
+        btnBook: "Запис",
+        btnSave: "Зберегти",
+        btnProfile: "Профіль",
+        fab: "Швидкий запис",
+        aiTitle: "AI help",
+        aiLead: "Обери послугу — я покажу Top / Recommended / Nearest (без рандому).",
+        aiTop: "Топ",
+        aiRec: "Рекомендовано",
+        aiNear: "Найближче",
+        aiReset: "Скинути",
+        aiKTop: "Топ",
+        aiKRec: "Рекомендовано",
+        aiKNear: "Найближче",
+
+        toastWhyTitle: "Чому цей?",
+        toastWhyText: "3 причини: 1) збіг по послузі 2) хороший рейтинг/ціна 3) найближчий слот сьогодні.",
         missing: "Заповни дату/час/імʼя/телефон 🙏",
         sent: "Відправлено ✅",
         sentText: "Ми надіслали бронювання в Telegram. Скоро підтвердять.",
@@ -1459,8 +1481,6 @@
         offline: "Ти офлайн — деякі фічі можуть не працювати.",
         cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.",
         update: "Є нова версія. Натисни Update.",
-        aiTitle: "AI help",
-        aiLead: "Обери послугу — я покажу Top / Recommended / Nearest (без рандому).",
         reset: "Скинуто ✅"
       },
       en: {
@@ -1499,6 +1519,21 @@
         email: "Email",
         notes: "Notes",
         profile: "Profile",
+
+        btnBook: "Book",
+        btnSave: "Save",
+        btnProfile: "Profile",
+        fab: "Quick book",
+        aiTitle: "AI help",
+        aiLead: "Pick a service — I’ll show Top / Recommended / Nearest (no random).",
+        aiTop: "Top",
+        aiRec: "Recommended",
+        aiNear: "Nearest",
+        aiReset: "Reset",
+        aiKTop: "Top",
+        aiKRec: "Recommended",
+        aiKNear: "Nearest",
+
         toastWhyTitle: "Why this one?",
         toastWhyText: "3 reasons: 1) service match 2) strong rating/price 3) nearest slot today.",
         missing: "Fill date/time/name/phone 🙏",
@@ -1510,13 +1545,139 @@
         offline: "You’re offline — some features may not work.",
         cached: "Loaded from cache. If something didn’t update — press Refresh.",
         update: "New version available. Tap Update.",
-        aiTitle: "AI help",
-        aiLead: "Pick a service — I’ll show Top / Recommended / Nearest (no random).",
         reset: "Reset ✅"
+      },
+      fr: {
+        brand: "Beauty Booking",
+        sub: "Salons & artistes vérifiés",
+        heroTitle: "Réservation en quelques secondes.",
+        heroLead: "Sélection premium à Montréal — salons vérifiés, à domicile, réservation rapide.",
+        quick: "Réserver vite",
+        openProfile: "Voir le profil",
+        nextLabel: "Prochain créneau près de toi",
+        bookSlot: "Réserver ce créneau",
+        why: "Pourquoi celui-ci ?",
+        tabAll: "Tout",
+        tabPartners: "Top",
+        tabRec: "Recommandé",
+        partners: "Top salons / partenaires",
+        partnersHint: "Partenaires payants",
+        recommended: "Recommandé",
+        recHint: "Sélections pour toi",
+        allOthers: "Tous les autres",
+        allHint: "Parcourir tout",
+        footer: "Ton espace self-care — réservation rapide, UI clean, sensation premium.",
+        favOnly: "Only ❤️",
+        pickFast: "Le plus rapide",
+        pickCheap: "Le moins cher",
+        pickNear: "Le plus proche",
+        sheetTitle: "Choisir l’heure",
+        confirm: "Confirmer la réservation",
+        booking: "Réservation",
+        listing: "Salon / Artiste",
+        service: "Service",
+        date: "Date",
+        time: "Heure",
+        yourName: "Ton nom",
+        phone: "Téléphone",
+        email: "Email",
+        notes: "Notes",
+        profile: "Profil",
+
+        btnBook: "Réserver",
+        btnSave: "Sauver",
+        btnProfile: "Profil",
+        fab: "Réserver vite",
+        aiTitle: "AI help",
+        aiLead: "Choisis un service — Top / Recommandé / Proche (pas au hasard).",
+        aiTop: "Top",
+        aiRec: "Recommandé",
+        aiNear: "Proche",
+        aiReset: "Réinitialiser",
+        aiKTop: "Top",
+        aiKRec: "Recommandé",
+        aiKNear: "Proche",
+
+        toastWhyTitle: "Pourquoi celui-ci ?",
+        toastWhyText: "3 raisons : 1) service correspondant 2) bon rapport note/prix 3) créneau proche aujourd’hui.",
+        missing: "Remplis date/heure/nom/téléphone 🙏",
+        sent: "Envoyé ✅",
+        sentText: "On a envoyé la réservation sur Telegram. Confirmation bientôt.",
+        failed: "Erreur ❌",
+        failedText: "Envoi impossible. Vérifie Worker /book et internet.",
+        hold: "Hold 2 min",
+        offline: "Hors ligne — certaines fonctions peuvent ne pas marcher.",
+        cached: "Ouvert depuis le cache. Si ça n’a pas bougé — Refresh.",
+        update: "Nouvelle version disponible. Appuie sur Update.",
+        reset: "Réinitialisé ✅"
+      },
+      ru: {
+        brand: "Beauty Booking",
+        sub: "Проверенные салоны и мастера",
+        heroTitle: "Запись за секунды.",
+        heroLead: "Премиум-подборка в Montréal — салоны, мастера на дому, быстрая запись.",
+        quick: "Быстрая запись",
+        openProfile: "Открыть профиль",
+        nextLabel: "Ближайший слот рядом",
+        bookSlot: "Записать на слот",
+        why: "Почему этот?",
+        tabAll: "Все",
+        tabPartners: "Топ",
+        tabRec: "Рекоменд.",
+        partners: "Топ партнёры",
+        partnersHint: "Платные партнёры",
+        recommended: "Рекомендовано",
+        recHint: "Подборка для тебя",
+        allOthers: "Остальные",
+        allHint: "Смотреть всё",
+        footer: "Твоё место для self-care — быстрая запись, чистый UI, премиум-ощущение.",
+        favOnly: "Only ❤️",
+        pickFast: "Самое быстрое",
+        pickCheap: "Самое дешёвое",
+        pickNear: "Ближе всего",
+        sheetTitle: "Выбери время",
+        confirm: "Подтвердить запись",
+        booking: "Запись",
+        listing: "Салон / Мастер",
+        service: "Услуга",
+        date: "Дата",
+        time: "Время",
+        yourName: "Имя",
+        phone: "Телефон",
+        email: "Email",
+        notes: "Заметки",
+        profile: "Профиль",
+
+        btnBook: "Записаться",
+        btnSave: "Сохранить",
+        btnProfile: "Профиль",
+        fab: "Быстрая запись",
+        aiTitle: "AI help",
+        aiLead: "Выбери услугу — покажу Top / Recommended / Nearest (без рандома).",
+        aiTop: "Топ",
+        aiRec: "Рекоменд.",
+        aiNear: "Ближайшее",
+        aiReset: "Сбросить",
+        aiKTop: "Топ",
+        aiKRec: "Рекомендовано",
+        aiKNear: "Ближайшее",
+
+        toastWhyTitle: "Почему этот?",
+        toastWhyText: "3 причины: 1) совпадает услуга 2) хороший рейтинг/цена 3) ближайший слот сегодня.",
+        missing: "Заполни дату/время/имя/телефон 🙏",
+        sent: "Отправлено ✅",
+        sentText: "Мы отправили запись в Telegram. Скоро подтвердят.",
+        failed: "Ошибка ❌",
+        failedText: "Не удалось отправить. Проверь Worker /book и интернет.",
+        hold: "Hold 2 min",
+        offline: "Ты офлайн — часть функций может не работать.",
+        cached: "Открыто из кеша. Если не обновилось — нажми Refresh.",
+        update: "Доступна новая версия. Нажми Update.",
+        reset: "Сброшено ✅"
       }
     };
 
-    const txt = () => T[STATE.lang];
+    const txt = () => T[STATE.lang] || T.uk;
 
     function applyTexts(){
       safeSetText($("#t_brand"), txt().brand);
@@ -1556,12 +1717,35 @@
       safeSetText($("#m_openProfileBtn"), txt().profile);
       safeSetText($("#t_aiTitle"), txt().aiTitle);
       safeSetText($("#t_aiLead"), txt().aiLead);
+      safeSetText($("#t_fab"), txt().fab);
 
-      $("#search").placeholder = (STATE.lang==="en") ? "Search salon, master, service…" : "Пошук салон/майстер/послуга…";
-      $("#m_name").placeholder = (STATE.lang==="en") ? "Name" : "Імʼя";
+      // AI buttons (with emoji)
+      safeSetText($("#aiTop"), "⭐ " + txt().aiTop);
+      safeSetText($("#aiRec"), "✨ " + txt().aiRec);
+      safeSetText($("#aiNear"), "📍 " + txt().aiNear);
+      safeSetText($("#aiClear"), "↺ " + txt().aiReset);
+
+      // placeholders
+      $("#search").placeholder =
+        (STATE.lang==="en") ? "Search salon, master, service…" :
+        (STATE.lang==="fr") ? "Rechercher salon, artiste, service…" :
+        (STATE.lang==="ru") ? "Поиск салон, мастер, услуга…" :
+        "Пошук салон/майстер/послуга…";
+
+      $("#m_name").placeholder =
+        (STATE.lang==="en") ? "Name" :
+        (STATE.lang==="fr") ? "Nom" :
+        (STATE.lang==="ru") ? "Имя" :
+        "Імʼя";
+
       $("#m_phone").placeholder = "(438)...";
       $("#m_email").placeholder = "email@example.com";
-      $("#m_notes").placeholder = (STATE.lang==="en") ? "Optional" : "Опційно";
+
+      $("#m_notes").placeholder =
+        (STATE.lang==="en") ? "Optional" :
+        (STATE.lang==="fr") ? "Optionnel" :
+        (STATE.lang==="ru") ? "Необязательно" :
+        "Опційно";
     }
 
     /* =========================
@@ -1601,7 +1785,6 @@
       try{
         if(!("serviceWorker" in navigator)) return;
 
-        // register if you have worker.js as SW (as in your project)
         swReg = await navigator.serviceWorker.register("./worker.js");
 
         const maybeUpdate = () => {
@@ -1621,7 +1804,6 @@
         });
 
         navigator.serviceWorker.addEventListener("controllerchange", () => {
-          // new SW activated
           location.reload();
         });
 
@@ -1629,7 +1811,6 @@
           try{
             if(swReg?.waiting){
               swReg.waiting.postMessage({ type: "SKIP_WAITING" });
-              // if SW doesn't handle, fallback refresh still helps
               setTimeout(()=>location.reload(), 400);
             }else{
               location.reload();
@@ -1640,9 +1821,7 @@
         });
 
         maybeUpdate();
-      }catch(e){
-        // silent
-      }
+      }catch(e){}
     }
 
     /* =========================
@@ -1660,24 +1839,42 @@
     /* =========================
        Random short salon info (requested)
     ========================== */
-    const INFO_UK = [
-      "Стерильні інструменти • одноразові пилочки • чистий люкс-сервіс.",
-      "Топ майстер • акуратні кутикули • стійке покриття.",
-      "Комфортна атмосфера • швидкий запис • love it.",
-      "Преміум догляд • уважність до деталей • без поспіху.",
-      "Мʼякі техніки • мінімальна травматизація • чиста робота.",
-      "Сьогодні є слоти • можна записатись за 30 сек."
-    ];
-    const INFO_EN = [
-      "Sterile tools • premium care • clean results.",
-      "Top master • attention to detail • long-lasting finish.",
-      "Comfort vibe • quick booking • you’ll love it.",
-      "Premium care • precise work • no rush.",
-      "Gentle technique • clean cuticle • neat shape.",
-      "Slots available today • book in 30 sec."
-    ];
+    const INFO = {
+      uk: [
+        "Стерильні інструменти • одноразові пилочки • чистий люкс-сервіс.",
+        "Топ майстер • акуратні кутикули • стійке покриття.",
+        "Комфортна атмосфера • швидкий запис • love it.",
+        "Преміум догляд • уважність до деталей • без поспіху.",
+        "Мʼякі техніки • мінімальна травматизація • чиста робота.",
+        "Сьогодні є слоти • можна записатись за 30 сек."
+      ],
+      en: [
+        "Sterile tools • premium care • clean results.",
+        "Top master • attention to detail • long-lasting finish.",
+        "Comfort vibe • quick booking • you’ll love it.",
+        "Premium care • precise work • no rush.",
+        "Gentle technique • clean cuticle • neat shape.",
+        "Slots available today • book in 30 sec."
+      ],
+      fr: [
+        "Outils stériles • soin premium • résultat net.",
+        "Top artiste • détail parfait • tenue longue.",
+        "Ambiance confortable • réservation rapide.",
+        "Soin premium • précision • sans stress.",
+        "Technique douce • cuticule propre • forme nette.",
+        "Créneaux aujourd’hui • réserve en 30 sec."
+      ],
+      ru: [
+        "Стерильные инструменты • премиум-уход • чистый результат.",
+        "Топ мастер • внимание к деталям • стойкое покрытие.",
+        "Комфорт • быстрая запись • кайф.",
+        "Премиум-уход • точность • без спешки.",
+        "Мягкая техника • чистая кутикула • аккуратно.",
+        "Есть слоты сегодня • запись за 30 сек."
+      ]
+    };
     const pickInfo = () => {
-      const arr = (STATE.lang==="en") ? INFO_EN : INFO_UK;
+      const arr = INFO[STATE.lang] || INFO.uk;
       return arr[Math.floor(Math.random()*arr.length)];
     };
 
@@ -1687,25 +1884,24 @@
     function normalizeServiceId(v){
       if(v == null) return "";
       if(typeof v === "string" || typeof v === "number") return String(v);
-      // object
       return String(v.id ?? v.serviceId ?? v.key ?? "");
     }
 
     function serviceLabel(s){
-      if(!s) return (STATE.lang==="en") ? "Service" : "Послуга";
+      if(!s) return (STATE.lang==="en") ? "Service" : (STATE.lang==="fr") ? "Service" : (STATE.lang==="ru") ? "Услуга" : "Послуга";
       const name = s.name ?? s.title ?? s.label ?? s.id;
-      if(typeof name === "object") return name[STATE.lang] || name.uk || name.en || normalizeServiceId(s);
+      if(typeof name === "object"){
+        return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || normalizeServiceId(s);
+      }
       return String(name || normalizeServiceId(s) || "");
     }
 
     function listingServices(listing){
-      // supports: listing.services[] / listing.serviceIds[] / listing.tags
       const raw = listing?.services ?? listing?.serviceIds ?? listing?.service_ids ?? [];
       if(Array.isArray(raw)){
         const ids = raw.map(normalizeServiceId).filter(Boolean);
         return Array.from(new Set(ids));
       }
-      // if a string single id:
       const one = normalizeServiceId(raw);
       return one ? [one] : [];
     }
@@ -1713,7 +1909,7 @@
     function resolveServiceName(serviceId){
       const sid = String(serviceId||"");
       const s = SERVICES.find(x => String(x?.id ?? x?.key ?? "") === sid);
-      return serviceLabel(s || { id:sid, name:{uk:sid, en:sid} });
+      return serviceLabel(s || { id:sid, name:{uk:sid, en:sid, fr:sid, ru:sid} });
     }
 
     /* =========================
@@ -1807,9 +2003,9 @@
           </div>
 
           <div class="cardActions">
-            <button class="small primary" data-act="book" type="button">📅 <span>Book</span></button>
-            <button class="small" data-act="fav" type="button">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>Save</span></button>
-            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>Profile</span></a>
+            <button class="small primary" data-act="book" type="button">📅 <span>${escapeHtml(txt().btnBook)}</span></button>
+            <button class="small" data-act="fav" type="button">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>${escapeHtml(txt().btnSave)}</span></button>
+            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>${escapeHtml(txt().btnProfile)}</span></a>
           </div>
         </div>
       </div>`;
@@ -1844,9 +2040,9 @@
           </div>
           <div style="height:10px"></div>
           <div class="cardActions">
-            <button class="small primary" data-act="book" type="button">📅 <span>Book</span></button>
-            <button class="small" data-act="fav" type="button">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>Save</span></button>
-            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>Profile</span></a>
+            <button class="small primary" data-act="book" type="button">📅 <span>${escapeHtml(txt().btnBook)}</span></button>
+            <button class="small" data-act="fav" type="button">${STATE.favorites.has(listing.id) ? "❤️" : "🤍"} <span>${escapeHtml(txt().btnSave)}</span></button>
+            <a class="small" data-act="open" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">↗ <span>${escapeHtml(txt().btnProfile)}</span></a>
           </div>
         </div>
       </div>`;
@@ -1872,10 +2068,9 @@
             return;
           }
           if(act === "open"){
-            return; // let link open
+            return;
           }
 
-          // short info toast
           const listing = LISTINGS.find(x => String(x.id) === String(id));
           toast(listing?.name || "Beauty Booking", pickInfo(), 2600);
         });
@@ -1890,17 +2085,16 @@
       const others = arr.filter(x => !isPartner(x) && !isRecommended(x));
 
       safeSetHTML($("#stripPartners"), partners.map(stripHTML).join(""));
-      safeSetHTML($("#gridPartners"), ""); // keep but unused
+      safeSetHTML($("#gridPartners"), "");
       safeSetHTML($("#gridRec"), rec.map(cardHTML).join(""));
       safeSetHTML($("#gridAll"), others.map(cardHTML).join(""));
 
-      // tab visibility
       $("#secPartners").classList.toggle("hidden", STATE.tab !== "partners" && STATE.tab !== "all");
       $("#secRec").classList.toggle("hidden", STATE.tab !== "rec" && STATE.tab !== "all");
       $("#secAll").classList.toggle("hidden", STATE.tab !== "all");
 
       attachCardHandlers(document);
-      renderAISheetList(); // keep AI list synced
+      renderAISheetList();
     }
 
     function toggleFav(id){
@@ -1917,11 +2111,11 @@
         return SERVICES.map(s => ({ id: normalizeServiceId(s), raw:s })).filter(x=>x.id);
       }
       return [
-        { id:"manicure", raw:{ id:"manicure", name:{uk:"Манікюр", en:"Manicure"} } },
-        { id:"pedicure", raw:{ id:"pedicure", name:{uk:"Педикюр", en:"Pedicure"} } },
-        { id:"brows", raw:{ id:"brows", name:{uk:"Брови", en:"Brows"} } },
-        { id:"haircut_w", raw:{ id:"haircut_w", name:{uk:"Жіноча стрижка", en:"Women haircut"} } },
-        { id:"haircut_m", raw:{ id:"haircut_m", name:{uk:"Чоловіча стрижка", en:"Men haircut"} } }
+        { id:"manicure", raw:{ id:"manicure", name:{uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр"} } },
+        { id:"pedicure", raw:{ id:"pedicure", name:{uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр"} } },
+        { id:"brows", raw:{ id:"brows", name:{uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови"} } },
+        { id:"haircut_w", raw:{ id:"haircut_w", name:{uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка"} } },
+        { id:"haircut_m", raw:{ id:"haircut_m", name:{uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка"} } }
       ];
     }
 
@@ -1983,13 +2177,22 @@
     $("#btnFavOnly").style.filter = STATE.favOnly ? "brightness(1.15)" : "none";
 
     $("#btnLang").addEventListener("click", ()=>{
-      STATE.lang = (STATE.lang==="uk") ? "en" : "uk";
+      const i = LANGS.indexOf(STATE.lang);
+      STATE.lang = LANGS[(i >= 0 ? i+1 : 0) % LANGS.length];
       lsSet("bb.lang", STATE.lang);
+
       applyTexts();
       renderServiceChips();
       renderAIServices();
       render();
       buildNextAvailable(true);
+
+      const badge =
+        (STATE.lang==="uk") ? "Українська" :
+        (STATE.lang==="en") ? "English" :
+        (STATE.lang==="fr") ? "Français (QC)" :
+        "Русский";
+      toast("🌐", badge, 1400);
     });
 
     $("#btnTheme").addEventListener("click", ()=>{
@@ -2016,11 +2219,7 @@
         const offered = listingServices(listing);
         const desired = STATE.serviceId ? String(STATE.serviceId) : "";
 
-        // ✅ if user picked a service, do NOT show random listings that don't offer it
         if(desired && offered.length && !offered.includes(desired)) return;
-        if(desired && !offered.length){
-          // if listing doesn't declare services, allow (demo fallback)
-        }
 
         const times = Array.isArray(listing.todaySlots) && listing.todaySlots.length
           ? listing.todaySlots.slice(0,6)
@@ -2165,7 +2364,6 @@
     setInterval(updateHoldText, 1000);
 
     function bookingListings(){
-      // for modal selector: prefer filtered list; fallback to all
       const arr = filtered();
       return arr.length ? arr : LISTINGS.slice();
     }
@@ -2186,15 +2384,13 @@
 
       let serviceIds;
       if(offered.length){
-        // keep only those services existing in base, otherwise include raw ids too
         const baseIds = new Set(base.map(x=>x.id));
         serviceIds = offered.filter(id=>id).slice();
-        serviceIds.forEach(id => { if(!baseIds.has(id)) base.push({ id, raw:{ id, name:{uk:id,en:id} } }); });
+        serviceIds.forEach(id => { if(!baseIds.has(id)) base.push({ id, raw:{ id, name:{uk:id,en:id,fr:id,ru:id} } }); });
       }else{
         serviceIds = base.map(x=>x.id);
       }
 
-      // If user has selected global serviceId, prefer it when possible
       let want = String(selectedServiceId || STATE.serviceId || "");
       if(want && serviceIds.includes(want) === false){
         want = "";
@@ -2204,7 +2400,7 @@
       }
 
       safeSetHTML($("#m_service"), serviceIds.map(id=>{
-        const raw = (SERVICES.find(s => String(normalizeServiceId(s))===String(id))) || base.find(x=>x.id===id)?.raw || { id, name:{uk:id,en:id} };
+        const raw = (SERVICES.find(s => String(normalizeServiceId(s))===String(id))) || base.find(x=>x.id===id)?.raw || { id, name:{uk:id,en:id,fr:id,ru:id} };
         const label = serviceLabel(raw);
         return `<option value="${escapeHtml(id)}" ${String(id)===String(want) ? "selected":""}>${escapeHtml(label)}</option>`;
       }).join(""));
@@ -2219,11 +2415,9 @@
       $("#m_addrLine").dataset.address = (listing.address||"");
       $("#m_addrLine").dataset.city = (listing.city||"Montréal");
 
-      // rebuild service select (fix: services were missing)
       const sid = renderServiceSelectForListing(listing, STATE.booking.serviceId);
       STATE.booking.serviceId = sid;
 
-      // refresh times for current date/service
       const times = availableTimesFor(listing, STATE.booking.dateISO, STATE.booking.serviceId);
       if(!times.includes(STATE.booking.time)) STATE.booking.time = "";
       safeSetText($("#m_timeText"), STATE.booking.time || "—");
@@ -2241,11 +2435,9 @@
       STATE.booking.dateISO = opts.dateISO || STATE.booking.dateISO || isoLocal(new Date());
       STATE.booking.time = opts.time || "";
 
-      // listing selector
       const chosenId = renderListingSelect(STATE.booking.listingId);
       STATE.booking.listingId = chosenId;
 
-      // attach change handler
       $("#m_listingSel").onchange = () => {
         STATE.booking.listingId = $("#m_listingSel").value;
         const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
@@ -2253,7 +2445,6 @@
         renderAISheetList();
       };
 
-      // date input
       $("#m_date").value = STATE.booking.dateISO;
       $("#m_date").onchange = () => {
         STATE.booking.dateISO = $("#m_date").value;
@@ -2265,7 +2456,6 @@
         refreshHold();
       };
 
-      // time picker
       $("#m_timeBtn").onclick = () => {
         const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
         const times = availableTimesFor(l2, STATE.booking.dateISO, STATE.booking.serviceId);
@@ -2273,7 +2463,6 @@
         openSheet();
       };
 
-      // service change
       $("#m_service").onchange = () => {
         STATE.booking.serviceId = $("#m_service").value;
         const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
@@ -2284,7 +2473,6 @@
         renderAISheetList();
       };
 
-      // quick picks
       $("#pickFast").onclick = () => {
         const l2 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || {};
         const times = availableTimesFor(l2, STATE.booking.dateISO, STATE.booking.serviceId);
@@ -2308,15 +2496,12 @@
         window.open(`./profile.html?id=${encodeURIComponent(id)}`, "_blank", "noopener");
       };
 
-      // restore hold state
       const hold = lsGet("bb.hold", null);
       if(hold && typeof hold === "object") STATE.hold = hold;
 
-      // apply listing+services
       const l0 = LISTINGS.find(x=>String(x.id)===String(STATE.booking.listingId)) || listing;
       updateBookingForListing(l0);
 
-      // set time text
       safeSetText($("#m_timeText"), STATE.booking.time || "—");
 
       openOverlay();
@@ -2436,7 +2621,6 @@
     }
 
     function pickNearest(list){
-      // if distance exists use it; else use score by rating + cheaper
       const withDist = list.some(x => x.distance != null);
       if(withDist){
         return list.slice().sort((a,b)=>Number(a.distance||999)-Number(b.distance||999));
@@ -2449,17 +2633,20 @@
       if(!el) return;
 
       const base = filtered();
-      const serviceName = STATE.serviceId ? resolveServiceName(STATE.serviceId) : (STATE.lang==="en" ? "Any service" : "Будь-яка послуга");
+      const serviceName = STATE.serviceId ? resolveServiceName(STATE.serviceId) :
+        (STATE.lang==="en") ? "Any service" :
+        (STATE.lang==="fr") ? "Tout service" :
+        (STATE.lang==="ru") ? "Любая услуга" :
+        "Будь-яка послуга";
 
-      // 3 picks: Top partner, Recommended, Nearest
       const top = base.find(isPartner) || base[0];
       const rec = base.find(x=>!isPartner(x) && isRecommended(x)) || base[0];
       const near = pickNearest(base)[0];
 
       const items = [
-        { k:"Top", icon:"⭐", l:top, meta: `${serviceName}` },
-        { k:"Recommended", icon:"✨", l:rec, meta: `${serviceName}` },
-        { k:"Nearest", icon:"📍", l:near, meta: `${serviceName}` }
+        { k: txt().aiKTop,  icon:"⭐", l:top,  meta: `${serviceName}` },
+        { k: txt().aiKRec,  icon:"✨", l:rec,  meta: `${serviceName}` },
+        { k: txt().aiKNear, icon:"📍", l:near, meta: `${serviceName}` }
       ].filter(x=>x.l);
 
       safeSetHTML(el, items.map(x=>{
@@ -2473,83 +2660,89 @@
               <div class="n">${escapeHtml(x.icon+" "+x.k)} — ${escapeHtml(name)}</div>
               <div class="m">${escapeHtml(addr)} • ${escapeHtml(x.meta)} • ${escapeHtml(priceText)}</div>
             </div>
-            <button class="go" data-go="${escapeHtml(x.l.id)}" type="button">📅 Book</button>
+            <button class="go" data-go="${escapeHtml(x.l.id)}" type="button">📅 ${escapeHtml(txt().btnBook)}</button>
           </div>
         `;
-      }).join(""));
+      }).
+join("")));
 
+      // Go buttons
       $$(".go[data-go]", el).forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const id = btn.getAttribute("data-go");
           closeAISheet();
-          openBooking({ listingId:id, serviceId: STATE.serviceId || "" });
+          openBooking({ listingId: id, serviceId: STATE.serviceId || "" });
         });
       });
     }
 
-    $("#btnAI").addEventListener("click", ()=> openAISheet());
+    // AI mode buttons = switch tabs (Top/Rec/Nearest) + scroll to section
+    function scrollToId(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const y = el.getBoundingClientRect().top + window.scrollY - 86;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
 
     $("#aiTop").addEventListener("click", ()=>{
       setTab("partners");
       closeAISheet();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollToId("secPartners");
     });
     $("#aiRec").addEventListener("click", ()=>{
       setTab("rec");
       closeAISheet();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollToId("secRec");
     });
     $("#aiNear").addEventListener("click", ()=>{
-      // pick nearest listing and open booking
-      const best = pickNearest(filtered())[0];
-      if(best){
-        closeAISheet();
-        openBooking({ listingId: best.id, serviceId: STATE.serviceId || "" });
-      }else{
-        toast("AI", "—", 1400);
-      }
+      // nearest is inside "All" context (we keep it simple)
+      setTab("all");
+      closeAISheet();
+      scrollToId("secAll");
     });
     $("#aiClear").addEventListener("click", ()=>{
+      // reset only AI filter = service
       STATE.serviceId = "";
-      STATE.search = "";
-      STATE.favOnly = false;
       lsSet("bb.serviceId", "");
-      lsSet("bb.search", "");
-      lsSet("bb.favOnly", false);
-      $("#search").value = "";
-      $("#btnFavOnly").style.filter = "none";
       renderServiceChips();
       renderAIServices();
       render();
       buildNextAvailable(true);
-      toast("✅", txt().reset, 1600);
+      toast("↺", txt().reset, 1400);
     });
+
+    $("#btnAI").addEventListener("click", openAISheet);
 
     /* =========================
        Init
     ========================== */
     function init(){
-      if(!Array.isArray(LISTINGS) || !LISTINGS.length){
-        toast("⚠️", "LISTINGS missing in data.js", 4000);
-      }
-
+      // theme + texts
       applyTheme();
       applyTexts();
 
-      // restore tab UI
-      setTab(STATE.tab);
+      // initial tab visuals
+      setTab(STATE.tab === "partners" ? "partners" : (STATE.tab === "rec" ? "rec" : "all"));
 
+      // service chips
       renderServiceChips();
-      renderAIServices();
+
+      // initial render
       render();
+
+      // hero next available
       buildNextAvailable(true);
 
+      // netbar + SW updates
       initNetbar();
       initSWUpdate();
+
+      // deep-link from profile
       readParams();
     }
 
     init();
+
   })();
   </script>
 </body>
