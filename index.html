@@ -2,7 +2,6 @@
 <html lang="uk" data-theme="night">
 <head>
   <meta charset="utf-8" />
-  <!-- ✅ iOS/PWA: app-like scale + safe-area -->
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0f" id="metaTheme" />
   <title>Beauty Booking</title>
@@ -15,7 +14,6 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 
-  <!-- iOS standalone -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Beauty Booking" />
@@ -24,16 +22,15 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* --- NIGHT (lux) --- */
       --bg:#07070b;
       --bg2:#0b0b11;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.085);
-      --line: rgba(255,255,255,.10);
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.085);
+      --line:rgba(255,255,255,.10);
       --text:#f5f6fb;
       --muted:rgba(245,246,251,.72);
       --muted2:rgba(245,246,251,.55);
@@ -43,61 +40,56 @@
       --violet:#8b5cf6;
       --mint:#5cf6c7;
 
-      --r: 22px;
-      --r2: 26px;
+      --r:22px;
+      --r2:28px;
 
-      --shadow: 0 22px 60px rgba(0,0,0,.55);
-      --shadow2: 0 12px 30px rgba(0,0,0,.40);
+      --shadow:0 22px 60px rgba(0,0,0,.55);
+      --shadow2:0 12px 30px rgba(0,0,0,.40);
+      --glow:0 0 0 1px rgba(255,255,255,.06),0 10px 50px rgba(255,79,216,.12);
+      --glow2:0 0 0 1px rgba(255,255,255,.08),0 18px 60px rgba(139,92,246,.10);
 
-      --glow: 0 0 0 1px rgba(255,255,255,.06), 0 10px 50px rgba(255,79,216,.12);
-      --glow2: 0 0 0 1px rgba(255,255,255,.08), 0 18px 60px rgba(139,92,246,.10);
+      --safe-top:env(safe-area-inset-top);
+      --safe-bottom:env(safe-area-inset-bottom);
+      --safe-left:env(safe-area-inset-left);
+      --safe-right:env(safe-area-inset-right);
 
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
-      --safe-left: env(safe-area-inset-left);
-      --safe-right: env(safe-area-inset-right);
+      --topbarPadTop:calc(12px + var(--safe-top));
+      --contentPad:16px;
 
-      --topbarPadTop: calc(14px + var(--safe-top));
-      --contentPad: 16px;
+      --font-title:"Playfair Display", ui-serif, Georgia, serif;
+      --font-ui:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
-      --font-title: "Playfair Display", ui-serif, Georgia, serif;
-      --font-ui: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-
-      --glassA: rgba(10,10,16,.88);
-      --glassB: rgba(10,10,16,.55);
+      --glassA:rgba(10,10,16,.88);
+      --glassB:rgba(10,10,16,.56);
     }
 
-    /* --- DAY (lux-light) --- */
     html[data-theme="day"]{
       --bg:#f6f3ff;
       --bg2:#fff7fb;
-      --card: rgba(10,10,20,.06);
-      --card2: rgba(10,10,20,.085);
-      --line: rgba(10,10,20,.12);
+      --card:rgba(10,10,20,.06);
+      --card2:rgba(10,10,20,.085);
+      --line:rgba(10,10,20,.12);
       --text:#0a0a14;
       --muted:rgba(10,10,20,.70);
       --muted2:rgba(10,10,20,.55);
-
-      --shadow: 0 18px 60px rgba(10,10,20,.18);
-      --shadow2: 0 12px 28px rgba(10,10,20,.14);
-
-      --glow: 0 0 0 1px rgba(10,10,20,.10), 0 16px 50px rgba(255,79,216,.10);
-      --glow2: 0 0 0 1px rgba(10,10,20,.12), 0 18px 60px rgba(139,92,246,.10);
-
-      --glassA: rgba(255,255,255,.85);
-      --glassB: rgba(255,255,255,.62);
+      --shadow:0 18px 60px rgba(10,10,20,.18);
+      --shadow2:0 12px 28px rgba(10,10,20,.14);
+      --glow:0 0 0 1px rgba(10,10,20,.10),0 16px 50px rgba(255,79,216,.10);
+      --glow2:0 0 0 1px rgba(10,10,20,.12),0 18px 60px rgba(139,92,246,.10);
+      --glassA:rgba(255,255,255,.86);
+      --glassB:rgba(255,255,255,.64);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
+    html{scroll-behavior:smooth}
     body{
       margin:0;
       color:var(--text);
       font-family:var(--font-ui);
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
       background:
         radial-gradient(900px 450px at 10% 0%, rgba(255,79,216,.14), transparent 60%),
         radial-gradient(700px 420px at 92% 10%, rgba(139,92,246,.14), transparent 62%),
@@ -115,531 +107,669 @@
     }
 
     a{color:inherit;text-decoration:none}
-    button, input, select{font-family:inherit}
+    button,input,select{font-family:inherit}
     button{cursor:pointer}
+    img{display:block}
 
-    /* ====== Topbar (icons bigger & lower) ====== */
+    .hidden{display:none !important}
+    .muted{color:var(--muted)}
+    .sep{height:1px;background:rgba(255,255,255,.06);margin:16px 0}
+    html[data-theme="day"] .sep{background:rgba(10,10,20,.10)}
+
+    /* Launch */
+    .launch{
+      position:fixed;
+      inset:0;
+      z-index:200;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:calc(20px + var(--safe-top)) calc(20px + var(--safe-right)) calc(20px + var(--safe-bottom)) calc(20px + var(--safe-left));
+      background:
+        radial-gradient(900px 420px at 18% 8%, rgba(255,79,216,.22), transparent 58%),
+        radial-gradient(760px 420px at 88% 12%, rgba(139,92,246,.18), transparent 60%),
+        radial-gradient(840px 520px at 50% 100%, rgba(255,210,122,.14), transparent 65%),
+        linear-gradient(180deg, #06060a, #0a0a10 65%, #0b0b12);
+      opacity:1;
+      visibility:visible;
+      transition:opacity .55s ease, visibility .55s ease;
+    }
+    html[data-theme="day"] .launch{
+      background:
+        radial-gradient(900px 420px at 18% 8%, rgba(255,79,216,.18), transparent 58%),
+        radial-gradient(760px 420px at 88% 12%, rgba(139,92,246,.16), transparent 60%),
+        radial-gradient(840px 520px at 50% 100%, rgba(255,210,122,.16), transparent 65%),
+        linear-gradient(180deg,#f7f4ff,#fff7fb);
+    }
+    .launch.hide{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+    .launchInner{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:18px;
+      text-align:center;
+      animation:launchFade 1s ease;
+    }
+    @keyframes launchFade{
+      from{opacity:0;transform:translateY(8px) scale(.98)}
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+    .launchLogo{
+      width:78px;
+      height:78px;
+      border-radius:24px;
+      background:
+        radial-gradient(20px 20px at 30% 25%, rgba(255,255,255,.45), transparent 60%),
+        linear-gradient(135deg, #ff4fd8, #ffd27a, #8b5cf6);
+      box-shadow:0 18px 60px rgba(255,79,216,.35),0 0 0 1px rgba(255,255,255,.14);
+      position:relative;
+      overflow:hidden;
+    }
+    .launchLogo:after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 60%);
+      transform:rotate(20deg);
+    }
+    .launchTitle{
+      font-family:var(--font-title);
+      font-size:28px;
+      font-weight:700;
+      letter-spacing:.3px;
+    }
+    .launchGlow{
+      width:170px;
+      height:4px;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--pink),var(--gold),var(--violet));
+      animation:launchGlow 1.4s ease infinite;
+    }
+    @keyframes launchGlow{
+      0%{opacity:.3;transform:scaleX(.6)}
+      50%{opacity:1;transform:scaleX(1)}
+      100%{opacity:.3;transform:scaleX(.6)}
+    }
+
+    /* Netbar */
+    .netbar{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      top:calc(10px + var(--safe-top));
+      z-index:120;
+      width:min(860px,calc(100% - 24px));
+      padding:10px 12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.82);
+      backdrop-filter:blur(14px);
+      box-shadow:0 22px 70px rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    html[data-theme="day"] .netbar{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.88);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .netbar.show{display:flex}
+    .netbar .txt{font-size:13px;color:var(--text)}
+    .netbar .btns{display:flex;gap:8px;flex-wrap:wrap}
+    .netbar .nb{
+      height:36px;padding:0 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);color:var(--text);
+    }
+    html[data-theme="day"] .netbar .nb{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .netbar .nb.primary{
+      background:rgba(92,246,199,.18);
+      border-color:rgba(92,246,199,.30);
+    }
+
+    /* Topbar */
     .topbar{
-      position:sticky; top:0; z-index:50;
-      padding: var(--topbarPadTop) calc(var(--contentPad) + var(--safe-right)) 10px calc(var(--contentPad) + var(--safe-left));
-      backdrop-filter: blur(18px);
-      background: linear-gradient(180deg, var(--glassA), var(--glassB));
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      position:sticky;
+      top:0;
+      z-index:50;
+      padding:var(--topbarPadTop) calc(var(--contentPad) + var(--safe-right)) 10px calc(var(--contentPad) + var(--safe-left));
+      backdrop-filter:blur(18px);
+      background:linear-gradient(180deg, var(--glassA), var(--glassB));
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    html[data-theme="day"] .topbar{ border-bottom-color: rgba(10,10,20,.10); }
-
+    html[data-theme="day"] .topbar{border-bottom-color:rgba(10,10,20,.10)}
     .topbarRow{
-      display:flex; align-items:center; justify-content:space-between;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:12px;
-      margin-top: 10px; /* lower by default */
+      margin-top:8px;
     }
-    body.is-standalone .topbarRow{ margin-top: 16px; } /* iOS PWA: lower more */
-
+    body.is-standalone .topbarRow{margin-top:14px}
     .brand{
-      display:flex; align-items:center; gap:10px;
-      min-width: 170px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+      flex:1;
     }
     .logo{
-      width:38px; height:38px; border-radius:14px;
+      width:42px;height:42px;border-radius:15px;flex:0 0 auto;
       background:
         radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
         linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.85), rgba(139,92,246,.90));
-      box-shadow: 0 10px 35px rgba(255,79,216,.18), 0 0 0 1px rgba(255,255,255,.10);
-      position:relative; overflow:hidden;
+      box-shadow:0 10px 35px rgba(255,79,216,.18),0 0 0 1px rgba(255,255,255,.10);
+      position:relative;overflow:hidden;
     }
     .logo:after{
       content:"";
-      position:absolute; inset:-40%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 55%);
-      transform: rotate(25deg);
+      position:absolute;inset:-40%;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 55%);
+      transform:rotate(25deg);
     }
-    .brandText{
-      display:flex; flex-direction:column; line-height:1.05;
-    }
+    .brandText{display:flex;flex-direction:column;line-height:1.05;min-width:0}
     .brandText .name{
       font-family:var(--font-title);
       font-weight:700;
       letter-spacing:.2px;
-      font-size: 19px; /* polish */
+      font-size:20px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .brandText .sub{
       font-size:12px;
       color:var(--muted2);
       margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .actions{
-      display:flex; align-items:center; gap:10px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
     }
+
+    .iconBtn,
+    .pillBtn,
+    .cta,
+    .miniBtn,
+    .small,
+    .tab,
+    .socialBtn,
+    .ghostBtn,
+    .bookBtn,
+    .closeBtn,
+    .pickBtn,
+    .timeBtn,
+    .nb{
+      -webkit-tap-highlight-color:transparent;
+    }
+
     .iconBtn{
-      width:44px; height:44px;
-      border-radius:16px;
+      width:44px;height:44px;border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
+      background:rgba(255,255,255,.05);
       color:var(--text);
-      display:grid; place-items:center;
-      box-shadow: 0 10px 26px rgba(0,0,0,.28);
-      transform: translateY(2px);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      user-select:none;
+      display:grid;place-items:center;
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+      transform:translateY(1px);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;font-size:17px;
+      flex:0 0 auto;
     }
     html[data-theme="day"] .iconBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.55);
-      box-shadow: 0 10px 24px rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.58);
+      box-shadow:0 10px 24px rgba(10,10,20,.10);
     }
-    .iconBtn:active{transform: translateY(3px) scale(.98)}
-    .iconBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
-    html[data-theme="day"] .iconBtn:hover{background: rgba(255,255,255,.75); border-color: rgba(10,10,20,.18)}
+    .iconBtn:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.16)}
+    html[data-theme="day"] .iconBtn:hover{background:rgba(255,255,255,.75);border-color:rgba(10,10,20,.18)}
+    .iconBtn:active{transform:translateY(3px) scale(.98)}
 
     .pillBtn{
-      height:44px;
-      padding:0 14px;
-      border-radius:16px;
+      height:44px;padding:0 14px;border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
+      background:rgba(255,255,255,.05);
       color:var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow: 0 10px 26px rgba(0,0,0,.28);
-      transform: translateY(2px);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      user-select:none;
+      display:flex;align-items:center;gap:10px;
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+      transform:translateY(1px);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;white-space:nowrap;
+      flex:0 0 auto;
     }
     html[data-theme="day"] .pillBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.55);
-      box-shadow: 0 10px 24px rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.58);
+      box-shadow:0 10px 24px rgba(10,10,20,.10);
     }
-    .pillBtn:hover{background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.16)}
-    html[data-theme="day"] .pillBtn:hover{background: rgba(255,255,255,.75); border-color: rgba(10,10,20,.18)}
-    .pillBtn:active{transform: translateY(3px) scale(.98)}
+    .pillBtn:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.16)}
+    html[data-theme="day"] .pillBtn:hover{background:rgba(255,255,255,.75);border-color:rgba(10,10,20,.18)}
+    .pillBtn:active{transform:translateY(3px) scale(.98)}
+    .pillBtn.active{
+      background:rgba(255,79,216,.16);
+      border-color:rgba(255,79,216,.30);
+    }
     .dot{
       width:10px;height:10px;border-radius:999px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,79,216,.9));
-      box-shadow: 0 0 20px rgba(255,79,216,.35);
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,79,216,.9));
+      box-shadow:0 0 20px rgba(255,79,216,.35);
+      flex:0 0 auto;
+    }
+        .wrap{
+      padding:14px calc(var(--contentPad) + var(--safe-right)) calc(138px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
+      max-width:1140px;
+      margin:0 auto;
     }
 
-    /* ====== Layout ====== */
-    .wrap{
-      padding: 14px calc(var(--contentPad) + var(--safe-right)) calc(140px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
-      max-width: 1140px;
-      margin: 0 auto;
-    }
-
-    /* ====== Hero ====== */
+    /* Hero */
     .hero{
-      margin-top: 12px;
-      border-radius: var(--r2);
+      margin-top:12px;
+      border-radius:var(--r2);
       overflow:hidden;
       border:1px solid rgba(255,255,255,.08);
       background:
         radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
         radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.20), transparent 62%),
         linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
       position:relative;
     }
     html[data-theme="day"] .hero{
-      border-color: rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.10);
       background:
         radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.22), transparent 60%),
         radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.22), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.40));
+        linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.42));
     }
     .heroInner{
-      padding: 18px;
+      padding:18px;
       display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 16px;
+      grid-template-columns:1.12fr .88fr;
+      gap:16px;
       align-items:stretch;
-    }
-    @media (max-width: 840px){
-      .heroInner{grid-template-columns:1fr}
     }
     .heroTitle{
       font-family:var(--font-title);
       font-weight:700;
-      font-size: 30px;
+      font-size:32px;
+      line-height:1.04;
       letter-spacing:.2px;
-      margin: 4px 0 6px;
+      margin:4px 0 8px;
+      max-width:12ch;
     }
     .heroLead{
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      margin: 0 0 14px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
+      margin:0 0 14px;
+      max-width:56ch;
     }
-    .heroCtas{display:flex; gap:10px; flex-wrap:wrap}
+    .heroCtas{display:flex;gap:10px;flex-wrap:wrap}
     .cta{
-      height:44px;
+      height:46px;
       padding:0 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow: var(--shadow2);
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      display:flex;align-items:center;gap:10px;
+      box-shadow:var(--shadow2);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
       user-select:none;
+      font-weight:700;
     }
     html[data-theme="day"] .cta{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.60);
-      box-shadow: 0 12px 26px rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.60);
+      box-shadow:0 12px 26px rgba(10,10,20,.10);
     }
     .cta.primary{
-      background: linear-gradient(135deg, rgba(255,79,216,.85), rgba(255,210,122,.65), rgba(139,92,246,.75));
-      border-color: rgba(255,255,255,.14);
+      background:linear-gradient(135deg, rgba(255,79,216,.85), rgba(255,210,122,.65), rgba(139,92,246,.75));
+      border-color:rgba(255,255,255,.14);
     }
-    .cta:hover{background: rgba(255,255,255,.085); border-color: rgba(255,255,255,.16)}
-    html[data-theme="day"] .cta:hover{background: rgba(255,255,255,.78); border-color: rgba(10,10,20,.18)}
-    .cta.primary:hover{filter: brightness(1.03)}
-    .cta:active{transform: scale(.985)}
+    .cta:hover{background:rgba(255,255,255,.085);border-color:rgba(255,255,255,.16)}
+    html[data-theme="day"] .cta:hover{background:rgba(255,255,255,.78);border-color:rgba(10,10,20,.18)}
+    .cta.primary:hover{filter:brightness(1.03)}
+    .cta:active{transform:scale(.985)}
 
     .chips{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top: 12px;
+      display:flex;gap:8px;flex-wrap:wrap;
+      margin-top:14px;
     }
     .chip{
-      height:34px;
-      padding:0 12px;
-      border-radius: 999px;
+      height:34px;padding:0 12px;border-radius:999px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.045);
-      color: var(--text);
-      font-size: 13px;
-      display:flex; align-items:center; gap:8px;
-      transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      font-size:13px;font-weight:600;
+      display:flex;align-items:center;gap:8px;
+      transition:background .18s ease, border-color .18s ease, transform .18s ease;
       user-select:none;
     }
     html[data-theme="day"] .chip{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.55);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.55);
     }
-    .chip:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14)}
-    html[data-theme="day"] .chip:hover{background: rgba(255,255,255,.75); border-color: rgba(10,10,20,.18)}
-    .chip:active{transform: scale(.985)}
+    .chip:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14)}
+    html[data-theme="day"] .chip:hover{background:rgba(255,255,255,.75);border-color:rgba(10,10,20,.18)}
+    .chip:active{transform:scale(.985)}
     .chip.active{
-      background: rgba(255,79,216,.18);
-      border-color: rgba(255,79,216,.35);
-      box-shadow: 0 14px 40px rgba(255,79,216,.10);
-    }
-    html[data-theme="day"] .chip.active{
-      background: rgba(255,79,216,.16);
-      border-color: rgba(255,79,216,.30);
+      background:rgba(255,79,216,.18);
+      border-color:rgba(255,79,216,.35);
+      box-shadow:0 14px 40px rgba(255,79,216,.10);
     }
 
-    /* Next available block */
     .nextCard{
-      border-radius: var(--r);
+      border-radius:var(--r);
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      box-shadow: var(--glow2);
-      padding: 14px;
-      display:flex; flex-direction:column; gap:10px;
-      min-height: 182px;
+      background:rgba(0,0,0,.22);
+      box-shadow:var(--glow2);
+      padding:15px;
+      display:flex;flex-direction:column;gap:10px;
+      min-height:198px;
       position:relative;
       overflow:hidden;
     }
     html[data-theme="day"] .nextCard{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.62);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.64);
     }
     .nextTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
     .nextLabel{
-      font-size:12px; color: var(--muted2);
-      display:flex; align-items:center; gap:8px;
+      font-size:12px;color:var(--muted2);
+      display:flex;align-items:center;gap:8px;
+      font-weight:700;
     }
     .pulse{
       width:10px;height:10px;border-radius:999px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.9));
-      box-shadow: 0 0 20px rgba(92,246,199,.25);
-      animation: pulse 1.6s ease-in-out infinite;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.9));
+      box-shadow:0 0 20px rgba(92,246,199,.25);
+      animation:pulse 1.6s ease-in-out infinite;
+      flex:0 0 auto;
     }
     @keyframes pulse{
-      0%,100%{transform:scale(1); opacity:.85}
-      50%{transform:scale(1.25); opacity:1}
+      0%,100%{transform:scale(1);opacity:.85}
+      50%{transform:scale(1.25);opacity:1}
     }
-    .nextBody{display:flex; flex-direction:column; gap:6px}
+    .nextBody{display:flex;flex-direction:column;gap:6px}
     .nextName{
-      font-weight:800;
+      font-weight:900;
       letter-spacing:.1px;
+      font-size:18px;
+      line-height:1.15;
     }
     .nextMeta{
       color:var(--muted);
       font-size:13px;
-      line-height:1.35;
+      line-height:1.45;
     }
     .nextAction{
       margin-top:auto;
-      display:flex; gap:10px; align-items:center;
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
     }
     .miniBtn{
-      height:40px;
-      padding:0 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow: var(--shadow2);
+      height:42px;padding:0 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      display:flex;align-items:center;gap:10px;
+      box-shadow:var(--shadow2);
+      font-weight:700;
       user-select:none;
     }
     html[data-theme="day"] .miniBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.68);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.68);
     }
     .miniBtn.primary{
-      background: linear-gradient(135deg, rgba(92,246,199,.35), rgba(255,255,255,.08));
-      border-color: rgba(92,246,199,.30);
+      background:linear-gradient(135deg, rgba(92,246,199,.35), rgba(255,255,255,.08));
+      border-color:rgba(92,246,199,.30);
     }
 
-    /* ====== Search + tabs ====== */
+    /* Controls */
     .controls{
-      margin-top: 14px;
+      margin-top:14px;
       display:grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
+      grid-template-columns:1fr auto;
+      gap:10px;
       align-items:center;
     }
-    @media (max-width: 720px){
-      .controls{grid-template-columns: 1fr}
-    }
     .search{
-      height: 48px;
-      border-radius: 18px;
+      height:48px;border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      padding: 0 14px;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      padding:0 14px;
       outline:none;
-      box-shadow: 0 14px 40px rgba(0,0,0,.28);
+      box-shadow:0 14px 40px rgba(0,0,0,.28);
     }
     html[data-theme="day"] .search{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
-      box-shadow: 0 14px 34px rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+      box-shadow:0 14px 34px rgba(10,10,20,.10);
     }
     .tabs{
-      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;
     }
     .tab{
-      height:48px;
-      padding:0 14px;
-      border-radius: 18px;
+      height:48px;padding:0 14px;border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow: 0 14px 40px rgba(0,0,0,.28);
-      user-select:none;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex;align-items:center;gap:10px;
+      box-shadow:0 14px 40px rgba(0,0,0,.28);
+      user-select:none;font-weight:700;
     }
     html[data-theme="day"] .tab{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
-      box-shadow: 0 14px 34px rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+      box-shadow:0 14px 34px rgba(10,10,20,.10);
     }
     .tab.active{
-      background: rgba(139,92,246,.18);
-      border-color: rgba(139,92,246,.35);
-      box-shadow: 0 18px 60px rgba(139,92,246,.12);
+      background:rgba(139,92,246,.18);
+      border-color:rgba(139,92,246,.35);
+      box-shadow:0 18px 60px rgba(139,92,246,.12);
     }
 
-    /* ====== Sections & cards ====== */
-    .section{margin-top: 18px}
+    .section{margin-top:18px}
     .sectionHead{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
-      margin-bottom: 10px;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+      margin-bottom:10px;
     }
     .h2{
       font-family:var(--font-title);
-      font-size: 20px;
+      font-size:21px;
       margin:0;
       letter-spacing:.2px;
     }
-    .hint{color:var(--muted2); font-size:12px}
+    .hint{color:var(--muted2);font-size:12px}
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 12px;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:13px;
     }
-    @media (max-width: 980px){ .grid{grid-template-columns: repeat(2,minmax(0,1fr));} }
-    @media (max-width: 620px){ .grid{grid-template-columns: 1fr;} }
 
     .card{
-      border-radius: var(--r);
+      border-radius:var(--r);
       border:1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.04);
+      background:rgba(255,255,255,.04);
       overflow:hidden;
-      box-shadow: var(--shadow2);
+      box-shadow:var(--shadow2);
       position:relative;
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+      min-width:0;
     }
     html[data-theme="day"] .card{
-      border-color: rgba(10,10,20,.10);
-      background: rgba(255,255,255,.70);
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.72);
     }
-    .card:hover{transform: translateY(-2px); background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.12)}
-    html[data-theme="day"] .card:hover{background: rgba(255,255,255,.82); border-color: rgba(10,10,20,.14)}
+    .card:hover{transform:translateY(-2px);background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.12)}
+    html[data-theme="day"] .card:hover{background:rgba(255,255,255,.84);border-color:rgba(10,10,20,.14)}
     .img{
-      height: 150px;
-      background: linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,210,122,.10), rgba(139,92,246,.18));
-      position:relative;
-      overflow:hidden;
+      height:154px;
+      background:linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,210,122,.10), rgba(139,92,246,.18));
+      position:relative;overflow:hidden;
     }
     .img img{
-      width:100%; height:100%;
+      width:100%;height:100%;
       object-fit:cover;
-      transform: scale(1.02);
-      transition: transform .55s ease;
-      filter: saturate(1.05) contrast(1.02);
+      transform:scale(1.02);
+      transition:transform .55s ease;
+      filter:saturate(1.05) contrast(1.02);
     }
-    .card:hover .img img{transform: scale(1.10)}
+    .card:hover .img img{transform:scale(1.10)}
     .img:after{
       content:"";
-      position:absolute; inset:0;
+      position:absolute;inset:0;
       background:
         radial-gradient(220px 120px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
         linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.52));
       pointer-events:none;
     }
-
-    /* shine / parallax micro-wow */
     .img:before{
       content:"";
-      position:absolute; inset:-30%;
-      background: linear-gradient(110deg, transparent 40%, rgba(255,255,255,.16) 50%, transparent 60%);
-      transform: translateX(-30%) rotate(8deg);
+      position:absolute;inset:-30%;
+      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.16) 50%, transparent 60%);
+      transform:translateX(-30%) rotate(8deg);
       opacity:0;
-      transition: opacity .22s ease, transform .55s ease;
+      transition:opacity .22s ease, transform .55s ease;
       pointer-events:none;
     }
     .card:hover .img:before{
       opacity:1;
-      transform: translateX(30%) rotate(8deg);
+      transform:translateX(30%) rotate(8deg);
     }
 
     .badges{
-      position:absolute; left:10px; top:10px;
-      display:flex; gap:6px; flex-wrap:wrap;
-      z-index:2;
+      position:absolute;left:10px;top:10px;z-index:2;
+      display:flex;gap:6px;flex-wrap:wrap;
     }
     .badge{
       font-size:11px;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.45);
-      border: 1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(10px);
-      color: #fff;
+      padding:6px 9px;
+      border-radius:999px;
+      background:rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(10px);
+      color:#fff;
+      font-weight:700;
     }
     html[data-theme="day"] .badge{
-      background: rgba(10,10,20,.55);
-      border-color: rgba(255,255,255,.20);
+      background:rgba(10,10,20,.55);
+      border-color:rgba(255,255,255,.20);
     }
-    .badge.partner{border-color: rgba(255,210,122,.30); background: rgba(255,210,122,.10)}
-    .badge.today{border-color: rgba(92,246,199,.30); background: rgba(92,246,199,.10)}
-    .badge.verified{border-color: rgba(139,92,246,.32); background: rgba(139,92,246,.10)}
+    .badge.partner{border-color:rgba(255,210,122,.30);background:rgba(255,210,122,.10)}
+    .badge.today{border-color:rgba(92,246,199,.30);background:rgba(92,246,199,.10)}
+    .badge.verified{border-color:rgba(139,92,246,.32);background:rgba(139,92,246,.10)}
 
-    .cardBody{padding: 12px}
+    .cardBody{padding:13px}
     .row1{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
     }
     .title{
-      font-weight: 900;
-      letter-spacing:.1px;
-      line-height:1.15;
+      font-weight:900;
+      line-height:1.16;
       margin:0;
-      font-size: 15px;
+      font-size:15px;
+      letter-spacing:.1px;
     }
     .subline{
       margin-top:6px;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height:1.25;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.32;
     }
     .rightMeta{
-      display:flex; flex-direction:column; align-items:flex-end; gap:6px;
-      min-width: 96px;
+      display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+      min-width:96px;flex:0 0 auto;
     }
     .price{
       font-weight:900;
-      font-size: 13px;
-      padding: 6px 10px;
-      border-radius: 999px;
+      font-size:13px;
+      padding:6px 10px;
+      border-radius:999px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
+      background:rgba(255,255,255,.05);
+      white-space:nowrap;
     }
     html[data-theme="day"] .price{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
     }
     .rating{
-      font-size: 12px;
-      color: var(--muted);
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
     }
-
     .cardActions{
-      margin-top: 10px;
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      margin-top:11px;
+      display:flex;justify-content:space-between;align-items:center;gap:8px;
+      flex-wrap:wrap;
     }
     .small{
-      height: 38px;
-      padding: 0 12px;
-      border-radius: 14px;
+      height:40px;padding:0 12px;border-radius:14px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      display:flex; align-items:center; gap:10px;
-      user-select:none;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex;align-items:center;gap:10px;
+      user-select:none;font-weight:700;
     }
     html[data-theme="day"] .small{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
     }
     .small.primary{
-      background: linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,255,255,.06));
-      border-color: rgba(255,79,216,.26);
+      background:linear-gradient(135deg, rgba(255,79,216,.26), rgba(255,255,255,.06));
+      border-color:rgba(255,79,216,.26);
     }
-
-    /* ====== Featured partners strip ====== */
-    .strip{
-      display:flex;
-      gap:12px;
-      overflow-x:auto;
-      padding-bottom: 8px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
+        .strip{
+      display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
     }
     .strip::-webkit-scrollbar{height:8px}
-    .strip::-webkit-scrollbar-thumb{background: rgba(255,255,255,.12); border-radius: 999px}
-    html[data-theme="day"] .strip::-webkit-scrollbar-thumb{background: rgba(10,10,20,.12)}
+    .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:999px}
+    html[data-theme="day"] .strip::-webkit-scrollbar-thumb{background:rgba(10,10,20,.12)}
     .stripCard{
-      flex: 0 0 min(420px, 86%);
-      border-radius: var(--r);
+      flex:0 0 min(420px, 86%);
+      border-radius:var(--r);
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow2);
+      background:rgba(255,255,255,.05);
+      box-shadow:var(--shadow2);
       overflow:hidden;
       position:relative;
-      scroll-snap-align: start;
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      scroll-snap-align:start;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
     }
     html[data-theme="day"] .stripCard{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
     }
-    .stripCard:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.14)}
-    html[data-theme="day"] .stripCard:hover{border-color: rgba(10,10,20,.16)}
-    .stripImg{height:170px; position:relative; overflow:hidden}
+    .stripCard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
+    html[data-theme="day"] .stripCard:hover{border-color:rgba(10,10,20,.16)}
+    .stripImg{height:172px;position:relative;overflow:hidden}
     .stripImg img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform .55s ease}
     .stripCard:hover .stripImg img{transform:scale(1.10)}
     .stripImg:after{
       content:"";
-      position:absolute; inset:0;
+      position:absolute;inset:0;
       background:
         radial-gradient(240px 130px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
         linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
@@ -647,495 +777,427 @@
     }
     .stripCard:before{
       content:"";
-      position:absolute; inset:-40%;
-      background: linear-gradient(110deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
-      transform: translateX(-30%) rotate(8deg);
-      opacity:.22; /* micro-shimmer always */
-      animation: shimmer 2.8s ease-in-out infinite;
+      position:absolute;inset:-40%;
+      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
+      transform:translateX(-30%) rotate(8deg);
+      opacity:.22;
+      animation:shimmer 2.8s ease-in-out infinite;
       pointer-events:none;
     }
     @keyframes shimmer{
-      0%,100%{transform: translateX(-35%) rotate(8deg); opacity:.18}
-      50%{transform: translateX(35%) rotate(8deg); opacity:.28}
+      0%,100%{transform:translateX(-35%) rotate(8deg);opacity:.18}
+      50%{transform:translateX(35%) rotate(8deg);opacity:.28}
     }
     .stripBody{padding:12px}
-    .stripTop{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
-    .stripName{font-weight:900; letter-spacing:.1px}
-    .stripMeta{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.25}
+    .stripTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .stripName{font-weight:900;letter-spacing:.1px}
+    .stripMeta{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.3}
 
-    /* ====== Floating quick-book ====== */
     .fab{
-      position: fixed;
-      right: calc(14px + var(--safe-right));
-      bottom: calc(14px + var(--safe-bottom));
-      z-index: 60;
-      height: 56px;
-      padding: 0 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: linear-gradient(135deg, rgba(255,79,216,.72), rgba(255,210,122,.46), rgba(139,92,246,.60));
-      color: var(--text);
-      box-shadow: 0 22px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
-      display:flex; align-items:center; gap:10px;
-      user-select:none;
+      position:fixed;
+      right:calc(14px + var(--safe-right));
+      bottom:calc(14px + var(--safe-bottom));
+      z-index:60;
+      height:56px;
+      padding:0 16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg, rgba(255,79,216,.72), rgba(255,210,122,.46), rgba(139,92,246,.60));
+      color:var(--text);
+      box-shadow:0 22px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
+      display:flex;align-items:center;gap:10px;
+      user-select:none;font-weight:900;
     }
-    .fab:active{transform: scale(.985)}
+    .fab:active{transform:scale(.985)}
 
-    /* ====== Modal ====== */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      backdrop-filter: blur(10px);
-      z-index: 80;
+    .overlay,
+    .sheet{
+      position:fixed;inset:0;z-index:80;
+      background:rgba(0,0,0,.62);
+      backdrop-filter:blur(10px);
       display:none;
       align-items:flex-end;
-      padding: 14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
+      padding:14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
     }
-    .overlay.show{display:flex}
-    .modal{
-      width: min(720px, 100%);
-      margin: 0 auto;
-      border-radius: 26px;
+    .overlay.show,
+    .sheet.show{display:flex}
+
+    .modal,
+    .sheetCard{
+      width:min(720px,100%);
+      margin:0 auto;
+      border-radius:26px;
       border:1px solid rgba(255,255,255,.12);
       background:
         radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.20), transparent 55%),
         radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.20), transparent 58%),
         linear-gradient(180deg, rgba(20,20,30,.95), rgba(12,12,18,.92));
-      box-shadow: 0 30px 120px rgba(0,0,0,.72);
+      box-shadow:0 30px 120px rgba(0,0,0,.72);
       overflow:hidden;
-      max-height: calc(92vh);
-      display:flex;
-      flex-direction:column;
     }
-    html[data-theme="day"] .modal{
-      border-color: rgba(10,10,20,.14);
+    html[data-theme="day"] .modal,
+    html[data-theme="day"] .sheetCard{
+      border-color:rgba(10,10,20,.14);
       background:
         radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.18), transparent 55%),
         radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.18), transparent 58%),
         linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
-      box-shadow: 0 30px 100px rgba(10,10,20,.18);
+      box-shadow:0 30px 100px rgba(10,10,20,.18);
     }
-    .modalHead{
-      padding: 14px 14px 12px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+    .modal{
+      max-height:92vh;
+      display:flex;
+      flex-direction:column;
     }
-    html[data-theme="day"] .modalHead{border-bottom-color: rgba(10,10,20,.10)}
-    .modalTitle{
-      font-family: var(--font-title);
-      font-weight:700;
-      font-size: 18px;
+    .modalHead,
+    .sheetHead{
+      padding:14px 14px 12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    html[data-theme="day"] .modalHead,
+    html[data-theme="day"] .sheetHead{border-bottom-color:rgba(10,10,20,.10)}
+    .modalTitle,
+    .sheetTitle{
       margin:0;
+      font-family:var(--font-title);
+      font-weight:700;
+      font-size:18px;
       letter-spacing:.2px;
     }
     .closeBtn{
-      width:42px; height:42px;
-      border-radius: 16px;
+      width:42px;height:42px;border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
+      background:rgba(255,255,255,.05);
       color:var(--text);
-      user-select:none;
     }
     html[data-theme="day"] .closeBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
     }
-    .modalBody{
-      padding: 14px;
+    .modalBody,
+    .sheetBody{
+      padding:14px;
       overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
     }
-    .field{margin-bottom: 12px}
-    .label{font-size:12px;color:var(--muted2); margin-bottom: 6px}
-    .input{
-      width:100%;
-      height:46px;
-      border-radius: 16px;
+    .sheetBody{max-height:52vh}
+    .field{margin-bottom:12px}
+    .label{font-size:12px;color:var(--muted2);margin-bottom:6px;font-weight:700}
+    .input,
+    .timeBtn{
+      width:100%;height:46px;border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      padding: 0 12px;
-      outline:none;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      padding:0 12px;outline:none;
     }
-    html[data-theme="day"] .input{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
+    .timeBtn{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      font-weight:700;
+    }
+    html[data-theme="day"] .input,
+    html[data-theme="day"] .timeBtn{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
     }
     select.input{appearance:none}
-    .row2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
-    @media (max-width: 520px){ .row2{grid-template-columns:1fr} }
-
-    .timeBtn{
-      height:46px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      padding: 0 12px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      user-select:none;
-    }
-    html[data-theme="day"] .timeBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
-    }
-
-    .quickPicks{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top: 8px;
-    }
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .quickPicks{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .pickBtn{
-      height:34px;
-      padding: 0 12px;
-      border-radius: 999px;
+      height:34px;padding:0 12px;border-radius:999px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      font-size: 13px;
-      user-select:none;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-size:13px;font-weight:700;
     }
     html[data-theme="day"] .pickBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
     }
-
     .modalFoot{
-      padding: 12px 14px 14px;
-      border-top: 1px solid rgba(255,255,255,.08);
-      display:flex; gap:10px; justify-content:space-between; align-items:center;
+      padding:12px 14px 14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;gap:10px;justify-content:space-between;align-items:center;
     }
-    html[data-theme="day"] .modalFoot{border-top-color: rgba(10,10,20,.10)}
+    html[data-theme="day"] .modalFoot{border-top-color:rgba(10,10,20,.10)}
     .bookBtn{
-      height:48px;
-      padding: 0 14px;
-      border-radius: 18px;
+      height:48px;padding:0 14px;border-radius:18px;flex:1;
       border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(135deg, rgba(92,246,199,.34), rgba(255,255,255,.07));
-      color: var(--text);
-      font-weight: 900;
-      letter-spacing:.2px;
-      display:flex; align-items:center; gap:10px;
-      flex:1;
-      justify-content:center;
-      box-shadow: 0 18px 60px rgba(92,246,199,.12);
-      user-select:none;
+      background:linear-gradient(135deg, rgba(92,246,199,.34), rgba(255,255,255,.07));
+      color:var(--text);
+      font-weight:900;letter-spacing:.2px;
+      display:flex;align-items:center;gap:10px;justify-content:center;
+      box-shadow:0 18px 60px rgba(92,246,199,.12);
     }
     .ghostBtn{
-      height:48px;
-      padding: 0 14px;
-      border-radius: 18px;
+      height:48px;padding:0 14px;border-radius:18px;min-width:140px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      min-width: 140px;
-      display:flex; align-items:center; justify-content:center;
-      user-select:none;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;
     }
     html[data-theme="day"] .ghostBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
     }
-    .hold{
-      font-size: 12px;
-      color: var(--muted2);
-      margin-left: 6px;
-    }
+    .hold{font-size:12px;color:var(--muted2);margin-left:6px}
 
-    /* ====== Time picker bottom sheet ====== */
-    .sheet{
-      position: fixed; inset:0;
-      z-index: 90;
-      display:none;
-      align-items:flex-end;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      padding: 14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
-    }
-    .sheet.show{display:flex}
-    .sheetCard{
-      width: min(560px, 100%);
-      margin: 0 auto;
-      border-radius: 26px;
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,16,.94));
-      box-shadow: 0 30px 120px rgba(0,0,0,.75);
-      overflow:hidden;
-    }
-    html[data-theme="day"] .sheetCard{
-      border-color: rgba(10,10,20,.14);
-      background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.80));
-      box-shadow: 0 30px 90px rgba(10,10,20,.16);
-    }
-    .sheetHead{
-      padding: 12px 14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    html[data-theme="day"] .sheetHead{border-bottom-color: rgba(10,10,20,.10)}
-    .sheetTitle{
-      margin:0;
-      font-family: var(--font-title);
-      font-size: 16px;
-      letter-spacing:.2px;
-    }
-    .sheetBody{
-      padding: 10px;
-      max-height: 52vh;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-    }
     .timeGrid{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 10px;
-    }
-    @media (max-width: 520px){ .timeGrid{grid-template-columns: repeat(2, minmax(0,1fr));} }
-    .timeItem{
-      height:44px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      display:flex; align-items:center; justify-content:center;
-      font-weight: 900;
-      letter-spacing:.2px;
-      transition: transform .16s ease, background .16s ease, border-color .16s ease;
-      user-select:none;
-    }
-    html[data-theme="day"] .timeItem{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
-    }
-    .timeItem:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14)}
-    .timeItem:active{transform: scale(.985)}
-    .timeItem.disabled{opacity:.35; pointer-events:none;}
-    .timeItem.active{
-      background: rgba(92,246,199,.16);
-      border-color: rgba(92,246,199,.30);
-      box-shadow: 0 18px 60px rgba(92,246,199,.10);
-    }
-
-    /* ====== AI bottom sheet ====== */
-    .aiRow{display:flex; gap:10px; flex-wrap:wrap}
-    .aiPill{
-      height:36px;
-      padding:0 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      font-size: 13px;
-      display:flex; align-items:center; gap:8px;
-      user-select:none;
-    }
-    html[data-theme="day"] .aiPill{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
-    }
-    .aiPill.primary{
-      background: rgba(139,92,246,.18);
-      border-color: rgba(139,92,246,.32);
-    }
-    .aiList{margin-top:10px; display:flex; flex-direction:column; gap:10px}
-    .aiItem{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      padding: 10px 12px;
-      display:flex; justify-content:space-between; gap:10px; align-items:center;
-    }
-    html[data-theme="day"] .aiItem{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
-    }
-    .aiItem .n{font-weight:900}
-    .aiItem .m{color:var(--muted); font-size:12.5px; margin-top:4px; line-height:1.25}
-    .aiItem .go{
-      height:38px;
-      padding:0 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      user-select:none;
-    }
-    html[data-theme="day"] .aiItem .go{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
-    }
-
-    /* ====== Toast ====== */
-    .toast{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: calc(90px + var(--safe-bottom));
-      z-index: 95;
-      min-width: 260px;
-      max-width: min(680px, calc(100% - 24px));
-      padding: 12px 14px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(10,10,16,.86);
-      box-shadow: 0 22px 70px rgba(0,0,0,.60);
-      color: var(--text);
-      display:none;
-      backdrop-filter: blur(14px);
-    }
-    html[data-theme="day"] .toast{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.86);
-      box-shadow: 0 22px 60px rgba(10,10,20,.16);
-    }
-    .toast.show{display:block; animation: toastIn .22s ease}
-    @keyframes toastIn{from{opacity:0; transform: translateX(-50%) translateY(10px)}to{opacity:1; transform: translateX(-50%) translateY(0)}}
-    .toast .t1{font-weight:900; margin-bottom:4px}
-    .toast .t2{color: var(--muted); font-size: 13px; line-height:1.35}
-
-    /* ====== Offline / update banner (netbar) ====== */
-    .netbar{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      top: calc(10px + var(--safe-top));
-      z-index: 120;
-      width: min(860px, calc(100% - 24px));
-      padding: 10px 12px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(10,10,16,.82);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 22px 70px rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:space-between;
+      grid-template-columns:repeat(3, minmax(0,1fr));
       gap:10px;
     }
-    html[data-theme="day"] .netbar{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.86);
-      box-shadow: 0 22px 60px rgba(10,10,20,.16);
-    }
-    .netbar.show{display:flex}
-    .netbar .txt{font-size:13px; color: var(--text)}
-    .netbar .btns{display:flex; gap:8px; flex-wrap:wrap}
-    .netbar .nb{
-      height:36px; padding:0 12px;
-      border-radius: 14px;
+    .timeItem{
+      height:44px;border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      user-select:none;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:900;letter-spacing:.2px;
+      transition:transform .16s ease, background .16s ease, border-color .16s ease;
     }
-    html[data-theme="day"] .netbar .nb{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
+    html[data-theme="day"] .timeItem{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
     }
-    .netbar .nb.primary{
-      background: rgba(92,246,199,.18);
-      border-color: rgba(92,246,199,.30);
+    .timeItem:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14)}
+    .timeItem:active{transform:scale(.985)}
+    .timeItem.active{
+      background:rgba(92,246,199,.16);
+      border-color:rgba(92,246,199,.30);
+      box-shadow:0 18px 60px rgba(92,246,199,.10);
     }
 
-    /* ====== Trust footer ====== */
+    .aiRow{display:flex;gap:10px;flex-wrap:wrap}
+    .aiPill{
+      height:36px;padding:0 12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);font-size:13px;font-weight:700;
+      display:flex;align-items:center;gap:8px;
+    }
+    html[data-theme="day"] .aiPill{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    .aiPill.primary{
+      background:rgba(139,92,246,.18);
+      border-color:rgba(139,92,246,.32);
+    }
+    .aiList{margin-top:10px;display:flex;flex-direction:column;gap:10px}
+    .aiItem{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      padding:10px 12px;
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+    }
+    html[data-theme="day"] .aiItem{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    .aiItem .n{font-weight:900}
+    .aiItem .m{color:var(--muted);font-size:12.5px;margin-top:4px;line-height:1.25}
+    .aiItem .go{
+      height:38px;padding:0 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      color:var(--text);font-weight:700;
+    }
+    html[data-theme="day"] .aiItem .go{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:calc(90px + var(--safe-bottom));
+      z-index:95;
+      min-width:260px;
+      max-width:min(680px, calc(100% - 24px));
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.86);
+      box-shadow:0 22px 70px rgba(0,0,0,.60);
+      color:var(--text);
+      display:none;
+      backdrop-filter:blur(14px);
+    }
+    html[data-theme="day"] .toast{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.88);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .toast.show{display:block;animation:toastIn .22s ease}
+    @keyframes toastIn{
+      from{opacity:0;transform:translateX(-50%) translateY(10px)}
+      to{opacity:1;transform:translateX(-50%) translateY(0)}
+    }
+    .toast .t1{font-weight:900;margin-bottom:4px}
+    .toast .t2{color:var(--muted);font-size:13px;line-height:1.35}
+
     .trustWrap{
-      margin-top: 16px;
-      border-radius: var(--r2);
+      margin-top:16px;
+      border-radius:var(--r2);
       border:1px solid rgba(255,255,255,.08);
       background:
         radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.18), transparent 55%),
         radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.16), transparent 55%),
         linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      box-shadow: var(--shadow2);
+      box-shadow:var(--shadow2);
       overflow:hidden;
     }
     html[data-theme="day"] .trustWrap{
-      border-color: rgba(10,10,20,.10);
+      border-color:rgba(10,10,20,.10);
       background:
         radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.12), transparent 55%),
         radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.10), transparent 55%),
         linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
     }
-    .trustInner{padding: 16px}
+    .trustInner{padding:16px}
     .trustGrid{
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 12px;
+      grid-template-columns:1.1fr .9fr;
+      gap:12px;
       align-items:start;
     }
-    @media (max-width: 840px){ .trustGrid{grid-template-columns:1fr} }
     .trustTitle{
-      font-family: var(--font-title);
-      font-weight: 700;
-      font-size: 20px;
-      margin: 0 0 8px;
+      font-family:var(--font-title);
+      font-weight:700;
+      font-size:20px;
+      margin:0 0 8px;
       letter-spacing:.2px;
     }
-    .trustText{color:var(--muted); font-size:13px; line-height:1.5}
+    .trustText{color:var(--muted);font-size:13px;line-height:1.55}
     .trustBullets{
-      margin: 10px 0 0;
-      padding: 0;
+      margin:10px 0 0;
+      padding:0;
       list-style:none;
       display:grid;
-      gap: 8px;
+      gap:8px;
     }
     .trustBullets li{
-      border-radius: 16px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      padding: 10px 12px;
-      font-size: 13px;
-      color: var(--text);
-      display:flex; gap:10px; align-items:flex-start;
+      background:rgba(255,255,255,.04);
+      padding:10px 12px;
+      font-size:13px;
+      color:var(--text);
+      display:flex;gap:10px;align-items:flex-start;
     }
     html[data-theme="day"] .trustBullets li{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
     }
     .trustRight{
-      border-radius: var(--r);
+      border-radius:var(--r);
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      padding: 12px;
-      box-shadow: var(--glow);
+      background:rgba(0,0,0,.18);
+      padding:12px;
+      box-shadow:var(--glow);
     }
     html[data-theme="day"] .trustRight{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
     }
-    .socialRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .socialRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     .socialBtn{
-      height:44px;
-      padding:0 14px;
-      border-radius: 16px;
+      height:44px;padding:0 14px;border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      display:flex; align-items:center; gap:10px;
-      user-select:none;
-      box-shadow: var(--shadow2);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex;align-items:center;gap:10px;
+      user-select:none;box-shadow:var(--shadow2);font-weight:700;
     }
     html[data-theme="day"] .socialBtn{
-      border-color: rgba(10,10,20,.12);
-      background: rgba(255,255,255,.78);
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
     }
     .trustMini{
       margin-top:10px;
-      color: var(--muted2);
-      font-size: 12px;
-      line-height:1.4;
+      color:var(--muted2);
+      font-size:12px;
+      line-height:1.45;
     }
 
-    /* ====== Helpers ====== */
-    .muted{color:var(--muted)}
-    .sep{height:1px; background: rgba(255,255,255,.06); margin: 16px 0}
-    html[data-theme="day"] .sep{background: rgba(10,10,20,.10)}
-    .hidden{display:none}
+    @media (max-width: 980px){
+      .grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+    @media (max-width: 840px){
+      .heroInner{grid-template-columns:1fr}
+      .trustGrid{grid-template-columns:1fr}
+    }
+    @media (max-width: 720px){
+      .controls{grid-template-columns:1fr}
+      .tabs{justify-content:flex-start}
+      .brandText .name{font-size:18px}
+      .hero{margin-top:10px}
+      .heroInner{padding:16px}
+      .heroTitle{font-size:28px;max-width:14ch}
+      .nextCard{min-height:170px}
+    }
+    @media (max-width: 620px){
+      .grid{grid-template-columns:1fr}
+      .actions{gap:7px}
+      .pillBtn{padding:0 12px}
+      .brand{min-width:0}
+      .wrap{padding-bottom:calc(124px + var(--safe-bottom))}
+    }
+    @media (max-width: 520px){
+      .row2{grid-template-columns:1fr}
+      .timeGrid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .topbar{padding-bottom:8px}
+      .topbarRow{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:10px;
+        align-items:start;
+      }
+      .actions{
+        width:100%;
+        display:grid;
+        grid-template-columns:1fr repeat(3,44px);
+        gap:8px;
+      }
+      .pillBtn{
+        min-width:0;
+        justify-content:center;
+      }
+      .heroTitle{font-size:26px}
+      .heroLead{font-size:13.5px}
+      .cta{flex:1}
+      .miniBtn{flex:1;justify-content:center}
+      .cardActions .small{flex:1;justify-content:center}
+      .modal,
+      .sheetCard{
+        border-radius:24px;
+      }
+      .fab{
+        left:calc(14px + var(--safe-left));
+        right:calc(14px + var(--safe-right));
+        justify-content:center;
+      }
+      .toast{
+        bottom:calc(84px + var(--safe-bottom));
+      }
+    }
   </style>
 </head>
-
 <body>
-  <!-- netbar -->
+  <div class="launch" id="launch">
+    <div class="launchInner">
+      <div class="launchLogo"></div>
+      <div class="launchTitle">Beauty Booking</div>
+      <div class="launchGlow"></div>
+    </div>
+  </div>
+
   <div class="netbar" id="netbar">
     <div class="txt" id="netbarText">…</div>
     <div class="btns">
@@ -1160,10 +1222,9 @@
           <span class="dot" aria-hidden="true"></span>
           <span id="t_favOnly">Only ❤️</span>
         </button>
-
         <button class="iconBtn" id="btnAI" title="AI help">✨</button>
         <button class="iconBtn" id="btnLang" title="Language">🌐</button>
-        <button class="iconBtn" id="btnTheme" title="Theme" aria-label="Theme">🌙</button>
+        <button class="iconBtn" id="btnTheme" title="Theme">🌙</button>
       </div>
     </div>
   </header>
@@ -1179,7 +1240,7 @@
             <button class="cta primary" id="ctaQuick">
               <span>⚡</span><span id="t_quick">Quick book</span>
             </button>
-            <a class="cta" href="./profile.html?id=romanukova" target="_blank" rel="noopener">
+            <a class="cta" id="heroProfileLink" href="./profile.html?id=romanukova" target="_blank" rel="noopener">
               <span>🏛</span><span id="t_openProfile">Open profile</span>
             </a>
           </div>
@@ -1213,14 +1274,12 @@
       </div>
     </div>
 
-    <!-- Order: Top partners -> Recommended -> All others -->
     <section class="section" id="secPartners">
       <div class="sectionHead">
         <h2 class="h2" id="t_partners">Top salons / partners</h2>
         <div class="hint" id="t_partnersHint">Paid partners</div>
       </div>
       <div class="strip" id="stripPartners"></div>
-      <div class="grid hidden" id="gridPartners"></div>
     </section>
 
     <section class="section" id="secRec">
@@ -1240,21 +1299,16 @@
     </section>
 
     <div class="sep"></div>
-    <div class="muted" id="t_footer">
-      Your place for self-care — fast booking, clean UI, premium feel.
-    </div>
+    <div class="muted" id="t_footer">Your place for self-care — fast booking, clean UI, premium feel.</div>
 
-    <!-- Trust / socials -->
     <div class="trustWrap" id="trustWrap">
       <div class="trustInner">
         <div class="trustGrid">
           <div>
             <h3 class="trustTitle" id="t_trustTitle">Why people trust Beauty Booking</h3>
-            <div class="trustText" id="t_trustText">
-              Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.
-            </div>
+            <div class="trustText" id="t_trustText">Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.</div>
 
-            <ul class="trustBullets" id="trustBullets">
+            <ul class="trustBullets">
               <li><span>🛡️</span><span id="t_trustB1">Verified salons & masters — curated quality.</span></li>
               <li><span>🧼</span><span id="t_trustB2">Sterile tools & hygiene standards highlighted.</span></li>
               <li><span>⏱️</span><span id="t_trustB3">Fast booking — in ~30 seconds.</span></li>
@@ -1270,10 +1324,7 @@
               <a class="socialBtn" href="https://facebook.com" target="_blank" rel="noopener"><span>📘</span><span id="t_fb">Facebook</span></a>
               <button class="socialBtn" id="btnCopyLink" type="button"><span>🔗</span><span id="t_copyLink">Copy site link</span></button>
             </div>
-
-            <div class="trustMini" id="t_legal">
-              By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.
-            </div>
+            <div class="trustMini" id="t_legal">By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.</div>
           </div>
         </div>
       </div>
@@ -1282,7 +1333,6 @@
 
   <button class="fab" id="fab"><span>⚡</span><span id="t_fab">Quick book</span></button>
 
-  <!-- Booking modal -->
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Booking">
       <div class="modalHead">
@@ -1293,7 +1343,6 @@
       <div class="modalBody">
         <div class="field">
           <div class="label" id="m_lblListing">Salon / Master</div>
-          <!-- ✅ now selectable -->
           <select class="input" id="m_listingSel"></select>
           <div class="muted" style="font-size:12px;margin-top:6px" id="m_listingInfo">—</div>
         </div>
@@ -1359,7 +1408,6 @@
     </div>
   </div>
 
-  <!-- Time picker sheet -->
   <div class="sheet" id="sheet">
     <div class="sheetCard">
       <div class="sheetHead">
@@ -1372,7 +1420,6 @@
     </div>
   </div>
 
-  <!-- AI sheet -->
   <div class="sheet" id="aiSheet">
     <div class="sheetCard">
       <div class="sheetHead">
@@ -1380,13 +1427,9 @@
         <button class="closeBtn" id="aiClose">✕</button>
       </div>
       <div class="sheetBody">
-        <div class="muted" style="font-size:13px;line-height:1.35" id="t_aiLead">
-          Pick a service and I’ll show Top / Recommended / Nearest — no random.
-        </div>
-
+        <div class="muted" style="font-size:13px;line-height:1.35" id="t_aiLead">Pick a service and I’ll show Top / Recommended / Nearest — no random.</div>
         <div style="height:10px"></div>
         <div class="aiRow" id="aiServiceRow"></div>
-
         <div style="height:10px"></div>
         <div class="aiRow">
           <button class="aiPill primary" id="aiTop" type="button">⭐ Top</button>
@@ -1394,70 +1437,40 @@
           <button class="aiPill" id="aiNear" type="button">📍 Nearest</button>
           <button class="aiPill" id="aiClear" type="button">↺ Reset</button>
         </div>
-
         <div class="aiList" id="aiList"></div>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast">
     <div class="t1" id="toastT1">—</div>
     <div class="t2" id="toastT2">—</div>
   </div>
 
-  <!-- data.js must expose SERVICES, LISTINGS, and (optionally) window.bb.util / window.WORKER_URL -->
   <script src="./data.js"></script>
-
   <script>
   ;(() => {
-    /* =========================
-       Ultra-safe helpers
-    ========================== */
     const $ = (q, el=document) => el.querySelector(q);
     const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
-
     const safeSetText = (el, txt) => { if (el) el.textContent = (txt ?? "").toString(); };
     const safeSetHTML = (el, html) => { if (el) el.innerHTML = (html ?? "").toString(); };
-
     const clamp = (n,a,b)=>Math.max(a,Math.min(b,n));
     const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
-
     const pad = n => String(n).padStart(2,"0");
     const isoLocal = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-
-    const fmtPretty = (dateISO, time, lang) => {
-      try{
-        const [y,m,d] = (dateISO||"").split("-").map(x=>parseInt(x,10));
-        const [hh,mm] = (time||"").split(":").map(x=>parseInt(x,10));
-        if(!y||!m||!d||isNaN(hh)||isNaN(mm)) return `${dateISO||""} ${time||""}`.trim() || "—";
-        const dt = new Date(y, m-1, d, hh, mm, 0, 0);
-        const locale =
-          (lang==="en") ? "en-CA" :
-          (lang==="fr") ? "fr-CA" :
-          (lang==="ru") ? "ru-RU" :
-          "uk-UA";
-        return dt.toLocaleString(locale, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
-      }catch(e){ return `${dateISO||""} ${time||""}`.trim() || "—"; }
-    };
 
     const lsGet = (k, fallback=null) => {
       try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; }
     };
     const lsSet = (k, v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
 
-    const escapeHtml = (s)=>{
-      return String(s ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-    };
+    const escapeHtml = (s)=> String(s ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
 
-    /* =========================
-       Standalone detect (iOS PWA)
-    ========================== */
     const isStandalone = () => {
       try{
         return window.matchMedia?.("(display-mode: standalone)")?.matches ||
@@ -1467,12 +1480,8 @@
     };
     if(isStandalone()) document.body.classList.add("is-standalone");
 
-    /* =========================
-       Config / State
-    ========================== */
     const LANGS = ["uk","en","fr","ru"];
     const normalizeLang = (v) => LANGS.includes(v) ? v : "uk";
-
     const savedBooking = lsGet("bb.booking", null);
     const bookingInit = (savedBooking && typeof savedBooking === "object") ? savedBooking : {};
 
@@ -1483,10 +1492,9 @@
       favorites: new Set(lsGet("bb.favorites", [])),
       serviceId: lsGet("bb.serviceId", ""),
       search: lsGet("bb.search",""),
-      tab: lsGet("bb.tab","all"), // all | partners | rec
-      aiMode: lsGet("bb.aiMode","top"), // top | rec | near
+      tab: lsGet("bb.tab","all"),
+      aiMode: lsGet("bb.aiMode","top"),
       lastNextIndex: Number(lsGet("bb.lastNextIndex", 0)) || 0,
-
       booking: {
         open: false,
         listingId: String(bookingInit.listingId || ""),
@@ -1494,16 +1502,12 @@
         dateISO: String(bookingInit.dateISO || ""),
         time: String(bookingInit.time || "")
       },
-
       hold: {
         until: 0,
         key: ""
       }
     };
 
-    /* =========================
-       Worker URL normalize (avoid / vs /book mistakes)
-    ========================== */
     function normalizeWorkerUrl(u){
       const s = String(u || "").trim();
       if(!s) return "/book";
@@ -1524,315 +1528,108 @@
     const SERVICES = Array.isArray(window.SERVICES) ? window.SERVICES.slice() : [];
     const LISTINGS = Array.isArray(window.LISTINGS) ? window.LISTINGS.slice() : [];
 
-    /* =========================
-       Theme apply (real toggle)
-    ========================== */
     function applyTheme(){
       const theme = (STATE.theme === "day") ? "day" : "night";
       document.documentElement.setAttribute("data-theme", theme);
-
       const meta = $("#metaTheme");
-      if(meta){
-        meta.setAttribute("content", theme === "day" ? "#f6f3ff" : "#0b0b0f");
-      }
-
+      if(meta) meta.setAttribute("content", theme === "day" ? "#f6f3ff" : "#0b0b0f");
       const btn = $("#btnTheme");
       if(btn) btn.textContent = (theme === "day") ? "☀️" : "🌙";
-
       lsSet("bb.theme", theme);
     }
 
-    /* =========================
-       Texts (UK / EN / FR-CA / RU)
-    ========================== */
     const T = {
-      uk: {
-        brand: "Beauty Booking",
-        sub: "Перевірені салони & майстри",
-        heroTitle: "Запис за секунди.",
-        heroLead: "Преміальні варіанти в Montréal — салони, home masters, швидке бронювання.",
-        quick: "Швидкий запис",
-        openProfile: "Відкрити профіль",
-        nextLabel: "Найближчий слот поруч",
-        bookSlot: "Записати цей слот",
-        why: "Чому цей?",
-        tabAll: "Всі",
-        tabPartners: "Топ",
-        tabRec: "Рекомендовано",
-        partners: "Топ салони / партнери",
-        partnersHint: "Платні партнери",
-        recommended: "Рекомендовано",
-        recHint: "Smart picks для тебе",
-        allOthers: "Усі інші",
-        allHint: "Переглянути всіх",
-        footer: "Твоє місце для self-care — швидкий запис, чистий UI, преміум відчуття.",
-        favOnly: "Only ❤️",
-        pickFast: "Найшвидше",
-        pickCheap: "Найдешевше",
-        pickNear: "Найближче",
-        sheetTitle: "Обери час",
-        confirm: "Підтвердити бронювання",
-        booking: "Бронювання",
-        listing: "Салон / Майстер",
-        service: "Послуга",
-        date: "Дата",
-        time: "Час",
-        yourName: "Імʼя",
-        phone: "Телефон",
-        email: "Email",
-        notes: "Нотатки",
-        profile: "Профіль",
-
-        btnBook: "Запис",
-        btnSave: "Зберегти",
-        btnProfile: "Профіль",
-        fab: "Швидкий запис",
-        aiTitle: "AI help",
-        aiLead: "Обери послугу — я покажу Top / Recommended / Nearest (без рандому).",
-        aiTop: "Топ",
-        aiRec: "Рекомендовано",
-        aiNear: "Найближче",
-        aiReset: "Скинути",
-
-        toastWhyTitle: "Чому цей?",
-        toastWhyText: "3 причини: 1) збіг по послузі 2) хороший рейтинг/ціна 3) найближчий слот сьогодні.",
-        missing: "Заповни дату/час/імʼя/телефон 🙏",
-        sent: "Відправлено ✅",
-        sentText: "Ми надіслали бронювання в Telegram. Скоро підтвердять.",
-        failed: "Помилка ❌",
-        failedText: "Не вдалось надіслати. Перевір Worker /book та інтернет.",
-        hold: "Hold 2 min",
-        offline: "Ти офлайн — деякі фічі можуть не працювати.",
-        cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.",
-        update: "Є нова версія. Натисни Update.",
-        reset: "Скинуто ✅",
-
-        trustTitle: "Чому довіряють Beauty Booking",
-        trustText: "Преміум-досвід бронювання: чистий UI, перевірені партнери, прозорі деталі — щоб ти записувався з впевненістю.",
-        trustB1: "Перевірені салони & майстри — підібрана якість.",
-        trustB2: "Гігієна та стерильність — виділяємо важливе.",
-        trustB3: "Швидкий запис — реально за ~30 сек.",
-        trustB4: "Адреса + профіль-лінк у кожному бронюванні.",
-        socialTitle: "Ми в соцмережах",
-        socialLead: "Оновлення, нові партнери, тренди тижня.",
-        copyLink: "Скопіювати лінк",
-        legal: "Бронюючи, ти погоджуєшся на коректний контакт без спаму. Підтвердження приходить у Telegram."
+      uk:{
+        brand:"Beauty Booking", sub:"Перевірені салони & майстри",
+        heroTitle:"Запис за секунди.", heroLead:"Преміальні варіанти в Montréal — салони, home masters, швидке бронювання.",
+        quick:"Швидкий запис", openProfile:"Відкрити профіль", nextLabel:"Найближчий слот поруч", bookSlot:"Записати цей слот", why:"Чому цей?",
+        tabAll:"Всі", tabPartners:"Топ", tabRec:"Рекомендовано",
+        partners:"Топ салони / партнери", partnersHint:"Платні партнери",
+        recommended:"Рекомендовано", recHint:"Smart picks для тебе",
+        allOthers:"Усі інші", allHint:"Переглянути всіх",
+        footer:"Твоє місце для self-care — швидкий запис, чистий UI, преміум відчуття.",
+        favOnly:"Only ❤️", pickFast:"Найшвидше", pickCheap:"Найдешевше", pickNear:"Найближче",
+        sheetTitle:"Обери час", confirm:"Підтвердити бронювання", booking:"Бронювання",
+        listing:"Салон / Майстер", service:"Послуга", date:"Дата", time:"Час",
+        yourName:"Імʼя", phone:"Телефон", email:"Email", notes:"Нотатки", profile:"Профіль",
+        btnBook:"Запис", btnProfile:"Профіль", fab:"Швидкий запис",
+        aiTitle:"AI help", aiLead:"Обери послугу — я покажу Top / Recommended / Nearest (без рандому).", aiTop:"Топ", aiRec:"Рекомендовано", aiNear:"Найближче", aiReset:"Скинути",
+        toastWhyTitle:"Чому цей?", toastWhyText:"3 причини: 1) збіг по послузі 2) хороший рейтинг/ціна 3) найближчий слот сьогодні.",
+        missing:"Заповни дату/час/імʼя/телефон 🙏", sent:"Відправлено ✅", sentText:"Ми надіслали бронювання в Telegram. Скоро підтвердять.",
+        failed:"Помилка ❌", failedText:"Не вдалось надіслати. Перевір Worker /book та інтернет.", hold:"Hold 2 min",
+        offline:"Ти офлайн — деякі фічі можуть не працювати.", cached:"Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.", update:"Є нова версія. Натисни Update.", reset:"Скинуто ✅",
+        trustTitle:"Чому довіряють Beauty Booking", trustText:"Преміум-досвід бронювання: чистий UI, перевірені партнери, прозорі деталі — щоб ти записувався з впевненістю.",
+        trustB1:"Перевірені салони & майстри — підібрана якість.", trustB2:"Гігієна та стерильність — виділяємо важливе.", trustB3:"Швидкий запис — реально за ~30 сек.", trustB4:"Адреса + профіль-лінк у кожному бронюванні.",
+        socialTitle:"Ми в соцмережах", socialLead:"Оновлення, нові партнери, тренди тижня.", copyLink:"Скопіювати лінк", legal:"Бронюючи, ти погоджуєшся на коректний контакт без спаму. Підтвердження приходить у Telegram."
       },
-      en: {
-        brand: "Beauty Booking",
-        sub: "Verified salons & masters",
-        heroTitle: "Book in seconds.",
-        heroLead: "Premium picks in Montréal — verified salons, home masters, fast booking.",
-        quick: "Quick book",
-        openProfile: "Open profile",
-        nextLabel: "Next available near you",
-        bookSlot: "Book this slot",
-        why: "Why this one?",
-        tabAll: "All",
-        tabPartners: "Top",
-        tabRec: "Recommended",
-        partners: "Top salons / partners",
-        partnersHint: "Paid partners",
-        recommended: "Recommended",
-        recHint: "Smart picks for you",
-        allOthers: "All others",
-        allHint: "Browse everything",
-        footer: "Your place for self-care — fast booking, clean UI, premium feel.",
-        favOnly: "Only ❤️",
-        pickFast: "Fastest",
-        pickCheap: "Cheapest",
-        pickNear: "Nearest",
-        sheetTitle: "Choose time",
-        confirm: "Confirm booking",
-        booking: "Booking",
-        listing: "Salon / Master",
-        service: "Service",
-        date: "Date",
-        time: "Time",
-        yourName: "Your name",
-        phone: "Phone",
-        email: "Email",
-        notes: "Notes",
-        profile: "Profile",
-
-        btnBook: "Book",
-        btnSave: "Save",
-        btnProfile: "Profile",
-        fab: "Quick book",
-        aiTitle: "AI help",
-        aiLead: "Pick a service — I’ll show Top / Recommended / Nearest (no random).",
-        aiTop: "Top",
-        aiRec: "Recommended",
-        aiNear: "Nearest",
-        aiReset: "Reset",
-
-        toastWhyTitle: "Why this one?",
-        toastWhyText: "3 reasons: 1) service match 2) strong rating/price 3) nearest slot today.",
-        missing: "Fill date/time/name/phone 🙏",
-        sent: "Sent ✅",
-        sentText: "We sent your booking to Telegram. You’ll get confirmation soon.",
-        failed: "Error ❌",
-        failedText: "Couldn’t send. Check Worker /book and internet connection.",
-        hold: "Hold 2 min",
-        offline: "You’re offline — some features may not work.",
-        cached: "Loaded from cache. If something didn’t update — press Refresh.",
-        update: "New version available. Tap Update.",
-        reset: "Reset ✅",
-
-        trustTitle: "Why people trust Beauty Booking",
-        trustText: "Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.",
-        trustB1: "Verified salons & masters — curated quality.",
-        trustB2: "Hygiene & sterile tools — what matters is visible.",
-        trustB3: "Fast booking — really ~30 seconds.",
-        trustB4: "Clear address + profile link in each booking.",
-        socialTitle: "Follow us",
-        socialLead: "Updates, new partners, and weekly trending picks.",
-        copyLink: "Copy site link",
-        legal: "By booking you agree to fair no-spam contact. Confirmation arrives via Telegram."
+      en:{
+        brand:"Beauty Booking", sub:"Verified salons & masters",
+        heroTitle:"Book in seconds.", heroLead:"Premium picks in Montréal — verified salons, home masters, fast booking.",
+        quick:"Quick book", openProfile:"Open profile", nextLabel:"Next available near you", bookSlot:"Book this slot", why:"Why this one?",
+        tabAll:"All", tabPartners:"Top", tabRec:"Recommended",
+        partners:"Top salons / partners", partnersHint:"Paid partners",
+        recommended:"Recommended", recHint:"Smart picks for you",
+        allOthers:"All others", allHint:"Browse everything",
+        footer:"Your place for self-care — fast booking, clean UI, premium feel.",
+        favOnly:"Only ❤️", pickFast:"Fastest", pickCheap:"Cheapest", pickNear:"Nearest",
+        sheetTitle:"Choose time", confirm:"Confirm booking", booking:"Booking",
+        listing:"Salon / Master", service:"Service", date:"Date", time:"Time",
+        yourName:"Your name", phone:"Phone", email:"Email", notes:"Notes", profile:"Profile",
+        btnBook:"Book", btnProfile:"Profile", fab:"Quick book",
+        aiTitle:"AI help", aiLead:"Pick a service — I’ll show Top / Recommended / Nearest (no random).", aiTop:"Top", aiRec:"Recommended", aiNear:"Nearest", aiReset:"Reset",
+        toastWhyTitle:"Why this one?", toastWhyText:"3 reasons: 1) service match 2) strong rating/price 3) nearest slot today.",
+        missing:"Fill date/time/name/phone 🙏", sent:"Sent ✅", sentText:"We sent your booking to Telegram. You’ll get confirmation soon.",
+        failed:"Error ❌", failedText:"Couldn’t send. Check Worker /book and internet connection.", hold:"Hold 2 min",
+        offline:"You’re offline — some features may not work.", cached:"Loaded from cache. If something didn’t update — press Refresh.", update:"New version available. Tap Update.", reset:"Reset ✅",
+        trustTitle:"Why people trust Beauty Booking", trustText:"Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.",
+        trustB1:"Verified salons & masters — curated quality.", trustB2:"Hygiene & sterile tools — what matters is visible.", trustB3:"Fast booking — really ~30 seconds.", trustB4:"Clear address + profile link in each booking.",
+        socialTitle:"Follow us", socialLead:"Updates, new partners, and weekly trending picks.", copyLink:"Copy site link", legal:"By booking you agree to fair no-spam contact. Confirmation arrives via Telegram."
       },
-      fr: {
-        brand: "Beauty Booking",
-        sub: "Salons & artistes vérifiés",
-        heroTitle: "Réservation en quelques secondes.",
-        heroLead: "Sélection premium à Montréal — salons vérifiés, à domicile, réservation rapide.",
-        quick: "Réserver vite",
-        openProfile: "Voir le profil",
-        nextLabel: "Prochain créneau près de toi",
-        bookSlot: "Réserver ce créneau",
-        why: "Pourquoi celui-ci ?",
-        tabAll: "Tout",
-        tabPartners: "Top",
-        tabRec: "Recommandé",
-        partners: "Top salons / partenaires",
-        partnersHint: "Partenaires payants",
-        recommended: "Recommandé",
-        recHint: "Sélections pour toi",
-        allOthers: "Tous les autres",
-        allHint: "Parcourir tout",
-        footer: "Ton espace self-care — réservation rapide, UI clean, sensation premium.",
-        favOnly: "Only ❤️",
-        pickFast: "Le plus rapide",
-        pickCheap: "Le moins cher",
-        pickNear: "Le plus proche",
-        sheetTitle: "Choisir l’heure",
-        confirm: "Confirmer la réservation",
-        booking: "Réservation",
-        listing: "Salon / Artiste",
-        service: "Service",
-        date: "Date",
-        time: "Heure",
-        yourName: "Ton nom",
-        phone: "Téléphone",
-        email: "Email",
-        notes: "Notes",
-        profile: "Profil",
-
-        btnBook: "Réserver",
-        btnSave: "Sauver",
-        btnProfile: "Profil",
-        fab: "Réserver vite",
-        aiTitle: "AI help",
-        aiLead: "Choisis un service — Top / Recommandé / Proche (pas au hasard).",
-        aiTop: "Top",
-        aiRec: "Recommandé",
-        aiNear: "Proche",
-        aiReset: "Réinitialiser",
-
-        toastWhyTitle: "Pourquoi celui-ci ?",
-        toastWhyText: "3 raisons : 1) service correspondant 2) bon rapport note/prix 3) créneau proche aujourd’hui.",
-        missing: "Remplis date/heure/nom/téléphone 🙏",
-        sent: "Envoyé ✅",
-        sentText: "On a envoyé la réservation sur Telegram. Confirmation bientôt.",
-        failed: "Erreur ❌",
-        failedText: "Envoi impossible. Vérifie Worker /book et internet.",
-        hold: "Hold 2 min",
-        offline: "Hors ligne — certaines fonctions peuvent ne pas marcher.",
-        cached: "Ouvert depuis le cache. Si ça n’a pas bougé — Refresh.",
-        update: "Nouvelle version disponible. Appuie sur Update.",
-        reset: "Réinitialisé ✅",
-
-        trustTitle: "Pourquoi on fait confiance à Beauty Booking",
-        trustText: "Expérience premium: UI clean, partenaires vérifiés, détails clairs — pour réserver en confiance.",
-        trustB1: "Salons & artistes vérifiés — qualité sélectionnée.",
-        trustB2: "Hygiène & stérilisation — l’essentiel est visible.",
-        trustB3: "Réservation rapide — ~30 secondes.",
-        trustB4: "Adresse + lien profil dans chaque réservation.",
-        socialTitle: "Nous suivre",
-        socialLead: "Nouveaux partenaires, actus, tendances de la semaine.",
-        copyLink: "Copier le lien",
-        legal: "En réservant, tu acceptes un contact correct sans spam. Confirmation via Telegram."
+            fr:{
+        brand:"Beauty Booking", sub:"Salons & artistes vérifiés",
+        heroTitle:"Réservation en quelques secondes.", heroLead:"Sélection premium à Montréal — salons vérifiés, à domicile, réservation rapide.",
+        quick:"Réserver vite", openProfile:"Voir le profil", nextLabel:"Prochain créneau près de toi", bookSlot:"Réserver ce créneau", why:"Pourquoi celui-ci ?",
+        tabAll:"Tout", tabPartners:"Top", tabRec:"Recommandé",
+        partners:"Top salons / partenaires", partnersHint:"Partenaires payants",
+        recommended:"Recommandé", recHint:"Sélections pour toi",
+        allOthers:"Tous les autres", allHint:"Parcourir tout",
+        footer:"Ton espace self-care — réservation rapide, UI clean, sensation premium.",
+        favOnly:"Only ❤️", pickFast:"Le plus rapide", pickCheap:"Le moins cher", pickNear:"Le plus proche",
+        sheetTitle:"Choisir l’heure", confirm:"Confirmer la réservation", booking:"Réservation",
+        listing:"Salon / Artiste", service:"Service", date:"Date", time:"Heure",
+        yourName:"Ton nom", phone:"Téléphone", email:"Email", notes:"Notes", profile:"Profil",
+        btnBook:"Réserver", btnProfile:"Profil", fab:"Réserver vite",
+        aiTitle:"AI help", aiLead:"Choisis un service — Top / Recommandé / Proche (pas au hasard).", aiTop:"Top", aiRec:"Recommandé", aiNear:"Proche", aiReset:"Réinitialiser",
+        toastWhyTitle:"Pourquoi celui-ci ?", toastWhyText:"3 raisons : 1) service correspondant 2) bon rapport note/prix 3) créneau proche aujourd’hui.",
+        missing:"Remplis date/heure/nom/téléphone 🙏", sent:"Envoyé ✅", sentText:"On a envoyé la réservation sur Telegram. Confirmation bientôt.",
+        failed:"Erreur ❌", failedText:"Envoi impossible. Vérifie Worker /book et internet.", hold:"Hold 2 min",
+        offline:"Hors ligne — certaines fonctions peuvent ne pas marcher.", cached:"Ouvert depuis le cache. Si ça n’a pas bougé — Refresh.", update:"Nouvelle version disponible. Appuie sur Update.", reset:"Réinitialisé ✅",
+        trustTitle:"Pourquoi on fait confiance à Beauty Booking", trustText:"Expérience premium: UI clean, partenaires vérifiés, détails clairs — pour réserver en confiance.",
+        trustB1:"Salons & artistes vérifiés — qualité sélectionnée.", trustB2:"Hygiène & stérilisation — l’essentiel est visible.", trustB3:"Réservation rapide — ~30 secondes.", trustB4:"Adresse + lien profil dans chaque réservation.",
+        socialTitle:"Nous suivre", socialLead:"Nouveaux partenaires, actus, tendances de la semaine.", copyLink:"Copier le lien", legal:"En réservant, tu acceptes un contact correct sans spam. Confirmation via Telegram."
       },
-      ru: {
-        brand: "Beauty Booking",
-        sub: "Проверенные салоны и мастера",
-        heroTitle: "Запись за секунды.",
-        heroLead: "Премиум-подборка в Montréal — салоны, мастера на дому, быстрая запись.",
-        quick: "Быстрая запись",
-        openProfile: "Открыть профиль",
-        nextLabel: "Ближайший слот рядом",
-        bookSlot: "Записать на слот",
-        why: "Почему этот?",
-        tabAll: "Все",
-        tabPartners: "Топ",
-        tabRec: "Рекоменд.",
-        partners: "Топ салоны / партнёры",
-        partnersHint: "Платные партнёры",
-        recommended: "Рекомендовано",
-        recHint: "Подборка для тебя",
-        allOthers: "Остальные",
-        allHint: "Смотреть всё",
-        footer: "Твоё место для self-care — быстрая запись, чистый UI, премиум-ощущение.",
-        favOnly: "Only ❤️",
-        pickFast: "Самое быстрое",
-        pickCheap: "Самое дешёвое",
-        pickNear: "Ближе всего",
-        sheetTitle: "Выбери время",
-        confirm: "Подтвердить запись",
-        booking: "Запись",
-        listing: "Салон / Мастер",
-        service: "Услуга",
-        date: "Дата",
-        time: "Время",
-        yourName: "Имя",
-        phone: "Телефон",
-        email: "Email",
-        notes: "Заметки",
-        profile: "Профиль",
-
-        btnBook: "Записаться",
-        btnSave: "Сохранить",
-        btnProfile: "Профиль",
-        fab: "Быстрая запись",
-        aiTitle: "AI help",
-        aiLead: "Выбери услугу — покажу Top / Recommended / Nearest (без рандома).",
-        aiTop: "Топ",
-        aiRec: "Рекоменд.",
-        aiNear: "Ближайшее",
-        aiReset: "Сбросить",
-
-        toastWhyTitle: "Почему этот?",
-        toastWhyText: "3 причины: 1) совпадает услуга 2) хороший рейтинг/цена 3) ближайший слот сегодня.",
-        missing: "Заполни дату/время/имя/телефон 🙏",
-        sent: "Отправлено ✅",
-        sentText: "Мы отправили запись в Telegram. Скоро подтвердят.",
-        failed: "Ошибка ❌",
-        failedText: "Не удалось отправить. Проверь Worker /book и интернет.",
-        hold: "Hold 2 min",
-        offline: "Ты офлайн — часть функций может не работать.",
-        cached: "Открыто из кеша. Если не обновилось — нажми Refresh.",
-        update: "Доступна новая версия. Нажми Update.",
-        reset: "Сброшено ✅",
-
-        trustTitle: "Почему доверяют Beauty Booking",
-        trustText: "Премиум-опыт: чистый UI, проверенные партнёры, понятные детали — чтобы записываться уверенно.",
-        trustB1: "Проверенные салоны и мастера — отбор качества.",
-        trustB2: "Гигиена и стерильность — важное видно сразу.",
-        trustB3: "Быстрая запись — реально ~30 секунд.",
-        trustB4: "Адрес + ссылка профиля в каждом бронировании.",
-        socialTitle: "Мы в соцсетях",
-        socialLead: "Обновления, новые партнёры и тренды недели.",
-        copyLink: "Скопировать ссылку",
-        legal: "Бронируя, ты соглашаешься на корректный контакт без спама. Подтверждение через Telegram."
+      ru:{
+        brand:"Beauty Booking", sub:"Проверенные салоны и мастера",
+        heroTitle:"Запись за секунды.", heroLead:"Премиум-подборка в Montréal — салоны, мастера на дому, быстрая запись.",
+        quick:"Быстрая запись", openProfile:"Открыть профиль", nextLabel:"Ближайший слот рядом", bookSlot:"Записать на слот", why:"Почему этот?",
+        tabAll:"Все", tabPartners:"Топ", tabRec:"Рекоменд.",
+        partners:"Топ салоны / партнёры", partnersHint:"Платные партнёры",
+        recommended:"Рекомендовано", recHint:"Подборка для тебя",
+        allOthers:"Остальные", allHint:"Смотреть всё",
+        footer:"Твоё место для self-care — быстрая запись, чистый UI, премиум-ощущение.",
+        favOnly:"Only ❤️", pickFast:"Самое быстрое", pickCheap:"Самое дешёвое", pickNear:"Ближе всего",
+        sheetTitle:"Выбери время", confirm:"Подтвердить запись", booking:"Запись",
+        listing:"Салон / Мастер", service:"Услуга", date:"Дата", time:"Время",
+        yourName:"Имя", phone:"Телефон", email:"Email", notes:"Заметки", profile:"Профиль",
+        btnBook:"Записаться", btnProfile:"Профиль", fab:"Быстрая запись",
+        aiTitle:"AI help", aiLead:"Выбери услугу — покажу Top / Recommended / Nearest (без рандома).", aiTop:"Топ", aiRec:"Рекоменд.", aiNear:"Ближайшее", aiReset:"Сбросить",
+        toastWhyTitle:"Почему этот?", toastWhyText:"3 причины: 1) совпадает услуга 2) хороший рейтинг/цена 3) ближайший слот сегодня.",
+        missing:"Заполни дату/время/имя/телефон 🙏", sent:"Отправлено ✅", sentText:"Мы отправили запись в Telegram. Скоро подтвердят.",
+        failed:"Ошибка ❌", failedText:"Не удалось отправить. Проверь Worker /book и интернет.", hold:"Hold 2 min",
+        offline:"Ты офлайн — часть функций может не работать.", cached:"Открыто из кеша. Если не обновилось — нажми Refresh.", update:"Доступна новая версия. Нажми Update.", reset:"Сброшено ✅",
+        trustTitle:"Почему доверяют Beauty Booking", trustText:"Премиум-опыт: чистый UI, проверенные партнёры, понятные детали — чтобы записываться уверенно.",
+        trustB1:"Проверенные салоны и мастера — отбор качества.", trustB2:"Гигиена и стерильность — важное видно сразу.", trustB3:"Быстрая запись — реально ~30 секунд.", trustB4:"Адрес + ссылка профиля в каждом бронировании.",
+        socialTitle:"Мы в соцсетях", socialLead:"Обновления, новые партнёры и тренды недели.", copyLink:"Скопировать ссылку", legal:"Бронируя, ты соглашаешься на корректный контакт без спама. Подтверждение через Telegram."
       }
     };
 
@@ -1876,15 +1673,11 @@
       safeSetText($("#m_openProfileBtn"), txt().profile);
       safeSetText($("#t_aiTitle"), txt().aiTitle);
       safeSetText($("#t_aiLead"), txt().aiLead);
-      safeSetText($("#t_fab"), txt().fab);
-
-      // AI buttons (with emoji)
       safeSetText($("#aiTop"), "⭐ " + txt().aiTop);
       safeSetText($("#aiRec"), "✨ " + txt().aiRec);
       safeSetText($("#aiNear"), "📍 " + txt().aiNear);
       safeSetText($("#aiClear"), "↺ " + txt().aiReset);
-
-      // trust/social
+      safeSetText($("#t_fab"), txt().fab);
       safeSetText($("#t_trustTitle"), txt().trustTitle);
       safeSetText($("#t_trustText"), txt().trustText);
       safeSetText($("#t_trustB1"), txt().trustB1);
@@ -1896,7 +1689,6 @@
       safeSetText($("#t_copyLink"), txt().copyLink);
       safeSetText($("#t_legal"), txt().legal);
 
-      // placeholders
       const s = $("#search");
       if(s){
         s.placeholder =
@@ -1905,7 +1697,6 @@
           (STATE.lang==="ru") ? "Поиск салон, мастер, услуга…" :
           "Пошук салон/майстер/послуга…";
       }
-
       const n = $("#m_name");
       if(n){
         n.placeholder =
@@ -1914,10 +1705,8 @@
           (STATE.lang==="ru") ? "Имя" :
           "Імʼя";
       }
-
       const ph = $("#m_phone"); if(ph) ph.placeholder="(438)...";
       const em = $("#m_email"); if(em) em.placeholder="email@example.com";
-
       const no = $("#m_notes");
       if(no){
         no.placeholder =
@@ -1928,27 +1717,24 @@
       }
     }
 
-    /* =========================
-       Netbar (offline / cached / update)
-    ========================== */
     function showNetbar(msg, showUpdate=false){
       safeSetText($("#netbarText"), msg);
       $("#netbar").classList.add("show");
       $("#netbarUpdate").classList.toggle("hidden", !showUpdate);
     }
-    function hideNetbar(){ $("#netbar").classList.remove("show"); $("#netbarUpdate").classList.add("hidden"); }
-    $("#netbarOk").addEventListener("click", hideNetbar);
-    $("#netbarRefresh").addEventListener("click", () => location.reload());
+    function hideNetbar(){
+      $("#netbar").classList.remove("show");
+      $("#netbarUpdate").classList.add("hidden");
+    }
+    $("#netbarOk")?.addEventListener("click", hideNetbar);
+    $("#netbarRefresh")?.addEventListener("click", () => location.reload());
 
     function initNetbar(){
       const onOnline = () => hideNetbar();
       const onOffline = () => showNetbar(txt().offline, false);
-
       window.addEventListener("online", onOnline);
       window.addEventListener("offline", onOffline);
-
       if(!navigator.onLine) onOffline();
-
       try{
         const nav = performance.getEntriesByType?.("navigation")?.[0];
         if(nav && typeof nav.transferSize === "number" && nav.transferSize === 0){
@@ -1957,36 +1743,23 @@
       }catch(e){}
     }
 
-    /* =========================
-       SW update flow (best-effort)
-    ========================== */
     let swReg = null;
     async function initSWUpdate(){
       try{
         if(!("serviceWorker" in navigator)) return;
         swReg = await navigator.serviceWorker.register("./worker.js");
-
         const maybeUpdate = () => {
-          if(swReg && swReg.waiting){
-            showNetbar(txt().update, true);
-          }
+          if(swReg && swReg.waiting) showNetbar(txt().update, true);
         };
-
         swReg.addEventListener("updatefound", () => {
           const nw = swReg.installing;
           if(!nw) return;
           nw.addEventListener("statechange", () => {
-            if(nw.state === "installed"){
-              if(navigator.serviceWorker.controller) maybeUpdate();
-            }
+            if(nw.state === "installed" && navigator.serviceWorker.controller) maybeUpdate();
           });
         });
-
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
-          location.reload();
-        });
-
-        $("#netbarUpdate").addEventListener("click", () => {
+        navigator.serviceWorker.addEventListener("controllerchange", () => location.reload());
+        $("#netbarUpdate")?.addEventListener("click", () => {
           try{
             if(swReg?.waiting){
               swReg.waiting.postMessage({ type: "SKIP_WAITING" });
@@ -1998,14 +1771,10 @@
             location.reload();
           }
         });
-
         maybeUpdate();
       }catch(e){}
     }
 
-    /* =========================
-       Toast
-    ========================== */
     let toastTimer = null;
     function toast(t1, t2, ms=2600){
       safeSetText($("#toastT1"), t1);
@@ -2015,109 +1784,62 @@
       toastTimer = setTimeout(()=>$("#toast").classList.remove("show"), ms);
     }
 
-    /* =========================
-       Random short salon info
-    ========================== */
     const INFO = {
-      uk: [
-        "Стерильні інструменти • одноразові пилочки • чистий люкс-сервіс.",
-        "Топ майстер • акуратні кутикули • стійке покриття.",
-        "Комфортна атмосфера • швидкий запис • love it.",
-        "Преміум догляд • уважність до деталей • без поспіху.",
-        "Мʼякі техніки • мінімальна травматизація • чиста робота.",
-        "Сьогодні є слоти • можна записатись за 30 сек."
-      ],
-      en: [
-        "Sterile tools • premium care • clean results.",
-        "Top master • attention to detail • long-lasting finish.",
-        "Comfort vibe • quick booking • you’ll love it.",
-        "Premium care • precise work • no rush.",
-        "Gentle technique • clean cuticle • neat shape.",
-        "Slots available today • book in 30 sec."
-      ],
-      fr: [
-        "Outils stériles • soin premium • résultat net.",
-        "Top artiste • détail parfait • tenue longue.",
-        "Ambiance confortable • réservation rapide.",
-        "Soin premium • précision • sans stress.",
-        "Technique douce • cuticule propre • forme nette.",
-        "Créneaux aujourd’hui • réserve en 30 sec."
-      ],
-      ru: [
-        "Стерильные инструменты • премиум-уход • чистый результат.",
-        "Топ мастер • внимание к деталям • стойкое покрытие.",
-        "Комфорт • быстрая запись • кайф.",
-        "Премиум-уход • точность • без спешки.",
-        "Мягкая техника • чистая кутикула • аккуратно.",
-        "Есть слоты сегодня • запись за 30 сек."
-      ]
+      uk:["Стерильні інструменти • одноразові пилочки • чистий люкс-сервіс.","Топ майстер • акуратні кутикули • стійке покриття.","Комфортна атмосфера • швидкий запис • love it.","Преміум догляд • уважність до деталей • без поспіху.","Мʼякі техніки • мінімальна травматизація • чиста робота.","Сьогодні є слоти • можна записатись за 30 сек."],
+      en:["Sterile tools • premium care • clean results.","Top master • attention to detail • long-lasting finish.","Comfort vibe • quick booking • you’ll love it.","Premium care • precise work • no rush.","Gentle technique • clean cuticle • neat shape.","Slots available today • book in 30 sec."],
+      fr:["Outils stériles • soin premium • résultat net.","Top artiste • détail parfait • tenue longue.","Ambiance confortable • réservation rapide.","Soin premium • précision • sans stress.","Technique douce • cuticule propre • forme nette.","Créneaux aujourd’hui • réserve en 30 sec."],
+      ru:["Стерильные инструменты • премиум-уход • чистый результат.","Топ мастер • внимание к деталям • стойкое покрытие.","Комфорт • быстрая запись • кайф.","Премиум-уход • точность • без спешки.","Мягкая техника • чистая кутикула • аккуратно.","Есть слоты сегодня • запись за 30 сек."]
     };
     const pickInfo = () => {
       const arr = INFO[STATE.lang] || INFO.uk;
       return arr[Math.floor(Math.random()*arr.length)];
     };
 
-    /* =========================
-       Service normalization + i18n + icons (FIX CHIPS)
-    ========================== */
+    const SERVICE_I18N = {
+      manicure:{ uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" },
+      pedicure:{ uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр", icon:"🦶" },
+      brows:{ uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови", icon:"✨" },
+      haircut_m:{ uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
+      haircut_w:{ uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
+      hair_m:{ uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
+      hair_w:{ uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
+      nails:{ uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" }
+    };
+
     function normalizeServiceId(v){
       if(v == null) return "";
       if(typeof v === "string" || typeof v === "number") return String(v);
       return String(v.id ?? v.serviceId ?? v.key ?? "");
     }
-
-    const SERVICE_I18N = {
-      manicure:   { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" },
-      pedicure:   { uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр", icon:"🦶" },
-      brows:      { uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови", icon:"✨" },
-      haircut_m:  { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
-      haircut_w:  { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
-      hair_m:     { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
-      hair_w:     { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
-      nails:      { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" }
-    };
-
     function serviceIcon(serviceId){
       const k = String(serviceId||"").trim();
       return (SERVICE_I18N[k]?.icon) || "💅";
     }
-
     function serviceLabelFromId(serviceId){
       const k = String(serviceId||"").trim();
       const m = SERVICE_I18N[k];
       if(!m) return k || "";
       return m[STATE.lang] || m.uk || m.en || k;
     }
-
     function serviceLabel(s){
       if(!s) return (STATE.lang==="en") ? "Service" : (STATE.lang==="fr") ? "Service" : (STATE.lang==="ru") ? "Услуга" : "Послуга";
-
       const sid = normalizeServiceId(s);
       const name = s.name ?? s.title ?? s.label ?? s.id ?? sid;
-
-      if(typeof name === "object" && name){
-        return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || serviceLabelFromId(sid) || sid;
-      }
-
+      if(typeof name === "object" && name) return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || serviceLabelFromId(sid) || sid;
       const str = String(name || "").trim();
       if(!str) return serviceLabelFromId(sid) || sid;
-
       if(SERVICE_I18N[str]) return serviceLabelFromId(str);
       if(SERVICE_I18N[sid]) return serviceLabelFromId(sid);
-
       return str;
     }
-
     function listingServices(listing){
       const raw = listing?.services ?? listing?.serviceIds ?? listing?.service_ids ?? [];
       if(Array.isArray(raw)){
-        const ids = raw.map(normalizeServiceId).filter(Boolean);
-        return Array.from(new Set(ids));
+        return Array.from(new Set(raw.map(normalizeServiceId).filter(Boolean)));
       }
       const one = normalizeServiceId(raw);
       return one ? [one] : [];
     }
-
     function resolveServiceName(serviceId){
       const sid = String(serviceId||"");
       const s = SERVICES.find(x => String(x?.id ?? x?.key ?? "") === sid);
@@ -2125,12 +1847,9 @@
       return serviceLabelFromId(sid) || sid;
     }
 
-    /* =========================
-       Filters / ranking
-    ========================== */
-    function normalize(s){       return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+    function normalize(s){
+      return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
     }
-
     function matchesSearch(listing, q){
       if(!q) return true;
       const hay = [
@@ -2142,42 +1861,29 @@
       ].join(" ");
       return normalize(hay).includes(normalize(q));
     }
-
     function hasService(listing, serviceId){
       if(!serviceId) return true;
-      const ids = listingServices(listing);
-      return ids.includes(String(serviceId));
+      return listingServices(listing).includes(String(serviceId));
     }
-
     function isPartner(listing){ return !!(listing?.partner || listing?.isPartner || listing?.tier==="partner"); }
     function isRecommended(listing){ return !!(listing?.recommended || listing?.isRecommended || listing?.tier==="recommended"); }
-
     function ratingValue(listing){
       const r = Number(listing?.rating ?? listing?.stars ?? 0);
       return isNaN(r) ? 0 : r;
     }
-
     function fromPrice(listing, serviceId){
-      // try listing.prices[serviceId], then listing.from, then listing.price
       const sid = String(serviceId||"");
       const pMap = listing?.prices || listing?.priceMap || {};
       const p = (pMap && (pMap[sid] ?? pMap[serviceId])) ?? listing?.from ?? listing?.price ?? null;
       const n = Number(p);
       return isNaN(n) ? null : n;
     }
-
     function distanceValue(listing){
       const d = Number(listing?.distance ?? listing?.km ?? listing?.dist ?? 0);
       return isNaN(d) ? 0 : d;
     }
 
-    /* =========================
-       Availability helpers (best-effort, compatible with data.js variants)
-    ========================== */
-    function todayISO(){
-      return isoLocal(new Date());
-    }
-
+    function todayISO(){ return isoLocal(new Date()); }
     function futureDatesISO(n=10){
       const out = [];
       const base = new Date();
@@ -2189,14 +1895,8 @@
     }
 
     function listingTimesFor(listing, serviceId, dateISO){
-      // Supports:
-      // 1) listing.availability[dateISO][serviceId] -> ["10:00"...]
-      // 2) listing.availability[dateISO] -> ["10:00"...]
-      // 3) listing.times -> ["10:00"...] (fallback)
-      // 4) window.bb.util.getTimes(listingId, serviceId, dateISO)
       const sid = String(serviceId||"");
       const av = listing?.availability || listing?.avail || null;
-
       try{
         const u = window.bb?.util;
         if(u && typeof u.getTimes === "function"){
@@ -2204,7 +1904,6 @@
           if(Array.isArray(res)) return res.slice();
         }
       }catch(e){}
-
       if(av && typeof av === "object"){
         const day = av[dateISO] || av[String(dateISO)] || null;
         if(Array.isArray(day)) return day.slice();
@@ -2213,11 +1912,8 @@
           if(Array.isArray(byService)) return byService.slice();
         }
       }
-
       const t = listing?.times || listing?.slots || listing?.hours || null;
       if(Array.isArray(t)) return t.slice();
-
-      // default nice times
       return ["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"];
     }
 
@@ -2226,9 +1922,7 @@
       const dates = futureDatesISO(7);
       for(const d of dates){
         const times = listingTimesFor(listing, sid, d);
-        if(times && times.length){
-          return { dateISO:d, time:String(times[0]) };
-        }
+        if(times && times.length) return { dateISO:d, time:String(times[0]) };
       }
       return null;
     }
@@ -2243,7 +1937,6 @@
         })
         .filter(Boolean);
 
-      // sort by earliest datetime, then partner, then rating
       pool.sort((a,b)=>{
         const da = `${a.slot.dateISO} ${a.slot.time}`;
         const db = `${b.slot.dateISO} ${b.slot.time}`;
@@ -2254,30 +1947,35 @@
         if(pb!==pa) return pb-pa;
         return ratingValue(b.listing) - ratingValue(a.listing);
       });
-
       return pool.slice(0, 8);
     }
 
-    /* =========================
-       Rendering cards
-    ========================== */
-    function cardHTML(listing, opts={}){
-      const sid = opts.serviceId || "";
+    function fmtPretty(dateISO, time, lang){
+      try{
+        const [y,m,d] = (dateISO||"").split("-").map(x=>parseInt(x,10));
+        const [hh,mm] = (time||"").split(":").map(x=>parseInt(x,10));
+        if(!y||!m||!d||isNaN(hh)||isNaN(mm)) return `${dateISO||""} ${time||""}`.trim() || "—";
+        const dt = new Date(y, m-1, d, hh, mm, 0, 0);
+        const locale = (lang==="en") ? "en-CA" : (lang==="fr") ? "fr-CA" : (lang==="ru") ? "ru-RU" : "uk-UA";
+        return dt.toLocaleString(locale, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
+      }catch(e){
+        return `${dateISO||""} ${time||""}`.trim() || "—";
+      }
+    }
+
+    function cardHTML(listing, sid=""){
       const name = listing?.name || listing?.title || "—";
       const addr = listing?.address || listing?.addr || "—";
       const rating = ratingValue(listing);
       const from = fromPrice(listing, sid);
       const img = listing?.image || listing?.photo || listing?.img || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80";
-
       const badges = [];
       if(isPartner(listing)) badges.push(`<span class="badge partner">Partner</span>`);
       if(isRecommended(listing)) badges.push(`<span class="badge verified">Recommended</span>`);
       if(nextSlotForListing(listing, sid)?.dateISO === todayISO()) badges.push(`<span class="badge today">Today</span>`);
       if(listing?.verified) badges.push(`<span class="badge verified">Verified</span>`);
-
       const fav = STATE.favorites.has(String(listing?.id||""));
       const favIcon = fav ? "❤️" : "🤍";
-
       const priceStr = (from!=null) ? `$${Math.round(from)}` : "—";
       const rateStr = rating ? `⭐ ${rating.toFixed(1)}` : "⭐ —";
 
@@ -2298,27 +1996,20 @@
                 <div class="rating">${escapeHtml(rateStr)}</div>
               </div>
             </div>
-
             <div class="cardActions">
-              <button class="small primary" data-act="book">
-                <span>${serviceIcon(sid)}</span><span>${escapeHtml(txt().btnBook || "Book")}</span>
-              </button>
+              <button class="small primary" data-act="book"><span>${serviceIcon(sid)}</span><span>${escapeHtml(txt().btnBook)}</span></button>
               <button class="small" data-act="fav" title="Favorite">${favIcon}</button>
-              <a class="small" data-act="profile" href="./profile.html?id=${encodeURIComponent(listing?.id||"")}" target="_blank" rel="noopener">
-                <span>🏛</span><span>${escapeHtml(txt().btnProfile || "Profile")}</span>
-              </a>
+              <a class="small" data-act="profile" href="./profile.html?id=${encodeURIComponent(listing?.id||"")}" target="_blank" rel="noopener"><span>🏛</span><span>${escapeHtml(txt().btnProfile)}</span></a>
             </div>
           </div>
         </div>
       `;
     }
 
-    function stripCardHTML(listing, opts={}){
-      const sid = opts.serviceId || "";
+    function stripCardHTML(listing, sid=""){
       const name = listing?.name || listing?.title || "—";
       const addr = listing?.address || listing?.addr || "—";
       const img = listing?.image || listing?.photo || listing?.img || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
-
       const slot = nextSlotForListing(listing, sid);
       const slotTxt = slot ? fmtPretty(slot.dateISO, slot.time, STATE.lang) : "—";
       const from = fromPrice(listing, sid);
@@ -2341,18 +2032,14 @@
             <div class="stripMeta">${escapeHtml(addr)}<br><span class="muted">${escapeHtml(slotTxt)}</span></div>
             <div style="height:10px"></div>
             <button class="small primary" data-act="book" style="width:100%;justify-content:center">
-              <span>⚡</span><span>${escapeHtml(txt().btnBook || "Book")}</span>
+              <span>⚡</span><span>${escapeHtml(txt().btnBook)}</span>
             </button>
           </div>
         </div>
       `;
     }
 
-    /* =========================
-       Service chips + selects
-    ========================== */
     function uniqueServiceIds(){
-      // Prefer SERVICES list ids, otherwise infer from listings
       const ids = [];
       if(SERVICES.length){
         for(const s of SERVICES){
@@ -2371,16 +2058,12 @@
       const wrap = $("#serviceChips");
       if(!wrap) return;
       const ids = uniqueServiceIds();
-
-      const chips = ids.map(sid=>{
+      safeSetHTML(wrap, ids.map(sid=>{
         const label = serviceLabelFromId(sid) || resolveServiceName(sid) || sid;
         const icon = serviceIcon(sid);
         const active = (STATE.serviceId === sid) ? "active" : "";
         return `<button class="chip ${active}" data-sid="${escapeHtml(sid)}"><span>${icon}</span><span>${escapeHtml(label)}</span></button>`;
-      }).join("");
-
-      safeSetHTML(wrap, chips);
-
+      }).join(""));
       $$(".chip", wrap).forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const sid = btn.getAttribute("data-sid") || "";
@@ -2395,61 +2078,47 @@
       const sel = $("#m_service");
       if(!sel) return;
       const ids = uniqueServiceIds();
-      const opts = ids.map(sid=>{
+      safeSetHTML(sel, ids.map(sid=>{
         const label = serviceLabelFromId(sid) || resolveServiceName(sid) || sid;
         const icon = serviceIcon(sid);
         return `<option value="${escapeHtml(sid)}">${icon} ${escapeHtml(label)}</option>`;
-      }).join("");
-
-      safeSetHTML(sel, opts);
-
-      // keep selection
+      }).join(""));
       const want = STATE.booking.serviceId || STATE.serviceId || ids[0] || "";
       sel.value = ids.includes(want) ? want : (ids[0]||"");
       STATE.booking.serviceId = sel.value;
-
-      sel.addEventListener("change", ()=>{
+      sel.onchange = ()=>{
         STATE.booking.serviceId = sel.value;
-        lsSet("bb.booking", { ...STATE.booking, open: true });
-        // when service changes, recompute times
+        lsSet("bb.booking", { ...STATE.booking, open:true });
         refreshTimeGrid();
         refreshListingInfo();
-      });
+      };
     }
 
     function renderListingSelect(){
       const sel = $("#m_listingSel");
       if(!sel) return;
-
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
       const filtered = LISTINGS.filter(l => hasService(l, sid));
-      const opts = filtered.map(l=>{
+      safeSetHTML(sel, filtered.map(l=>{
         const name = l?.name || l?.title || l?.id;
         return `<option value="${escapeHtml(l?.id)}">${escapeHtml(name)}</option>`;
-      }).join("");
-
-      safeSetHTML(sel, opts);
-
+      }).join(""));
       let want = STATE.booking.listingId;
-      if(!filtered.some(l=>String(l.id)===String(want))){
-        want = filtered[0]?.id || LISTINGS[0]?.id || "";
-      }
+      if(!filtered.some(l=>String(l.id)===String(want))) want = filtered[0]?.id || LISTINGS[0]?.id || "";
       sel.value = want ? String(want) : "";
       STATE.booking.listingId = sel.value;
-
-      sel.addEventListener("change", ()=>{
+      sel.onchange = ()=>{
         STATE.booking.listingId = sel.value;
-        lsSet("bb.booking", { ...STATE.booking, open: true });
+        lsSet("bb.booking", { ...STATE.booking, open:true });
         refreshListingInfo(true);
         refreshTimeGrid();
-      });
+      };
     }
 
     function refreshListingInfo(forceRandom=false){
       const info = $("#m_listingInfo");
       const addr = $("#m_addrLine");
       const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
-
       if(info){
         if(forceRandom) safeSetText(info, pickInfo());
         else safeSetText(info, info.textContent && info.textContent!=="—" ? info.textContent : pickInfo());
@@ -2458,7 +2127,6 @@
         const a = listing?.address || listing?.addr || "";
         safeSetText(addr, a ? `📍 ${a}` : "—");
       }
-
       const btn = $("#m_openProfileBtn");
       if(btn){
         btn.onclick = () => {
@@ -2469,58 +2137,38 @@
       }
     }
 
-    /* =========================
-       Tabs + grids render
-    ========================== */
     function getFilteredListings(){
       const q = STATE.search || "";
       const sid = STATE.serviceId || "";
       let arr = LISTINGS.filter(l => hasService(l, sid) && matchesSearch(l, q));
-
-      if(STATE.favOnly){
-        arr = arr.filter(l => STATE.favorites.has(String(l.id)));
-      }
+      if(STATE.favOnly) arr = arr.filter(l => STATE.favorites.has(String(l.id)));
       return arr;
     }
 
     function renderGrids(){
       const sid = STATE.serviceId || (uniqueServiceIds()[0]||"");
-
       const all = getFilteredListings();
-
       const partners = all.filter(isPartner);
       const rec = all.filter(l => !isPartner(l) && isRecommended(l));
       const others = all.filter(l => !isPartner(l) && !isRecommended(l));
 
-      // Featured strip
-      const strip = $("#stripPartners");
-      if(strip){
-        safeSetHTML(strip, partners.map(l=>stripCardHTML(l,{serviceId:sid})).join("") || "");
-        $$(".stripCard", strip).forEach(el=>{
-          el.addEventListener("click", (e)=>{
-            const act = (e.target && e.target.getAttribute) ? e.target.getAttribute("data-act") : null;
-            if(act === "book") return; // handled below
-            openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
-          });
-          const bookBtn = el.querySelector('[data-act="book"]');
-          if(bookBtn){
-            bookBtn.addEventListener("click",(e)=>{
-              e.preventDefault(); e.stopPropagation();
-              openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
-            });
-          }
+      safeSetHTML($("#stripPartners"), partners.map(l=>stripCardHTML(l,sid)).join(""));
+      safeSetHTML($("#gridRec"), rec.map(l=>cardHTML(l,sid)).join(""));
+      safeSetHTML($("#gridAll"), others.map(l=>cardHTML(l,sid)).join(""));
+
+      $$(".stripCard", $("#stripPartners")).forEach(el=>{
+        el.addEventListener("click", (e)=>{
+          const act = e.target?.getAttribute?.("data-act") || e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
+          if(act === "book") return;
+          openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
         });
-      }
+        el.querySelector('[data-act="book"]')?.addEventListener("click",(e)=>{
+          e.preventDefault(); e.stopPropagation();
+          openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
+        });
+      });
 
-      const gridRec = $("#gridRec");
-      const gridAll = $("#gridAll");
-
-      if(gridRec) safeSetHTML(gridRec, rec.map(l=>cardHTML(l,{serviceId:sid})).join(""));
-      if(gridAll) safeSetHTML(gridAll, others.map(l=>cardHTML(l,{serviceId:sid})).join(""));
-
-      // card handlers
       function bindCardGrid(grid){
-        if(!grid) return;
         $$(".card", grid).forEach(card=>{
           card.addEventListener("click",(e)=>{
             const t = e.target;
@@ -2537,48 +2185,27 @@
               openBooking({ listingId:id, serviceId:sid });
               return;
             }
-            // click card -> profile
             window.open(`./profile.html?id=${encodeURIComponent(id||"")}`, "_blank", "noopener");
           });
         });
       }
-      bindCardGrid(gridRec);
-      bindCardGrid(gridAll);
+      bindCardGrid($("#gridRec"));
+      bindCardGrid($("#gridAll"));
 
-      // section visibility by tab (order stays Top -> Recommended -> Others)
-      const secPartners = $("#secPartners");
-      const secRec = $("#secRec");
-      const secAll = $("#secAll");
-
-      if(STATE.tab === "partners"){
-        secPartners?.classList.remove("hidden");
-        secRec?.classList.add("hidden");
-        secAll?.classList.add("hidden");
-      }else if(STATE.tab === "rec"){
-        secPartners?.classList.add("hidden");
-        secRec?.classList.remove("hidden");
-        secAll?.classList.add("hidden");
-      }else{
-        secPartners?.classList.remove("hidden");
-        secRec?.classList.remove("hidden");
-        secAll?.classList.remove("hidden");
-      }
+      $("#secPartners")?.classList.toggle("hidden", STATE.tab === "rec");
+      $("#secRec")?.classList.toggle("hidden", STATE.tab === "partners");
+      $("#secAll")?.classList.toggle("hidden", STATE.tab !== "all");
     }
 
     function setTab(v){
       STATE.tab = v;
       lsSet("bb.tab", v);
-
       $("#tabAll")?.classList.toggle("active", v==="all");
       $("#tabPartners")?.classList.toggle("active", v==="partners");
       $("#tabRecommended")?.classList.toggle("active", v==="rec");
-
       renderGrids();
     }
 
-    /* =========================
-       Favorites
-    ========================== */
     function toggleFav(id){
       const k = String(id||"");
       if(!k) return;
@@ -2588,9 +2215,6 @@
       renderGrids();
     }
 
-    /* =========================
-       Next available rotation (every ~10s)
-    ========================== */
     let nextTimer = null;
     let nextPool = [];
     function renderNext(){
@@ -2602,10 +2226,8 @@
         safeSetText($("#nextDots"), "○ ○ ○");
         return;
       }
-
       STATE.lastNextIndex = clamp(STATE.lastNextIndex, 0, nextPool.length-1);
       lsSet("bb.lastNextIndex", STATE.lastNextIndex);
-
       const item = nextPool[STATE.lastNextIndex];
       const l = item.listing;
       const slot = item.slot;
@@ -2614,11 +2236,8 @@
       const from = fromPrice(l, sid);
       const fromTxt = (from!=null) ? ((STATE.lang==="fr") ? `dès $${Math.round(from)}` : `from $${Math.round(from)}`) : "";
       const when = fmtPretty(slot.dateISO, slot.time, STATE.lang);
-
-      safeSetText($("#nextName"), `${name}`);
+      safeSetText($("#nextName"), name);
       safeSetText($("#nextMeta"), `${when}${fromTxt ? " • " + fromTxt : ""}${addr ? " • " + addr : ""}`);
-
-      // dots (3)
       const dotsCount = Math.min(3, nextPool.length);
       const idx = STATE.lastNextIndex % dotsCount;
       let dots = "";
@@ -2634,7 +2253,6 @@
         else{
           STATE.lastNextIndex = (STATE.lastNextIndex + 1) % nextPool.length;
           lsSet("bb.lastNextIndex", STATE.lastNextIndex);
-          // tiny fade effect
           const card = $("#nextCard");
           if(card){
             card.style.opacity = "0";
@@ -2664,14 +2282,8 @@
         time: item.slot?.time
       });
     });
+    $("#nextWhy")?.addEventListener("click", ()=> toast(txt().toastWhyTitle, txt().toastWhyText, 3200));
 
-    $("#nextWhy")?.addEventListener("click", ()=>{
-      toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
-    });
-
-    /* =========================
-       Booking modal open/close
-    ========================== */
     function lockBody(lock){
       document.body.style.overflow = lock ? "hidden" : "";
       document.documentElement.style.overflow = lock ? "hidden" : "";
@@ -2683,34 +2295,28 @@
       if(patch.serviceId!=null) STATE.booking.serviceId = String(patch.serviceId||"");
       if(patch.dateISO!=null) STATE.booking.dateISO = String(patch.dateISO||"");
       if(patch.time!=null) STATE.booking.time = String(patch.time||"");
+      lsSet("bb.booking", { ...STATE.booking, open:true });
 
-      lsSet("bb.booking", { ...STATE.booking, open: true });
-
-      // show
       $("#overlay")?.classList.add("show");
       $("#overlay")?.setAttribute("aria-hidden","false");
       lockBody(true);
 
-      // ensure date exists
       const dInput = $("#m_date");
       if(dInput){
         if(!STATE.booking.dateISO) STATE.booking.dateISO = todayISO();
         dInput.value = STATE.booking.dateISO;
       }
-
       renderServiceSelect();
       renderListingSelect();
       refreshListingInfo(true);
       refreshTimeGrid();
-
-      // set selected time text
       safeSetText($("#m_timeText"), STATE.booking.time || "—");
       updateHoldUI();
     }
 
     function closeBooking(){
       STATE.booking.open = false;
-      lsSet("bb.booking", { ...STATE.booking, open: false });
+      lsSet("bb.booking", { ...STATE.booking, open:false });
       $("#overlay")?.classList.remove("show");
       $("#overlay")?.setAttribute("aria-hidden","true");
       lockBody(false);
@@ -2719,55 +2325,34 @@
     }
 
     $("#m_close")?.addEventListener("click", closeBooking);
-    $("#overlay")?.addEventListener("click", (e)=>{
-      if(e.target === $("#overlay")) closeBooking();
-    });
-
-    // entry points
+    $("#overlay")?.addEventListener("click", (e)=>{ if(e.target === $("#overlay")) closeBooking(); });
     $("#ctaQuick")?.addEventListener("click", ()=>openBooking({ serviceId: STATE.serviceId || "" }));
     $("#fab")?.addEventListener("click", ()=>openBooking({ serviceId: STATE.serviceId || "" }));
 
-    /* =========================
-       Time picker sheet
-    ========================== */
-    function openSheet(){
-      $("#sheet")?.classList.add("show");
-    }
-    function closeSheet(){
-      $("#sheet")?.classList.remove("show");
-    }
+    function openSheet(){ $("#sheet")?.classList.add("show"); }
+    function closeSheet(){ $("#sheet")?.classList.remove("show"); }
     $("#sheetClose")?.addEventListener("click", closeSheet);
     $("#sheet")?.addEventListener("click", (e)=>{ if(e.target === $("#sheet")) closeSheet(); });
-
-    $("#m_timeBtn")?.addEventListener("click", ()=>{
-      refreshTimeGrid();
-      openSheet();
-    });
+    $("#m_timeBtn")?.addEventListener("click", ()=>{ refreshTimeGrid(); openSheet(); });
 
     function refreshTimeGrid(){
       const grid = $("#timeGrid");
       if(!grid) return;
-
       const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
       const dateISO = STATE.booking.dateISO || todayISO();
-
       const times = listing ? listingTimesFor(listing, sid, dateISO) : [];
       const active = String(STATE.booking.time||"");
-
       safeSetHTML(grid, (times||[]).map(t=>{
         const cls = (String(t)===active) ? "timeItem active" : "timeItem";
         return `<button class="${cls}" data-t="${escapeHtml(String(t))}" type="button">${escapeHtml(String(t))}</button>`;
-      }).join("") || `<div class="muted" style="padding:10px">${escapeHtml("—")}</div>`);
-
+      }).join("") || `<div class="muted" style="padding:10px">—</div>`);
       $$(".timeItem", grid).forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const t = btn.getAttribute("data-t") || "";
           STATE.booking.time = t;
-          lsSet("bb.booking", { ...STATE.booking, open: true });
-
+          lsSet("bb.booking", { ...STATE.booking, open:true });
           safeSetText($("#m_timeText"), t || "—");
-          // highlight
           $$(".timeItem", grid).forEach(x=>x.classList.remove("active"));
           btn.classList.add("active");
           closeSheet();
@@ -2776,71 +2361,41 @@
       });
     }
 
-    // Date change (LOCAL ISO fix)
     $("#m_date")?.addEventListener("change", (e)=>{
-      const v = e.target.value;
-      // ensure value is used directly
-      STATE.booking.dateISO = v || todayISO();
-      lsSet("bb.booking", { ...STATE.booking, open: true });
-      // refresh time list for current listing/service
+      STATE.booking.dateISO = e.target.value || todayISO();
+      lsSet("bb.booking", { ...STATE.booking, open:true });
       STATE.booking.time = "";
       safeSetText($("#m_timeText"), "—");
       refreshTimeGrid();
       updateHoldUI();
     });
 
-    /* =========================
-       Hold slot 2 min (local)
-    ========================== */
     function startHold(){
       const k = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
       STATE.hold.key = k;
       STATE.hold.until = Date.now() + 2*60*1000;
     }
-
     function holdLeft(){
       if(!STATE.hold.until) return 0;
-      const ms = STATE.hold.until - Date.now();
-      return Math.max(0, ms);
+      return Math.max(0, STATE.hold.until - Date.now());
     }
-
     function updateHoldUI(forceStart=false){
       const el = $("#holdText");
       if(!el) return;
-
       const ready = STATE.booking.listingId && STATE.booking.serviceId && STATE.booking.dateISO && STATE.booking.time;
-      if(!ready){
-        safeSetText(el, "");
-        return;
-      }
-
+      if(!ready){ safeSetText(el, ""); return; }
       const k = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
-      if(forceStart || STATE.hold.key !== k || holdLeft()===0){
-        startHold();
-      }
-
+      if(forceStart || STATE.hold.key !== k || holdLeft()===0) startHold();
       const ms = holdLeft();
-      if(ms<=0){
-        safeSetText(el, "");
-        return;
-      }
-
+      if(ms<=0){ safeSetText(el, ""); return; }
       const s = Math.ceil(ms/1000);
-      const mm = Math.floor(s/60);
-      const ss = s%60;
-      safeSetText(el, `· ${txt().hold} ${mm}:${pad(ss)}`);
-
-      // keep ticking
+      safeSetText(el, `· ${txt().hold} ${Math.floor(s/60)}:${pad(s%60)}`);
       if(!updateHoldUI._t){
         updateHoldUI._t = setInterval(()=>{
-          if(!STATE.booking.open){
-            safeSetText(el, "");
-            return;
-          }
+          if(!STATE.booking.open){ safeSetText(el, ""); return; }
           const ms2 = holdLeft();
-          if(ms2<=0){
-            safeSetText(el, "");
-          }else{
+          if(ms2<=0) safeSetText(el, "");
+          else{
             const s2 = Math.ceil(ms2/1000);
             safeSetText(el, `· ${txt().hold} ${Math.floor(s2/60)}:${pad(s2%60)}`);
           }
@@ -2848,9 +2403,6 @@
       }
     }
 
-    /* =========================
-       Quick picks (fast/cheap/near)
-    ========================== */
     function currentPoolForPicks(){
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
       const q = STATE.search || "";
@@ -2861,40 +2413,24 @@
 
     $("#pickFast")?.addEventListener("click", ()=>{
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
-      const pool = currentPoolForPicks()
-        .map(l => ({ l, slot: nextSlotForListing(l, sid) }))
-        .filter(x=>x.slot)
+      const pool = currentPoolForPicks().map(l => ({ l, slot: nextSlotForListing(l, sid) })).filter(x=>x.slot)
         .sort((a,b)=> (`${a.slot.dateISO} ${a.slot.time}` < `${b.slot.dateISO} ${b.slot.time}` ? -1 : 1));
       const best = pool[0];
-      if(best){
-        openBooking({ listingId: best.l.id, serviceId: sid, dateISO: best.slot.dateISO, time: best.slot.time });
-      }
+      if(best) openBooking({ listingId: best.l.id, serviceId: sid, dateISO: best.slot.dateISO, time: best.slot.time });
     });
-
     $("#pickCheap")?.addEventListener("click", ()=>{
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
-      const pool = currentPoolForPicks()
-        .map(l => ({ l, p: fromPrice(l, sid) }))
-        .filter(x=>x.p!=null)
-        .sort((a,b)=> a.p-b.p);
+      const pool = currentPoolForPicks().map(l => ({ l, p: fromPrice(l, sid) })).filter(x=>x.p!=null).sort((a,b)=> a.p-b.p);
       const best = pool[0];
-      if(best){
-        openBooking({ listingId: best.l.id, serviceId: sid });
-      }
+      if(best) openBooking({ listingId: best.l.id, serviceId: sid });
     });
-
     $("#pickNear")?.addEventListener("click", ()=>{
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
       const pool = currentPoolForPicks().slice().sort((a,b)=> distanceValue(a)-distanceValue(b));
       const best = pool[0];
-      if(best){
-        openBooking({ listingId: best.id, serviceId: sid });
-      }
+      if(best) openBooking({ listingId: best.id, serviceId: sid });
     });
 
-    /* =========================
-       AI sheet (service-based, no random)
-    ========================== */
     function openAISheet(){
       $("#aiSheet")?.classList.add("show");
       lockBody(true);
@@ -2905,7 +2441,6 @@
       $("#aiSheet")?.classList.remove("show");
       if(!STATE.booking.open) lockBody(false);
     }
-
     $("#btnAI")?.addEventListener("click", openAISheet);
     $("#aiClose")?.addEventListener("click", closeAISheet);
     $("#aiSheet")?.addEventListener("click", (e)=>{ if(e.target === $("#aiSheet")) closeAISheet(); });
@@ -2920,7 +2455,6 @@
         const active = (STATE.serviceId === sid) ? "primary" : "";
         return `<button class="aiPill ${active}" data-sid="${escapeHtml(sid)}" type="button">${icon} ${escapeHtml(label)}</button>`;
       }).join(""));
-
       $$(".aiPill", row).forEach(b=>{
         b.addEventListener("click", ()=>{
           const sid = b.getAttribute("data-sid") || "";
@@ -2929,7 +2463,7 @@
           renderServiceChips();
           renderAIServiceRow();
           renderAIList();
-          renderAll(); // update main lists
+          renderAll();
         });
       });
     }
@@ -2961,10 +2495,8 @@
     function renderAIList(){
       const list = $("#aiList");
       if(!list) return;
-
       const sid = STATE.serviceId || (uniqueServiceIds()[0]||"");
-      const poolAll = LISTINGS.filter(l => hasService(l, sid));
-      let pool = poolAll.slice();
+      let pool = LISTINGS.filter(l => hasService(l, sid)).slice();
 
       if(STATE.aiMode === "top"){
         pool.sort((a,b)=>{
@@ -2983,7 +2515,6 @@
       }
 
       pool = pool.slice(0, 6);
-
       safeSetHTML(list, pool.map(l=>{
         const name = l?.name || l?.title || "—";
         const slot = nextSlotForListing(l, sid);
@@ -3002,7 +2533,6 @@
           </div>
         `;
       }).join(""));
-
       $$(".go", list).forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const id = btn.getAttribute("data-id");
@@ -3010,14 +2540,11 @@
           openBooking({ listingId:id, serviceId:sid });
         });
       });
-
-      // ensure pill primary state
-      setAiMode(STATE.aiMode || "top");
+      $("#aiTop")?.classList.toggle("primary", STATE.aiMode==="top");
+      $("#aiRec")?.classList.toggle("primary", STATE.aiMode==="rec");
+      $("#aiNear")?.classList.toggle("primary", STATE.aiMode==="near");
     }
 
-    /* =========================
-       Language + Theme
-    ========================== */
     function cycleLang(){
       const i = LANGS.indexOf(STATE.lang);
       STATE.lang = LANGS[(i+1) % LANGS.length];
@@ -3038,10 +2565,6 @@
       STATE.theme = (STATE.theme === "day") ? "night" : "day";
       applyTheme();
     });
-
-    /* =========================
-       Fav-only toggle (special rule: reset filters doesn't clear search/favOnly elsewhere)
-    ========================== */
     $("#btnFavOnly")?.addEventListener("click", ()=>{
       STATE.favOnly = !STATE.favOnly;
       lsSet("bb.favOnly", STATE.favOnly);
@@ -3049,9 +2572,6 @@
       renderGrids();
     });
 
-    /* =========================
-       Search
-    ========================== */
     const searchEl = $("#search");
     if(searchEl){
       searchEl.value = STATE.search || "";
@@ -3062,16 +2582,10 @@
       });
     }
 
-    /* =========================
-       Tabs click
-    ========================== */
     $("#tabAll")?.addEventListener("click", ()=>setTab("all"));
     $("#tabPartners")?.addEventListener("click", ()=>setTab("partners"));
     $("#tabRecommended")?.addEventListener("click", ()=>setTab("rec"));
 
-    /* =========================
-       Copy link
-    ========================== */
     $("#btnCopyLink")?.addEventListener("click", async ()=>{
       try{
         await navigator.clipboard.writeText(location.href);
@@ -3081,36 +2595,24 @@
       }
     });
 
-    /* =========================
-       Telegram booking (Worker /book)
-    ========================== */
     async function sendBooking(payload){
       const controller = new AbortController();
       const t = setTimeout(()=>controller.abort(), 12000);
       try{
         const res = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type":"application/json" },
-          body: JSON.stringify(payload),
-          signal: controller.signal
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body:JSON.stringify(payload),
+          signal:controller.signal
         });
         clearTimeout(t);
-        const ok = res.ok;
         let j = null;
         try{ j = await res.json(); }catch(e){}
-        return { ok, data:j };
+        return { ok:res.ok, data:j };
       }catch(e){
         clearTimeout(t);
         return { ok:false, error:String(e) };
       }
-    }
-
-    function requiredOk(){
-      const name = ($("#m_name")?.value || "").trim();
-      const phone = ($("#m_phone")?.value || "").trim();
-      const dateISO = (STATE.booking.dateISO || $("#m_date")?.value || "").trim();
-      const time = (STATE.booking.time || "").trim();
-      return !!(name && phone && dateISO && time);
     }
 
     $("#m_bookBtn")?.addEventListener("click", async ()=>{
@@ -3118,7 +2620,6 @@
       const sid = STATE.booking.serviceId || "";
       const dateISO = (STATE.booking.dateISO || $("#m_date")?.value || "").trim();
       const time = (STATE.booking.time || "").trim();
-
       const name = ($("#m_name")?.value || "").trim();
       const phone = ($("#m_phone")?.value || "").trim();
       const email = ($("#m_email")?.value || "").trim();
@@ -3146,11 +2647,10 @@
         pretty,
         customer: { name, phone, email },
         notes,
-        profileUrl: `${location.origin}${location.pathname.replace(/\/index\.html?$/,"/") }profile.html?id=${encodeURIComponent(listing.id)}`
+        profileUrl: `${location.origin}${location.pathname.replace(/\/index\.html?$/,"/")}profile.html?id=${encodeURIComponent(listing.id)}`
       };
 
       toast("…", "Sending…", 1200);
-
       const r = await sendBooking(payload);
       if(r.ok && (r.data?.ok !== false)){
         toast(txt().sent, txt().sentText, 3200);
@@ -3160,60 +2660,32 @@
       }
     });
 
-    /* =========================
-       Deep-link auto open booking (?book=1&id=...&service=...)
-    ========================== */
     function parseQS(){
       const p = new URLSearchParams(location.search || "");
-      return {
-        book: p.get("book"),
-        id: p.get("id"),
-        service: p.get("service")
-      };
+      return { book:p.get("book"), id:p.get("id"), service:p.get("service") };
     }
 
-    /* =========================
-       Render all
-    ========================== */
     function renderAll(){
       applyTheme();
       applyTexts();
-
-      // buttons states
       $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
-
       renderServiceChips();
       renderNext();
       setTab(STATE.tab || "all");
     }
 
-    /* =========================
-       Init
-    ========================== */
     function init(){
-      // theme + texts
       applyTheme();
       applyTexts();
-
-      // netbar + sw
       initNetbar();
       initSWUpdate();
-
-      // initial render
       renderServiceChips();
       renderNext();
       startNextRotation();
-
-      // tabs default
       setTab(STATE.tab || "all");
-
-      // restore search
       if($("#search")) $("#search").value = STATE.search || "";
-
-      // set fav-only UI
       $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
 
-      // deep link
       const qs = parseQS();
       if(qs.book === "1"){
         const sid = qs.service || STATE.serviceId || "";
@@ -3222,11 +2694,16 @@
       }else if(STATE.booking.open){
         setTimeout(()=>openBooking({}), 80);
       }
+
+      window.addEventListener("load", ()=>{
+        setTimeout(()=>{
+          const l = $("#launch");
+          if(l) l.classList.add("hide");
+        }, 1100);
+      });
     }
 
-    // kick
     init();
-
   })();
   </script>
 </body>
