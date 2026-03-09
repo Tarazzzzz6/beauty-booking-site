@@ -19,7 +19,7 @@ const CORE = [
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(CORE.map(u => new Request(u, { cache: "reload" })));
+    await cache.addAll(CORE.map((u) => new Request(u, { cache: "reload" })));
     self.skipWaiting();
   })());
 });
@@ -27,7 +27,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.map(k => (k === CACHE ? null : caches.delete(k))));
+    await Promise.all(keys.map((k) => (k === CACHE ? null : caches.delete(k))));
     self.clients.claim();
   })());
 });
@@ -38,7 +38,8 @@ self.addEventListener("fetch", (event) => {
 
   if (url.origin !== location.origin) return;
 
-  const isHTML = req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
+  const accept = req.headers.get("accept") || "";
+  const isHTML = req.mode === "navigate" || accept.includes("text/html");
   const isJS = url.pathname.endsWith(".js");
   const isCSS = url.pathname.endsWith(".css");
   const isIMG = /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(url.pathname);
@@ -65,9 +66,12 @@ self.addEventListener("message", (event) => {
 
 async function networkFirst(req) {
   const cache = await caches.open(CACHE);
+
   try {
     const fresh = await fetch(req);
-    if (fresh && fresh.ok) cache.put(req, fresh.clone());
+    if (fresh && fresh.ok) {
+      cache.put(req, fresh.clone());
+    }
     return fresh;
   } catch (e) {
     const cached = await cache.match(req);
@@ -84,7 +88,9 @@ async function cacheFirst(req) {
   if (cached) return cached;
 
   const fresh = await fetch(req);
-  if (fresh && fresh.ok) cache.put(req, fresh.clone());
+  if (fresh && fresh.ok) {
+    cache.put(req, fresh.clone());
+  }
   return fresh;
 }
 
@@ -92,10 +98,14 @@ async function staleWhileRevalidate(req) {
   const cache = await caches.open(CACHE);
   const cached = await cache.match(req);
 
-  const fetchPromise = fetch(req).then((fresh) => {
-    if (fresh && fresh.ok) cache.put(req, fresh.clone());
-    return fresh;
-  }).catch(() => null);
+  const fetchPromise = fetch(req)
+    .then((fresh) => {
+      if (fresh && fresh.ok) {
+        cache.put(req, fresh.clone());
+      }
+      return fresh;
+    })
+    .catch(() => null);
 
   return cached || (await fetchPromise) || new Response("Offline", { status: 503 });
 }
