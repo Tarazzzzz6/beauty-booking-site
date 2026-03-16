@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="uk" data-theme="night">
+<html lang="en" data-theme="night">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0f" id="metaTheme" />
   <title>Beauty Booking</title>
 
+  <meta name="description" content="Book beauty services in seconds — verified salons & masters in Montréal." />
   <meta property="og:title" content="Beauty Booking" />
   <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
   <meta property="og:type" content="website" />
@@ -21,19 +22,20 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --bg:#07070b;
-      --bg2:#0b0b11;
-      --bg3:#12121a;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.085);
+      --bg2:#0c0c12;
+      --bg3:#13131b;
+      --card:rgba(255,255,255,.055);
+      --card2:rgba(255,255,255,.08);
       --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.14);
       --text:#f5f6fb;
-      --muted:rgba(245,246,251,.72);
-      --muted2:rgba(245,246,251,.55);
+      --muted:rgba(245,246,251,.74);
+      --muted2:rgba(245,246,251,.54);
 
       --pink:#ff4fd8;
       --gold:#ffd27a;
@@ -43,45 +45,47 @@
 
       --r:22px;
       --r2:28px;
-      --shadow:0 22px 60px rgba(0,0,0,.55);
-      --shadow2:0 12px 30px rgba(0,0,0,.40);
-      --glow:0 0 0 1px rgba(255,255,255,.06), 0 10px 50px rgba(255,79,216,.12);
-      --glow2:0 0 0 1px rgba(255,255,255,.08), 0 18px 60px rgba(139,92,246,.10);
+      --r3:34px;
+
+      --shadow:0 24px 70px rgba(0,0,0,.55);
+      --shadow2:0 12px 32px rgba(0,0,0,.38);
+      --glow:0 0 0 1px rgba(255,255,255,.06), 0 18px 60px rgba(255,79,216,.10);
+      --glow2:0 0 0 1px rgba(255,255,255,.06), 0 20px 64px rgba(139,92,246,.10);
 
       --safe-top:env(safe-area-inset-top);
       --safe-bottom:env(safe-area-inset-bottom);
       --safe-left:env(safe-area-inset-left);
       --safe-right:env(safe-area-inset-right);
 
-      --topbarPadTop:calc(14px + var(--safe-top));
       --contentPad:16px;
+      --topPad:calc(14px + var(--safe-top));
 
       --font-title:"Playfair Display", ui-serif, Georgia, serif;
       --font-ui:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
-      --glassA:rgba(10,10,16,.88);
-      --glassB:rgba(10,10,16,.55);
-
-      --heroVideoOpacity:.24;
+      --glassA:rgba(8,8,14,.88);
+      --glassB:rgba(8,8,14,.60);
+      --heroVideoOpacity:.18;
     }
 
     html[data-theme="day"]{
       --bg:#f7f3ff;
-      --bg2:#fff7fb;
-      --bg3:#fff;
-      --card:rgba(10,10,20,.06);
+      --bg2:#fff8fc;
+      --bg3:#ffffff;
+      --card:rgba(10,10,20,.055);
       --card2:rgba(10,10,20,.085);
       --line:rgba(10,10,20,.12);
+      --line2:rgba(10,10,20,.18);
       --text:#0a0a14;
       --muted:rgba(10,10,20,.70);
-      --muted2:rgba(10,10,20,.55);
-      --shadow:0 18px 60px rgba(10,10,20,.18);
-      --shadow2:0 12px 28px rgba(10,10,20,.14);
-      --glow:0 0 0 1px rgba(10,10,20,.10), 0 16px 50px rgba(255,79,216,.10);
-      --glow2:0 0 0 1px rgba(10,10,20,.12), 0 18px 60px rgba(139,92,246,.10);
-      --glassA:rgba(255,255,255,.85);
-      --glassB:rgba(255,255,255,.62);
-      --heroVideoOpacity:.18;
+      --muted2:rgba(10,10,20,.52);
+      --shadow:0 18px 60px rgba(10,10,20,.16);
+      --shadow2:0 12px 28px rgba(10,10,20,.12);
+      --glow:0 0 0 1px rgba(10,10,20,.08), 0 16px 50px rgba(255,79,216,.08);
+      --glow2:0 0 0 1px rgba(10,10,20,.10), 0 18px 54px rgba(139,92,246,.08);
+      --glassA:rgba(255,255,255,.86);
+      --glassB:rgba(255,255,255,.66);
+      --heroVideoOpacity:.12;
     }
 
     *{box-sizing:border-box}
@@ -96,43 +100,49 @@
       -moz-osx-font-smoothing:grayscale;
       overflow-x:hidden;
       background:
-        radial-gradient(900px 450px at 10% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(700px 420px at 92% 10%, rgba(139,92,246,.14), transparent 62%),
-        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.12), transparent 65%),
+        radial-gradient(900px 520px at 10% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(900px 520px at 92% 8%, rgba(139,92,246,.14), transparent 60%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.10), transparent 65%),
         linear-gradient(180deg, var(--bg), var(--bg2));
     }
     html[data-theme="day"] body{
       background:
-        radial-gradient(900px 450px at 10% 0%, rgba(255,79,216,.18), transparent 60%),
-        radial-gradient(700px 420px at 92% 10%, rgba(139,92,246,.18), transparent 62%),
-        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.20), transparent 65%),
+        radial-gradient(900px 520px at 10% 0%, rgba(255,79,216,.18), transparent 60%),
+        radial-gradient(900px 520px at 92% 8%, rgba(139,92,246,.18), transparent 60%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.18), transparent 65%),
         linear-gradient(180deg, var(--bg), var(--bg2));
     }
 
     a{color:inherit;text-decoration:none}
     button,input,select{font-family:inherit}
     button{cursor:pointer}
+    img{display:block;max-width:100%}
+    input,select{font-size:16px}
+
+    .hidden{display:none!important}
+    .muted{color:var(--muted)}
+    .sep{height:1px;background:var(--line);margin:18px 0}
 
     .aurora{
       position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
     }
     .orb{
-      position:absolute; border-radius:999px; filter:blur(48px); opacity:.22;
+      position:absolute; border-radius:999px; filter:blur(50px); opacity:.24;
       animation:floatOrb 18s ease-in-out infinite;
       mix-blend-mode:screen;
     }
-    .orb.a{width:260px;height:260px;background:rgba(255,79,216,.28);left:-40px;top:10%}
-    .orb.b{width:320px;height:320px;background:rgba(139,92,246,.24);right:-60px;top:18%;animation-delay:-5s}
-    .orb.c{width:280px;height:280px;background:rgba(255,210,122,.22);left:18%;bottom:8%;animation-delay:-10s}
-    .orb.d{width:240px;height:240px;background:rgba(92,246,199,.20);right:20%;bottom:4%;animation-delay:-7s}
+    .orb.a{width:280px;height:280px;background:rgba(255,79,216,.30);left:-60px;top:8%}
+    .orb.b{width:320px;height:320px;background:rgba(139,92,246,.26);right:-70px;top:16%;animation-delay:-6s}
+    .orb.c{width:280px;height:280px;background:rgba(255,210,122,.22);left:16%;bottom:4%;animation-delay:-11s}
+    .orb.d{width:260px;height:260px;background:rgba(92,246,199,.20);right:16%;bottom:2%;animation-delay:-8s}
     @keyframes floatOrb{
       0%,100%{transform:translate3d(0,0,0) scale(1)}
-      50%{transform:translate3d(18px,-28px,0) scale(1.08)}
+      50%{transform:translate3d(20px,-26px,0) scale(1.08)}
     }
 
     .topbar{
-      position:sticky; top:0; z-index:50;
-      padding:var(--topbarPadTop) calc(var(--contentPad) + var(--safe-right)) 10px calc(var(--contentPad) + var(--safe-left));
+      position:sticky; top:0; z-index:60;
+      padding:var(--topPad) calc(var(--contentPad) + var(--safe-right)) 12px calc(var(--contentPad) + var(--safe-left));
       backdrop-filter:blur(18px);
       background:linear-gradient(180deg, var(--glassA), var(--glassB));
       border-bottom:1px solid rgba(255,255,255,.06);
@@ -141,106 +151,145 @@
 
     .topbarRow{
       display:flex; align-items:center; justify-content:space-between;
-      gap:12px; margin-top:10px;
-      position:relative; z-index:2;
+      gap:14px; margin-top:10px; position:relative; z-index:2;
     }
     body.is-standalone .topbarRow{margin-top:16px}
 
-    .brand{display:flex; align-items:center; gap:10px; min-width:170px}
+    .brand{
+      display:flex; align-items:center; gap:12px; min-width:190px;
+    }
     .logo{
-      width:40px; height:40px; border-radius:14px;
+      width:46px; height:46px; border-radius:16px;
       background:
-        radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
-        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.85), rgba(139,92,246,.90));
-      box-shadow:0 10px 35px rgba(255,79,216,.18), 0 0 0 1px rgba(255,255,255,.10);
-      position:relative; overflow:hidden;
+        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.86), rgba(139,92,246,.90));
+      box-shadow:0 12px 38px rgba(255,79,216,.20), 0 0 0 1px rgba(255,255,255,.10);
+      position:relative; overflow:hidden; flex:0 0 auto;
     }
     .logo:after{
       content:"";
       position:absolute; inset:-40%;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 55%);
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.30), transparent 55%);
       transform:rotate(25deg);
     }
-    .brandText{display:flex; flex-direction:column; line-height:1.05}
+    .brandText{display:flex; flex-direction:column; line-height:1.04}
     .brandText .name{
       font-family:var(--font-title);
-      font-weight:700;
+      font-weight:800;
       letter-spacing:.2px;
-      font-size:20px;
+      font-size:22px;
     }
-    .brandText .sub{font-size:12px; color:var(--muted2); margin-top:2px}
+    .brandText .sub{
+      font-size:12px; color:var(--muted2); margin-top:2px;
+    }
 
-    .actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
-    .iconBtn,.pillBtn,.cta,.small,.miniBtn,.ghostBtn,.bookBtn,.aiPill,.pickBtn,.chip,.tab,.socialBtn,.nb,.fab,.closeBtn,.timeBtn{
+    .actions{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+
+    .iconBtn,.pillBtn,.cta,.small,.miniBtn,.ghostBtn,.bookBtn,.pickBtn,.chip,.tab,.socialBtn,.nb,.fab,.closeBtn,.timeBtn,.aiPill,.goBtn,.toTop{
       -webkit-tap-highlight-color:transparent;
+      transition:transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+    }
+
+    .iconBtn,.pillBtn,.tab,.search,.cta,.small,.miniBtn,.ghostBtn,.bookBtn,.pickBtn,.chip,.socialBtn,.nb,.fab,.closeBtn,.timeBtn,.aiPill,.goBtn,.toTop,.dayPill{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .iconBtn,
+    html[data-theme="day"] .pillBtn,
+    html[data-theme="day"] .tab,
+    html[data-theme="day"] .search,
+    html[data-theme="day"] .cta,
+    html[data-theme="day"] .small,
+    html[data-theme="day"] .miniBtn,
+    html[data-theme="day"] .ghostBtn,
+    html[data-theme="day"] .bookBtn,
+    html[data-theme="day"] .pickBtn,
+    html[data-theme="day"] .chip,
+    html[data-theme="day"] .socialBtn,
+    html[data-theme="day"] .nb,
+    html[data-theme="day"] .closeBtn,
+    html[data-theme="day"] .timeBtn,
+    html[data-theme="day"] .aiPill,
+    html[data-theme="day"] .goBtn,
+    html[data-theme="day"] .toTop,
+    html[data-theme="day"] .dayPill{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+      box-shadow:0 12px 28px rgba(10,10,20,.10);
+    }
+
+    .iconBtn:hover,.pillBtn:hover,.tab:hover,.cta:hover,.small:hover,.miniBtn:hover,.ghostBtn:hover,.bookBtn:hover,.pickBtn:hover,.chip:hover,.socialBtn:hover,.nb:hover,.closeBtn:hover,.timeBtn:hover,.aiPill:hover,.goBtn:hover,.toTop:hover,.dayPill:hover{
+      background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.16);
+    }
+    html[data-theme="day"] .iconBtn:hover,
+    html[data-theme="day"] .pillBtn:hover,
+    html[data-theme="day"] .tab:hover,
+    html[data-theme="day"] .cta:hover,
+    html[data-theme="day"] .small:hover,
+    html[data-theme="day"] .miniBtn:hover,
+    html[data-theme="day"] .ghostBtn:hover,
+    html[data-theme="day"] .bookBtn:hover,
+    html[data-theme="day"] .pickBtn:hover,
+    html[data-theme="day"] .chip:hover,
+    html[data-theme="day"] .socialBtn:hover,
+    html[data-theme="day"] .nb:hover,
+    html[data-theme="day"] .closeBtn:hover,
+    html[data-theme="day"] .timeBtn:hover,
+    html[data-theme="day"] .aiPill:hover,
+    html[data-theme="day"] .goBtn:hover,
+    html[data-theme="day"] .toTop:hover,
+    html[data-theme="day"] .dayPill:hover{
+      background:rgba(255,255,255,.84);
+      border-color:rgba(10,10,20,.18);
+    }
+
+    .iconBtn:active,.pillBtn:active,.tab:active,.cta:active,.small:active,.miniBtn:active,.ghostBtn:active,.bookBtn:active,.pickBtn:active,.chip:active,.socialBtn:active,.nb:active,.closeBtn:active,.timeBtn:active,.aiPill:active,.goBtn:active,.toTop:active,.dayPill:active{
+      transform:scale(.985);
     }
 
     .iconBtn{
-      width:46px; height:46px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:grid; place-items:center;
-      box-shadow:0 10px 26px rgba(0,0,0,.28);
+      width:48px; height:48px; border-radius:16px;
+      display:grid; place-items:center; font-size:18px;
       transform:translateY(2px);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
-      user-select:none;
-      font-size:18px;
     }
     .pillBtn{
-      height:46px; padding:0 14px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow:0 10px 26px rgba(0,0,0,.28);
-      transform:translateY(2px);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      height:48px; padding:0 15px; border-radius:16px;
+      display:flex; align-items:center; gap:10px; transform:translateY(2px);
       user-select:none;
     }
-    html[data-theme="day"] .iconBtn,
-    html[data-theme="day"] .pillBtn{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.55);
-      box-shadow:0 10px 24px rgba(10,10,20,.10);
-    }
-    .iconBtn:hover,.pillBtn:hover{
-      background:rgba(255,255,255,.075);
-      border-color:rgba(255,255,255,.16);
-      box-shadow:0 14px 32px rgba(0,0,0,.34);
-    }
-    html[data-theme="day"] .iconBtn:hover,
-    html[data-theme="day"] .pillBtn:hover{
-      background:rgba(255,255,255,.78);
-      border-color:rgba(10,10,20,.18);
-    }
-    .iconBtn:active,.pillBtn:active{transform:translateY(3px) scale(.98)}
     .pillBtn.active{
       background:rgba(255,79,216,.16);
       border-color:rgba(255,79,216,.30);
+      box-shadow:0 16px 44px rgba(255,79,216,.12);
     }
 
     .dot{
       width:10px; height:10px; border-radius:999px;
       background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,79,216,.9));
       box-shadow:0 0 20px rgba(255,79,216,.35);
+      flex:0 0 auto;
     }
 
     .wrap{
       position:relative; z-index:1;
-      padding:14px calc(var(--contentPad) + var(--safe-right)) calc(150px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
       max-width:1180px;
       margin:0 auto;
+      padding:14px calc(var(--contentPad) + var(--safe-right)) calc(150px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
     }
 
     .hero{
       margin-top:12px;
-      border-radius:var(--r2);
+      border-radius:var(--r3);
       overflow:hidden;
       border:1px solid rgba(255,255,255,.08);
       background:
-        radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
-        radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.20), transparent 62%),
+        radial-gradient(620px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(560px 280px at 90% 16%, rgba(139,92,246,.20), transparent 62%),
         linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       box-shadow:var(--shadow);
       position:relative;
@@ -249,25 +298,24 @@
     html[data-theme="day"] .hero{
       border-color:rgba(10,10,20,.10);
       background:
-        radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.22), transparent 60%),
-        radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.22), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.44));
+        radial-gradient(620px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(560px 280px at 90% 16%, rgba(139,92,246,.20), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.90), rgba(255,255,255,.56));
     }
+
     .heroVideo{
       position:absolute; inset:0; z-index:0; overflow:hidden;
     }
-    .heroVideo video{
-      width:100%; height:100%;
-      object-fit:cover;
-      opacity:var(--heroVideoOpacity);
-      filter:saturate(1.05) contrast(1.05);
+    .heroVideo img,.heroVideo video{
+      width:100%; height:100%; object-fit:cover;
+      opacity:var(--heroVideoOpacity); filter:saturate(1.04) contrast(1.02);
       pointer-events:none;
     }
     .heroVideo:after{
       content:"";
       position:absolute; inset:0;
       background:
-        linear-gradient(180deg, rgba(7,7,11,.25), rgba(7,7,11,.42)),
+        linear-gradient(180deg, rgba(7,7,11,.22), rgba(7,7,11,.42)),
         radial-gradient(900px 400px at 0% 0%, rgba(255,79,216,.10), transparent 62%),
         radial-gradient(900px 420px at 100% 0%, rgba(139,92,246,.10), transparent 62%);
       pointer-events:none;
@@ -281,20 +329,19 @@
         radial-gradient(2px 2px at 58% 26%, rgba(255,255,255,.24), transparent 70%),
         radial-gradient(2px 2px at 76% 52%, rgba(255,255,255,.20), transparent 70%),
         radial-gradient(2px 2px at 88% 18%, rgba(255,255,255,.22), transparent 70%);
-      animation:sparkleShift 10s linear infinite;
+      animation:sparkleShift 9s linear infinite;
       opacity:.8;
     }
     @keyframes sparkleShift{
-      0%{transform:translateY(0)}
+      0%,100%{transform:translateY(0)}
       50%{transform:translateY(-6px)}
-      100%{transform:translateY(0)}
     }
 
     .heroInner{
       position:relative; z-index:1;
       padding:18px;
       display:grid;
-      grid-template-columns:1.15fr .85fr;
+      grid-template-columns:1.18fr .82fr;
       gap:16px;
       align-items:stretch;
     }
@@ -311,95 +358,56 @@
       color:var(--muted);
       font-size:12px;
       box-shadow:var(--shadow2);
-      margin-bottom:10px;
+      margin-bottom:12px;
       backdrop-filter:blur(10px);
     }
     html[data-theme="day"] .eyebrow{
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.76);
       border-color:rgba(10,10,20,.12);
     }
 
     .heroTitle{
+      margin:0 0 8px;
       font-family:var(--font-title);
-      font-weight:700;
-      font-size:clamp(30px, 5vw, 50px);
-      letter-spacing:.2px;
-      margin:6px 0 8px;
+      font-weight:800;
+      font-size:clamp(30px, 5vw, 52px);
       line-height:1.02;
+      letter-spacing:.1px;
       max-width:10ch;
     }
     .heroLead{
+      margin:0 0 14px;
       color:var(--muted);
       font-size:14px;
-      line-height:1.55;
-      margin:0 0 14px;
-      max-width:62ch;
+      line-height:1.56;
+      max-width:64ch;
     }
 
     .heroCtas{display:flex; gap:10px; flex-wrap:wrap}
     .cta{
-      height:46px; padding:0 14px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
+      height:48px; padding:0 15px; border-radius:16px;
       display:flex; align-items:center; gap:10px;
-      box-shadow:var(--shadow2);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, filter .18s ease;
       user-select:none;
     }
-    html[data-theme="day"] .cta{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.60);
-      box-shadow:0 12px 26px rgba(10,10,20,.10);
-    }
     .cta.primary{
-      background:linear-gradient(135deg, rgba(255,79,216,.85), rgba(255,210,122,.65), rgba(139,92,246,.75));
-      border-color:rgba(255,255,255,.14);
       color:#fff;
-    }
-    .cta:hover{
-      background:rgba(255,255,255,.085);
-      border-color:rgba(255,255,255,.16);
-    }
-    html[data-theme="day"] .cta:hover{
-      background:rgba(255,255,255,.78);
-      border-color:rgba(10,10,20,.18);
+      background:linear-gradient(135deg, rgba(255,79,216,.84), rgba(255,210,122,.66), rgba(139,92,246,.76));
+      border-color:rgba(255,255,255,.14);
+      box-shadow:0 18px 60px rgba(255,79,216,.14);
     }
     .cta.primary:hover{filter:brightness(1.04)}
-    .cta:active{transform:scale(.985)}
 
     .chips{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top:12px;
+      display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;
     }
     .chip{
       height:36px; padding:0 12px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.045);
-      color:var(--text);
-      font-size:13px;
-      display:flex; align-items:center; gap:8px;
-      transition:background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-      user-select:none;
+      display:flex; align-items:center; gap:8px; font-size:13px; user-select:none;
     }
-    html[data-theme="day"] .chip{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.55);
-    }
-    .chip:hover{
-      background:rgba(255,255,255,.07);
-      border-color:rgba(255,255,255,.14);
-      box-shadow:0 12px 30px rgba(0,0,0,.12);
-    }
-    html[data-theme="day"] .chip:hover{
-      background:rgba(255,255,255,.75);
-      border-color:rgba(10,10,20,.18);
-    }
-    .chip:active{transform:scale(.985)}
     .chip.active{
-      background:rgba(255,79,216,.18);
-      border-color:rgba(255,79,216,.35);
-      box-shadow:0 14px 40px rgba(255,79,216,.10);
+      background:rgba(255,79,216,.16);
+      border-color:rgba(255,79,216,.30);
+      box-shadow:0 16px 42px rgba(255,79,216,.10);
     }
 
     .stories{
@@ -411,7 +419,7 @@
     .stories::-webkit-scrollbar{height:7px}
     .stories::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px}
     .story{
-      flex:0 0 auto; min-width:152px;
+      flex:0 0 auto; min-width:156px;
       scroll-snap-align:start;
       border-radius:18px;
       padding:12px;
@@ -422,19 +430,19 @@
     }
     html[data-theme="day"] .story{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.76);
     }
     .story .t1{font-weight:900; font-size:13px}
     .story .t2{font-size:12px; color:var(--muted)}
 
     .nextCard{
-      border-radius:var(--r);
+      border-radius:var(--r2);
       border:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.22);
       box-shadow:var(--glow2);
       padding:14px;
       display:flex; flex-direction:column; gap:10px;
-      min-height:238px;
+      min-height:248px;
       position:relative;
       overflow:hidden;
       isolation:isolate;
@@ -444,33 +452,34 @@
       position:absolute; inset:-30%;
       background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.08) 50%, transparent 60%);
       transform:translateX(-35%) rotate(8deg);
-      animation:shimmer 3.6s ease-in-out infinite;
-      pointer-events:none;
-      z-index:0;
+      animation:shimmer 3.4s ease-in-out infinite;
+      pointer-events:none; z-index:0;
     }
     html[data-theme="day"] .nextCard{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.62);
+      background:rgba(255,255,255,.68);
     }
     .nextTop,.nextBody,.nextAction{position:relative; z-index:1}
-    .nextTop{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .nextLabel{font-size:12px; color:var(--muted2); display:flex; align-items:center; gap:8px}
+    .nextTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .nextLabel{
+      font-size:12px; color:var(--muted2); display:flex; align-items:center; gap:8px;
+    }
     .pulse{
       width:10px; height:10px; border-radius:999px;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.9));
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.92));
       box-shadow:0 0 20px rgba(92,246,199,.25);
       animation:pulse 1.6s ease-in-out infinite;
+      flex:0 0 auto;
     }
     @keyframes pulse{
-      0%,100%{transform:scale(1); opacity:.85}
-      50%{transform:scale(1.25); opacity:1}
+      0%,100%{transform:scale(1); opacity:.84}
+      50%{transform:scale(1.26); opacity:1}
     }
-    .nextName{font-weight:900; letter-spacing:.1px; font-size:18px}
-    .nextMeta{color:var(--muted); font-size:13px; line-height:1.4}
-    .nextWhyLine{
-      margin-top:2px;
-      display:flex; flex-wrap:wrap; gap:8px;
-    }
+    .nextName{font-weight:900; letter-spacing:.1px; font-size:20px}
+    .nextMeta{color:var(--muted); font-size:13px; line-height:1.45}
+    .nextWhyLine{margin-top:4px; display:flex; flex-wrap:wrap; gap:8px}
     .miniTag{
       font-size:11px; padding:6px 8px; border-radius:999px;
       background:rgba(255,255,255,.05);
@@ -478,7 +487,7 @@
       color:var(--muted);
     }
     html[data-theme="day"] .miniTag{
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.78);
       border-color:rgba(10,10,20,.12);
     }
     .nextAction{
@@ -486,41 +495,14 @@
       display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     }
 
-    .miniBtn,.small,.ghostBtn,.bookBtn,.pickBtn,.socialBtn,.nb,.closeBtn,.timeBtn,.aiItem .go{
-      transition:transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
-    }
-    .miniBtn,.small,.ghostBtn,.pickBtn,.socialBtn,.nb,.timeBtn,.aiItem .go{
-      height:40px;
-      padding:0 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
+    .miniBtn,.small,.ghostBtn,.pickBtn,.socialBtn,.nb,.timeBtn,.aiPill,.goBtn,.closeBtn{
+      height:40px; padding:0 12px; border-radius:14px;
       display:flex; align-items:center; gap:10px;
       user-select:none;
-      box-shadow:var(--shadow2);
-    }
-    html[data-theme="day"] .miniBtn,
-    html[data-theme="day"] .small,
-    html[data-theme="day"] .ghostBtn,
-    html[data-theme="day"] .pickBtn,
-    html[data-theme="day"] .socialBtn,
-    html[data-theme="day"] .nb,
-    html[data-theme="day"] .timeBtn,
-    html[data-theme="day"] .aiItem .go{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
     }
     .miniBtn.primary,.small.primary{
-      background:linear-gradient(135deg, rgba(255,79,216,.22), rgba(255,255,255,.06));
+      background:linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,255,255,.05));
       border-color:rgba(255,79,216,.24);
-    }
-    .miniBtn:hover,.small:hover,.ghostBtn:hover,.pickBtn:hover,.socialBtn:hover,.nb:hover,.timeBtn:hover,.aiItem .go:hover{
-      background:rgba(255,255,255,.08);
-      border-color:rgba(255,255,255,.16);
-    }
-    .miniBtn:active,.small:active,.ghostBtn:active,.bookBtn:active,.pickBtn:active,.socialBtn:active,.nb:active,.timeBtn:active,.aiItem .go:active{
-      transform:scale(.985);
     }
 
     .controls{
@@ -534,44 +516,24 @@
       .controls{grid-template-columns:1fr}
     }
     .search{
-      height:50px;
+      width:100%;
+      height:52px;
       border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
       padding:0 14px;
       outline:none;
-      box-shadow:0 14px 40px rgba(0,0,0,.28);
-    }
-    html[data-theme="day"] .search{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-      box-shadow:0 14px 34px rgba(10,10,20,.10);
     }
     .tabs{
       display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
     }
     .tab{
-      height:50px; padding:0 14px; border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:flex; align-items:center; gap:10px;
-      box-shadow:0 14px 40px rgba(0,0,0,.28);
-      user-select:none;
-      transition:background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-    }
-    html[data-theme="day"] .tab{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-      box-shadow:0 14px 34px rgba(10,10,20,.10);
+      height:52px; padding:0 14px; border-radius:18px;
+      display:flex; align-items:center; gap:10px; user-select:none;
     }
     .tab.active{
       background:rgba(139,92,246,.18);
-      border-color:rgba(139,92,246,.35);
+      border-color:rgba(139,92,246,.34);
       box-shadow:0 18px 60px rgba(139,92,246,.12);
     }
-    .tab:active{transform:scale(.985)}
 
     .section{margin-top:20px}
     .sectionHead{
@@ -579,19 +541,75 @@
       margin-bottom:10px;
     }
     .h2{
-      font-family:var(--font-title);
-      font-size:22px;
       margin:0;
+      font-family:var(--font-title);
+      font-size:23px;
       letter-spacing:.2px;
     }
     .hint{color:var(--muted2); font-size:12px}
+
+    .strip{
+      display:flex; gap:12px; overflow-x:auto;
+      padding-bottom:8px;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+    }
+    .strip::-webkit-scrollbar{height:8px}
+    .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px}
+    html[data-theme="day"] .strip::-webkit-scrollbar-thumb{background:rgba(10,10,20,.12)}
+
+    .stripCard{
+      flex:0 0 min(440px, 86%);
+      border-radius:var(--r2);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+      position:relative;
+      scroll-snap-align:start;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    html[data-theme="day"] .stripCard{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.80);
+    }
+    .stripCard:hover{transform:translateY(-2px)}
+    .stripCard:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
+      transform:translateX(-30%) rotate(8deg);
+      opacity:.22;
+      animation:shimmer 2.8s ease-in-out infinite;
+      pointer-events:none; z-index:1;
+    }
+    @keyframes shimmer{
+      0%,100%{transform:translateX(-35%) rotate(8deg); opacity:.16}
+      50%{transform:translateX(35%) rotate(8deg); opacity:.28}
+    }
+    .stripImg{
+      height:194px; position:relative; overflow:hidden;
+    }
+    .stripImg img{
+      width:100%; height:100%; object-fit:cover;
+      transform:scale(1.02); transition:transform .55s ease;
+    }
+    .stripCard:hover .stripImg img{transform:scale(1.10)}
+    .stripImg:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(240px 130px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
 
     .grid{
       display:grid;
       grid-template-columns:repeat(3, minmax(0,1fr));
       gap:12px;
     }
-    @media (max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:980px){.grid{grid-template-columns:repeat(2, minmax(0,1fr))}}
     @media (max-width:620px){.grid{grid-template-columns:1fr}}
 
     .card{
@@ -602,33 +620,30 @@
       box-shadow:var(--shadow2);
       position:relative;
       transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
-      will-change:transform;
     }
     html[data-theme="day"] .card{
       border-color:rgba(10,10,20,.10);
-      background:rgba(255,255,255,.70);
+      background:rgba(255,255,255,.74);
     }
     .card:hover{
       transform:translateY(-3px);
-      background:rgba(255,255,255,.055);
       border-color:rgba(255,255,255,.12);
+      background:rgba(255,255,255,.055);
       box-shadow:0 20px 46px rgba(0,0,0,.28);
     }
     html[data-theme="day"] .card:hover{
-      background:rgba(255,255,255,.82);
       border-color:rgba(10,10,20,.14);
+      background:rgba(255,255,255,.86);
       box-shadow:0 16px 34px rgba(10,10,20,.12);
     }
 
     .img{
-      height:166px;
+      height:174px;
       background:linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,210,122,.10), rgba(139,92,246,.18));
-      position:relative;
-      overflow:hidden;
+      position:relative; overflow:hidden;
     }
     .img img{
-      width:100%; height:100%;
-      object-fit:cover;
+      width:100%; height:100%; object-fit:cover;
       transform:scale(1.02);
       transition:transform .55s ease;
       filter:saturate(1.05) contrast(1.02);
@@ -658,8 +673,7 @@
 
     .badges{
       position:absolute; left:10px; top:10px;
-      display:flex; gap:6px; flex-wrap:wrap;
-      z-index:2;
+      display:flex; gap:6px; flex-wrap:wrap; z-index:2;
     }
     .badge{
       font-size:11px;
@@ -669,32 +683,35 @@
       border:1px solid rgba(255,255,255,.12);
       backdrop-filter:blur(10px);
       color:#fff;
+      white-space:nowrap;
     }
     html[data-theme="day"] .badge{
       background:rgba(10,10,20,.55);
       border-color:rgba(255,255,255,.20);
     }
-    .badge.partner{border-color:rgba(255,210,122,.30); background:rgba(255,210,122,.10)}
-    .badge.today{border-color:rgba(92,246,199,.30); background:rgba(92,246,199,.10)}
-    .badge.verified{border-color:rgba(139,92,246,.32); background:rgba(139,92,246,.10)}
-    .badge.recommended{border-color:rgba(85,217,255,.30); background:rgba(85,217,255,.10)}
+    .badge.partner{border-color:rgba(255,210,122,.30); background:rgba(255,210,122,.12)}
+    .badge.today{border-color:rgba(92,246,199,.30); background:rgba(92,246,199,.12)}
+    .badge.verified{border-color:rgba(139,92,246,.32); background:rgba(139,92,246,.12)}
+    .badge.recommended{border-color:rgba(85,217,255,.30); background:rgba(85,217,255,.12)}
+    .badge.sterile{border-color:rgba(255,255,255,.24); background:rgba(255,255,255,.10)}
+    .badge.trending{border-color:rgba(255,79,216,.32); background:rgba(255,79,216,.14)}
 
     .cardBody{padding:12px}
     .row1{
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
     }
     .title{
+      margin:0;
       font-weight:900;
       letter-spacing:.1px;
-      line-height:1.15;
-      margin:0;
+      line-height:1.16;
       font-size:15px;
     }
     .subline{
       margin-top:6px;
       color:var(--muted);
       font-size:12.5px;
-      line-height:1.28;
+      line-height:1.3;
     }
     .rightMeta{
       display:flex; flex-direction:column; align-items:flex-end; gap:6px;
@@ -711,7 +728,7 @@
     }
     html[data-theme="day"] .price{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
+      background:rgba(255,255,255,.80);
     }
     .rating{font-size:12px; color:var(--muted)}
     .whyRow{
@@ -719,96 +736,225 @@
       margin-top:10px;
     }
     .whyPill{
-      font-size:11px; padding:5px 8px; border-radius:999px;
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
       background:rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.08);
       color:var(--muted);
     }
     html[data-theme="day"] .whyPill{
-      background:rgba(255,255,255,.70);
+      background:rgba(255,255,255,.80);
       border-color:rgba(10,10,20,.10);
     }
-
     .cardActions{
       margin-top:10px;
       display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
     }
 
-    .strip{
-      display:flex;
+    .trendGrid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
       gap:12px;
-      overflow-x:auto;
-      padding-bottom:8px;
-      scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
     }
-    .strip::-webkit-scrollbar{height:8px}
-    .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px}
-    html[data-theme="day"] .strip::-webkit-scrollbar-thumb{background:rgba(10,10,20,.12)}
-    .stripCard{
-      flex:0 0 min(440px, 86%);
-      border-radius:var(--r);
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
+    @media (max-width:900px){.trendGrid{grid-template-columns:1fr}}
+    .trendCard{
+      border-radius:var(--r2);
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(420px 180px at 12% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(420px 180px at 100% 0%, rgba(139,92,246,.14), transparent 60%),
+        rgba(255,255,255,.04);
+      box-shadow:var(--shadow2);
+      padding:14px;
+    }
+    html[data-theme="day"] .trendCard{
+      border-color:rgba(10,10,20,.10);
+      background:
+        radial-gradient(420px 180px at 12% 0%, rgba(255,79,216,.12), transparent 60%),
+        radial-gradient(420px 180px at 100% 0%, rgba(139,92,246,.12), transparent 60%),
+        rgba(255,255,255,.82);
+    }
+    .trendKicker{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted2)}
+    .trendName{margin-top:6px; font-weight:900; font-size:18px}
+    .trendMeta{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.42}
+    .trendActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
+    .trustWrap{
+      margin-top:18px;
+      border-radius:var(--r3);
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.18), transparent 55%),
+        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.16), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
       box-shadow:var(--shadow2);
       overflow:hidden;
-      position:relative;
-      scroll-snap-align:start;
-      transition:transform .18s ease, border-color .18s ease, background .18s ease;
     }
-    html[data-theme="day"] .stripCard{
+    html[data-theme="day"] .trustWrap{
+      border-color:rgba(10,10,20,.10);
+      background:
+        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.12), transparent 55%),
+        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.58));
+    }
+    .trustInner{padding:16px}
+    .trustGrid{
+      display:grid; grid-template-columns:1.1fr .9fr; gap:12px; align-items:start;
+    }
+    @media (max-width:840px){.trustGrid{grid-template-columns:1fr}}
+    .trustTitle{
+      margin:0 0 8px;
+      font-family:var(--font-title);
+      font-weight:700;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .trustText{color:var(--muted); font-size:13px; line-height:1.58}
+    .trustBullets{
+      margin:10px 0 0; padding:0; list-style:none; display:grid; gap:8px;
+    }
+    .trustBullets li{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      padding:10px 12px;
+      font-size:13px;
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    html[data-theme="day"] .trustBullets li{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.80);
+    }
+    .trustRight{
+      border-radius:var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      padding:12px;
+      box-shadow:var(--glow);
+    }
+    html[data-theme="day"] .trustRight{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.80);
+    }
+    .socialRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .trustMini{margin-top:10px; color:var(--muted2); font-size:12px; line-height:1.45}
+
+    .footerMeta{
+      margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+    .footerStat{display:flex; gap:10px; flex-wrap:wrap}
+    .fStat{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      font-size:12px;
+      color:var(--muted);
+    }
+    html[data-theme="day"] .fStat{
       border-color:rgba(10,10,20,.12);
       background:rgba(255,255,255,.78);
     }
-    .stripCard:hover{transform:translateY(-2px); border-color:rgba(255,255,255,.14)}
-    html[data-theme="day"] .stripCard:hover{border-color:rgba(10,10,20,.16)}
-    .stripImg{height:188px; position:relative; overflow:hidden}
-    .stripImg img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform .55s ease}
-    .stripCard:hover .stripImg img{transform:scale(1.10)}
-    .stripImg:after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(240px 130px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
-      pointer-events:none;
+
+    .empty{
+      border-radius:20px;
+      padding:22px 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      text-align:center;
     }
-    .stripCard:before{
-      content:"";
-      position:absolute; inset:-40%;
-      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
-      transform:translateX(-30%) rotate(8deg);
-      opacity:.22;
-      animation:shimmer 2.8s ease-in-out infinite;
-      pointer-events:none;
-      z-index:1;
+    html[data-theme="day"] .empty{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.80);
     }
-    @keyframes shimmer{
-      0%,100%{transform:translateX(-35%) rotate(8deg); opacity:.18}
-      50%{transform:translateX(35%) rotate(8deg); opacity:.28}
-    }
-    .stripBody{padding:12px}
-    .stripTop{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
-    .stripName{font-weight:900; letter-spacing:.1px}
-    .stripMeta{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.28}
 
     .fab{
       position:fixed;
       right:calc(14px + var(--safe-right));
       bottom:calc(14px + var(--safe-bottom));
-      z-index:60;
-      height:58px;
-      padding:0 18px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(135deg, rgba(255,79,216,.72), rgba(255,210,122,.46), rgba(139,92,246,.60));
+      z-index:65;
+      height:58px; padding:0 18px; border-radius:18px;
       color:#fff;
+      background:linear-gradient(135deg, rgba(255,79,216,.74), rgba(255,210,122,.46), rgba(139,92,246,.60));
+      border-color:rgba(255,255,255,.14);
       box-shadow:0 22px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
       display:flex; align-items:center; gap:10px;
-      user-select:none;
-      font-weight:900;
+      font-weight:900; user-select:none;
     }
-    .fab:active{transform:scale(.985)}
+    .fab:hover{filter:brightness(1.03)}
+
+    .toTop{
+      position:fixed;
+      left:calc(14px + var(--safe-left));
+      bottom:calc(14px + var(--safe-bottom));
+      z-index:55;
+      width:48px; height:48px; border-radius:16px;
+      display:grid; place-items:center;
+      opacity:0; pointer-events:none;
+    }
+    .toTop.show{opacity:1; pointer-events:auto}
+
+    .toast{
+      position:fixed;
+      left:50%; transform:translateX(-50%);
+      bottom:calc(90px + var(--safe-bottom));
+      z-index:95;
+      min-width:260px;
+      max-width:min(680px, calc(100% - 24px));
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.88);
+      box-shadow:0 22px 70px rgba(0,0,0,.60);
+      color:var(--text);
+      display:none;
+      backdrop-filter:blur(14px);
+    }
+    html[data-theme="day"] .toast{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.90);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .toast.show{display:block; animation:toastIn .22s ease}
+    @keyframes toastIn{
+      from{opacity:0; transform:translateX(-50%) translateY(10px)}
+      to{opacity:1; transform:translateX(-50%) translateY(0)}
+    }
+    .toast .t1{font-weight:900; margin-bottom:4px}
+    .toast .t2{color:var(--muted); font-size:13px; line-height:1.35}
+
+    .netbar{
+      position:fixed;
+      left:50%; transform:translateX(-50%);
+      top:calc(10px + var(--safe-top));
+      z-index:120;
+      width:min(860px, calc(100% - 24px));
+      padding:10px 12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.84);
+      backdrop-filter:blur(14px);
+      box-shadow:0 22px 70px rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    html[data-theme="day"] .netbar{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.90);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .netbar.show{display:flex}
+    .netbar .txt{font-size:13px}
+    .netbar .btns{display:flex; gap:8px; flex-wrap:wrap}
+    .netbar .nb.primary{
+      background:rgba(92,246,199,.18);
+      border-color:rgba(92,246,199,.30);
+    }
 
     .overlay,.sheet{
       position:fixed; inset:0;
@@ -848,7 +994,7 @@
       background:
         radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.18), transparent 55%),
         radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.18), transparent 58%),
-        linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.80));
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
       box-shadow:0 30px 100px rgba(10,10,20,.18);
     }
 
@@ -866,12 +1012,10 @@
       font-weight:700;
       letter-spacing:.2px;
     }
-    .modalTitle{font-size:19px}
-    .sheetTitle{font-size:16px}
+    .modalTitle{font-size:20px}
+    .sheetTitle{font-size:17px}
     .closeBtn{
-      width:42px; height:42px;
-      border-radius:16px;
-      justify-content:center;
+      width:42px; height:42px; justify-content:center; border-radius:16px;
     }
 
     .modalBody,.sheetBody{
@@ -885,34 +1029,37 @@
     .label{font-size:12px; color:var(--muted2); margin-bottom:6px}
     .input,.timeBtn{
       width:100%;
-      height:46px;
+      height:48px;
       border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
       padding:0 12px;
       outline:none;
     }
-    html[data-theme="day"] .input,
-    html[data-theme="day"] .timeBtn{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.78);
+    .timeBtn{
+      justify-content:space-between;
     }
     select.input{appearance:none}
     .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     @media (max-width:520px){.row2{grid-template-columns:1fr}}
 
-    .quickPicks,.aiRow{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top:8px;
+    .quickPicks,.aiRow,.dayPills{
+      display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;
     }
     .pickBtn{
-      height:34px; padding:0 12px; border-radius:999px; font-size:13px;
-      box-shadow:none;
+      height:34px; padding:0 12px; border-radius:999px; font-size:13px; box-shadow:none;
     }
     .pickBtn.active{
       background:rgba(92,246,199,.16);
       border-color:rgba(92,246,199,.30);
+    }
+
+    .dayPill{
+      height:34px; padding:0 12px; border-radius:999px; font-size:12px;
+      display:flex; align-items:center; gap:8px; user-select:none;
+    }
+    .dayPill.active{
+      background:rgba(255,79,216,.16);
+      border-color:rgba(255,79,216,.30);
+      box-shadow:0 16px 44px rgba(255,79,216,.10);
     }
 
     .modalFoot{
@@ -927,21 +1074,17 @@
     }
     .bookBtn{
       height:48px; padding:0 14px; border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(135deg, rgba(92,246,199,.34), rgba(255,255,255,.07));
-      color:var(--text);
       font-weight:900; letter-spacing:.2px;
       display:flex; align-items:center; gap:10px;
-      flex:1; justify-content:center;
+      flex:1; justify-content:center; user-select:none;
+      background:linear-gradient(135deg, rgba(92,246,199,.34), rgba(255,255,255,.08));
+      border-color:rgba(92,246,199,.22);
       box-shadow:0 18px 60px rgba(92,246,199,.12);
-      user-select:none;
     }
     .hold{font-size:12px; color:var(--muted2); margin-left:6px}
 
     .timeGrid{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:10px;
+      display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;
     }
     @media (max-width:520px){.timeGrid{grid-template-columns:repeat(2, minmax(0,1fr))}}
     .timeItem{
@@ -951,18 +1094,16 @@
       background:rgba(255,255,255,.05);
       color:var(--text);
       display:flex; align-items:center; justify-content:center;
-      font-weight:900;
-      letter-spacing:.2px;
+      font-weight:900; letter-spacing:.2px;
       transition:transform .16s ease, background .16s ease, border-color .16s ease;
       user-select:none;
     }
     html[data-theme="day"] .timeItem{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.78);
+      background:rgba(255,255,255,.80);
     }
     .timeItem:hover{background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.14)}
     .timeItem:active{transform:scale(.985)}
-    .timeItem.disabled{opacity:.35; pointer-events:none}
     .timeItem.active{
       background:rgba(92,246,199,.16);
       border-color:rgba(92,246,199,.30);
@@ -970,30 +1111,15 @@
     }
 
     .aiPill{
-      height:36px;
-      padding:0 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      font-size:13px;
-      display:flex; align-items:center; gap:8px;
-      user-select:none;
-    }
-    html[data-theme="day"] .aiPill{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.78);
+      height:36px; padding:0 12px; border-radius:999px;
+      font-size:13px; display:flex; align-items:center; gap:8px; user-select:none;
     }
     .aiPill.primary{
       background:rgba(139,92,246,.18);
       border-color:rgba(139,92,246,.32);
     }
-
     .aiList{
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      margin-top:10px; display:flex; flex-direction:column; gap:10px;
     }
     .aiItem{
       border-radius:18px;
@@ -1004,212 +1130,13 @@
     }
     html[data-theme="day"] .aiItem{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.78);
+      background:rgba(255,255,255,.80);
     }
     .aiItem .n{font-weight:900}
-    .aiItem .m{color:var(--muted); font-size:12.5px; margin-top:4px; line-height:1.25}
-    .aiItem .go{
-      height:38px; padding:0 12px; border-radius:14px;
-      justify-content:center;
+    .aiItem .m{color:var(--muted); font-size:12.5px; margin-top:4px; line-height:1.3}
+    .goBtn{
+      height:38px; padding:0 12px; border-radius:14px; justify-content:center;
     }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:calc(90px + var(--safe-bottom));
-      z-index:95;
-      min-width:260px;
-      max-width:min(680px, calc(100% - 24px));
-      padding:12px 14px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(10,10,16,.86);
-      box-shadow:0 22px 70px rgba(0,0,0,.60);
-      color:var(--text);
-      display:none;
-      backdrop-filter:blur(14px);
-    }
-    html[data-theme="day"] .toast{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.86);
-      box-shadow:0 22px 60px rgba(10,10,20,.16);
-    }
-    .toast.show{display:block; animation:toastIn .22s ease}
-    @keyframes toastIn{
-      from{opacity:0; transform:translateX(-50%) translateY(10px)}
-      to{opacity:1; transform:translateX(-50%) translateY(0)}
-    }
-    .toast .t1{font-weight:900; margin-bottom:4px}
-    .toast .t2{color:var(--muted); font-size:13px; line-height:1.35}
-
-    .netbar{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      top:calc(10px + var(--safe-top));
-      z-index:120;
-      width:min(860px, calc(100% - 24px));
-      padding:10px 12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(10,10,16,.82);
-      backdrop-filter:blur(14px);
-      box-shadow:0 22px 70px rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    html[data-theme="day"] .netbar{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.86);
-      box-shadow:0 22px 60px rgba(10,10,20,.16);
-    }
-    .netbar.show{display:flex}
-    .netbar .txt{font-size:13px; color:var(--text)}
-    .netbar .btns{display:flex; gap:8px; flex-wrap:wrap}
-    .netbar .nb.primary{
-      background:rgba(92,246,199,.18);
-      border-color:rgba(92,246,199,.30);
-    }
-
-    .trustWrap{
-      margin-top:18px;
-      border-radius:var(--r2);
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.18), transparent 55%),
-        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.16), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      box-shadow:var(--shadow2);
-      overflow:hidden;
-    }
-    html[data-theme="day"] .trustWrap{
-      border-color:rgba(10,10,20,.10);
-      background:
-        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.12), transparent 55%),
-        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.10), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
-    }
-    .trustInner{padding:16px}
-    .trustGrid{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:12px;
-      align-items:start;
-    }
-    @media (max-width:840px){.trustGrid{grid-template-columns:1fr}}
-    .trustTitle{
-      font-family:var(--font-title);
-      font-weight:700;
-      font-size:20px;
-      margin:0 0 8px;
-      letter-spacing:.2px;
-    }
-    .trustText{color:var(--muted); font-size:13px; line-height:1.55}
-    .trustBullets{
-      margin:10px 0 0;
-      padding:0;
-      list-style:none;
-      display:grid;
-      gap:8px;
-    }
-    .trustBullets li{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      padding:10px 12px;
-      font-size:13px;
-      color:var(--text);
-      display:flex; gap:10px; align-items:flex-start;
-    }
-    html[data-theme="day"] .trustBullets li{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-    }
-    .trustRight{
-      border-radius:var(--r);
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-      padding:12px;
-      box-shadow:var(--glow);
-    }
-    html[data-theme="day"] .trustRight{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-    }
-    .socialRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .trustMini{
-      margin-top:10px;
-      color:var(--muted2);
-      font-size:12px;
-      line-height:1.45;
-    }
-
-    .footerMeta{
-      margin-top:14px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .footerStat{
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
-    .fStat{
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      font-size:12px;
-      color:var(--muted);
-    }
-    html[data-theme="day"] .fStat{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-    }
-
-    .sep{height:1px; background:rgba(255,255,255,.06); margin:18px 0}
-    html[data-theme="day"] .sep{background:rgba(10,10,20,.10)}
-    .muted{color:var(--muted)}
-    .hidden{display:none!important}
-    .empty{
-      border-radius:20px;
-      padding:22px 16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      color:var(--muted);
-      text-align:center;
-    }
-    html[data-theme="day"] .empty{
-      border-color:rgba(10,10,20,.10);
-      background:rgba(255,255,255,.72);
-    }
-
-    .toTop{
-      position:fixed;
-      left:calc(14px + var(--safe-left));
-      bottom:calc(14px + var(--safe-bottom));
-      z-index:55;
-      width:48px; height:48px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:grid; place-items:center;
-      box-shadow:var(--shadow2);
-      opacity:0; pointer-events:none;
-      transition:opacity .18s ease, transform .18s ease;
-    }
-    html[data-theme="day"] .toTop{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-    }
-    .toTop.show{opacity:1; pointer-events:auto}
-    .toTop:active{transform:scale(.985)}
 
     @media (prefers-reduced-motion: reduce){
       *{animation:none!important; transition:none!important; scroll-behavior:auto!important}
@@ -1226,7 +1153,7 @@
   </div>
 
   <div class="netbar" id="netbar">
-    <div class="txt" id="netbarText">…</div>
+    <div class="txt" id="netbarText">...</div>
     <div class="btns">
       <button class="nb" id="netbarOk" type="button">OK</button>
       <button class="nb primary" id="netbarRefresh" type="button">Refresh</button>
@@ -1250,8 +1177,8 @@
           <span id="t_favOnly">Only ❤️</span>
         </button>
         <button class="iconBtn" id="btnAI" title="AI help" type="button">✨</button>
-        <button class="iconBtn" id="btnLang" title="Language" type="button">🌐</button>
-        <button class="iconBtn" id="btnTheme" title="Theme" aria-label="Theme" type="button">🌙</button>
+        <button class="iconBtn" id="btnLang" title="Language later" type="button">🌐</button>
+        <button class="iconBtn" id="btnTheme" title="Theme" type="button">🌙</button>
       </div>
     </div>
   </header>
@@ -1259,9 +1186,10 @@
   <main class="wrap">
     <section class="hero">
       <div class="heroVideo" aria-hidden="true">
-        <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=80">
-          <source src="https://cdn.coverr.co/videos/coverr-woman-getting-her-nails-done-1560679830828?download=1080p" type="video/mp4">
-        </video>
+        <img
+          src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=80"
+          alt=""
+        />
       </div>
       <div class="heroSparkles" aria-hidden="true"></div>
 
@@ -1270,13 +1198,13 @@
           <div class="eyebrow"><span>✦</span><span id="t_eyebrow">Luxury beauty booking, but fast.</span></div>
 
           <div class="heroTitle" id="t_heroTitle">Book beauty in seconds.</div>
-          <div class="heroLead" id="t_heroLead">Premium picks in Montréal — verified salons, home masters, fast booking.</div>
+          <div class="heroLead" id="t_heroLead">Premium picks in Montréal — verified salons, home masters, fast booking with Telegram confirmation.</div>
 
           <div class="heroCtas">
             <button class="cta primary" id="ctaQuick" type="button">
-              <span>⚡️</span><span id="t_quick">Quick book</span>
+              <span>⚡</span><span id="t_quick">Quick book</span>
             </button>
-            <a class="cta" href="./profile.html?id=romanukova" target="_blank" rel="noopener">
+            <a class="cta" id="ctaProfile" href="./profile.html?id=romanukova" target="_blank" rel="noopener">
               <span>🏛</span><span id="t_openProfile">Open profile</span>
             </a>
           </div>
@@ -1310,7 +1238,7 @@
       <input class="search" id="search" placeholder="Search salon, master, service…" />
       <div class="tabs">
         <button class="tab active" id="tabAll" type="button"><span>🏛</span><span id="t_tabAll">All</span></button>
-        <button class="tab" id="tabPartners" type="button"><span>⭐️</span><span id="t_tabPartners">Top</span></button>
+        <button class="tab" id="tabPartners" type="button"><span>⭐</span><span id="t_tabPartners">Top</span></button>
         <button class="tab" id="tabRecommended" type="button"><span>✨</span><span id="t_tabRec">Recommended</span></button>
       </div>
     </div>
@@ -1321,6 +1249,14 @@
         <div class="hint" id="t_partnersHint">Paid partners</div>
       </div>
       <div class="strip" id="stripPartners"></div>
+    </section>
+
+    <section class="section" id="secTrending">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_trending">Trending this week</h2>
+        <div class="hint" id="t_trendingHint">Fastest picks right now</div>
+      </div>
+      <div class="trendGrid" id="trendGrid"></div>
     </section>
 
     <section class="section" id="secRec">
@@ -1345,29 +1281,29 @@
           <div>
             <h3 class="trustTitle" id="t_trustTitle">Why people trust Beauty Booking</h3>
             <div class="trustText" id="t_trustText">
-              Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.
+              Premium-first booking experience. Clean UI, verified partners, real availability, and Telegram-ready confirmations — so you can book with confidence.
             </div>
 
-            <ul class="trustBullets" id="trustBullets">
+            <ul class="trustBullets">
               <li><span>🛡</span><span id="t_trustB1">Verified salons & masters — curated quality.</span></li>
               <li><span>🧼</span><span id="t_trustB2">Sterile tools & hygiene standards highlighted.</span></li>
-              <li><span>⏱️</span><span id="t_trustB3">Fast booking — in ~30 seconds.</span></li>
+              <li><span>⏱</span><span id="t_trustB3">Fast booking — really in ~30 seconds.</span></li>
               <li><span>📍</span><span id="t_trustB4">Clear address & profile link for every booking.</span></li>
             </ul>
           </div>
 
           <div class="trustRight">
             <div style="font-weight:900" id="t_socialTitle">Follow us</div>
-            <div class="trustMini" id="t_socialLead">Updates, new partners, and weekly trending picks.</div>
+            <div class="trustMini" id="t_socialLead">Updates, new partners, trending picks, and premium beauty inspiration.</div>
 
             <div class="socialRow">
-              <a class="socialBtn" href="https://instagram.com" target="_blank" rel="noopener"><span>📷</span><span id="t_insta">Instagram</span></a>
-              <a class="socialBtn" href="https://facebook.com" target="_blank" rel="noopener"><span>📘</span><span id="t_fb">Facebook</span></a>
+              <a class="socialBtn" href="https://instagram.com" target="_blank" rel="noopener"><span>📷</span><span>Instagram</span></a>
+              <a class="socialBtn" href="https://facebook.com" target="_blank" rel="noopener"><span>📘</span><span>Facebook</span></a>
               <button class="socialBtn" id="btnCopyLink" type="button"><span>🔗</span><span id="t_copyLink">Copy site link</span></button>
             </div>
 
             <div class="trustMini" id="t_legal">
-              By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.
+              By booking you agree to fair contact without spam. Confirmation arrives through Telegram.
             </div>
 
             <div class="footerMeta">
@@ -1387,7 +1323,7 @@
   </main>
 
   <button class="toTop" id="toTop" type="button" aria-label="Back to top">↑</button>
-  <button class="fab" id="fab" type="button"><span>⚡️</span><span id="t_fab">Quick book</span></button>
+  <button class="fab" id="fab" type="button"><span>⚡</span><span id="t_fab">Quick book</span></button>
 
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Booking">
@@ -1408,6 +1344,11 @@
           <select class="input" id="m_service"></select>
         </div>
 
+        <div class="field">
+          <div class="label" id="m_lblQuickDate">Quick date</div>
+          <div class="dayPills" id="dayPills"></div>
+        </div>
+
         <div class="row2">
           <div class="field">
             <div class="label" id="m_lblDate">Date</div>
@@ -1422,9 +1363,10 @@
             </button>
 
             <div class="quickPicks">
-              <button class="pickBtn" id="pickFast" type="button">⚡️ <span id="t_pickFast">Fastest</span></button>
+              <button class="pickBtn" id="pickFast" type="button">⚡ <span id="t_pickFast">Fastest</span></button>
               <button class="pickBtn" id="pickCheap" type="button">💸 <span id="t_pickCheap">Cheapest</span></button>
               <button class="pickBtn" id="pickNear" type="button">📍 <span id="t_pickNear">Nearest</span></button>
+              <button class="pickBtn" id="pickEvening" type="button">🌙 <span id="t_pickEvening">Evening</span></button>
             </div>
           </div>
         </div>
@@ -1432,18 +1374,18 @@
         <div class="row2">
           <div class="field">
             <div class="label" id="m_lblName">Your name</div>
-            <input class="input" id="m_name" placeholder="Name" />
+            <input class="input" id="m_name" placeholder="Your name" autocomplete="name" />
           </div>
           <div class="field">
             <div class="label" id="m_lblPhone">Phone</div>
-            <input class="input" id="m_phone" placeholder="(438)..." inputmode="tel" />
+            <input class="input" id="m_phone" placeholder="+1 ..." inputmode="tel" autocomplete="tel" />
           </div>
         </div>
 
         <div class="row2">
           <div class="field">
             <div class="label" id="m_lblEmail">Email</div>
-            <input class="input" id="m_email" placeholder="email@example.com" inputmode="email" />
+            <input class="input" id="m_email" placeholder="email@example.com" inputmode="email" autocomplete="email" />
           </div>
           <div class="field">
             <div class="label" id="m_lblNotes">Notes</div>
@@ -1483,14 +1425,14 @@
         <button class="closeBtn" id="aiClose" type="button">✕</button>
       </div>
       <div class="sheetBody">
-        <div class="muted" style="font-size:13px;line-height:1.35" id="t_aiLead">
+        <div class="muted" style="font-size:13px;line-height:1.4" id="t_aiLead">
           Pick a service and I’ll show Top / Recommended / Nearest — no random.
         </div>
 
         <div class="aiRow" id="aiServiceRow"></div>
 
         <div class="aiRow">
-          <button class="aiPill primary" id="aiTop" type="button">⭐️ Top</button>
+          <button class="aiPill primary" id="aiTop" type="button">⭐ Top</button>
           <button class="aiPill" id="aiRec" type="button">✨ Recommended</button>
           <button class="aiPill" id="aiNear" type="button">📍 Nearest</button>
           <button class="aiPill" id="aiClear" type="button">↺ Reset</button>
@@ -1507,7 +1449,6 @@
   </div>
 
   <script src="./data.js"></script>
-
   <script>
   ;(() => {
     const $ = (q, el = document) => el.querySelector(q);
@@ -1554,164 +1495,150 @@
     if (isStandalone()) document.body.classList.add("is-standalone");
 
     const FALLBACK_SERVICES = [
-      { id: "manicure", ua: "Манікюр", en: "Manicure", fr: "Manucure", ru: "Маникюр", icon: "💅" },
-      { id: "pedicure", ua: "Педикюр", en: "Pedicure", fr: "Pédicure", ru: "Педикюр", icon: "🦶" },
-      { id: "brows", ua: "Брови", en: "Brows", fr: "Sourcils", ru: "Брови", icon: "✨" },
-      { id: "haircut_w", ua: "Жіноча стрижка", en: "Women haircut", fr: "Coupe femme", ru: "Женская стрижка", icon: "✂️" },
-      { id: "haircut_m", ua: "Чоловіча стрижка", en: "Men haircut", fr: "Coupe homme", ru: "Мужская стрижка", icon: "💈" }
+      { id: "manicure", en: "Manicure", icon: "💅" },
+      { id: "pedicure", en: "Pedicure", icon: "🦶" },
+      { id: "brows", en: "Brows", icon: "✨" },
+      { id: "haircut_m", en: "Men's haircut", icon: "✂️" },
+      { id: "haircut_w", en: "Women's haircut", icon: "💇‍♀️" }
     ];
 
     const futureDatesISO = (n = 10) => {
       const out = [];
       const now = new Date();
       for (let i = 0; i < n; i++) {
-        const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
-        out.push(isoLocal(d));
+        out.push(isoLocal(new Date(now.getFullYear(), now.getMonth(), now.getDate() + i)));
       }
       return out;
     };
 
-    const makeAvailability = (timesByDay) => {
-      const days = futureDatesISO(7);
-      const obj = {};
-      days.forEach((d, i) => {
-        obj[d] = i === 0 ? timesByDay.today : (i === 1 ? timesByDay.tomorrow : timesByDay.rest);
+    const buildFallbackListingAvailability = (serviceIds, baseTimes) => {
+      const dates = futureDatesISO(7);
+      const byService = {};
+      serviceIds.forEach((sid, index) => {
+        byService[sid] = dates.flatMap((dateISO, dayIndex) => {
+          const set = baseTimes[(index + dayIndex) % baseTimes.length] || [];
+          return set.map(t => `${dateISO} ${t}`);
+        });
       });
-      return obj;
+
+      const byDay = {};
+      Object.values(byService).flat().forEach(slot => {
+        const d = slot.slice(0, 10);
+        const t = slot.slice(11, 16);
+        (byDay[d] = byDay[d] || []).push(t);
+      });
+      Object.keys(byDay).forEach(d => {
+        byDay[d] = Array.from(new Set(byDay[d])).sort();
+      });
+
+      return { availabilityByService: byService, availability: byDay };
     };
 
-    const FALLBACK_LISTINGS = [
-      {
-        id: "romanukova",
-        name: "Romanukova Nail Studio",
-        city: "Montréal",
-        address: "Montréal, QC",
-        lat: 45.5019, lng: -73.5674,
-        partner: true,
-        recommended: true,
-        verified: true,
-        rating: 4.9,
-        distance: 1.4,
-        image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80",
-        services: ["manicure", "pedicure", "brows"],
-        prices: { manicure: 55, pedicure: 70, brows: 35 },
-        availability: makeAvailability({
-          today: { manicure:["11:00","13:30","16:00"], pedicure:["12:00","15:00"], brows:["10:30","14:00","18:00"] },
-          tomorrow: { manicure:["10:00","12:30","17:00"], pedicure:["11:30","16:30"], brows:["10:00","13:00"] },
-          rest: { manicure:["10:00","11:30","14:30","17:30"], pedicure:["12:00","16:00"], brows:["10:30","15:30"] }
-        })
-      },
-      {
-        id: "iryna-stovban",
-        name: "Iryna Stovban — Home Master",
-        city: "Montréal",
-        address: "Montréal, QC",
-        lat: 45.5089, lng: -73.5617,
-        partner: false,
-        recommended: true,
-        verified: true,
-        rating: 4.8,
-        distance: 2.1,
-        image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?auto=format&fit=crop&w=1400&q=80",
-        services: ["manicure", "brows"],
-        prices: { manicure: 48, brows: 32 },
-        availability: makeAvailability({
-          today: { manicure:["10:30","12:00","18:30"], brows:["11:00","16:00"] },
-          tomorrow: { manicure:["09:30","14:00","17:00"], brows:["13:30","18:00"] },
-          rest: { manicure:["10:00","12:30","15:30"], brows:["11:30","16:30"] }
-        })
-      },
-      {
-        id: "velour-house",
-        name: "Velour Beauty House",
-        city: "Montréal",
-        address: "Downtown Montréal",
-        lat: 45.5034, lng: -73.5701,
-        partner: true,
-        recommended: false,
-        verified: true,
-        rating: 4.7,
-        distance: 1.0,
-        image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1400&q=80",
-        services: ["haircut_w", "brows", "manicure"],
-        prices: { haircut_w: 95, brows: 40, manicure: 58 },
-        availability: makeAvailability({
-          today: { haircut_w:["13:00","17:30"], brows:["10:00","15:00"], manicure:["11:30","16:30"] },
-          tomorrow: { haircut_w:["11:00","14:30"], brows:["10:00","17:00"], manicure:["12:00","18:00"] },
-          rest: { haircut_w:["10:30","13:30","16:30"], brows:["11:00","14:30"], manicure:["12:00","15:00"] }
-        })
-      },
-      {
-        id: "atelier-noir",
-        name: "Atelier Noir Studio",
-        city: "Montréal",
-        address: "Plateau, Montréal",
-        lat: 45.525, lng: -73.582,
-        partner: false,
-        recommended: true,
-        verified: true,
-        rating: 4.9,
-        distance: 3.3,
-        image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=80",
-        services: ["pedicure", "manicure", "haircut_w"],
-        prices: { pedicure: 78, manicure: 60, haircut_w: 88 },
-        availability: makeAvailability({
-          today: { pedicure:["12:30","16:30"], manicure:["11:30","15:00"], haircut_w:["14:30"] },
-          tomorrow: { pedicure:["10:30","17:00"], manicure:["11:00","13:30"], haircut_w:["16:30"] },
-          rest: { pedicure:["10:00","13:00","17:30"], manicure:["11:30","14:30"], haircut_w:["15:30"] }
-        })
-      },
-      {
-        id: "golden-brow-lab",
-        name: "Golden Brow Lab",
-        city: "Montréal",
-        address: "Old Montréal",
-        lat: 45.507, lng: -73.554,
-        partner: false,
-        recommended: false,
-        verified: true,
-        rating: 4.6,
-        distance: 2.8,
-        image: "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1400&q=80",
-        services: ["brows"],
-        prices: { brows: 38 },
-        availability: makeAvailability({
-          today: { brows:["10:00","12:00","17:00"] },
-          tomorrow: { brows:["11:00","14:00","18:00"] },
-          rest: { brows:["10:30","13:30","16:30"] }
-        })
-      },
-      {
-        id: "club-luxe-cut",
-        name: "Club Luxe Cut",
-        city: "Montréal",
-        address: "Westmount, Montréal",
-        lat: 45.486, lng: -73.596,
-        partner: false,
-        recommended: false,
-        verified: true,
-        rating: 4.7,
-        distance: 4.1,
-        image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=80",
-        services: ["haircut_m", "haircut_w"],
-        prices: { haircut_m: 42, haircut_w: 74 },
-        availability: makeAvailability({
-          today: { haircut_m:["10:00","13:00","18:00"], haircut_w:["11:30","16:30"] },
-          tomorrow: { haircut_m:["09:30","12:30","17:00"], haircut_w:["14:00","18:30"] },
-          rest: { haircut_m:["10:00","12:00","15:00"], haircut_w:["11:00","16:00"] }
-        })
-      }
-    ];
+    const FALLBACK_LISTINGS = (() => {
+      const a = buildFallbackListingAvailability(
+        ["manicure","pedicure","brows"],
+        [["11:00","13:30","16:00"],["10:30","14:00","18:00"],["12:00","15:30","19:00"]]
+      );
+      const b = buildFallbackListingAvailability(
+        ["manicure"],
+        [["10:00","12:00","17:30"],["09:30","14:00","18:00"],["11:00","15:00"]]
+      );
+      const c = buildFallbackListingAvailability(
+        ["brows"],
+        [["10:00","13:00","17:00"],["11:00","14:30","18:00"],["12:00","16:00"]]
+      );
+      const d = buildFallbackListingAvailability(
+        ["haircut_m"],
+        [["10:00","13:00","18:00"],["11:00","14:00","17:00"],["12:00","15:00","19:00"]]
+      );
+      const e = buildFallbackListingAvailability(
+        ["haircut_w"],
+        [["11:00","14:00","17:30"],["10:30","13:30","18:00"],["12:00","16:00"]]
+      );
+      return [
+        {
+          id: "romanukova",
+          name: "Romanukova Nail Studio",
+          subtitle: "Premium nails • gel • clean shape",
+          city: "Montréal",
+          address: "4810 Rue Jean-Talon O #221, Montreal, QC H4P 2N5",
+          lat: 45.4997, lng: -73.6239,
+          photo: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80",
+          partner: true, recommended: true, verified: true, sterile: true, rating: 4.9,
+          instagram: "https://instagram.com/",
+          services: [
+            { serviceId: "manicure", from: 60, durMin: 75 },
+            { serviceId: "pedicure", from: 70, durMin: 90 },
+            { serviceId: "brows", from: 35, durMin: 40 }
+          ],
+          ...a
+        },
+        {
+          id: "irynastovban",
+          name: "Iryna Stovban — Home Master",
+          subtitle: "Models welcome • clean and careful",
+          city: "Montréal",
+          address: "6740 Bd Décarie, Montréal, QC H3X 0A7",
+          lat: 45.4949, lng: -73.6496,
+          photo: "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1400&q=80",
+          partner: false, recommended: true, verified: true, sterile: true, rating: 4.6,
+          instagram: "https://share.google/eQ0wgkzDtTdM8v4Y0",
+          services: [{ serviceId: "manicure", from: 20, durMin: 60 }],
+          ...b
+        },
+        {
+          id: "browbar_mtl",
+          name: "BrowBar Montréal",
+          subtitle: "Lamination • tint • shaping",
+          city: "Montréal",
+          address: "Rue Saint-Denis, Montreal, QC",
+          lat: 45.5152, lng: -73.5659,
+          photo: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1400&q=80",
+          partner: true, recommended: false, verified: true, sterile: true, rating: 4.8,
+          instagram: "https://instagram.com/",
+          services: [{ serviceId: "brows", from: 35, durMin: 45 }],
+          ...c
+        },
+        {
+          id: "barber_mtl",
+          name: "Old-Money Barber",
+          subtitle: "Fade • classic • beard tidy",
+          city: "Montréal",
+          address: "Boulevard Saint-Laurent, Montreal, QC",
+          lat: 45.5216, lng: -73.5865,
+          photo: "https://images.unsplash.com/photo-1521497615361-1b1fd9f5b78b?auto=format&fit=crop&w=1400&q=80",
+          partner: false, recommended: true, verified: true, sterile: true, rating: 4.7,
+          instagram: "https://instagram.com/",
+          services: [{ serviceId: "haircut_m", from: 35, durMin: 45 }],
+          ...d
+        },
+        {
+          id: "velvet_hair",
+          name: "Velvet Hair Studio",
+          subtitle: "Women’s cut • blowout • care",
+          city: "Montréal",
+          address: "Rue Sherbrooke O, Montreal, QC",
+          lat: 45.499, lng: -73.5908,
+          photo: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1400&q=80",
+          partner: false, recommended: false, verified: true, sterile: true, rating: 4.5,
+          instagram: "https://instagram.com/",
+          services: [{ serviceId: "haircut_w", from: 55, durMin: 60 }],
+          ...e
+        }
+      ];
+    })();
 
-    const normalizeWorkerUrl = u => {
-      const s = String(u || "").trim();
+    const normalizeWorkerUrl = raw => {
+      const s = String(raw || "").trim();
       if (!s) return "/book";
-      if (s.startsWith("/")) return s.endsWith("/book") ? s : `${s.replace(/\/+$/, "")}/book`;
+      if (s.startsWith("/")) {
+        return s.endsWith("/book") ? s : `${s.replace(/\/+$/, "")}/book`;
+      }
       try {
-        const url = new URL(s);
-        if (!url.pathname || url.pathname === "/") url.pathname = "/book";
-        else if (!url.pathname.endsWith("/book")) url.pathname = `${url.pathname.replace(/\/+$/, "")}/book`;
-        return url.toString();
+        const u = new URL(s);
+        if (!u.pathname || u.pathname === "/") u.pathname = "/book";
+        else if (!u.pathname.endsWith("/book")) u.pathname = `${u.pathname.replace(/\/+$/, "")}/book`;
+        return u.toString();
       } catch {
         return "/book";
       }
@@ -1719,15 +1646,9 @@
 
     const SERVICES = Array.isArray(window.SERVICES) && window.SERVICES.length ? window.SERVICES.slice() : FALLBACK_SERVICES.slice();
     const LISTINGS = Array.isArray(window.LISTINGS) && window.LISTINGS.length ? window.LISTINGS.slice() : FALLBACK_LISTINGS.slice();
-    const RAW_WORKER = window.WORKER_URL || window.bb?.WORKER_URL || "/book";
-    const WORKER_URL = normalizeWorkerUrl(RAW_WORKER);
+    const WORKER_URL = normalizeWorkerUrl(window.WORKER_URL || window.bb?.WORKER_URL || "/book");
 
-    const LANGS = ["uk","en","fr","ru"];
-    const normalizeLang = v => LANGS.includes(v) ? v : "uk";
-
-    const bookingInit = lsGet("bb.booking", {}) || {};
     const STATE = {
-      lang: normalizeLang(lsGet("bb.lang", "uk")),
       theme: lsGet("bb.theme", "night") === "day" ? "day" : "night",
       favOnly: !!lsGet("bb.favOnly", false),
       favorites: new Set(lsGet("bb.favorites", [])),
@@ -1736,329 +1657,99 @@
       tab: lsGet("bb.tab", "all"),
       aiMode: lsGet("bb.aiMode", "top"),
       lastNextIndex: Number(lsGet("bb.lastNextIndex", 0)) || 0,
-
       booking: {
         open: false,
-        listingId: String(bookingInit.listingId || ""),
-        serviceId: String(bookingInit.serviceId || ""),
-        dateISO: String(bookingInit.dateISO || ""),
-        time: String(bookingInit.time || "")
+        listingId: "",
+        serviceId: "",
+        dateISO: "",
+        time: ""
       },
-
       hold: {
         until: 0,
         key: ""
       }
     };
 
-    const T = {
-      uk: {
-        brand: "Beauty Booking",
-        sub: "Перевірені салони & майстри",
-        eyebrow: "Люкс-бронювання beauty, але швидко.",
-        heroTitle: "Запис за секунди.",
-        heroLead: "Преміальні варіанти в Montréal — verified salons, home masters, швидке бронювання.",
-        quick: "Швидкий запис",
-        openProfile: "Відкрити профіль",
-        nextLabel: "Найближчий слот поруч",
-        bookSlot: "Записати цей слот",
-        why: "Чому цей?",
-        tabAll: "Всі",
-        tabPartners: "Топ",
-        tabRec: "Рекомендовано",
-        partners: "Топ салони / партнери",
-        partnersHint: "Paid partners",
-        recommended: "Recommended",
-        recHint: "Smart picks для тебе",
-        allOthers: "Усі інші",
-        allHint: "Переглянути всіх",
-        footer: "Твоє місце для self-care — швидкий запис, чистий UI, premium feel.",
-        favOnly: "Only ❤️",
-        pickFast: "Найшвидше",
-        pickCheap: "Найдешевше",
-        pickNear: "Найближче",
-        sheetTitle: "Обери час",
-        confirm: "Підтвердити бронювання",
-        booking: "Бронювання",
-        listing: "Салон / Майстер",
-        service: "Послуга",
-        date: "Дата",
-        time: "Час",
-        yourName: "Імʼя",
-        phone: "Телефон",
-        email: "Email",
-        notes: "Нотатки",
-        profile: "Профіль",
-        btnBook: "Запис",
-        btnProfile: "Профіль",
-        fab: "Швидкий запис",
-        aiTitle: "AI help",
-        aiLead: "Обери послугу — я покажу Top / Recommended / Nearest без рандому.",
-        aiTop: "Топ",
-        aiRec: "Рекомендовано",
-        aiNear: "Найближче",
-        aiReset: "Скинути",
-        toastWhyTitle: "Чому цей?",
-        toastWhyText: "1) збіг по послузі 2) хороший рейтинг/ціна 3) найближчий слот.",
-        missing: "Заповни дату / час / імʼя / телефон 🙏",
-        sent: "Відправлено ✅",
-        sentText: "Бронювання відправлено в Telegram. Скоро підтвердять.",
-        failed: "Помилка ❌",
-        failedText: "Не вдалось надіслати. Перевір Worker /book та інтернет.",
-        hold: "Hold 2 min",
-        offline: "Ти офлайн — деякі фічі можуть не працювати.",
-        cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.",
-        update: "Є нова версія. Натисни Update.",
-        reset: "Скинуто ✅",
-        noResults: "Нічого не знайдено. Спробуй іншу послугу або вимкни Only ❤️.",
-        trustTitle: "Чому довіряють Beauty Booking",
-        trustText: "Преміум-досвід бронювання: clean UI, перевірені партнери, прозорі деталі — щоб ти записувався з впевненістю.",
-        trustB1: "Перевірені салони & майстри — підібрана якість.",
-        trustB2: "Гігієна та стерильність — виділяємо важливе.",
-        trustB3: "Швидкий запис — реально за ~30 сек.",
-        trustB4: "Адреса + профіль-лінк у кожному бронюванні.",
-        socialTitle: "Ми в соцмережах",
-        socialLead: "Оновлення, нові партнери, тренди тижня.",
-        copyLink: "Скопіювати лінк",
-        legal: "Бронюючи, ти погоджуєшся на коректний контакт без спаму. Підтвердження приходить у Telegram.",
-        stories: [
-          ["Today’s glow", "Швидкий слот сьогодні"],
-          ["Partner picks", "Топ салони міста"],
-          ["Home masters", "Комфортний запис поруч"],
-          ["AI concierge", "Підбір без рандому"]
-        ]
-      },
-      en: {
-        brand: "Beauty Booking",
-        sub: "Verified salons & masters",
-        eyebrow: "Luxury beauty booking, but fast.",
-        heroTitle: "Book in seconds.",
-        heroLead: "Premium picks in Montréal — verified salons, home masters, fast booking.",
-        quick: "Quick book",
-        openProfile: "Open profile",
-        nextLabel: "Next available near you",
-        bookSlot: "Book this slot",
-        why: "Why this one?",
-        tabAll: "All",
-        tabPartners: "Top",
-        tabRec: "Recommended",
-        partners: "Top salons / partners",
-        partnersHint: "Paid partners",
-        recommended: "Recommended",
-        recHint: "Smart picks for you",
-        allOthers: "All others",
-        allHint: "Browse everything",
-        footer: "Your place for self-care — fast booking, clean UI, premium feel.",
-        favOnly: "Only ❤️",
-        pickFast: "Fastest",
-        pickCheap: "Cheapest",
-        pickNear: "Nearest",
-        sheetTitle: "Choose time",
-        confirm: "Confirm booking",
-        booking: "Booking",
-        listing: "Salon / Master",
-        service: "Service",
-        date: "Date",
-        time: "Time",
-        yourName: "Your name",
-        phone: "Phone",
-        email: "Email",
-        notes: "Notes",
-        profile: "Profile",
-        btnBook: "Book",
-        btnProfile: "Profile",
-        fab: "Quick book",
-        aiTitle: "AI help",
-        aiLead: "Pick a service and I’ll show Top / Recommended / Nearest — no random.",
-        aiTop: "Top",
-        aiRec: "Recommended",
-        aiNear: "Nearest",
-        aiReset: "Reset",
-        toastWhyTitle: "Why this one?",
-        toastWhyText: "1) service match 2) strong rating/price 3) nearest slot.",
-        missing: "Fill date / time / name / phone 🙏",
-        sent: "Sent ✅",
-        sentText: "Booking sent to Telegram. Confirmation soon.",
-        failed: "Error ❌",
-        failedText: "Couldn’t send. Check Worker /book and internet.",
-        hold: "Hold 2 min",
-        offline: "You’re offline — some features may not work.",
-        cached: "Loaded from cache. If something didn’t update — press Refresh.",
-        update: "New version available. Tap Update.",
-        reset: "Reset ✅",
-        noResults: "No results. Try another service or turn off Only ❤️.",
-        trustTitle: "Why people trust Beauty Booking",
-        trustText: "Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.",
-        trustB1: "Verified salons & masters — curated quality.",
-        trustB2: "Hygiene & sterile tools — what matters is visible.",
-        trustB3: "Fast booking — really ~30 seconds.",
-        trustB4: "Clear address + profile link in each booking.",
-        socialTitle: "Follow us",
-        socialLead: "Updates, new partners, and weekly trending picks.",
-        copyLink: "Copy site link",
-        legal: "By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.",
-        stories: [
-          ["Today’s glow", "Fast slots today"],
-          ["Partner picks", "Top city spots"],
-          ["Home masters", "Comfort close to you"],
-          ["AI concierge", "Smart picks only"]
-        ]
-      },
-      fr: {
-        brand: "Beauty Booking",
-        sub: "Salons & artistes vérifiés",
-        eyebrow: "Réservation beauté luxe, mais rapide.",
-        heroTitle: "Réservation en quelques secondes.",
-        heroLead: "Sélection premium à Montréal — salons vérifiés, à domicile, réservation rapide.",
-        quick: "Réserver vite",
-        openProfile: "Voir le profil",
-        nextLabel: "Prochain créneau près de toi",
-        bookSlot: "Réserver ce créneau",
-        why: "Pourquoi celui-ci ?",
-        tabAll: "Tout",
-        tabPartners: "Top",
-        tabRec: "Recommandé",
-        partners: "Top salons / partenaires",
-        partnersHint: "Partenaires payants",
-        recommended: "Recommandé",
-        recHint: "Sélections pour toi",
-        allOthers: "Tous les autres",
-        allHint: "Parcourir tout",
-        footer: "Ton espace self-care — réservation rapide, UI clean, sensation premium.",
-        favOnly: "Only ❤️",
-        pickFast: "Le plus rapide",
-        pickCheap: "Le moins cher",
-        pickNear: "Le plus proche",
-        sheetTitle: "Choisir l’heure",
-        confirm: "Confirmer la réservation",
-        booking: "Réservation",
-        listing: "Salon / Artiste",
-        service: "Service",
-        date: "Date",
-        time: "Heure",
-        yourName: "Ton nom",
-        phone: "Téléphone",
-        email: "Email",
-        notes: "Notes",
-        profile: "Profil",
-        btnBook: "Réserver",
-        btnProfile: "Profil",
-        fab: "Réserver vite",
-        aiTitle: "AI help",
-        aiLead: "Choisis un service — Top / Recommandé / Proche, sans hasard.",
-        aiTop: "Top",
-        aiRec: "Recommandé",
-        aiNear: "Proche",
-        aiReset: "Réinitialiser",
-        toastWhyTitle: "Pourquoi celui-ci ?",
-        toastWhyText: "1) bon service 2) bonne note/prix 3) créneau proche.",
-        missing: "Remplis date / heure / nom / téléphone 🙏",
-        sent: "Envoyé ✅",
-        sentText: "Réservation envoyée sur Telegram. Confirmation bientôt.",
-        failed: "Erreur ❌",
-        failedText: "Envoi impossible. Vérifie Worker /book et internet.",
-        hold: "Hold 2 min",
-        offline: "Hors ligne — certaines fonctions peuvent ne pas marcher.",
-        cached: "Ouvert depuis le cache. Si rien n’a changé — Refresh.",
-        update: "Nouvelle version disponible. Appuie sur Update.",
-        reset: "Réinitialisé ✅",
-        noResults: "Aucun résultat. Essaie un autre service ou désactive Only ❤️.",
-        trustTitle: "Pourquoi on fait confiance à Beauty Booking",
-        trustText: "Expérience premium: UI clean, partenaires vérifiés, détails clairs — pour réserver en confiance.",
-        trustB1: "Salons & artistes vérifiés — qualité sélectionnée.",
-        trustB2: "Hygiène & stérilisation — l’essentiel est visible.",
-        trustB3: "Réservation rapide — ~30 secondes.",
-        trustB4: "Adresse + lien profil dans chaque réservation.",
-        socialTitle: "Nous suivre",
-        socialLead: "Nouveaux partenaires, actus, tendances de la semaine.",
-        copyLink: "Copier le lien",
-        legal: "En réservant, tu acceptes un contact correct sans spam. Confirmation via Telegram.",
-        stories: [
-          ["Glow du jour", "Créneaux rapides aujourd’hui"],
-          ["Partner picks", "Top salons de la ville"],
-          ["À domicile", "Confort près de toi"],
-          ["AI concierge", "Choix intelligents"]
-        ]
-      },
-      ru: {
-        brand: "Beauty Booking",
-        sub: "Проверенные салоны и мастера",
-        eyebrow: "Люкс-бронирование beauty, но быстро.",
-        heroTitle: "Запись за секунды.",
-        heroLead: "Премиум-подборка в Montréal — салоны, мастера на дому, быстрая запись.",
-        quick: "Быстрая запись",
-        openProfile: "Открыть профиль",
-        nextLabel: "Ближайший слот рядом",
-        bookSlot: "Записать на слот",
-        why: "Почему этот?",
-        tabAll: "Все",
-        tabPartners: "Топ",
-        tabRec: "Рекоменд.",
-        partners: "Топ салоны / партнёры",
-        partnersHint: "Платные партнёры",
-        recommended: "Рекомендовано",
-        recHint: "Подборка для тебя",
-        allOthers: "Остальные",
-        allHint: "Смотреть всё",
-        footer: "Твоё место для self-care — быстрая запись, clean UI, premium vibe.",
-        favOnly: "Only ❤️",
-        pickFast: "Самое быстрое",
-        pickCheap: "Самое дешёвое",
-        pickNear: "Ближе всего",
-        sheetTitle: "Выбери время",
-        confirm: "Подтвердить запись",
-        booking: "Запись",
-        listing: "Салон / Мастер",
-        service: "Услуга",
-        date: "Дата",
-        time: "Время",
-        yourName: "Имя",
-        phone: "Телефон",
-        email: "Email",
-        notes: "Заметки",
-        profile: "Профиль",
-        btnBook: "Записаться",
-        btnProfile: "Профиль",
-        fab: "Быстрая запись",
-        aiTitle: "AI help",
-        aiLead: "Выбери услугу — покажу Top / Recommended / Nearest без рандома.",
-        aiTop: "Топ",
-        aiRec: "Рекоменд.",
-        aiNear: "Ближайшее",
-        aiReset: "Сбросить",
-        toastWhyTitle: "Почему этот?",
-        toastWhyText: "1) подходит услуга 2) хороший рейтинг/цена 3) ближайший слот.",
-        missing: "Заполни дату / время / имя / телефон 🙏",
-        sent: "Отправлено ✅",
-        sentText: "Бронирование отправлено в Telegram. Скоро подтвердят.",
-        failed: "Ошибка ❌",
-        failedText: "Не удалось отправить. Проверь Worker /book и интернет.",
-        hold: "Hold 2 min",
-        offline: "Ты офлайн — часть функций может не работать.",
-        cached: "Открыто из кеша. Если не обновилось — нажми Refresh.",
-        update: "Доступна новая версия. Нажми Update.",
-        reset: "Сброшено ✅",
-        noResults: "Ничего не найдено. Попробуй другую услугу или выключи Only ❤️.",
-        trustTitle: "Почему доверяют Beauty Booking",
-        trustText: "Премиум-опыт: clean UI, проверенные партнёры, понятные детали — чтобы записываться уверенно.",
-        trustB1: "Проверенные салоны и мастера — отбор качества.",
-        trustB2: "Гигиена и стерильность — важное видно сразу.",
-        trustB3: "Быстрая запись — реально ~30 секунд.",
-        trustB4: "Адрес + ссылка профиля в каждом бронировании.",
-        socialTitle: "Мы в соцсетях",
-        socialLead: "Обновления, новые партнёры и тренды недели.",
-        copyLink: "Скопировать ссылку",
-        legal: "Бронируя, ты соглашаешься на корректный контакт без спама. Подтверждение через Telegram.",
-        stories: [
-          ["Glow today", "Быстрые слоты сегодня"],
-          ["Partner picks", "Топ точки города"],
-          ["Home masters", "Комфорт рядом"],
-          ["AI concierge", "Умный подбор"]
-        ]
-      }
+    const TXT = {
+      brand: "Beauty Booking",
+      sub: "Verified salons & masters",
+      eyebrow: "Luxury beauty booking, but fast.",
+      heroTitle: "Book beauty in seconds.",
+      heroLead: "Premium picks in Montréal — verified salons, home masters, fast booking with Telegram confirmation.",
+      quick: "Quick book",
+      openProfile: "Open profile",
+      nextLabel: "Next available near you",
+      bookSlot: "Book this slot",
+      why: "Why this one?",
+      tabAll: "All",
+      tabPartners: "Top",
+      tabRec: "Recommended",
+      partners: "Top salons / partners",
+      partnersHint: "Paid partners",
+      trending: "Trending this week",
+      trendingHint: "Fastest picks right now",
+      recommended: "Recommended",
+      recHint: "Smart picks for you",
+      allOthers: "All others",
+      allHint: "Browse everything",
+      footer: "Your place for self-care — fast booking, clean UI, premium feel.",
+      favOnly: "Only ❤️",
+      pickFast: "Fastest",
+      pickCheap: "Cheapest",
+      pickNear: "Nearest",
+      pickEvening: "Evening",
+      sheetTitle: "Choose time",
+      confirm: "Confirm booking",
+      booking: "Booking",
+      listing: "Salon / Master",
+      service: "Service",
+      quickDate: "Quick date",
+      date: "Date",
+      time: "Time",
+      yourName: "Your name",
+      phone: "Phone",
+      email: "Email",
+      notes: "Notes",
+      profile: "Profile",
+      btnBook: "Book",
+      btnProfile: "Profile",
+      fab: "Quick book",
+      aiTitle: "AI help",
+      aiLead: "Pick a service and I’ll show Top / Recommended / Nearest — no random.",
+      aiTop: "Top",
+      aiRec: "Recommended",
+      aiNear: "Nearest",
+      aiReset: "Reset",
+      toastWhyTitle: "Why this one?",
+      toastWhyText: "1) service match 2) strong rating / price 3) nearest available slot.",
+      missing: "Fill date / time / name / phone 🙏",
+      sent: "Sent ✅",
+      sentText: "Booking sent to Telegram. Confirmation soon.",
+      failed: "Error ❌",
+      failedText: "Couldn’t send. Check Worker /book and internet.",
+      hold: "Hold 2 min",
+      offline: "You’re offline — some features may not work.",
+      cached: "Loaded from cache. If something didn’t update — press Refresh.",
+      update: "New version available. Tap Update.",
+      reset: "Reset ✅",
+      noResults: "No results. Try another service or turn off Only ❤️.",
+      trustTitle: "Why people trust Beauty Booking",
+      trustText: "Premium-first booking experience. Clean UI, verified partners, real availability, and Telegram-ready confirmations — so you can book with confidence.",
+      trustB1: "Verified salons & masters — curated quality.",
+      trustB2: "Sterile tools & hygiene standards highlighted.",
+      trustB3: "Fast booking — really in ~30 seconds.",
+      trustB4: "Clear address & profile link for every booking.",
+      socialTitle: "Follow us",
+      socialLead: "Updates, new partners, trending picks, and premium beauty inspiration.",
+      copyLink: "Copy site link",
+      legal: "By booking you agree to fair contact without spam. Confirmation arrives through Telegram.",
+      stories: [
+        ["Today’s glow", "Fast slots today"],
+        ["Partner picks", "Top city spots"],
+        ["Home masters", "Comfort close to you"],
+        ["AI concierge", "Smart picks only"]
+      ]
     };
-
-    const txt = () => T[STATE.lang] || T.uk;
 
     const normalize = s => String(s ?? "")
       .toLowerCase()
@@ -2066,187 +1757,249 @@
       .replace(/[\u0300-\u036f]/g, "")
       .trim();
 
-    const normalizeServiceId = v => {
-      if (v == null) return "";
-      if (typeof v === "string" || typeof v === "number") return String(v);
-      return String(v.id ?? v.serviceId ?? v.key ?? "");
+    const serviceIcon = sid => {
+      const found = SERVICES.find(s => String(s.id) === String(sid));
+      return found?.icon || "💅";
     };
 
-    const SERVICE_I18N = {
-      manicure:   { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" },
-      pedicure:   { uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр", icon:"🦶" },
-      brows:      { uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови", icon:"✨" },
-      haircut_m:  { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
-      haircut_w:  { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
-      hair_m:     { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
-      hair_w:     { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
-      nails:      { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" }
+    const serviceLabel = sid => {
+      const found = SERVICES.find(s => String(s.id) === String(sid));
+      return found?.en || found?.ua || String(sid || "");
+    };
+        const listingServices = listing => {
+      const raw = Array.isArray(listing?.services) ? listing.services : [];
+      return raw.map(s => String(s.serviceId || s.id || s)).filter(Boolean);
     };
 
-    const serviceIcon = serviceId => SERVICE_I18N[String(serviceId || "").trim()]?.icon || "💅";
-    const serviceLabelFromId = serviceId => {
-      const m = SERVICE_I18N[String(serviceId || "").trim()];
-      return m ? (m[STATE.lang] || m.uk || m.en) : String(serviceId || "");
+    const listingServiceMeta = (listing, sid) => {
+      const raw = Array.isArray(listing?.services) ? listing.services : [];
+      return raw.find(s => String(s.serviceId || s.id || s) === String(sid)) || null;
     };
 
-    const serviceLabel = s => {
-      if (!s) return STATE.lang === "en" ? "Service" : STATE.lang === "fr" ? "Service" : STATE.lang === "ru" ? "Услуга" : "Послуга";
-      const sid = normalizeServiceId(s);
-      const name = s.name ?? s.title ?? s.label ?? s.id ?? sid;
-      if (typeof name === "object" && name) return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || serviceLabelFromId(sid) || sid;
-      if (typeof name === "string" && name.trim()) return SERVICE_I18N[name.trim()] ? serviceLabelFromId(name.trim()) : name.trim();
-      return serviceLabelFromId(sid) || sid;
+    const ratingValue = listing => {
+      const v = Number(listing?.rating ?? 0);
+      return isNaN(v) ? 0 : v;
     };
+
+    const distanceValue = listing => {
+      const v = Number(listing?.distance ?? listing?.km ?? listing?.dist ?? 999);
+      return isNaN(v) ? 999 : v;
+    };
+
+    const isPartner = listing => !!listing?.partner;
+    const isRecommended = listing => !!listing?.recommended;
+    const isVerified = listing => !!listing?.verified;
+    const isSterile = listing => !!listing?.sterile;
+
+    const fromPrice = (listing, sid) => {
+      if (!listing) return null;
+      const svc = sid ? listingServiceMeta(listing, sid) : null;
+      const raw = svc?.from ?? (Array.isArray(listing?.services) ? Math.min(...listing.services.map(x => Number(x.from || 0)).filter(Boolean)) : null);
+      const n = Number(raw);
+      return isNaN(n) ? null : n;
+    };
+
+    const durationFor = (listing, sid) => {
+      const svc = listingServiceMeta(listing, sid);
+      const n = Number(svc?.durMin ?? svc?.durationMin ?? 0);
+      return isNaN(n) || !n ? null : n;
+    };
+
+    const imageFor = listing => listing?.image || listing?.photo || listing?.img || (listing?.images && listing.images[0]) || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
+
+    const subtitleFor = listing => listing?.subtitle || listing?.bio_en || listing?.bio_ua || "";
 
     const uniqueServiceIds = () => {
-      const ids = [];
-      if (SERVICES.length) {
-        SERVICES.forEach(s => {
-          const sid = normalizeServiceId(s);
-          if (sid) ids.push(sid);
-        });
-      } else {
-        LISTINGS.forEach(l => listingServices(l).forEach(sid => ids.push(sid)));
-      }
-      return Array.from(new Set(ids)).filter(Boolean);
+      const out = [];
+      SERVICES.forEach(s => out.push(String(s.id)));
+      LISTINGS.forEach(l => listingServices(l).forEach(sid => out.push(sid)));
+      return Array.from(new Set(out)).filter(Boolean);
     };
 
-    function listingServices(listing){
-      const raw = listing?.services ?? listing?.serviceIds ?? listing?.service_ids ?? [];
-      if (Array.isArray(raw)) {
-        return Array.from(new Set(raw.map(normalizeServiceId).filter(Boolean)));
+    function listSlotsForService(listing, sid){
+      if (!listing || !sid) return [];
+      if (listing?.availabilityByService && Array.isArray(listing.availabilityByService[sid])) {
+        return listing.availabilityByService[sid].slice().sort();
       }
-      const one = normalizeServiceId(raw);
-      return one ? [one] : [];
+
+      if (listing?.availability && typeof listing.availability === "object" && !Array.isArray(listing.availability)) {
+        const slots = [];
+        Object.keys(listing.availability).sort().forEach(dateISO => {
+          const day = listing.availability[dateISO];
+          if (Array.isArray(day)) {
+            day.forEach(t => slots.push(`${dateISO} ${String(t).slice(0,5)}`));
+          } else if (day && Array.isArray(day[sid])) {
+            day[sid].forEach(t => slots.push(`${dateISO} ${String(t).slice(0,5)}`));
+          }
+        });
+        if (slots.length) return slots.sort();
+      }
+
+      return [];
     }
 
-    const resolveServiceName = serviceId => {
-      const sid = String(serviceId || "");
-      const found = SERVICES.find(x => String(x?.id ?? x?.key ?? "") === sid);
-      return found ? serviceLabel(found) : serviceLabelFromId(sid);
-    };
+    function listingTimesFor(listing, sid, dateISO){
+      const full = listSlotsForService(listing, sid);
+      const dayTimes = full
+        .filter(slot => slot.slice(0, 10) === String(dateISO))
+        .map(slot => slot.slice(11, 16));
 
-    const todayISO = () => isoLocal(new Date());
+      if (dayTimes.length) return Array.from(new Set(dayTimes)).sort();
 
-    function fmtPretty(dateISO, time, lang){
-      try{
-        const [y,m,d] = String(dateISO || "").split("-").map(x => parseInt(x, 10));
-        const [hh,mm] = String(time || "").split(":").map(x => parseInt(x, 10));
-        if (!y || !m || !d || isNaN(hh) || isNaN(mm)) {
-          return `${dateISO || ""} ${time || ""}`.trim() || "—";
-        }
-        const dt = new Date(y, m - 1, d, hh, mm, 0, 0);
-        const locale = lang === "en" ? "en-CA" : lang === "fr" ? "fr-CA" : lang === "ru" ? "ru-RU" : "uk-UA";
-        return dt.toLocaleString(locale, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
-      } catch {
-        return `${dateISO || ""} ${time || ""}`.trim() || "—";
+      if (listing?.availability && listing.availability[dateISO] && Array.isArray(listing.availability[dateISO])) {
+        return Array.from(new Set(listing.availability[dateISO].map(t => String(t).slice(0,5)))).sort();
       }
+
+      return [];
+    }
+
+    function nextSlotForListing(listing, sid){
+      const slots = listSlotsForService(listing, sid);
+      if (slots.length) {
+        return {
+          fullISO: slots[0],
+          dateISO: slots[0].slice(0, 10),
+          time: slots[0].slice(11, 16)
+        };
+      }
+
+      if (listing?.availability && typeof listing.availability === "object") {
+        const dates = Object.keys(listing.availability).sort();
+        for (const d of dates) {
+          const day = listing.availability[d];
+          if (Array.isArray(day) && day.length) {
+            return { fullISO: `${d} ${day[0]}`, dateISO: d, time: String(day[0]).slice(0,5) };
+          }
+        }
+      }
+
+      return null;
+    }
+
+    function fmtPretty(dateISO, time){
+      try {
+        const [y,m,d] = String(dateISO).split("-").map(n => parseInt(n, 10));
+        const [hh,mm] = String(time).split(":").map(n => parseInt(n, 10));
+        const dt = new Date(y, m - 1, d, hh, mm, 0, 0);
+        return dt.toLocaleString("en-CA", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      } catch {
+        return `${dateISO} ${time}`.trim();
+      }
+    }
+
+    function quickDatePills(){
+      const now = new Date();
+      const d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const d2 = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+      return [
+        { id: isoLocal(d0), label: "Today" },
+        { id: isoLocal(d1), label: "Tomorrow" },
+        { id: isoLocal(d2), label: d2.toLocaleDateString("en-CA", { weekday: "short" }) }
+      ];
     }
 
     function applyTheme(){
       const theme = STATE.theme === "day" ? "day" : "night";
       document.documentElement.setAttribute("data-theme", theme);
-      $("#metaTheme")?.setAttribute("content", theme === "day" ? "#f6f3ff" : "#0b0b0f");
+      $("#metaTheme")?.setAttribute("content", theme === "day" ? "#f7f3ff" : "#0b0b0f");
       const btn = $("#btnTheme");
       if (btn) btn.textContent = theme === "day" ? "☀️" : "🌙";
       lsSet("bb.theme", theme);
     }
 
     function applyTexts(){
-      safeSetText($("#t_brand"), txt().brand);
-      safeSetText($("#t_sub"), txt().sub);
-      safeSetText($("#t_eyebrow"), txt().eyebrow);
-      safeSetText($("#t_heroTitle"), txt().heroTitle);
-      safeSetText($("#t_heroLead"), txt().heroLead);
-      safeSetText($("#t_quick"), txt().quick);
-      safeSetText($("#t_openProfile"), txt().openProfile);
-      safeSetText($("#t_nextLabel"), txt().nextLabel);
-      safeSetText($("#t_bookSlot"), txt().bookSlot);
-      safeSetText($("#t_why"), txt().why);
-      safeSetText($("#t_tabAll"), txt().tabAll);
-      safeSetText($("#t_tabPartners"), txt().tabPartners);
-      safeSetText($("#t_tabRec"), txt().tabRec);
-      safeSetText($("#t_partners"), txt().partners);
-      safeSetText($("#t_partnersHint"), txt().partnersHint);
-      safeSetText($("#t_recommended"), txt().recommended);
-      safeSetText($("#t_recHint"), txt().recHint);
-      safeSetText($("#t_allOthers"), txt().allOthers);
-      safeSetText($("#t_allHint"), txt().allHint);
-      safeSetText($("#t_footer"), txt().footer);
-      safeSetText($("#t_favOnly"), txt().favOnly);
-      safeSetText($("#t_pickFast"), txt().pickFast);
-      safeSetText($("#t_pickCheap"), txt().pickCheap);
-      safeSetText($("#t_pickNear"), txt().pickNear);
-      safeSetText($("#t_sheetTitle"), txt().sheetTitle);
-      safeSetText($("#t_confirm"), txt().confirm);
-      safeSetText($("#m_title"), txt().booking);
-      safeSetText($("#m_lblListing"), txt().listing);
-      safeSetText($("#m_lblService"), txt().service);
-      safeSetText($("#m_lblDate"), txt().date);
-      safeSetText($("#m_lblTime"), txt().time);
-      safeSetText($("#m_lblName"), txt().yourName);
-      safeSetText($("#m_lblPhone"), txt().phone);
-      safeSetText($("#m_lblEmail"), txt().email);
-      safeSetText($("#m_lblNotes"), txt().notes);
-      safeSetText($("#m_openProfileBtn"), txt().profile);
-      safeSetText($("#t_aiTitle"), txt().aiTitle);
-      safeSetText($("#t_aiLead"), txt().aiLead);
-      safeSetText($("#t_fab"), txt().fab);
+      safeSetText($("#t_brand"), TXT.brand);
+      safeSetText($("#t_sub"), TXT.sub);
+      safeSetText($("#t_eyebrow"), TXT.eyebrow);
+      safeSetText($("#t_heroTitle"), TXT.heroTitle);
+      safeSetText($("#t_heroLead"), TXT.heroLead);
+      safeSetText($("#t_quick"), TXT.quick);
+      safeSetText($("#t_openProfile"), TXT.openProfile);
+      safeSetText($("#t_nextLabel"), TXT.nextLabel);
+      safeSetText($("#t_bookSlot"), TXT.bookSlot);
+      safeSetText($("#t_why"), TXT.why);
+      safeSetText($("#t_tabAll"), TXT.tabAll);
+      safeSetText($("#t_tabPartners"), TXT.tabPartners);
+      safeSetText($("#t_tabRec"), TXT.tabRec);
+      safeSetText($("#t_partners"), TXT.partners);
+      safeSetText($("#t_partnersHint"), TXT.partnersHint);
+      safeSetText($("#t_trending"), TXT.trending);
+      safeSetText($("#t_trendingHint"), TXT.trendingHint);
+      safeSetText($("#t_recommended"), TXT.recommended);
+      safeSetText($("#t_recHint"), TXT.recHint);
+      safeSetText($("#t_allOthers"), TXT.allOthers);
+      safeSetText($("#t_allHint"), TXT.allHint);
+      safeSetText($("#t_footer"), TXT.footer);
+      safeSetText($("#t_favOnly"), TXT.favOnly);
+      safeSetText($("#t_pickFast"), TXT.pickFast);
+      safeSetText($("#t_pickCheap"), TXT.pickCheap);
+      safeSetText($("#t_pickNear"), TXT.pickNear);
+      safeSetText($("#t_pickEvening"), TXT.pickEvening);
+      safeSetText($("#t_sheetTitle"), TXT.sheetTitle);
+      safeSetText($("#t_confirm"), TXT.confirm);
+      safeSetText($("#m_title"), TXT.booking);
+      safeSetText($("#m_lblListing"), TXT.listing);
+      safeSetText($("#m_lblService"), TXT.service);
+      safeSetText($("#m_lblQuickDate"), TXT.quickDate);
+      safeSetText($("#m_lblDate"), TXT.date);
+      safeSetText($("#m_lblTime"), TXT.time);
+      safeSetText($("#m_lblName"), TXT.yourName);
+      safeSetText($("#m_lblPhone"), TXT.phone);
+      safeSetText($("#m_lblEmail"), TXT.email);
+      safeSetText($("#m_lblNotes"), TXT.notes);
+      safeSetText($("#m_openProfileBtn"), TXT.profile);
+      safeSetText($("#t_aiTitle"), TXT.aiTitle);
+      safeSetText($("#t_aiLead"), TXT.aiLead);
+      safeSetText($("#t_fab"), TXT.fab);
 
-      safeSetText($("#aiTop"), `⭐️ ${txt().aiTop}`);
-      safeSetText($("#aiRec"), `✨ ${txt().aiRec}`);
-      safeSetText($("#aiNear"), `📍 ${txt().aiNear}`);
-      safeSetText($("#aiClear"), `↺ ${txt().aiReset}`);
+      safeSetText($("#aiTop"), `⭐ ${TXT.aiTop}`);
+      safeSetText($("#aiRec"), `✨ ${TXT.aiRec}`);
+      safeSetText($("#aiNear"), `📍 ${TXT.aiNear}`);
+      safeSetText($("#aiClear"), `↺ ${TXT.aiReset}`);
 
-      safeSetText($("#t_trustTitle"), txt().trustTitle);
-      safeSetText($("#t_trustText"), txt().trustText);
-      safeSetText($("#t_trustB1"), txt().trustB1);
-      safeSetText($("#t_trustB2"), txt().trustB2);
-      safeSetText($("#t_trustB3"), txt().trustB3);
-      safeSetText($("#t_trustB4"), txt().trustB4);
-      safeSetText($("#t_socialTitle"), txt().socialTitle);
-      safeSetText($("#t_socialLead"), txt().socialLead);
-      safeSetText($("#t_copyLink"), txt().copyLink);
-      safeSetText($("#t_legal"), txt().legal);
+      safeSetText($("#t_trustTitle"), TXT.trustTitle);
+      safeSetText($("#t_trustText"), TXT.trustText);
+      safeSetText($("#t_trustB1"), TXT.trustB1);
+      safeSetText($("#t_trustB2"), TXT.trustB2);
+      safeSetText($("#t_trustB3"), TXT.trustB3);
+      safeSetText($("#t_trustB4"), TXT.trustB4);
+      safeSetText($("#t_socialTitle"), TXT.socialTitle);
+      safeSetText($("#t_socialLead"), TXT.socialLead);
+      safeSetText($("#t_copyLink"), TXT.copyLink);
+      safeSetText($("#t_legal"), TXT.legal);
 
       const search = $("#search");
-      if (search) {
-        search.placeholder =
-          STATE.lang === "en" ? "Search salon, master, service…" :
-          STATE.lang === "fr" ? "Rechercher salon, artiste, service…" :
-          STATE.lang === "ru" ? "Поиск салон, мастер, услуга…" :
-          "Пошук салон / майстер / послуга…";
-      }
-
-      const name = $("#m_name");
-      if (name) {
-        name.placeholder =
-          STATE.lang === "en" ? "Name" :
-          STATE.lang === "fr" ? "Nom" :
-          STATE.lang === "ru" ? "Имя" : "Імʼя";
-      }
-      $("#m_phone") && ($("#m_phone").placeholder = "(438)...");
+      if (search) search.placeholder = "Search salon, master, service…";
+      $("#m_name") && ($("#m_name").placeholder = "Your name");
+      $("#m_phone") && ($("#m_phone").placeholder = "+1 ...");
       $("#m_email") && ($("#m_email").placeholder = "email@example.com");
-      const notes = $("#m_notes");
-      if (notes) {
-        notes.placeholder =
-          STATE.lang === "en" ? "Optional" :
-          STATE.lang === "fr" ? "Optionnel" :
-          STATE.lang === "ru" ? "Необязательно" :
-          "Опційно";
-      }
+      $("#m_notes") && ($("#m_notes").placeholder = "Optional");
     }
 
     function renderStories(){
       const row = $("#storiesRow");
       if (!row) return;
-      const stories = txt().stories || [];
-      safeSetHTML(row, stories.map(([a,b]) => `
+      safeSetHTML(row, TXT.stories.map(([a,b]) => `
         <div class="story">
           <div class="t1">${escapeHtml(a)}</div>
           <div class="t2">${escapeHtml(b)}</div>
         </div>
       `).join(""));
+    }
+
+    function toast(t1, t2, ms = 2600){
+      safeSetText($("#toastT1"), t1);
+      safeSetText($("#toastT2"), t2);
+      $("#toast")?.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => $("#toast")?.classList.remove("show"), ms);
     }
 
     function showNetbar(msg, showUpdate = false){
@@ -2263,18 +2016,15 @@
     $("#netbarRefresh")?.addEventListener("click", () => location.reload());
 
     function initNetbar(){
-      const onOnline = () => hideNetbar();
-      const onOffline = () => showNetbar(txt().offline, false);
+      window.addEventListener("online", hideNetbar);
+      window.addEventListener("offline", () => showNetbar(TXT.offline, false));
 
-      window.addEventListener("online", onOnline);
-      window.addEventListener("offline", onOffline);
-
-      if (!navigator.onLine) onOffline();
+      if (!navigator.onLine) showNetbar(TXT.offline, false);
 
       try {
         const nav = performance.getEntriesByType?.("navigation")?.[0];
         if (nav && typeof nav.transferSize === "number" && nav.transferSize === 0) {
-          showNetbar(txt().cached, false);
+          showNetbar(TXT.cached, false);
         }
       } catch {}
     }
@@ -2284,8 +2034,9 @@
       try{
         if (!("serviceWorker" in navigator)) return;
         swReg = await navigator.serviceWorker.register("./worker.js");
+
         const maybeUpdate = () => {
-          if (swReg?.waiting) showNetbar(txt().update, true);
+          if (swReg?.waiting) showNetbar(TXT.update, true);
         };
 
         swReg.addEventListener("updatefound", () => {
@@ -2302,7 +2053,7 @@
           try {
             if (swReg?.waiting) {
               swReg.waiting.postMessage({ type: "SKIP_WAITING" });
-              setTimeout(() => location.reload(), 400);
+              setTimeout(() => location.reload(), 450);
             } else {
               location.reload();
             }
@@ -2315,189 +2066,75 @@
       } catch {}
     }
 
-    let toastTimer = null;
-    function toast(t1, t2, ms = 2600){
-      safeSetText($("#toastT1"), t1);
-      safeSetText($("#toastT2"), t2);
-      $("#toast")?.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => $("#toast")?.classList.remove("show"), ms);
-    }
-
-    const INFO = {
-      uk: [
-        "Стерильні інструменти • одноразові пилочки • clean luxury service.",
-        "Топ майстер • акуратні кутикули • стійке покриття.",
-        "Комфортна атмосфера • швидкий запис • premium vibe.",
-        "Преміум догляд • уважність до деталей • без поспіху.",
-        "Мʼякі техніки • мінімальна травматизація • чиста робота."
-      ],
-      en: [
-        "Sterile tools • premium care • clean results.",
-        "Top master • attention to detail • long-lasting finish.",
-        "Comfort vibe • quick booking • you’ll love it.",
-        "Premium care • precise work • no rush.",
-        "Gentle technique • clean cuticle • neat shape."
-      ],
-      fr: [
-        "Outils stériles • soin premium • résultat net.",
-        "Top artiste • détail parfait • tenue longue.",
-        "Ambiance confortable • réservation rapide.",
-        "Soin premium • précision • sans stress.",
-        "Technique douce • cuticule propre • forme nette."
-      ],
-      ru: [
-        "Стерильные инструменты • премиум-уход • чистый результат.",
-        "Топ мастер • внимание к деталям • стойкое покрытие.",
-        "Комфорт • быстрая запись • кайф.",
-        "Премиум-уход • точность • без спешки.",
-        "Мягкая техника • чистая кутикула • аккуратно."
-      ]
-    };
-
-    function pickInfo(){
-      const arr = INFO[STATE.lang] || INFO.uk;
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function matchesSearch(listing, q){
-      if (!q) return true;
+    function matchesSearch(listing, query){
+      if (!query) return true;
       const hay = [
         listing?.name,
-        listing?.title,
+        listing?.subtitle,
         listing?.address,
         listing?.city,
-        listingServices(listing).map(resolveServiceName).join(" ")
+        listingServices(listing).map(serviceLabel).join(" ")
       ].join(" ");
-      return normalize(hay).includes(normalize(q));
+      return normalize(hay).includes(normalize(query));
     }
 
-    function hasService(listing, serviceId){
-      if (!serviceId) return true;
-      return listingServices(listing).includes(String(serviceId));
+    function hasService(listing, sid){
+      if (!sid) return true;
+      return listingServices(listing).includes(String(sid));
     }
 
-    const isPartner = listing => !!(listing?.partner || listing?.isPartner || listing?.tier === "partner");
-    const isRecommended = listing => !!(listing?.recommended || listing?.isRecommended || listing?.tier === "recommended");
-    const ratingValue = listing => {
-      const r = Number(listing?.rating ?? listing?.stars ?? 0);
-      return isNaN(r) ? 0 : r;
-    };
-    const distanceValue = listing => {
-      const d = Number(listing?.distance ?? listing?.km ?? listing?.dist ?? 999);
-      return isNaN(d) ? 999 : d;
-    };
-
-    function fromPrice(listing, serviceId){
-      const sid = String(serviceId || "");
-      const pMap = listing?.prices || listing?.priceMap || {};
-      const p = pMap[sid] ?? listing?.from ?? listing?.price ?? null;
-      const n = Number(p);
-      return isNaN(n) ? null : n;
-    }
-
-    function listingTimesFor(listing, serviceId, dateISO){
-      const sid = String(serviceId || "");
-      const av = listing?.availability || listing?.avail || null;
-
-      try{
-        const util = window.bb?.util;
-        if (util && typeof util.getTimes === "function") {
-          const res = util.getTimes(listing?.id, sid, dateISO);
-          if (Array.isArray(res)) return res.slice();
-        }
-      } catch {}
-
-      if (av && typeof av === "object") {
-        const day = av[dateISO] || av[String(dateISO)] || null;
-        if (Array.isArray(day)) return day.slice();
-        if (day && typeof day === "object") {
-          const byService = day[sid] || day[String(sid)] || null;
-          if (Array.isArray(byService)) return byService.slice();
-        }
-      }
-
-      const fallback = listing?.times || listing?.slots || listing?.hours || null;
-      if (Array.isArray(fallback)) return fallback.slice();
-
-      return ["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"];
-    }
-
-    function nextSlotForListing(listing, serviceId){
-      const sid = String(serviceId || "");
-      const dates = futureDatesISO(7);
-      for (const d of dates) {
-        const times = listingTimesFor(listing, sid, d);
-        if (times && times.length) {
-          return { dateISO: d, time: String(times[0]) };
-        }
-      }
-      return null;
-    }
-
-    function bestNextSlots(serviceId){
-      const sid = String(serviceId || "");
-      const pool = LISTINGS
-        .filter(l => hasService(l, sid))
-        .map(l => {
-          const slot = nextSlotForListing(l, sid);
-          return slot ? { listing: l, slot } : null;
-        })
-        .filter(Boolean);
-
-      pool.sort((a, b) => {
-        const da = `${a.slot.dateISO} ${a.slot.time}`;
-        const db = `${b.slot.dateISO} ${b.slot.time}`;
-        if (da < db) return -1;
-        if (da > db) return 1;
-
-        const pa = isPartner(a.listing) ? 1 : 0;
-        const pb = isPartner(b.listing) ? 1 : 0;
-        if (pb !== pa) return pb - pa;
-
-        return ratingValue(b.listing) - ratingValue(a.listing);
-      });
-
-      return pool.slice(0, 8);
-    }
-
-    function whyReasons(listing, serviceId){
+    function whyReasons(listing, sid){
       const out = [];
-      if (serviceId) out.push(resolveServiceName(serviceId));
-      const rating = ratingValue(listing);
-      if (rating) out.push(`⭐ ${rating.toFixed(1)}`);
-      const p = fromPrice(listing, serviceId);
+      if (sid) out.push(serviceLabel(sid));
+      const r = ratingValue(listing);
+      if (r) out.push(`⭐ ${r.toFixed(1)}`);
+      const p = fromPrice(listing, sid);
       if (p != null) out.push(`$${Math.round(p)}+`);
-      const slot = nextSlotForListing(listing, serviceId);
-      if (slot) out.push(slot.dateISO === todayISO() ? "Today" : "Next slot");
+      const slot = nextSlotForListing(listing, sid);
+      if (slot) out.push(slot.dateISO === isoLocal(new Date()) ? "Today" : "Next slot");
       return out.slice(0, 3);
     }
 
-    function cardHTML(listing, opts = {}){
-      const sid = opts.serviceId || "";
-      const name = listing?.name || listing?.title || "—";
-      const addr = listing?.address || listing?.addr || "—";
+    function trendRank(listing, sid){
+      const slot = nextSlotForListing(listing, sid);
+      const timeScore = slot ? `${slot.dateISO} ${slot.time}` : "9999-99-99 99:99";
+      const partnerScore = isPartner(listing) ? 0 : 1;
+      const recScore = isRecommended(listing) ? 0 : 1;
+      const ratingScore = 10 - ratingValue(listing);
+      const price = fromPrice(listing, sid);
+      const priceScore = price == null ? 999 : price;
+      return [timeScore, partnerScore, recScore, ratingScore, priceScore].join("|");
+    }
+
+    function currentFiltered(){
+      let arr = LISTINGS.filter(l => hasService(l, STATE.serviceId) && matchesSearch(l, STATE.search));
+      if (STATE.favOnly) arr = arr.filter(l => STATE.favorites.has(String(l.id)));
+      return arr;
+    }
+
+    function emptyHTML(){
+      return `<div class="empty">${escapeHtml(TXT.noResults)}</div>`;
+    }
+
+    function cardHTML(listing, sid){
+      const img = imageFor(listing);
+      const name = listing?.name || "—";
+      const addr = listing?.address || listing?.city || "—";
       const rating = ratingValue(listing);
-      const from = fromPrice(listing, sid);
-      const img = listing?.image || listing?.photo || listing?.img || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80";
+      const price = fromPrice(listing, sid);
+      const next = nextSlotForListing(listing, sid);
+      const fav = STATE.favorites.has(String(listing.id));
+      const why = whyReasons(listing, sid).map(x => `<span class="whyPill">${escapeHtml(x)}</span>`).join("");
 
       const badges = [];
       if (isPartner(listing)) badges.push(`<span class="badge partner">Partner</span>`);
       if (isRecommended(listing)) badges.push(`<span class="badge recommended">Recommended</span>`);
-      if (listing?.verified) badges.push(`<span class="badge verified">Verified</span>`);
-      const slot = nextSlotForListing(listing, sid);
-      if (slot?.dateISO === todayISO()) badges.push(`<span class="badge today">Today</span>`);
-
-      const fav = STATE.favorites.has(String(listing?.id || ""));
-      const favIcon = fav ? "❤️" : "🤍";
-
-      const priceStr = from != null ? `$${Math.round(from)}+` : "—";
-      const rateStr = rating ? `⭐️ ${rating.toFixed(1)}` : "⭐️ —";
-
-      const why = whyReasons(listing, sid).map(x => `<span class="whyPill">${escapeHtml(x)}</span>`).join("");
+      if (isVerified(listing)) badges.push(`<span class="badge verified">Verified</span>`);
+      if (isSterile(listing)) badges.push(`<span class="badge sterile">Sterile</span>`);
+      if (next?.dateISO === isoLocal(new Date())) badges.push(`<span class="badge today">Today</span>`);
 
       return `
-        <div class="card" data-id="${escapeHtml(listing?.id)}">
+        <div class="card" data-id="${escapeHtml(listing.id)}">
           <div class="img">
             <div class="badges">${badges.join("")}</div>
             <img
@@ -2516,8 +2153,8 @@
               </div>
 
               <div class="rightMeta">
-                <div class="price">${escapeHtml(priceStr)}</div>
-                <div class="rating">${escapeHtml(rateStr)}</div>
+                <div class="price">${price != null ? `$${Math.round(price)}+` : "—"}</div>
+                <div class="rating">${rating ? `⭐ ${rating.toFixed(1)}` : "⭐ —"}</div>
               </div>
             </div>
 
@@ -2525,13 +2162,13 @@
 
             <div class="cardActions">
               <button class="small primary" data-act="book" type="button">
-                <span>${serviceIcon(sid)}</span><span>${escapeHtml(txt().btnBook)}</span>
+                <span>${serviceIcon(sid)}</span><span>${TXT.btnBook}</span>
               </button>
 
-              <button class="small" data-act="fav" title="Favorite" type="button">${favIcon}</button>
+              <button class="small" data-act="fav" type="button">${fav ? "❤️" : "🤍"}</button>
 
-              <a class="small" data-act="profile" href="./profile.html?id=${encodeURIComponent(listing?.id || "")}" target="_blank" rel="noopener">
-                <span>🏛</span><span>${escapeHtml(txt().btnProfile)}</span>
+              <a class="small" data-act="profile" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener">
+                <span>🏛</span><span>${TXT.btnProfile}</span>
               </a>
             </div>
           </div>
@@ -2539,22 +2176,20 @@
       `;
     }
 
-    function stripCardHTML(listing, opts = {}){
-      const sid = opts.serviceId || "";
-      const name = listing?.name || listing?.title || "—";
-      const addr = listing?.address || listing?.addr || "—";
-      const img = listing?.image || listing?.photo || listing?.img || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
-      const slot = nextSlotForListing(listing, sid);
-      const slotTxt = slot ? fmtPretty(slot.dateISO, slot.time, STATE.lang) : "—";
-      const from = fromPrice(listing, sid);
-      const priceStr = from != null ? `$${Math.round(from)}+` : "—";
+    function stripCardHTML(listing, sid){
+      const img = imageFor(listing);
+      const name = listing?.name || "—";
+      const addr = listing?.address || listing?.city || "—";
+      const price = fromPrice(listing, sid);
+      const next = nextSlotForListing(listing, sid);
+      const nextTxt = next ? fmtPretty(next.dateISO, next.time) : "—";
 
       return `
-        <div class="stripCard" data-id="${escapeHtml(listing?.id)}">
+        <div class="stripCard" data-id="${escapeHtml(listing.id)}">
           <div class="stripImg">
             <div class="badges">
               <span class="badge partner">Partner</span>
-              ${slot?.dateISO === todayISO() ? `<span class="badge today">Today</span>` : ``}
+              ${next?.dateISO === isoLocal(new Date()) ? `<span class="badge today">Today</span>` : ``}
             </div>
             <img
               alt="${escapeHtml(name)}"
@@ -2564,22 +2199,45 @@
             >
           </div>
 
-          <div class="stripBody">
-            <div class="stripTop">
-              <div class="stripName">${escapeHtml(name)}</div>
-              <div class="price">${escapeHtml(priceStr)}</div>
+          <div class="cardBody">
+            <div class="row1">
+              <div style="min-width:0">
+                <p class="title">${escapeHtml(name)}</p>
+                <div class="subline">${escapeHtml(addr)}</div>
+              </div>
+              <div class="rightMeta">
+                <div class="price">${price != null ? `$${Math.round(price)}+` : "—"}</div>
+                <div class="rating">${escapeHtml(nextTxt)}</div>
+              </div>
             </div>
 
-            <div class="stripMeta">
-              ${escapeHtml(addr)}<br>
-              <span class="muted">${escapeHtml(slotTxt)}</span>
+            <div class="cardActions">
+              <button class="small primary" data-act="book" type="button" style="width:100%;justify-content:center">
+                <span>⚡</span><span>${TXT.btnBook}</span>
+              </button>
             </div>
+          </div>
+        </div>
+      `;
+    }
 
-            <div style="height:10px"></div>
+    function trendCardHTML(listing, sid, label){
+      const next = nextSlotForListing(listing, sid);
+      const price = fromPrice(listing, sid);
+      const meta = [
+        next ? fmtPretty(next.dateISO, next.time) : "No slot",
+        price != null ? `$${Math.round(price)}+` : null,
+        ratingValue(listing) ? `⭐ ${ratingValue(listing).toFixed(1)}` : null
+      ].filter(Boolean).join(" • ");
 
-            <button class="small primary" data-act="book" type="button" style="width:100%;justify-content:center">
-              <span>⚡️</span><span>${escapeHtml(txt().btnBook)}</span>
-            </button>
+      return `
+        <div class="trendCard" data-id="${escapeHtml(listing.id)}">
+          <div class="trendKicker">${escapeHtml(label)}</div>
+          <div class="trendName">${escapeHtml(listing.name || "—")}</div>
+          <div class="trendMeta">${escapeHtml(meta)}</div>
+          <div class="trendActions">
+            <button class="small primary" data-act="book" type="button"><span>📅</span><span>Book</span></button>
+            <a class="small" href="./profile.html?id=${encodeURIComponent(listing.id)}" target="_blank" rel="noopener"><span>🏛</span><span>Profile</span></a>
           </div>
         </div>
       `;
@@ -2588,14 +2246,13 @@
     function renderServiceChips(){
       const wrap = $("#serviceChips");
       if (!wrap) return;
-
       const ids = uniqueServiceIds();
-      safeSetHTML(wrap, ids.map(sid => {
-        const label = serviceLabelFromId(sid) || resolveServiceName(sid) || sid;
-        const icon = serviceIcon(sid);
-        const active = STATE.serviceId === sid ? "active" : "";
-        return `<button class="chip ${active}" data-sid="${escapeHtml(sid)}" type="button"><span>${icon}</span><span>${escapeHtml(label)}</span></button>`;
-      }).join(""));
+
+      safeSetHTML(wrap, ids.map(sid => `
+        <button class="chip ${STATE.serviceId === sid ? "active" : ""}" data-sid="${escapeHtml(sid)}" type="button">
+          <span>${serviceIcon(sid)}</span><span>${escapeHtml(serviceLabel(sid))}</span>
+        </button>
+      `).join(""));
 
       $$(".chip", wrap).forEach(btn => {
         btn.addEventListener("click", () => {
@@ -2607,111 +2264,47 @@
       });
     }
 
-    function renderServiceSelect(){
-      const sel = $("#m_service");
-      if (!sel) return;
+    function renderTrending(){
+      const box = $("#trendGrid");
+      if (!box) return;
 
-      const ids = uniqueServiceIds();
-      safeSetHTML(sel, ids.map(sid => {
-        const label = serviceLabelFromId(sid) || resolveServiceName(sid) || sid;
-        const icon = serviceIcon(sid);
-        return `<option value="${escapeHtml(sid)}">${icon} ${escapeHtml(label)}</option>`;
-      }).join(""));
+      const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
+      const pool = currentFiltered().slice().sort((a,b) => trendRank(a, sid).localeCompare(trendRank(b, sid)));
+      const picks = pool.slice(0, 3);
 
-      const want = STATE.booking.serviceId || STATE.serviceId || ids[0] || "";
-      sel.value = ids.includes(want) ? want : (ids[0] || "");
-      STATE.booking.serviceId = sel.value;
-
-      sel.onchange = () => {
-        STATE.booking.serviceId = sel.value;
-        lsSet("bb.booking", { ...STATE.booking, open: true });
-        renderListingSelect();
-        refreshListingInfo();
-        refreshTimeGrid();
-      };
-    }
-
-    function renderListingSelect(){
-      const sel = $("#m_listingSel");
-      if (!sel) return;
-
-      const sid = STATE.booking.serviceId || STATE.serviceId || "";
-      const filtered = LISTINGS.filter(l => hasService(l, sid));
-
-      safeSetHTML(sel, filtered.map(l => {
-        const name = l?.name || l?.title || l?.id;
-        return `<option value="${escapeHtml(l?.id)}">${escapeHtml(name)}</option>`;
-      }).join(""));
-
-      let want = STATE.booking.listingId;
-      if (!filtered.some(l => String(l.id) === String(want))) {
-        want = filtered[0]?.id || LISTINGS[0]?.id || "";
+      if (!picks.length) {
+        safeSetHTML(box, emptyHTML());
+        return;
       }
 
-      sel.value = want ? String(want) : "";
-      STATE.booking.listingId = sel.value;
+      const labels = ["Fastest slot", "Top value", "Best rated"];
+      safeSetHTML(box, picks.map((l, i) => trendCardHTML(l, sid, labels[i] || "Trending")).join(""));
 
-      sel.onchange = () => {
-        STATE.booking.listingId = sel.value;
-        lsSet("bb.booking", { ...STATE.booking, open: true });
-        refreshListingInfo(true);
-        refreshTimeGrid();
-      };
+      $$(".trendCard", box).forEach(card => {
+        const id = card.getAttribute("data-id");
+        card.querySelector('[data-act="book"]')?.addEventListener("click", e => {
+          e.preventDefault();
+          e.stopPropagation();
+          openBooking({ listingId: id, serviceId: sid });
+        });
+      });
     }
-
-    function refreshListingInfo(forceRandom = false){
-      const info = $("#m_listingInfo");
-      const addr = $("#m_addrLine");
-      const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
-
-      if (info) {
-        if (forceRandom) safeSetText(info, pickInfo());
-        else safeSetText(info, info.textContent && info.textContent !== "—" ? info.textContent : pickInfo());
-      }
-
-      if (addr) {
-        const a = listing?.address || listing?.addr || "";
-        safeSetText(addr, a ? `📍 ${a}` : "—");
-      }
-
-      const btn = $("#m_openProfileBtn");
-      if (btn) {
-        btn.onclick = () => {
-          if (!listing?.id) return;
-          window.open(`./profile.html?id=${encodeURIComponent(listing.id)}`, "_blank", "noopener");
-        };
-      }
-    }
-
-    function getFilteredListings(){
-      let arr = LISTINGS.filter(l => hasService(l, STATE.serviceId) && matchesSearch(l, STATE.search));
-      if (STATE.favOnly) {
-        arr = arr.filter(l => STATE.favorites.has(String(l.id)));
-      }
-      return arr;
-    }
-
-    function emptyHTML(){
-      return `<div class="empty">${escapeHtml(txt().noResults)}</div>`;
-    }
-
-    function bindCardGrid(grid, sid){
+        function bindCardGrid(grid, sid){
       if (!grid) return;
 
       $$(".card", grid).forEach(card => {
         card.addEventListener("click", e => {
-          const act = e.target?.getAttribute?.("data-act") || e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
+          const node = e.target?.closest?.("[data-act]");
+          const act = node?.getAttribute?.("data-act");
           const id = card.getAttribute("data-id");
 
           if (act === "profile") return;
-
           if (act === "fav") {
             e.preventDefault();
             e.stopPropagation();
             toggleFav(id);
             return;
           }
-
           if (act === "book") {
             e.preventDefault();
             e.stopPropagation();
@@ -2726,7 +2319,7 @@
 
     function renderGrids(){
       const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
-      const all = getFilteredListings();
+      const all = currentFiltered();
 
       const partners = all.filter(isPartner);
       const rec = all.filter(l => !isPartner(l) && isRecommended(l));
@@ -2734,36 +2327,32 @@
 
       const strip = $("#stripPartners");
       if (strip) {
-        safeSetHTML(strip, partners.length ? partners.map(l => stripCardHTML(l, { serviceId: sid })).join("") : emptyHTML());
-
+        safeSetHTML(strip, partners.length ? partners.map(l => stripCardHTML(l, sid)).join("") : emptyHTML());
         $$(".stripCard", strip).forEach(el => {
+          const id = el.getAttribute("data-id");
           el.addEventListener("click", e => {
-            const act = e.target?.getAttribute?.("data-act") || e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
+            const act = e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
             if (act === "book") return;
-            openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
+            window.open(`./profile.html?id=${encodeURIComponent(id || "")}`, "_blank", "noopener");
           });
-
-          const bookBtn = el.querySelector('[data-act="book"]');
-          if (bookBtn) {
-            bookBtn.addEventListener("click", e => {
-              e.preventDefault();
-              e.stopPropagation();
-              openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
-            });
-          }
+          el.querySelector('[data-act="book"]')?.addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            openBooking({ listingId: id, serviceId: sid });
+          });
         });
       }
 
       const gridRec = $("#gridRec");
       const gridAll = $("#gridAll");
-
-      if (gridRec) safeSetHTML(gridRec, rec.length ? rec.map(l => cardHTML(l, { serviceId: sid })).join("") : emptyHTML());
-      if (gridAll) safeSetHTML(gridAll, others.length ? others.map(l => cardHTML(l, { serviceId: sid })).join("") : emptyHTML());
+      if (gridRec) safeSetHTML(gridRec, rec.length ? rec.map(l => cardHTML(l, sid)).join("") : emptyHTML());
+      if (gridAll) safeSetHTML(gridAll, others.length ? others.map(l => cardHTML(l, sid)).join("") : emptyHTML());
 
       bindCardGrid(gridRec, sid);
       bindCardGrid(gridAll, sid);
 
       $("#secPartners")?.classList.toggle("hidden", STATE.tab === "rec");
+      $("#secTrending")?.classList.toggle("hidden", STATE.tab !== "all");
       $("#secRec")?.classList.toggle("hidden", STATE.tab === "partners");
       $("#secAll")?.classList.toggle("hidden", STATE.tab !== "all");
     }
@@ -2777,21 +2366,46 @@
       $("#tabRecommended")?.classList.toggle("active", v === "rec");
 
       renderGrids();
+      renderTrending();
     }
 
     function toggleFav(id){
       const k = String(id || "");
       if (!k) return;
-
       if (STATE.favorites.has(k)) STATE.favorites.delete(k);
       else STATE.favorites.add(k);
-
       lsSet("bb.favorites", Array.from(STATE.favorites));
       renderGrids();
+      renderTrending();
     }
 
-    let nextTimer = null;
     let nextPool = [];
+    let nextTimer = null;
+
+    function bestNextSlots(sid){
+      const pool = LISTINGS
+        .filter(l => hasService(l, sid))
+        .map(l => {
+          const slot = nextSlotForListing(l, sid);
+          return slot ? { listing: l, slot } : null;
+        })
+        .filter(Boolean);
+
+      pool.sort((a, b) => {
+        const da = `${a.slot.dateISO} ${a.slot.time}`;
+        const db = `${b.slot.dateISO} ${b.slot.time}`;
+        if (da < db) return -1;
+        if (da > db) return 1;
+
+        const ap = isPartner(a.listing) ? 1 : 0;
+        const bp = isPartner(b.listing) ? 1 : 0;
+        if (bp !== ap) return bp - ap;
+
+        return ratingValue(b.listing) - ratingValue(a.listing);
+      });
+
+      return pool.slice(0, 8);
+    }
 
     function renderNext(){
       const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
@@ -2811,23 +2425,26 @@
       const item = nextPool[STATE.lastNextIndex];
       const l = item.listing;
       const slot = item.slot;
-      const name = l?.name || l?.title || "—";
-      const addr = l?.address || l?.addr || "";
-      const from = fromPrice(l, sid);
-      const fromTxt = from != null ? `$${Math.round(from)}+` : "";
-      const when = fmtPretty(slot.dateISO, slot.time, STATE.lang);
+      const price = fromPrice(l, sid);
+      const subtitle = subtitleFor(l);
 
-      safeSetText($("#nextName"), name);
-      safeSetText($("#nextMeta"), `${when}${fromTxt ? " • " + fromTxt : ""}${addr ? " • " + addr : ""}`);
+      safeSetText($("#nextName"), l?.name || "—");
+      safeSetText(
+        $("#nextMeta"),
+        `${fmtPretty(slot.dateISO, slot.time)}${price != null ? ` • $${Math.round(price)}+` : ""}${l?.address ? ` • ${l.address}` : ""}`
+      );
 
-      const reasons = whyReasons(l, sid).map(x => `<span class="miniTag">${escapeHtml(x)}</span>`).join("");
-      safeSetHTML($("#nextWhyLine"), reasons);
+      const tags = [
+        serviceLabel(sid),
+        ratingValue(l) ? `⭐ ${ratingValue(l).toFixed(1)}` : null,
+        subtitle || null
+      ].filter(Boolean).slice(0, 3);
+
+      safeSetHTML($("#nextWhyLine"), tags.map(x => `<span class="miniTag">${escapeHtml(x)}</span>`).join(""));
 
       const dotsCount = Math.min(3, nextPool.length);
       const idx = STATE.lastNextIndex % dotsCount;
-      let dots = "";
-      for (let i = 0; i < dotsCount; i++) dots += i === idx ? "● " : "○ ";
-      safeSetText($("#nextDots"), dots.trim());
+      safeSetText($("#nextDots"), Array.from({ length: dotsCount }, (_, i) => i === idx ? "●" : "○").join(" "));
     }
 
     function startNextRotation(){
@@ -2856,25 +2473,24 @@
           card.style.transition = "opacity .22s ease, transform .22s ease";
           card.style.opacity = "1";
           card.style.transform = "translateY(0)";
-        }, 180);
+        }, 170);
       }, 10000);
     }
 
     $("#nextBook")?.addEventListener("click", () => {
       const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
-      const pool = bestNextSlots(sid);
-      if (!pool.length) return;
-      const item = pool[STATE.lastNextIndex] || pool[0];
+      const item = nextPool[STATE.lastNextIndex] || bestNextSlots(sid)[0];
+      if (!item) return;
       openBooking({
-        listingId: item.listing?.id,
+        listingId: item.listing.id,
         serviceId: sid,
-        dateISO: item.slot?.dateISO,
-        time: item.slot?.time
+        dateISO: item.slot.dateISO,
+        time: item.slot.time
       });
     });
 
     $("#nextWhy")?.addEventListener("click", () => {
-      toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
+      toast(TXT.toastWhyTitle, TXT.toastWhyText, 3200);
     });
 
     function lockBody(lock){
@@ -2882,59 +2498,117 @@
       document.documentElement.style.overflow = lock ? "hidden" : "";
     }
 
-    function openBooking(patch = {}){
-      STATE.booking.open = true;
-      if (patch.listingId != null) STATE.booking.listingId = String(patch.listingId || "");
-      if (patch.serviceId != null) STATE.booking.serviceId = String(patch.serviceId || "");
-      if (patch.dateISO != null) STATE.booking.dateISO = String(patch.dateISO || "");
-      if (patch.time != null) STATE.booking.time = String(patch.time || "");
+    function refreshDayPills(){
+      const wrap = $("#dayPills");
+      if (!wrap) return;
+      const pills = quickDatePills();
 
-      lsSet("bb.booking", { ...STATE.booking, open: true });
+      safeSetHTML(wrap, pills.map(p => `
+        <button class="dayPill ${STATE.booking.dateISO === p.id ? "active" : ""}" data-date="${escapeHtml(p.id)}" type="button">
+          ${escapeHtml(p.label)}
+        </button>
+      `).join(""));
 
-      $("#overlay")?.classList.add("show");
-      $("#overlay")?.setAttribute("aria-hidden", "false");
-      lockBody(true);
+      $$(".dayPill", wrap).forEach(btn => {
+        btn.addEventListener("click", () => {
+          STATE.booking.dateISO = btn.getAttribute("data-date") || "";
+          STATE.booking.time = "";
+          safeSetText($("#m_timeText"), "—");
+          $("#m_date") && ($("#m_date").value = STATE.booking.dateISO);
+          refreshDayPills();
+          refreshTimeGrid();
+          updateHoldUI();
+          lsSet("bb.bookingDraft", STATE.booking);
+        });
+      });
+    }
 
-      const dInput = $("#m_date");
-      if (dInput) {
-        if (!STATE.booking.dateISO) STATE.booking.dateISO = todayISO();
-        dInput.value = STATE.booking.dateISO;
+    function renderServiceSelect(){
+      const sel = $("#m_service");
+      if (!sel) return;
+
+      const ids = uniqueServiceIds();
+      safeSetHTML(sel, ids.map(sid => `
+        <option value="${escapeHtml(sid)}">${serviceIcon(sid)} ${escapeHtml(serviceLabel(sid))}</option>
+      `).join(""));
+
+      const want = ids.includes(STATE.booking.serviceId) ? STATE.booking.serviceId : (STATE.serviceId || ids[0] || "");
+      sel.value = want;
+      STATE.booking.serviceId = want;
+
+      sel.onchange = () => {
+        STATE.booking.serviceId = sel.value || "";
+        STATE.booking.time = "";
+        safeSetText($("#m_timeText"), "—");
+        renderListingSelect();
+        refreshListingInfo(true);
+        refreshDayPills();
+        refreshTimeGrid();
+        updateHoldUI();
+        lsSet("bb.bookingDraft", STATE.booking);
+      };
+    }
+
+    function renderListingSelect(){
+      const sel = $("#m_listingSel");
+      if (!sel) return;
+
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const filtered = LISTINGS.filter(l => hasService(l, sid));
+
+      safeSetHTML(sel, filtered.map(l => `
+        <option value="${escapeHtml(l.id)}">${escapeHtml(l.name || l.id)}</option>
+      `).join(""));
+
+      let want = STATE.booking.listingId;
+      if (!filtered.some(l => String(l.id) === String(want))) want = filtered[0]?.id || "";
+      sel.value = want;
+      STATE.booking.listingId = want;
+
+      sel.onchange = () => {
+        STATE.booking.listingId = sel.value || "";
+        STATE.booking.time = "";
+        safeSetText($("#m_timeText"), "—");
+        refreshListingInfo(true);
+        refreshTimeGrid();
+        updateHoldUI();
+        lsSet("bb.bookingDraft", STATE.booking);
+      };
+    }
+
+    function refreshListingInfo(forceNew = false){
+      const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
+      const info = $("#m_listingInfo");
+      const addr = $("#m_addrLine");
+
+      if (info) {
+        const slot = listing ? nextSlotForListing(listing, STATE.booking.serviceId || STATE.serviceId || "") : null;
+        const price = listing ? fromPrice(listing, STATE.booking.serviceId || STATE.serviceId || "") : null;
+        const line = [
+          subtitleFor(listing),
+          slot ? fmtPretty(slot.dateISO, slot.time) : null,
+          price != null ? `$${Math.round(price)}+` : null
+        ].filter(Boolean).join(" • ");
+        safeSetText(info, line || (forceNew ? "Premium booking ready." : "—"));
       }
 
-      renderServiceSelect();
-      renderListingSelect();
-      refreshListingInfo(true);
-      refreshTimeGrid();
-      safeSetText($("#m_timeText"), STATE.booking.time || "—");
-      updateHoldUI();
+      if (addr) {
+        safeSetText(addr, listing?.address ? `📍 ${listing.address}` : "—");
+      }
+
+      $("#m_openProfileBtn") && ($("#m_openProfileBtn").onclick = () => {
+        if (!listing?.id) return;
+        window.open(`./profile.html?id=${encodeURIComponent(listing.id)}`, "_blank", "noopener");
+      });
+
+      $("#ctaProfile") && listing?.id && ($("#ctaProfile").href = `./profile.html?id=${encodeURIComponent(listing.id)}`);
     }
-
-    function closeBooking(){
-      STATE.booking.open = false;
-      lsSet("bb.booking", { ...STATE.booking, open: false });
-      $("#overlay")?.classList.remove("show");
-      $("#overlay")?.setAttribute("aria-hidden", "true");
-      closeSheet();
-      closeAISheet();
-      lockBody(false);
-    }
-
-    $("#m_close")?.addEventListener("click", closeBooking);
-    $("#overlay")?.addEventListener("click", e => {
-      if (e.target === $("#overlay")) closeBooking();
-    });
-
-    $("#ctaQuick")?.addEventListener("click", () => openBooking({ serviceId: STATE.serviceId || "" }));
-    $("#fab")?.addEventListener("click", () => openBooking({ serviceId: STATE.serviceId || "" }));
 
     function openSheet(){ $("#sheet")?.classList.add("show"); }
     function closeSheet(){ $("#sheet")?.classList.remove("show"); }
 
     $("#sheetClose")?.addEventListener("click", closeSheet);
-    $("#sheet")?.addEventListener("click", e => {
-      if (e.target === $("#sheet")) closeSheet();
-    });
-
+    $("#sheet")?.addEventListener("click", e => { if (e.target === $("#sheet")) closeSheet(); });
     $("#m_timeBtn")?.addEventListener("click", () => {
       refreshTimeGrid();
       openSheet();
@@ -2946,42 +2620,25 @@
 
       const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
-      const dateISO = STATE.booking.dateISO || todayISO();
+      const dateISO = STATE.booking.dateISO || isoLocal(new Date());
       const times = listing ? listingTimesFor(listing, sid, dateISO) : [];
       const active = String(STATE.booking.time || "");
 
-      safeSetHTML(grid,
-        (times || []).length
-          ? (times || []).map(t => {
-              const cls = String(t) === active ? "timeItem active" : "timeItem";
-              return `<button class="${cls}" data-t="${escapeHtml(String(t))}" type="button">${escapeHtml(String(t))}</button>`;
-            }).join("")
-          : `<div class="muted" style="padding:10px">—</div>`
-      );
+      safeSetHTML(grid, times.length ? times.map(t => `
+        <button class="timeItem ${String(t) === active ? "active" : ""}" data-t="${escapeHtml(String(t))}" type="button">${escapeHtml(String(t))}</button>
+      `).join("") : `<div class="muted" style="padding:10px">No online times yet.</div>`);
 
       $$(".timeItem", grid).forEach(btn => {
         btn.addEventListener("click", () => {
-          const t = btn.getAttribute("data-t") || "";
-          STATE.booking.time = t;
-          lsSet("bb.booking", { ...STATE.booking, open: true });
-
-          safeSetText($("#m_timeText"), t || "—");
-          $$(".timeItem", grid).forEach(x => x.classList.remove("active"));
-          btn.classList.add("active");
+          STATE.booking.time = btn.getAttribute("data-t") || "";
+          safeSetText($("#m_timeText"), STATE.booking.time || "—");
           closeSheet();
           updateHoldUI(true);
+          refreshTimeGrid();
+          lsSet("bb.bookingDraft", STATE.booking);
         });
       });
     }
-
-    $("#m_date")?.addEventListener("change", e => {
-      STATE.booking.dateISO = e.target.value || todayISO();
-      STATE.booking.time = "";
-      safeSetText($("#m_timeText"), "—");
-      lsSet("bb.booking", { ...STATE.booking, open: true });
-      refreshTimeGrid();
-      updateHoldUI();
-    });
 
     function startHold(){
       const k = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
@@ -2990,8 +2647,7 @@
     }
 
     function holdLeft(){
-      if (!STATE.hold.until) return 0;
-      return Math.max(0, STATE.hold.until - Date.now());
+      return Math.max(0, (STATE.hold.until || 0) - Date.now());
     }
 
     function updateHoldUI(forceStart = false){
@@ -3004,10 +2660,8 @@
         return;
       }
 
-      const k = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
-      if (forceStart || STATE.hold.key !== k || holdLeft() === 0) {
-        startHold();
-      }
+      const key = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+      if (forceStart || key !== STATE.hold.key || holdLeft() === 0) startHold();
 
       const ms = holdLeft();
       if (ms <= 0) {
@@ -3016,23 +2670,24 @@
       }
 
       const s = Math.ceil(ms / 1000);
-      safeSetText(el, `· ${txt().hold} ${Math.floor(s / 60)}:${pad(s % 60)}`);
+      safeSetText(el, `· ${TXT.hold} ${Math.floor(s / 60)}:${pad(s % 60)}`);
 
-      if (!updateHoldUI._t) {
-        updateHoldUI._t = setInterval(() => {
-          if (!STATE.booking.open) {
-            safeSetText(el, "");
-            return;
-          }
-          const left = holdLeft();
-          if (left <= 0) {
-            safeSetText(el, "");
-          } else {
-            const sec = Math.ceil(left / 1000);
-            safeSetText(el, `· ${txt().hold} ${Math.floor(sec / 60)}:${pad(sec % 60)}`);
-          }
-        }, 500);
-      }
+      clearInterval(updateHoldUI._t);
+      updateHoldUI._t = setInterval(() => {
+        if (!STATE.booking.open) {
+          safeSetText(el, "");
+          clearInterval(updateHoldUI._t);
+          return;
+        }
+        const left = holdLeft();
+        if (left <= 0) {
+          safeSetText(el, "");
+          clearInterval(updateHoldUI._t);
+          return;
+        }
+        const sec = Math.ceil(left / 1000);
+        safeSetText(el, `· ${TXT.hold} ${Math.floor(sec / 60)}:${pad(sec % 60)}`);
+      }, 500);
     }
 
     function currentPoolForPicks(){
@@ -3047,14 +2702,11 @@
       const pool = currentPoolForPicks()
         .map(l => ({ l, slot: nextSlotForListing(l, sid) }))
         .filter(x => x.slot)
-        .sort((a, b) => {
-          const da = `${a.slot.dateISO} ${a.slot.time}`;
-          const db = `${b.slot.dateISO} ${b.slot.time}`;
-          return da < db ? -1 : da > db ? 1 : 0;
-        });
+        .sort((a,b) => `${a.slot.dateISO} ${a.slot.time}`.localeCompare(`${b.slot.dateISO} ${b.slot.time}`));
 
       const best = pool[0];
-      if (best) openBooking({ listingId: best.l.id, serviceId: sid, dateISO: best.slot.dateISO, time: best.slot.time });
+      if (!best) return;
+      openBooking({ listingId: best.l.id, serviceId: sid, dateISO: best.slot.dateISO, time: best.slot.time });
     });
 
     $("#pickCheap")?.addEventListener("click", () => {
@@ -3062,48 +2714,119 @@
       const pool = currentPoolForPicks()
         .map(l => ({ l, p: fromPrice(l, sid) }))
         .filter(x => x.p != null)
-        .sort((a, b) => a.p - b.p);
+        .sort((a,b) => a.p - b.p);
 
       const best = pool[0];
-      if (best) openBooking({ listingId: best.l.id, serviceId: sid });
+      if (!best) return;
+      openBooking({ listingId: best.l.id, serviceId: sid });
     });
 
     $("#pickNear")?.addEventListener("click", () => {
       const sid = STATE.booking.serviceId || STATE.serviceId || "";
-      const pool = currentPoolForPicks().slice().sort((a, b) => distanceValue(a) - distanceValue(b));
+      const pool = currentPoolForPicks().slice().sort((a,b) => distanceValue(a) - distanceValue(b));
       const best = pool[0];
-      if (best) openBooking({ listingId: best.id, serviceId: sid });
+      if (!best) return;
+      openBooking({ listingId: best.id, serviceId: sid });
+    });
+
+    $("#pickEvening")?.addEventListener("click", () => {
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const pool = currentPoolForPicks().map(l => {
+        const slots = listSlotsForService(l, sid).filter(s => Number(s.slice(11,13)) >= 17);
+        return slots.length ? { l, slot: { dateISO: slots[0].slice(0,10), time: slots[0].slice(11,16) } } : null;
+      }).filter(Boolean).sort((a,b) => `${a.slot.dateISO} ${a.slot.time}`.localeCompare(`${b.slot.dateISO} ${b.slot.time}`));
+
+      const best = pool[0];
+      if (!best) return;
+      openBooking({ listingId: best.l.id, serviceId: sid, dateISO: best.slot.dateISO, time: best.slot.time });
+    });
+
+    function lockForAnyModal(){
+      lockBody($("#overlay")?.classList.contains("show") || $("#sheet")?.classList.contains("show") || $("#aiSheet")?.classList.contains("show"));
+    }
+
+    function openBooking(patch = {}){
+      STATE.booking.open = true;
+      if (patch.listingId != null) STATE.booking.listingId = String(patch.listingId || "");
+      if (patch.serviceId != null) STATE.booking.serviceId = String(patch.serviceId || "");
+      if (patch.dateISO != null) STATE.booking.dateISO = String(patch.dateISO || "");
+      if (patch.time != null) STATE.booking.time = String(patch.time || "");
+
+      $("#overlay")?.classList.add("show");
+      $("#overlay")?.setAttribute("aria-hidden", "false");
+      lockForAnyModal();
+
+      if (!STATE.booking.dateISO) STATE.booking.dateISO = isoLocal(new Date());
+      $("#m_date") && ($("#m_date").value = STATE.booking.dateISO);
+
+      renderServiceSelect();
+      renderListingSelect();
+      refreshListingInfo(true);
+      refreshDayPills();
+      refreshTimeGrid();
+      safeSetText($("#m_timeText"), STATE.booking.time || "—");
+      updateHoldUI(!!STATE.booking.time);
+
+      const draft = lsGet("bb.lastClient", {});
+      if (draft && typeof draft === "object") {
+        if ($("#m_name") && !$("#m_name").value) $("#m_name").value = draft.name || "";
+        if ($("#m_phone") && !$("#m_phone").value) $("#m_phone").value = draft.phone || "";
+        if ($("#m_email") && !$("#m_email").value) $("#m_email").value = draft.email || "";
+      }
+
+      lsSet("bb.bookingDraft", STATE.booking);
+    }
+
+    function closeBooking(){
+      STATE.booking.open = false;
+      $("#overlay")?.classList.remove("show");
+      $("#overlay")?.setAttribute("aria-hidden", "true");
+      closeSheet();
+      closeAISheet();
+      lockForAnyModal();
+    }
+
+    $("#m_close")?.addEventListener("click", closeBooking);
+    $("#overlay")?.addEventListener("click", e => { if (e.target === $("#overlay")) closeBooking(); });
+
+    $("#ctaQuick")?.addEventListener("click", () => openBooking({ serviceId: STATE.serviceId || uniqueServiceIds()[0] || "" }));
+    $("#fab")?.addEventListener("click", () => openBooking({ serviceId: STATE.serviceId || uniqueServiceIds()[0] || "" }));
+        $("#m_date")?.addEventListener("change", e => {
+      STATE.booking.dateISO = e.target.value || isoLocal(new Date());
+      STATE.booking.time = "";
+      safeSetText($("#m_timeText"), "—");
+      refreshDayPills();
+      refreshTimeGrid();
+      updateHoldUI();
+      lsSet("bb.bookingDraft", STATE.booking);
     });
 
     function openAISheet(){
       $("#aiSheet")?.classList.add("show");
-      lockBody(true);
+      lockForAnyModal();
       renderAIServiceRow();
       renderAIList();
     }
 
     function closeAISheet(){
       $("#aiSheet")?.classList.remove("show");
-      if (!STATE.booking.open) lockBody(false);
+      lockForAnyModal();
     }
 
     $("#btnAI")?.addEventListener("click", openAISheet);
     $("#aiClose")?.addEventListener("click", closeAISheet);
-    $("#aiSheet")?.addEventListener("click", e => {
-      if (e.target === $("#aiSheet")) closeAISheet();
-    });
+    $("#aiSheet")?.addEventListener("click", e => { if (e.target === $("#aiSheet")) closeAISheet(); });
 
     function renderAIServiceRow(){
       const row = $("#aiServiceRow");
       if (!row) return;
-
       const ids = uniqueServiceIds();
-      safeSetHTML(row, ids.map(sid => {
-        const label = serviceLabelFromId(sid) || sid;
-        const icon = serviceIcon(sid);
-        const active = STATE.serviceId === sid ? "primary" : "";
-        return `<button class="aiPill ${active}" data-sid="${escapeHtml(sid)}" type="button">${icon} ${escapeHtml(label)}</button>`;
-      }).join(""));
+
+      safeSetHTML(row, ids.map(sid => `
+        <button class="aiPill ${STATE.serviceId === sid ? "primary" : ""}" data-sid="${escapeHtml(sid)}" type="button">
+          ${serviceIcon(sid)} ${escapeHtml(serviceLabel(sid))}
+        </button>
+      `).join(""));
 
       $$(".aiPill[data-sid]", row).forEach(btn => {
         btn.addEventListener("click", () => {
@@ -3136,7 +2859,7 @@
       lsSet("bb.serviceId", "");
       lsSet("bb.search", "");
       if ($("#search")) $("#search").value = "";
-      toast("OK", txt().reset, 1800);
+      toast("OK", TXT.reset, 1800);
       renderServiceChips();
       renderAIServiceRow();
       renderAIList();
@@ -3151,46 +2874,49 @@
       let pool = LISTINGS.filter(l => hasService(l, sid));
 
       if (STATE.aiMode === "top") {
-        pool.sort((a, b) => {
+        pool.sort((a,b) => {
           const pa = isPartner(a) ? 1 : 0;
           const pb = isPartner(b) ? 1 : 0;
           if (pb !== pa) return pb - pa;
           return ratingValue(b) - ratingValue(a);
         });
       } else if (STATE.aiMode === "rec") {
-        pool.sort((a, b) => {
+        pool.sort((a,b) => {
           const ra = isRecommended(a) ? 1 : 0;
           const rb = isRecommended(b) ? 1 : 0;
           if (rb !== ra) return rb - ra;
           return ratingValue(b) - ratingValue(a);
         });
       } else {
-        pool.sort((a, b) => distanceValue(a) - distanceValue(b));
+        pool.sort((a,b) => {
+          const da = distanceValue(a);
+          const db = distanceValue(b);
+          if (da !== db) return da - db;
+          return ratingValue(b) - ratingValue(a);
+        });
       }
 
       pool = pool.slice(0, 6);
-
       safeSetHTML(list, pool.map(l => {
-        const slot = nextSlotForListing(l, sid);
-        const when = slot ? fmtPretty(slot.dateISO, slot.time, STATE.lang) : "—";
-        const from = fromPrice(l, sid);
-        const price = from != null ? `$${Math.round(from)}+` : "—";
-        const r = ratingValue(l);
-        const meta = `${when} • ${price}${r ? ` • ⭐️ ${r.toFixed(1)}` : ""}`;
+        const next = nextSlotForListing(l, sid);
+        const when = next ? fmtPretty(next.dateISO, next.time) : "—";
+        const price = fromPrice(l, sid);
+        const rating = ratingValue(l);
+        const meta = [when, price != null ? `$${Math.round(price)}+` : null, rating ? `⭐ ${rating.toFixed(1)}` : null].filter(Boolean).join(" • ");
         return `
           <div class="aiItem">
             <div style="min-width:0">
-              <div class="n">${escapeHtml(l?.name || l?.title || "—")}</div>
+              <div class="n">${escapeHtml(l.name || "—")}</div>
               <div class="m">${escapeHtml(meta)}</div>
             </div>
-            <button class="go" data-id="${escapeHtml(l?.id)}" type="button">Go</button>
+            <button class="goBtn" data-id="${escapeHtml(l.id)}" type="button">Go</button>
           </div>
         `;
       }).join(""));
 
-      $$(".go", list).forEach(btn => {
+      $$(".goBtn", list).forEach(btn => {
         btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
+          const id = btn.getAttribute("data-id") || "";
           closeAISheet();
           openBooking({ listingId: id, serviceId: sid });
         });
@@ -3199,20 +2925,10 @@
       setAiMode(STATE.aiMode || "top");
     }
 
-    function cycleLang(){
-      const i = LANGS.indexOf(STATE.lang);
-      STATE.lang = LANGS[(i + 1) % LANGS.length];
-      lsSet("bb.lang", STATE.lang);
-      applyTexts();
-      renderStories();
-      renderServiceChips();
-      renderNext();
-      renderGrids();
-      renderAIServiceRow();
-      renderAIList();
-    }
+    $("#btnLang")?.addEventListener("click", () => {
+      toast("Language later", "The switch is ready in UI. We can enable EN / UK / FR / RU next.", 2600);
+    });
 
-    $("#btnLang")?.addEventListener("click", cycleLang);
     $("#btnTheme")?.addEventListener("click", () => {
       STATE.theme = STATE.theme === "day" ? "night" : "day";
       applyTheme();
@@ -3223,6 +2939,7 @@
       lsSet("bb.favOnly", STATE.favOnly);
       $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
       renderGrids();
+      renderTrending();
     });
 
     const searchEl = $("#search");
@@ -3232,6 +2949,7 @@
         STATE.search = searchEl.value || "";
         lsSet("bb.search", STATE.search);
         renderGrids();
+        renderTrending();
       });
     }
 
@@ -3242,22 +2960,23 @@
     $("#btnCopyLink")?.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(location.href);
-        toast(
-          "OK",
-          STATE.lang === "fr" ? "Lien copié ✅" :
-          STATE.lang === "ru" ? "Ссылка скопирована ✅" :
-          STATE.lang === "en" ? "Link copied ✅" :
-          "Лінк скопійовано ✅",
-          1800
-        );
+        toast("OK", "Link copied ✅", 1800);
       } catch {
         toast("OK", location.href, 2200);
       }
     });
 
+    function saveClientPrefill(){
+      lsSet("bb.lastClient", {
+        name: ($("#m_name")?.value || "").trim(),
+        phone: ($("#m_phone")?.value || "").trim(),
+        email: ($("#m_email")?.value || "").trim()
+      });
+    }
+
     async function sendBooking(payload){
       const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), 12000);
+      const timeout = setTimeout(() => controller.abort(), 12000);
 
       try {
         const res = await fetch(WORKER_URL, {
@@ -3266,20 +2985,20 @@
           body: JSON.stringify(payload),
           signal: controller.signal
         });
-        clearTimeout(t);
-        let j = null;
-        try { j = await res.json(); } catch {}
-        return { ok: res.ok, data: j };
-      } catch (e) {
-        clearTimeout(t);
-        return { ok: false, error: String(e) };
+        clearTimeout(timeout);
+        let data = null;
+        try { data = await res.json(); } catch {}
+        return { ok: res.ok, data };
+      } catch (error) {
+        clearTimeout(timeout);
+        return { ok: false, error: String(error) };
       }
     }
 
     $("#m_bookBtn")?.addEventListener("click", async () => {
       const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
       const sid = STATE.booking.serviceId || "";
-      const dateISO = (STATE.booking.dateISO || $("#m_date")?.value || "").trim();
+      const dateISO = (STATE.booking.dateISO || "").trim();
       const time = (STATE.booking.time || "").trim();
 
       const name = ($("#m_name")?.value || "").trim();
@@ -3288,39 +3007,46 @@
       const notes = ($("#m_notes")?.value || "").trim();
 
       if (!listing || !sid || !dateISO || !time || !name || !phone) {
-        toast(txt().failed, txt().missing, 2600);
+        toast(TXT.failed, TXT.missing, 2600);
         return;
       }
 
-      const serviceName = resolveServiceName(sid);
-      const pretty = fmtPretty(dateISO, time, STATE.lang);
+      saveClientPrefill();
 
-      const basePath = location.pathname.replace(/\/index\.html?$/i, "/");
+      const serviceName = serviceLabel(sid);
+      const pretty = fmtPretty(dateISO, time);
+      const dur = durationFor(listing, sid);
+      const price = fromPrice(listing, sid);
+      const profileUrl = `${location.origin}${location.pathname.replace(/\/index\.html?$/i, "/")}profile.html?id=${encodeURIComponent(listing.id)}`;
+
       const payload = {
         id: uid(),
-        lang: STATE.lang,
+        lang: "en",
         theme: STATE.theme,
         listingId: String(listing.id),
-        listingName: listing.name || listing.title || String(listing.id),
-        address: listing.address || listing.addr || "",
+        listingName: listing.name || listing.id,
+        address: listing.address || "",
         serviceId: sid,
         serviceName,
+        durationMin: dur,
+        priceFrom: price,
+        datetimeISO: `${dateISO} ${time}`,
         dateISO,
         time,
         pretty,
         customer: { name, phone, email },
         notes,
-        profileUrl: `${location.origin}${basePath}profile.html?id=${encodeURIComponent(listing.id)}`
+        profileUrl
       };
 
-      toast("…", "Sending…", 1200);
+      toast("Sending…", "Please wait a moment.", 1200);
 
-      const r = await sendBooking(payload);
-      if (r.ok && r.data?.ok !== false) {
-        toast(txt().sent, txt().sentText, 3200);
+      const result = await sendBooking(payload);
+      if (result.ok && result.data?.ok !== false) {
+        toast(TXT.sent, TXT.sentText, 3200);
         closeBooking();
       } else {
-        toast(txt().failed, txt().failedText, 3600);
+        toast(TXT.failed, TXT.failedText, 3600);
       }
     });
 
@@ -3350,35 +3076,37 @@
       applyTheme();
       applyTexts();
       renderStories();
-
-      $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
-
       renderServiceChips();
       renderNext();
+      renderTrending();
       setTab(STATE.tab || "all");
+      $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
     }
 
     function init(){
       applyTheme();
       applyTexts();
       renderStories();
-
       initNetbar();
       initSWUpdate();
       initBackToTop();
-
       renderServiceChips();
       renderNext();
       startNextRotation();
-
+      renderTrending();
       setTab(STATE.tab || "all");
-
-      if ($("#search")) $("#search").value = STATE.search || "";
       $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
 
       const qs = parseQS();
+      if ($("#search")) $("#search").value = STATE.search || "";
+
+      const draft = lsGet("bb.bookingDraft", null);
+      if (draft && typeof draft === "object") {
+        STATE.booking = { ...STATE.booking, ...draft };
+      }
+
       if (qs.book === "1") {
-        const sid = qs.service || STATE.serviceId || "";
+        const sid = qs.service || STATE.serviceId || uniqueServiceIds()[0] || "";
         const id = qs.id || "";
         setTimeout(() => openBooking({ listingId: id, serviceId: sid }), 80);
       } else if (STATE.booking.open) {
