@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0b10" id="metaTheme" />
+  <meta name="theme-color" content="#0b0b0f" id="metaTheme" />
   <title>Beauty Booking</title>
 
   <meta property="og:title" content="Beauty Booking" />
@@ -13,7 +13,6 @@
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Beauty Booking" />
@@ -26,69 +25,63 @@
 
   <style>
     :root{
-      --bg:#06060a;
-      --bg2:#0a0a12;
-      --bg3:#0f0b16;
-      --card:rgba(255,255,255,.055);
-      --card2:rgba(255,255,255,.082);
-      --line:rgba(255,255,255,.095);
-      --text:#f6f4fb;
-      --muted:rgba(246,244,251,.72);
-      --muted2:rgba(246,244,251,.52);
+      --bg:#07070b;
+      --bg2:#0b0b11;
+      --bg3:#12121a;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.085);
+      --line:rgba(255,255,255,.10);
+      --text:#f5f6fb;
+      --muted:rgba(245,246,251,.72);
+      --muted2:rgba(245,246,251,.55);
 
-      --pink:#ff56d6;
+      --pink:#ff4fd8;
       --gold:#ffd27a;
       --violet:#8b5cf6;
-      --mint:#63f0c8;
+      --mint:#5cf6c7;
+      --cyan:#55d9ff;
 
       --r:22px;
-      --r2:30px;
-      --r3:34px;
-
-      --shadow:0 28px 80px rgba(0,0,0,.58);
-      --shadow2:0 14px 36px rgba(0,0,0,.36);
-      --shadow3:0 10px 24px rgba(0,0,0,.22);
-
-      --glow:0 0 0 1px rgba(255,255,255,.05), 0 22px 70px rgba(255,79,216,.10);
-      --glow2:0 0 0 1px rgba(255,255,255,.08), 0 20px 70px rgba(139,92,246,.10);
-
-      --glassA:rgba(9,9,15,.88);
-      --glassB:rgba(9,9,15,.58);
-      --glassC:rgba(255,255,255,.06);
+      --r2:28px;
+      --shadow:0 22px 60px rgba(0,0,0,.55);
+      --shadow2:0 12px 30px rgba(0,0,0,.40);
+      --glow:0 0 0 1px rgba(255,255,255,.06), 0 10px 50px rgba(255,79,216,.12);
+      --glow2:0 0 0 1px rgba(255,255,255,.08), 0 18px 60px rgba(139,92,246,.10);
 
       --safe-top:env(safe-area-inset-top);
       --safe-bottom:env(safe-area-inset-bottom);
       --safe-left:env(safe-area-inset-left);
       --safe-right:env(safe-area-inset-right);
 
+      --topbarPadTop:calc(14px + var(--safe-top));
       --contentPad:16px;
-      --topPad:calc(12px + var(--safe-top));
 
       --font-title:"Playfair Display", ui-serif, Georgia, serif;
       --font-ui:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+      --glassA:rgba(10,10,16,.88);
+      --glassB:rgba(10,10,16,.55);
+
+      --heroVideoOpacity:.24;
     }
 
     html[data-theme="day"]{
-      --bg:#f6f2ff;
-      --bg2:#fff8fc;
-      --bg3:#fff5fb;
-      --card:rgba(10,10,20,.055);
+      --bg:#f7f3ff;
+      --bg2:#fff7fb;
+      --bg3:#fff;
+      --card:rgba(10,10,20,.06);
       --card2:rgba(10,10,20,.085);
       --line:rgba(10,10,20,.12);
-      --text:#0b0a14;
-      --muted:rgba(11,10,20,.72);
-      --muted2:rgba(11,10,20,.52);
-
-      --shadow:0 24px 70px rgba(10,10,20,.16);
-      --shadow2:0 14px 30px rgba(10,10,20,.12);
-      --shadow3:0 10px 20px rgba(10,10,20,.08);
-
-      --glow:0 0 0 1px rgba(10,10,20,.08), 0 18px 60px rgba(255,79,216,.08);
-      --glow2:0 0 0 1px rgba(10,10,20,.10), 0 18px 60px rgba(139,92,246,.08);
-
-      --glassA:rgba(255,255,255,.88);
+      --text:#0a0a14;
+      --muted:rgba(10,10,20,.70);
+      --muted2:rgba(10,10,20,.55);
+      --shadow:0 18px 60px rgba(10,10,20,.18);
+      --shadow2:0 12px 28px rgba(10,10,20,.14);
+      --glow:0 0 0 1px rgba(10,10,20,.10), 0 16px 50px rgba(255,79,216,.10);
+      --glow2:0 0 0 1px rgba(10,10,20,.12), 0 18px 60px rgba(139,92,246,.10);
+      --glassA:rgba(255,255,255,.85);
       --glassB:rgba(255,255,255,.62);
-      --glassC:rgba(255,255,255,.68);
+      --heroVideoOpacity:.18;
     }
 
     *{box-sizing:border-box}
@@ -101,1303 +94,3300 @@
       text-rendering:optimizeLegibility;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      background:
-        radial-gradient(1100px 560px at 8% 0%, rgba(255,86,214,.16), transparent 58%),
-        radial-gradient(900px 520px at 92% 6%, rgba(139,92,246,.17), transparent 58%),
-        radial-gradient(980px 520px at 50% 100%, rgba(255,210,122,.10), transparent 62%),
-        linear-gradient(180deg, var(--bg), var(--bg2) 38%, var(--bg3));
       overflow-x:hidden;
+      background:
+        radial-gradient(900px 450px at 10% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(700px 420px at 92% 10%, rgba(139,92,246,.14), transparent 62%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.12), transparent 65%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
     }
-
     html[data-theme="day"] body{
       background:
-        radial-gradient(1100px 560px at 8% 0%, rgba(255,86,214,.14), transparent 58%),
-        radial-gradient(900px 520px at 92% 6%, rgba(139,92,246,.14), transparent 58%),
-        radial-gradient(980px 520px at 50% 100%, rgba(255,210,122,.14), transparent 62%),
-        linear-gradient(180deg, var(--bg), var(--bg2) 38%, var(--bg3));
+        radial-gradient(900px 450px at 10% 0%, rgba(255,79,216,.18), transparent 60%),
+        radial-gradient(700px 420px at 92% 10%, rgba(139,92,246,.18), transparent 62%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.20), transparent 65%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
     }
 
     a{color:inherit;text-decoration:none}
     button,input,select{font-family:inherit}
     button{cursor:pointer}
-    img{display:block}
-    .hidden{display:none !important}
-    .muted{color:var(--muted)}
-    .sep{height:1px;background:rgba(255,255,255,.06);margin:18px 0}
-    html[data-theme="day"] .sep{background:rgba(10,10,20,.10)}
 
-    .launch{
-      position:fixed;
-      inset:0;
-      z-index:220;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:calc(20px + var(--safe-top)) calc(20px + var(--safe-right)) calc(20px + var(--safe-bottom)) calc(20px + var(--safe-left));
-      background:
-        radial-gradient(900px 420px at 18% 8%, rgba(255,86,214,.22), transparent 58%),
-        radial-gradient(760px 420px at 88% 12%, rgba(139,92,246,.20), transparent 60%),
-        radial-gradient(860px 500px at 50% 100%, rgba(255,210,122,.14), transparent 65%),
-        linear-gradient(180deg, #050509, #090911 68%, #0b0b14);
-      opacity:1;
-      visibility:visible;
-      transition:opacity .55s ease, visibility .55s ease;
+    .aurora{
+      position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
     }
-    html[data-theme="day"] .launch{
-      background:
-        radial-gradient(900px 420px at 18% 8%, rgba(255,86,214,.16), transparent 58%),
-        radial-gradient(760px 420px at 88% 12%, rgba(139,92,246,.14), transparent 60%),
-        radial-gradient(860px 500px at 50% 100%, rgba(255,210,122,.14), transparent 65%),
-        linear-gradient(180deg, #f7f3ff, #fff8fc);
+    .orb{
+      position:absolute; border-radius:999px; filter:blur(48px); opacity:.22;
+      animation:floatOrb 18s ease-in-out infinite;
+      mix-blend-mode:screen;
     }
-    .launch.hide{
-      opacity:0;
-      visibility:hidden;
-      pointer-events:none;
-    }
-    .launchInner{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:18px;
-      text-align:center;
-      animation:launchFade 1s ease;
-    }
-    @keyframes launchFade{
-      from{opacity:0;transform:translateY(10px) scale(.985)}
-      to{opacity:1;transform:translateY(0) scale(1)}
-    }
-    .launchLogo{
-      width:82px;
-      height:82px;
-      border-radius:26px;
-      background:
-        radial-gradient(22px 22px at 30% 25%, rgba(255,255,255,.44), transparent 60%),
-        linear-gradient(135deg, var(--pink), var(--gold), var(--violet));
-      box-shadow:
-        0 20px 70px rgba(255,86,214,.34),
-        0 0 0 1px rgba(255,255,255,.14),
-        inset 0 1px 0 rgba(255,255,255,.16);
-      position:relative;
-      overflow:hidden;
-    }
-    .launchLogo:after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.34), transparent 60%);
-      transform:rotate(20deg);
-    }
-    .launchTitle{
-      font-family:var(--font-title);
-      font-size:30px;
-      font-weight:700;
-      letter-spacing:.28px;
-    }
-    .launchGlow{
-      width:180px;
-      height:4px;
-      border-radius:999px;
-      background:linear-gradient(90deg,var(--pink),var(--gold),var(--violet));
-      animation:launchGlow 1.4s ease infinite;
-      box-shadow:0 0 30px rgba(255,86,214,.35);
-    }
-    @keyframes launchGlow{
-      0%{opacity:.35;transform:scaleX(.62)}
-      50%{opacity:1;transform:scaleX(1)}
-      100%{opacity:.35;transform:scaleX(.62)}
-    }
-
-    .netbar{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      top:calc(10px + var(--safe-top));
-      z-index:160;
-      width:min(860px,calc(100% - 24px));
-      padding:10px 12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(10,10,16,.84);
-      backdrop-filter:blur(14px);
-      box-shadow:0 22px 70px rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    html[data-theme="day"] .netbar{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.88);
-      box-shadow:0 20px 60px rgba(10,10,20,.15);
-    }
-    .netbar.show{display:flex}
-    .netbar .txt{font-size:13px;color:var(--text)}
-    .netbar .btns{display:flex;gap:8px;flex-wrap:wrap}
-    .nb{
-      height:36px;
-      padding:0 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      font-weight:700;
-    }
-    html[data-theme="day"] .nb{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-    }
-    .nb.primary{
-      background:rgba(99,240,200,.16);
-      border-color:rgba(99,240,200,.26);
+    .orb.a{width:260px;height:260px;background:rgba(255,79,216,.28);left:-40px;top:10%}
+    .orb.b{width:320px;height:320px;background:rgba(139,92,246,.24);right:-60px;top:18%;animation-delay:-5s}
+    .orb.c{width:280px;height:280px;background:rgba(255,210,122,.22);left:18%;bottom:8%;animation-delay:-10s}
+    .orb.d{width:240px;height:240px;background:rgba(92,246,199,.20);right:20%;bottom:4%;animation-delay:-7s}
+    @keyframes floatOrb{
+      0%,100%{transform:translate3d(0,0,0) scale(1)}
+      50%{transform:translate3d(18px,-28px,0) scale(1.08)}
     }
 
     .topbar{
-      position:sticky;
-      top:0;
-      z-index:70;
-      padding:var(--topPad) calc(var(--contentPad) + var(--safe-right)) 8px calc(var(--contentPad) + var(--safe-left));
+      position:sticky; top:0; z-index:50;
+      padding:var(--topbarPadTop) calc(var(--contentPad) + var(--safe-right)) 10px calc(var(--contentPad) + var(--safe-left));
       backdrop-filter:blur(18px);
-      background:
-        linear-gradient(180deg, var(--glassA), var(--glassB));
-      border-bottom:1px solid rgba(255,255,255,.05);
+      background:linear-gradient(180deg, var(--glassA), var(--glassB));
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    html[data-theme="day"] .topbar{
-      border-bottom-color:rgba(10,10,20,.08);
-    }
+    html[data-theme="day"] .topbar{border-bottom-color:rgba(10,10,20,.10)}
 
     .topbarRow{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-top:6px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-top:10px;
+      position:relative; z-index:2;
     }
-    body.is-standalone .topbarRow{margin-top:12px}
+    body.is-standalone .topbarRow{margin-top:16px}
 
-    .brandShell{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-      position:relative;
-    }
-    .brandShell:before{
-      content:"";
-      position:absolute;
-      inset:auto auto -8px -18px;
-      width:120px;
-      height:54px;
-      border-radius:999px;
-      background:radial-gradient(circle, rgba(255,86,214,.18), transparent 68%);
-      filter:blur(18px);
-      pointer-events:none;
-    }
-    html[data-theme="day"] .brandShell:before{
-      background:radial-gradient(circle, rgba(255,86,214,.12), transparent 68%);
-    }
-
+    .brand{display:flex; align-items:center; gap:10px; min-width:170px}
     .logo{
-      width:48px;
-      height:48px;
-      border-radius:17px;
-      flex:0 0 auto;
+      width:40px; height:40px; border-radius:14px;
       background:
-        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.38), transparent 60%),
-        linear-gradient(135deg, rgba(255,86,214,.96), rgba(255,210,122,.86), rgba(139,92,246,.90));
-      box-shadow:
-        0 12px 40px rgba(255,86,214,.20),
-        0 0 0 1px rgba(255,255,255,.10),
-        inset 0 1px 0 rgba(255,255,255,.12);
-      position:relative;
-      overflow:hidden;
+        radial-gradient(16px 16px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.85), rgba(139,92,246,.90));
+      box-shadow:0 10px 35px rgba(255,79,216,.18), 0 0 0 1px rgba(255,255,255,.10);
+      position:relative; overflow:hidden;
     }
     .logo:after{
       content:"";
-      position:absolute;
-      inset:-40%;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), transparent 56%);
+      position:absolute; inset:-40%;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 55%);
       transform:rotate(25deg);
     }
-
-    .brandText{
-      display:flex;
-      flex-direction:column;
-      min-width:0;
-      line-height:1.02;
-    }
+    .brandText{display:flex; flex-direction:column; line-height:1.05}
     .brandText .name{
       font-family:var(--font-title);
-      font-size:24px;
       font-weight:700;
-      letter-spacing:.16px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      letter-spacing:.2px;
+      font-size:20px;
     }
-    .brandText .sub{
-      margin-top:3px;
-      color:var(--muted2);
-      font-size:12.5px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    <!doctype html>
-<html lang="uk" data-theme="night">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0b10" id="metaTheme" />
-  <title>Beauty Booking</title>
+    .brandText .sub{font-size:12px; color:var(--muted2); margin-top:2px}
 
-  <meta property="og:title" content="Beauty Booking" />
-  <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
-
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Beauty Booking" />
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-  <meta name="format-detection" content="telephone=no,email=no,address=no" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg:#06060a;
-      --bg2:#0a0a12;
-      --bg3:#0f0b16;
-      --card:rgba(255,255,255,.055);
-      --card2:rgba(255,255,255,.082);
-      --line:rgba(255,255,255,.095);
-      --text:#f6f4fb;
-      --muted:rgba(246,244,251,.72);
-      --muted2:rgba(246,244,251,.52);
-
-      --pink:#ff56d6;
-      --gold:#ffd27a;
-      --violet:#8b5cf6;
-      --mint:#63f0c8;
-
-      --r:22px;
-      --r2:30px;
-      --r3:34px;
-
-      --shadow:0 28px 80px rgba(0,0,0,.58);
-      --shadow2:0 14px 36px rgba(0,0,0,.36);
-      --shadow3:0 10px 24px rgba(0,0,0,.22);
-
-      --glow:0 0 0 1px rgba(255,255,255,.05), 0 22px 70px rgba(255,79,216,.10);
-      --glow2:0 0 0 1px rgba(255,255,255,.08), 0 20px 70px rgba(139,92,246,.10);
-
-      --glassA:rgba(9,9,15,.88);
-      --glassB:rgba(9,9,15,.58);
-      --glassC:rgba(255,255,255,.06);
-
-      --safe-top:env(safe-area-inset-top);
-      --safe-bottom:env(safe-area-inset-bottom);
-      --safe-left:env(safe-area-inset-left);
-      --safe-right:env(safe-area-inset-right);
-
-      --contentPad:16px;
-      --topPad:calc(12px + var(--safe-top));
-
-      --font-title:"Playfair Display", ui-serif, Georgia, serif;
-      --font-ui:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-
-    html[data-theme="day"]{
-      --bg:#f6f2ff;
-      --bg2:#fff8fc;
-      --bg3:#fff5fb;
-      --card:rgba(10,10,20,.055);
-      --card2:rgba(10,10,20,.085);
-      --line:rgba(10,10,20,.12);
-      --text:#0b0a14;
-      --muted:rgba(11,10,20,.72);
-      --muted2:rgba(11,10,20,.52);
-
-      --shadow:0 24px 70px rgba(10,10,20,.16);
-      --shadow2:0 14px 30px rgba(10,10,20,.12);
-      --shadow3:0 10px 20px rgba(10,10,20,.08);
-
-      --glow:0 0 0 1px rgba(10,10,20,.08), 0 18px 60px rgba(255,79,216,.08);
-      --glow2:0 0 0 1px rgba(10,10,20,.10), 0 18px 60px rgba(139,92,246,.08);
-
-      --glassA:rgba(255,255,255,.88);
-      --glassB:rgba(255,255,255,.62);
-      --glassC:rgba(255,255,255,.68);
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      color:var(--text);
-      font-family:var(--font-ui);
-      text-rendering:optimizeLegibility;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      background:
-        radial-gradient(1100px 560px at 8% 0%, rgba(255,86,214,.16), transparent 58%),
-        radial-gradient(900px 520px at 92% 6%, rgba(139,92,246,.17), transparent 58%),
-        radial-gradient(980px 520px at 50% 100%, rgba(255,210,122,.10), transparent 62%),
-        linear-gradient(180deg, var(--bg), var(--bg2) 38%, var(--bg3));
-      overflow-x:hidden;
-    }
-
-    html[data-theme="day"] body{
-      background:
-        radial-gradient(1100px 560px at 8% 0%, rgba(255,86,214,.14), transparent 58%),
-        radial-gradient(900px 520px at 92% 6%, rgba(139,92,246,.14), transparent 58%),
-        radial-gradient(980px 520px at 50% 100%, rgba(255,210,122,.14), transparent 62%),
-        linear-gradient(180deg, var(--bg), var(--bg2) 38%, var(--bg3));
-    }
-
-    a{color:inherit;text-decoration:none}
-    button,input,select{font-family:inherit}
-    button{cursor:pointer}
-    img{display:block}
-    .hidden{display:none !important}
-    .muted{color:var(--muted)}
-    .sep{height:1px;background:rgba(255,255,255,.06);margin:18px 0}
-    html[data-theme="day"] .sep{background:rgba(10,10,20,.10)}
-
-    .launch{
-      position:fixed;
-      inset:0;
-      z-index:220;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:calc(20px + var(--safe-top)) calc(20px + var(--safe-right)) calc(20px + var(--safe-bottom)) calc(20px + var(--safe-left));
-      background:
-        radial-gradient(900px 420px at 18% 8%, rgba(255,86,214,.22), transparent 58%),
-        radial-gradient(760px 420px at 88% 12%, rgba(139,92,246,.20), transparent 60%),
-        radial-gradient(860px 500px at 50% 100%, rgba(255,210,122,.14), transparent 65%),
-        linear-gradient(180deg, #050509, #090911 68%, #0b0b14);
-      opacity:1;
-      visibility:visible;
-      transition:opacity .55s ease, visibility .55s ease;
-    }
-    html[data-theme="day"] .launch{
-      background:
-        radial-gradient(900px 420px at 18% 8%, rgba(255,86,214,.16), transparent 58%),
-        radial-gradient(760px 420px at 88% 12%, rgba(139,92,246,.14), transparent 60%),
-        radial-gradient(860px 500px at 50% 100%, rgba(255,210,122,.14), transparent 65%),
-        linear-gradient(180deg, #f7f3ff, #fff8fc);
-    }
-    .launch.hide{
-      opacity:0;
-      visibility:hidden;
-      pointer-events:none;
-    }
-    .launchInner{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:18px;
-      text-align:center;
-      animation:launchFade 1s ease;
-    }
-    @keyframes launchFade{
-      from{opacity:0;transform:translateY(10px) scale(.985)}
-      to{opacity:1;transform:translateY(0) scale(1)}
-    }
-    .launchLogo{
-      width:82px;
-      height:82px;
-      border-radius:26px;
-      background:
-        radial-gradient(22px 22px at 30% 25%, rgba(255,255,255,.44), transparent 60%),
-        linear-gradient(135deg, var(--pink), var(--gold), var(--violet));
-      box-shadow:
-        0 20px 70px rgba(255,86,214,.34),
-        0 0 0 1px rgba(255,255,255,.14),
-        inset 0 1px 0 rgba(255,255,255,.16);
-      position:relative;
-      overflow:hidden;
-    }
-    .launchLogo:after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.34), transparent 60%);
-      transform:rotate(20deg);
-    }
-    .launchTitle{
-      font-family:var(--font-title);
-      font-size:30px;
-      font-weight:700;
-      letter-spacing:.28px;
-    }
-    .launchGlow{
-      width:180px;
-      height:4px;
-      border-radius:999px;
-      background:linear-gradient(90deg,var(--pink),var(--gold),var(--violet));
-      animation:launchGlow 1.4s ease infinite;
-      box-shadow:0 0 30px rgba(255,86,214,.35);
-    }
-    @keyframes launchGlow{
-      0%{opacity:.35;transform:scaleX(.62)}
-      50%{opacity:1;transform:scaleX(1)}
-      100%{opacity:.35;transform:scaleX(.62)}
-    }
-
-    .netbar{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      top:calc(10px + var(--safe-top));
-      z-index:160;
-      width:min(860px,calc(100% - 24px));
-      padding:10px 12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(10,10,16,.84);
-      backdrop-filter:blur(14px);
-      box-shadow:0 22px 70px rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    html[data-theme="day"] .netbar{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.88);
-      box-shadow:0 20px 60px rgba(10,10,20,.15);
-    }
-    .netbar.show{display:flex}
-    .netbar .txt{font-size:13px;color:var(--text)}
-    .netbar .btns{display:flex;gap:8px;flex-wrap:wrap}
-    .nb{
-      height:36px;
-      padding:0 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      font-weight:700;
-    }
-    html[data-theme="day"] .nb{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.72);
-    }
-    .nb.primary{
-      background:rgba(99,240,200,.16);
-      border-color:rgba(99,240,200,.26);
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:70;
-      padding:var(--topPad) calc(var(--contentPad) + var(--safe-right)) 8px calc(var(--contentPad) + var(--safe-left));
-      backdrop-filter:blur(18px);
-      background:
-        linear-gradient(180deg, var(--glassA), var(--glassB));
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    html[data-theme="day"] .topbar{
-      border-bottom-color:rgba(10,10,20,.08);
-    }
-
-    .topbarRow{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-top:6px;
-    }
-    body.is-standalone .topbarRow{margin-top:12px}
-
-    .brandShell{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-      position:relative;
-    }
-    .brandShell:before{
-      content:"";
-      position:absolute;
-      inset:auto auto -8px -18px;
-      width:120px;
-      height:54px;
-      border-radius:999px;
-      background:radial-gradient(circle, rgba(255,86,214,.18), transparent 68%);
-      filter:blur(18px);
-      pointer-events:none;
-    }
-    html[data-theme="day"] .brandShell:before{
-      background:radial-gradient(circle, rgba(255,86,214,.12), transparent 68%);
-    }
-
-    .logo{
-      width:48px;
-      height:48px;
-      border-radius:17px;
-      flex:0 0 auto;
-      background:
-        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.38), transparent 60%),
-        linear-gradient(135deg, rgba(255,86,214,.96), rgba(255,210,122,.86), rgba(139,92,246,.90));
-      box-shadow:
-        0 12px 40px rgba(255,86,214,.20),
-        0 0 0 1px rgba(255,255,255,.10),
-        inset 0 1px 0 rgba(255,255,255,.12);
-      position:relative;
-      overflow:hidden;
-    }
-    .logo:after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), transparent 56%);
-      transform:rotate(25deg);
-    }
-
-    .brandText{
-      display:flex;
-      flex-direction:column;
-      min-width:0;
-      line-height:1.02;
-    }
-    .brandText .name{
-      font-family:var(--font-title);
-      font-size:24px;
-      font-weight:700;
-      letter-spacing:.16px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .brandText .sub{
-      margin-top:3px;
-      color:var(--muted2);
-      font-size:12.5px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-        .controlBar{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) repeat(3, 50px);
-      gap:10px;
-      padding:10px;
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow:
-        var(--shadow3),
-        inset 0 1px 0 rgba(255,255,255,.05);
-      position:relative;
-      overflow:hidden;
-    }
-    .controlBar:before{
-      content:"";
-      position:absolute;
-      inset:-20% auto auto -10%;
-      width:180px;
-      height:120px;
-      background:radial-gradient(circle, rgba(255,86,214,.12), transparent 68%);
-      filter:blur(18px);
-      pointer-events:none;
-    }
-    .controlBar:after{
-      content:"";
-      position:absolute;
-      inset:auto -5% -40% auto;
-      width:180px;
-      height:120px;
-      background:radial-gradient(circle, rgba(139,92,246,.12), transparent 68%);
-      filter:blur(18px);
-      pointer-events:none;
-    }
-    html[data-theme="day"] .controlBar{
-      border-color:rgba(10,10,20,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.58));
-      box-shadow:var(--shadow3), inset 0 1px 0 rgba(255,255,255,.56);
-    }
-
-    .iconBtn,.pillBtn,.cta,.miniBtn,.small,.tab,.socialBtn,.ghostBtn,.bookBtn,.closeBtn,.pickBtn,.timeBtn,.nb{
+    .actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .iconBtn,.pillBtn,.cta,.small,.miniBtn,.ghostBtn,.bookBtn,.aiPill,.pickBtn,.chip,.tab,.socialBtn,.nb,.fab,.closeBtn,.timeBtn{
       -webkit-tap-highlight-color:transparent;
     }
 
-    .pillBtn{
-      height:50px;
-      padding:0 16px;
-      border-radius:18px;
+    .iconBtn{
+      width:46px; height:46px; border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.05);
       color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      box-shadow:0 10px 26px rgba(0,0,0,.22);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      display:grid; place-items:center;
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+      transform:translateY(2px);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
       user-select:none;
-      font-weight:700;
-      white-space:nowrap;
-      min-width:0;
+      font-size:18px;
     }
+    .pillBtn{
+      height:46px; padding:0 14px; border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex; align-items:center; gap:10px;
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+      transform:translateY(2px);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      user-select:none;
+    }
+    html[data-theme="day"] .iconBtn,
     html[data-theme="day"] .pillBtn{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.70);
+      background:rgba(255,255,255,.55);
+      box-shadow:0 10px 24px rgba(10,10,20,.10);
     }
-    .pillBtn:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.16)}
-    html[data-theme="day"] .pillBtn:hover{background:rgba(255,255,255,.82);border-color:rgba(10,10,20,.16)}
-    .pillBtn:active{transform:scale(.985)}
+    .iconBtn:hover,.pillBtn:hover{
+      background:rgba(255,255,255,.075);
+      border-color:rgba(255,255,255,.16);
+      box-shadow:0 14px 32px rgba(0,0,0,.34);
+    }
+    html[data-theme="day"] .iconBtn:hover,
+    html[data-theme="day"] .pillBtn:hover{
+      background:rgba(255,255,255,.78);
+      border-color:rgba(10,10,20,.18);
+    }
+    .iconBtn:active,.pillBtn:active{transform:translateY(3px) scale(.98)}
     .pillBtn.active{
-      background:linear-gradient(135deg, rgba(255,86,214,.16), rgba(255,210,122,.08));
-      border-color:rgba(255,86,214,.26);
+      background:rgba(255,79,216,.16);
+      border-color:rgba(255,79,216,.30);
     }
 
     .dot{
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.82), rgba(255,86,214,.9));
-      box-shadow:0 0 20px rgba(255,86,214,.34);
-      flex:0 0 auto;
+      width:10px; height:10px; border-radius:999px;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,79,216,.9));
+      box-shadow:0 0 20px rgba(255,79,216,.35);
     }
-
-    .iconBtn{
-      width:50px;
-      height:50px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:grid;
-      place-items:center;
-      box-shadow:0 10px 24px rgba(0,0,0,.20);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease;
-      font-size:18px;
-      user-select:none;
-    }
-    html[data-theme="day"] .iconBtn{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.70);
-    }
-    .iconBtn:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.15)}
-    html[data-theme="day"] .iconBtn:hover{background:rgba(255,255,255,.82);border-color:rgba(10,10,20,.16)}
-    .iconBtn:active{transform:scale(.98)}
 
     .wrap{
-      padding:12px calc(var(--contentPad) + var(--safe-right)) calc(122px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
-      max-width:1140px;
+      position:relative; z-index:1;
+      padding:14px calc(var(--contentPad) + var(--safe-right)) calc(150px + var(--safe-bottom)) calc(var(--contentPad) + var(--safe-left));
+      max-width:1180px;
       margin:0 auto;
     }
 
     .hero{
-      position:relative;
       margin-top:12px;
-      border-radius:var(--r3);
+      border-radius:var(--r2);
       overflow:hidden;
       border:1px solid rgba(255,255,255,.08);
       background:
-        radial-gradient(800px 340px at 12% 14%, rgba(255,86,214,.18), transparent 58%),
-        radial-gradient(620px 280px at 96% 8%, rgba(139,92,246,.20), transparent 60%),
-        radial-gradient(520px 220px at 50% 100%, rgba(255,210,122,.10), transparent 66%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+        radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.20), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       box-shadow:var(--shadow);
+      position:relative;
+      isolation:isolate;
     }
     html[data-theme="day"] .hero{
       border-color:rgba(10,10,20,.10);
       background:
-        radial-gradient(800px 340px at 12% 14%, rgba(255,86,214,.15), transparent 58%),
-        radial-gradient(620px 280px at 96% 8%, rgba(139,92,246,.14), transparent 60%),
-        radial-gradient(520px 220px at 50% 100%, rgba(255,210,122,.11), transparent 66%),
+        radial-gradient(600px 280px at 15% 20%, rgba(255,79,216,.22), transparent 60%),
+        radial-gradient(520px 260px at 90% 15%, rgba(139,92,246,.22), transparent 62%),
         linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.44));
+    }
+    .heroVideo{
+      position:absolute; inset:0; z-index:0; overflow:hidden;
+    }
+    .heroVideo video{
+      width:100%; height:100%;
+      object-fit:cover;
+      opacity:var(--heroVideoOpacity);
+      filter:saturate(1.05) contrast(1.05);
+      pointer-events:none;
+    }
+    .heroVideo:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(7,7,11,.25), rgba(7,7,11,.42)),
+        radial-gradient(900px 400px at 0% 0%, rgba(255,79,216,.10), transparent 62%),
+        radial-gradient(900px 420px at 100% 0%, rgba(139,92,246,.10), transparent 62%);
+      pointer-events:none;
+    }
+
+    .heroSparkles{
+      position:absolute; inset:0; z-index:0; pointer-events:none;
+      background-image:
+        radial-gradient(2px 2px at 12% 20%, rgba(255,255,255,.36), transparent 70%),
+        radial-gradient(2px 2px at 32% 42%, rgba(255,255,255,.22), transparent 70%),
+        radial-gradient(2px 2px at 58% 26%, rgba(255,255,255,.24), transparent 70%),
+        radial-gradient(2px 2px at 76% 52%, rgba(255,255,255,.20), transparent 70%),
+        radial-gradient(2px 2px at 88% 18%, rgba(255,255,255,.22), transparent 70%);
+      animation:sparkleShift 10s linear infinite;
+      opacity:.8;
+    }
+    @keyframes sparkleShift{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-6px)}
+      100%{transform:translateY(0)}
     }
 
     .heroInner{
-      display:grid;
-      grid-template-columns:1.12fr .88fr;
-      gap:16px;
+      position:relative; z-index:1;
       padding:18px;
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:16px;
       align-items:stretch;
     }
+    @media (max-width:860px){
+      .heroInner{grid-template-columns:1fr}
+    }
 
-    .heroCopy{
-      position:relative;
-      z-index:1;
-    }
-    .heroEyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      min-height:34px;
-      padding:0 12px;
+    .eyebrow{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
-      color:var(--muted2);
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--muted);
       font-size:12px;
-      font-weight:700;
-      letter-spacing:.18px;
-      text-transform:uppercase;
+      box-shadow:var(--shadow2);
+      margin-bottom:10px;
+      backdrop-filter:blur(10px);
     }
-    html[data-theme="day"] .heroEyebrow{
-      border-color:rgba(10,10,20,.10);
-      background:rgba(255,255,255,.66);
+    html[data-theme="day"] .eyebrow{
+      background:rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
     }
 
     .heroTitle{
-      margin:12px 0 8px;
-      max-width:11ch;
       font-family:var(--font-title);
-      font-size:42px;
-      line-height:.98;
-      letter-spacing:.1px;
       font-weight:700;
+      font-size:clamp(30px, 5vw, 50px);
+      letter-spacing:.2px;
+      margin:6px 0 8px;
+      line-height:1.02;
+      max-width:10ch;
     }
-
     .heroLead{
-      margin:0 0 16px;
-      max-width:54ch;
       color:var(--muted);
-      font-size:15px;
-      line-height:1.58;
-    }
-
-    .heroCtas{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-
-    .cta{
-      min-height:50px;
-      padding:0 16px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      box-shadow:var(--shadow2);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, filter .18s ease;
-      user-select:none;
-      font-weight:800;
-      letter-spacing:.02em;
-    }
-    html[data-theme="day"] .cta{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.68);
-    }
-    .cta.primary{
-      background:
-        linear-gradient(135deg, rgba(255,86,214,.84), rgba(255,210,122,.62), rgba(139,92,246,.74));
-      border-color:rgba(255,255,255,.12);
-      color:#fff;
-      box-shadow:
-        0 18px 50px rgba(255,86,214,.18),
-        inset 0 1px 0 rgba(255,255,255,.18);
-    }
-    .cta:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
-    .cta.primary:hover{filter:brightness(1.03)}
-    html[data-theme="day"] .cta:hover{background:rgba(255,255,255,.82);border-color:rgba(10,10,20,.18)}
-    .cta:active{transform:scale(.985)}
-
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:6px;
-    }
-
-    .chip{
-      min-height:38px;
-      padding:0 14px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.035));
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      gap:9px;
       font-size:14px;
-      font-weight:700;
-      letter-spacing:.01em;
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
-      user-select:none;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    html[data-theme="day"] .chip{
-      border-color:rgba(10,10,20,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.64));
-    }
-    .chip:hover{
-      background:rgba(255,255,255,.08);
-      border-color:rgba(255,255,255,.15);
-    }
-    html[data-theme="day"] .chip:hover{
-      background:rgba(255,255,255,.9);
-      border-color:rgba(10,10,20,.16);
-    }
-    .chip:active{transform:scale(.985)}
-    .chip.active{
-      background:
-        linear-gradient(135deg, rgba(255,86,214,.15), rgba(255,210,122,.08), rgba(139,92,246,.12));
-      border-color:rgba(255,86,214,.26);
-      box-shadow:0 14px 36px rgba(255,86,214,.10);
+      line-height:1.55;
+      margin:0 0 14px;
+      max-width:62ch;
     }
 
-    .nextCard{
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      min-height:220px;
-      padding:16px;
-      border-radius:28px;
-      border:1px solid rgba(255,255,255,.09);
-      background:
-        radial-gradient(360px 120px at 0% 0%, rgba(255,86,214,.10), transparent 60%),
-        radial-gradient(320px 120px at 100% 100%, rgba(255,210,122,.08), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.24), rgba(0,0,0,.16));
-      box-shadow:var(--glow2);
-      overflow:hidden;
-    }
-    .nextCard:before{
-      content:"";
-      position:absolute;
-      inset:auto auto -18px -18px;
-      width:140px;
-      height:140px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(255,86,214,.12), transparent 70%);
-      filter:blur(14px);
-      pointer-events:none;
-    }
-    html[data-theme="day"] .nextCard{
-      border-color:rgba(10,10,20,.12);
-      background:
-        radial-gradient(360px 120px at 0% 0%, rgba(255,86,214,.08), transparent 60%),
-        radial-gradient(320px 120px at 100% 100%, rgba(255,210,122,.08), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.58));
-    }
-
-    .nextTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .nextLabel{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size:12px;
-      font-weight:800;
-      color:var(--muted2);
-      letter-spacing:.03em;
-      text-transform:uppercase;
-    }
-    .pulse{
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      flex:0 0 auto;
-      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.82), rgba(99,240,200,.92));
-      box-shadow:0 0 20px rgba(99,240,200,.25);
-      animation:pulse 1.6s ease-in-out infinite;
-    }
-    @keyframes pulse{
-      0%,100%{transform:scale(1);opacity:.86}
-      50%{transform:scale(1.24);opacity:1}
-    }
-    .nextBody{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .nextName{
-      font-size:19px;
-      line-height:1.14;
-      font-weight:900;
-      letter-spacing:-.02em;
-    }
-    .nextMeta{
-      font-size:13.5px;
-      line-height:1.5;
-      color:var(--muted);
-    }
-    .nextAction{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:auto;
-    }
-
-    .miniBtn{
-      min-height:42px;
-      padding:0 14px;
-      border-radius:15px;
+    .heroCtas{display:flex; gap:10px; flex-wrap:wrap}
+    .cta{
+      height:46px; padding:0 14px; border-radius:16px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.06);
       color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
+      display:flex; align-items:center; gap:10px;
       box-shadow:var(--shadow2);
-      font-weight:800;
+      transition:transform .18s ease, background .18s ease, border-color .18s ease, filter .18s ease;
       user-select:none;
-      transition:transform .18s ease, background .18s ease, border-color .18s ease;
     }
-    html[data-theme="day"] .miniBtn{
+    html[data-theme="day"] .cta{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.76);
+      background:rgba(255,255,255,.60);
+      box-shadow:0 12px 26px rgba(10,10,20,.10);
     }
-    .miniBtn.primary{
-      background:linear-gradient(135deg, rgba(99,240,200,.22), rgba(255,255,255,.06));
-      border-color:rgba(99,240,200,.24);
+    .cta.primary{
+      background:linear-gradient(135deg, rgba(255,79,216,.85), rgba(255,210,122,.65), rgba(139,92,246,.75));
+      border-color:rgba(255,255,255,.14);
+      color:#fff;
     }
-    .miniBtn:active{transform:scale(.985)}
+    .cta:hover{
+      background:rgba(255,255,255,.085);
+      border-color:rgba(255,255,255,.16);
+    }
+    html[data-theme="day"] .cta:hover{
+      background:rgba(255,255,255,.78);
+      border-color:rgba(10,10,20,.18);
+    }
+    .cta.primary:hover{filter:brightness(1.04)}
+    .cta:active{transform:scale(.985)}
+
+    .chips{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .chip{
+      height:36px; padding:0 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      font-size:13px;
+      display:flex; align-items:center; gap:8px;
+      transition:background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+      user-select:none;
+    }
+    html[data-theme="day"] .chip{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.55);
+    }
+    .chip:hover{
+      background:rgba(255,255,255,.07);
+      border-color:rgba(255,255,255,.14);
+      box-shadow:0 12px 30px rgba(0,0,0,.12);
+    }
+    html[data-theme="day"] .chip:hover{
+      background:rgba(255,255,255,.75);
+      border-color:rgba(10,10,20,.18);
+    }
+    .chip:active{transform:scale(.985)}
+    .chip.active{
+      background:rgba(255,79,216,.18);
+      border-color:rgba(255,79,216,.35);
+      box-shadow:0 14px 40px rgba(255,79,216,.10);
+    }
+
+    .stories{
+      display:flex; gap:10px; overflow-x:auto;
+      margin-top:14px; padding-bottom:4px;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+    }
+    .stories::-webkit-scrollbar{height:7px}
+    .stories::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px}
+    .story{
+      flex:0 0 auto; min-width:152px;
+      scroll-snap-align:start;
+      border-radius:18px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      box-shadow:var(--shadow2);
+      display:flex; flex-direction:column; gap:6px;
+    }
+    html[data-theme="day"] .story{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .story .t1{font-weight:900; font-size:13px}
+    .story .t2{font-size:12px; color:var(--muted)}
+
+    .nextCard{
+      border-radius:var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      box-shadow:var(--glow2);
+      padding:14px;
+      display:flex; flex-direction:column; gap:10px;
+      min-height:238px;
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+    }
+    .nextCard:before{
+      content:"";
+      position:absolute; inset:-30%;
+      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.08) 50%, transparent 60%);
+      transform:translateX(-35%) rotate(8deg);
+      animation:shimmer 3.6s ease-in-out infinite;
+      pointer-events:none;
+      z-index:0;
+    }
+    html[data-theme="day"] .nextCard{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.62);
+    }
+    .nextTop,.nextBody,.nextAction{position:relative; z-index:1}
+    .nextTop{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .nextLabel{font-size:12px; color:var(--muted2); display:flex; align-items:center; gap:8px}
+    .pulse{
+      width:10px; height:10px; border-radius:999px;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(92,246,199,.9));
+      box-shadow:0 0 20px rgba(92,246,199,.25);
+      animation:pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.85}
+      50%{transform:scale(1.25); opacity:1}
+    }
+    .nextName{font-weight:900; letter-spacing:.1px; font-size:18px}
+    .nextMeta{color:var(--muted); font-size:13px; line-height:1.4}
+    .nextWhyLine{
+      margin-top:2px;
+      display:flex; flex-wrap:wrap; gap:8px;
+    }
+    .miniTag{
+      font-size:11px; padding:6px 8px; border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--muted);
+    }
+    html[data-theme="day"] .miniTag{
+      background:rgba(255,255,255,.72);
+      border-color:rgba(10,10,20,.12);
+    }
+    .nextAction{
+      margin-top:auto;
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+
+    .miniBtn,.small,.ghostBtn,.bookBtn,.pickBtn,.socialBtn,.nb,.closeBtn,.timeBtn,.aiItem .go{
+      transition:transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    .miniBtn,.small,.ghostBtn,.pickBtn,.socialBtn,.nb,.timeBtn,.aiItem .go{
+      height:40px;
+      padding:0 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .miniBtn,
+    html[data-theme="day"] .small,
+    html[data-theme="day"] .ghostBtn,
+    html[data-theme="day"] .pickBtn,
+    html[data-theme="day"] .socialBtn,
+    html[data-theme="day"] .nb,
+    html[data-theme="day"] .timeBtn,
+    html[data-theme="day"] .aiItem .go{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .miniBtn.primary,.small.primary{
+      background:linear-gradient(135deg, rgba(255,79,216,.22), rgba(255,255,255,.06));
+      border-color:rgba(255,79,216,.24);
+    }
+    .miniBtn:hover,.small:hover,.ghostBtn:hover,.pickBtn:hover,.socialBtn:hover,.nb:hover,.timeBtn:hover,.aiItem .go:hover{
+      background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.16);
+    }
+    .miniBtn:active,.small:active,.ghostBtn:active,.bookBtn:active,.pickBtn:active,.socialBtn:active,.nb:active,.timeBtn:active,.aiItem .go:active{
+      transform:scale(.985);
+    }
 
     .controls{
-      margin-top:16px;
+      margin-top:14px;
       display:grid;
       grid-template-columns:1fr auto;
       gap:10px;
       align-items:center;
     }
-
+    @media (max-width:720px){
+      .controls{grid-template-columns:1fr}
+    }
     .search{
       height:50px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.09);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      padding:0 16px;
-      outline:none;
-      box-shadow:0 14px 36px rgba(0,0,0,.20);
-    }
-    html[data-theme="day"] .search{
-      border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.76);
-      box-shadow:0 12px 28px rgba(10,10,20,.10);
-    }
-
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .tab{
-      min-height:50px;
-      padding:0 15px;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.05);
       color:var(--text);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      box-shadow:0 12px 30px rgba(0,0,0,.20);
+      padding:0 14px;
+      outline:none;
+      box-shadow:0 14px 40px rgba(0,0,0,.28);
+    }
+    html[data-theme="day"] .search{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+      box-shadow:0 14px 34px rgba(10,10,20,.10);
+    }
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .tab{
+      height:50px; padding:0 14px; border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex; align-items:center; gap:10px;
+      box-shadow:0 14px 40px rgba(0,0,0,.28);
       user-select:none;
+      transition:background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
     }
     html[data-theme="day"] .tab{
       border-color:rgba(10,10,20,.12);
-      background:rgba(255,255,255,.76);
+      background:rgba(255,255,255,.72);
+      box-shadow:0 14px 34px rgba(10,10,20,.10);
     }
     .tab.active{
-      background:linear-gradient(135deg, rgba(139,92,246,.18), rgba(255,255,255,.04));
-      border-color:rgba(139,92,246,.28);
-      box-shadow:0 18px 50px rgba(139,92,246,.10);
+      background:rgba(139,92,246,.18);
+      border-color:rgba(139,92,246,.35);
+      box-shadow:0 18px 60px rgba(139,92,246,.12);
     }
+    .tab:active{transform:scale(.985)}
 
     .section{margin-top:20px}
     .sectionHead{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
       margin-bottom:10px;
     }
     .h2{
-      margin:0;
       font-family:var(--font-title);
       font-size:22px;
-      letter-spacing:.16px;
+      margin:0;
+      letter-spacing:.2px;
     }
-    .hint{
-      font-size:12px;
+    .hint{color:var(--muted2); font-size:12px}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:620px){.grid{grid-template-columns:1fr}}
+
+    .card{
+      border-radius:var(--r);
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      overflow:hidden;
+      box-shadow:var(--shadow2);
+      position:relative;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      will-change:transform;
+    }
+    html[data-theme="day"] .card{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.70);
+    }
+    .card:hover{
+      transform:translateY(-3px);
+      background:rgba(255,255,255,.055);
+      border-color:rgba(255,255,255,.12);
+      box-shadow:0 20px 46px rgba(0,0,0,.28);
+    }
+    html[data-theme="day"] .card:hover{
+      background:rgba(255,255,255,.82);
+      border-color:rgba(10,10,20,.14);
+      box-shadow:0 16px 34px rgba(10,10,20,.12);
+    }
+
+    .img{
+      height:166px;
+      background:linear-gradient(135deg, rgba(255,79,216,.20), rgba(255,210,122,.10), rgba(139,92,246,.18));
+      position:relative;
+      overflow:hidden;
+    }
+    .img img{
+      width:100%; height:100%;
+      object-fit:cover;
+      transform:scale(1.02);
+      transition:transform .55s ease;
+      filter:saturate(1.05) contrast(1.02);
+    }
+    .card:hover .img img{transform:scale(1.10)}
+    .img:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(220px 120px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.52));
+      pointer-events:none;
+    }
+    .img:before{
+      content:"";
+      position:absolute; inset:-30%;
+      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.16) 50%, transparent 60%);
+      transform:translateX(-30%) rotate(8deg);
+      opacity:0;
+      transition:opacity .22s ease, transform .55s ease;
+      pointer-events:none;
+    }
+    .card:hover .img:before{
+      opacity:1;
+      transform:translateX(30%) rotate(8deg);
+    }
+
+    .badges{
+      position:absolute; left:10px; top:10px;
+      display:flex; gap:6px; flex-wrap:wrap;
+      z-index:2;
+    }
+    .badge{
+      font-size:11px;
+      padding:6px 9px;
+      border-radius:999px;
+      background:rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(10px);
+      color:#fff;
+    }
+    html[data-theme="day"] .badge{
+      background:rgba(10,10,20,.55);
+      border-color:rgba(255,255,255,.20);
+    }
+    .badge.partner{border-color:rgba(255,210,122,.30); background:rgba(255,210,122,.10)}
+    .badge.today{border-color:rgba(92,246,199,.30); background:rgba(92,246,199,.10)}
+    .badge.verified{border-color:rgba(139,92,246,.32); background:rgba(139,92,246,.10)}
+    .badge.recommended{border-color:rgba(85,217,255,.30); background:rgba(85,217,255,.10)}
+
+    .cardBody{padding:12px}
+    .row1{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .title{
+      font-weight:900;
+      letter-spacing:.1px;
+      line-height:1.15;
+      margin:0;
+      font-size:15px;
+    }
+    .subline{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.28;
+    }
+    .rightMeta{
+      display:flex; flex-direction:column; align-items:flex-end; gap:6px;
+      min-width:96px;
+    }
+    .price{
+      font-weight:900;
+      font-size:13px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      white-space:nowrap;
+    }
+    html[data-theme="day"] .price{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .rating{font-size:12px; color:var(--muted)}
+    .whyRow{
+      display:flex; flex-wrap:wrap; gap:6px;
+      margin-top:10px;
+    }
+    .whyPill{
+      font-size:11px; padding:5px 8px; border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+    }
+    html[data-theme="day"] .whyPill{
+      background:rgba(255,255,255,.70);
+      border-color:rgba(10,10,20,.10);
+    }
+
+    .cardActions{
+      margin-top:10px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+
+    .strip{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      padding-bottom:8px;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+    }
+    .strip::-webkit-scrollbar{height:8px}
+    .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px}
+    html[data-theme="day"] .strip::-webkit-scrollbar-thumb{background:rgba(10,10,20,.12)}
+    .stripCard{
+      flex:0 0 min(440px, 86%);
+      border-radius:var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+      position:relative;
+      scroll-snap-align:start;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    html[data-theme="day"] .stripCard{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    .stripCard:hover{transform:translateY(-2px); border-color:rgba(255,255,255,.14)}
+    html[data-theme="day"] .stripCard:hover{border-color:rgba(10,10,20,.16)}
+    .stripImg{height:188px; position:relative; overflow:hidden}
+    .stripImg img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform .55s ease}
+    .stripCard:hover .stripImg img{transform:scale(1.10)}
+    .stripImg:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(240px 130px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+    .stripCard:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background:linear-gradient(110deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
+      transform:translateX(-30%) rotate(8deg);
+      opacity:.22;
+      animation:shimmer 2.8s ease-in-out infinite;
+      pointer-events:none;
+      z-index:1;
+    }
+    @keyframes shimmer{
+      0%,100%{transform:translateX(-35%) rotate(8deg); opacity:.18}
+      50%{transform:translateX(35%) rotate(8deg); opacity:.28}
+    }
+    .stripBody{padding:12px}
+    .stripTop{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
+    .stripName{font-weight:900; letter-spacing:.1px}
+    .stripMeta{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.28}
+
+    .fab{
+      position:fixed;
+      right:calc(14px + var(--safe-right));
+      bottom:calc(14px + var(--safe-bottom));
+      z-index:60;
+      height:58px;
+      padding:0 18px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg, rgba(255,79,216,.72), rgba(255,210,122,.46), rgba(139,92,246,.60));
+      color:#fff;
+      box-shadow:0 22px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+      font-weight:900;
+    }
+    .fab:active{transform:scale(.985)}
+
+    .overlay,.sheet{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.62);
+      backdrop-filter:blur(10px);
+      display:none;
+      align-items:flex-end;
+      padding:14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
+    }
+    .overlay{z-index:80}
+    .sheet{z-index:90}
+    .overlay.show,.sheet.show{display:flex}
+
+    .modal,.sheetCard{
+      width:min(760px, 100%);
+      margin:0 auto;
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 30px 120px rgba(0,0,0,.72);
+      overflow:hidden;
+      max-height:92vh;
+      display:flex; flex-direction:column;
+    }
+    .modal{
+      background:
+        radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.20), transparent 55%),
+        radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.20), transparent 58%),
+        linear-gradient(180deg, rgba(20,20,30,.95), rgba(12,12,18,.92));
+    }
+    .sheetCard{
+      width:min(560px, 100%);
+      background:linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,16,.94));
+    }
+    html[data-theme="day"] .modal,
+    html[data-theme="day"] .sheetCard{
+      border-color:rgba(10,10,20,.14);
+      background:
+        radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.18), transparent 55%),
+        radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.18), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.80));
+      box-shadow:0 30px 100px rgba(10,10,20,.18);
+    }
+
+    .modalHead,.sheetHead{
+      padding:14px 14px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    html[data-theme="day"] .modalHead,
+    html[data-theme="day"] .sheetHead{border-bottom-color:rgba(10,10,20,.10)}
+
+    .modalTitle,.sheetTitle{
+      margin:0;
+      font-family:var(--font-title);
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .modalTitle{font-size:19px}
+    .sheetTitle{font-size:16px}
+    .closeBtn{
+      width:42px; height:42px;
+      border-radius:16px;
+      justify-content:center;
+    }
+
+    .modalBody,.sheetBody{
+      padding:14px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+    }
+
+    .field{margin-bottom:12px}
+    .label{font-size:12px; color:var(--muted2); margin-bottom:6px}
+    .input,.timeBtn{
+      width:100%;
+      height:46px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      padding:0 12px;
+      outline:none;
+    }
+    html[data-theme="day"] .input,
+    html[data-theme="day"] .timeBtn{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    select.input{appearance:none}
+    .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width:520px){.row2{grid-template-columns:1fr}}
+
+    .quickPicks,.aiRow{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .pickBtn{
+      height:34px; padding:0 12px; border-radius:999px; font-size:13px;
+      box-shadow:none;
+    }
+    .pickBtn.active{
+      background:rgba(92,246,199,.16);
+      border-color:rgba(92,246,199,.30);
+    }
+
+    .modalFoot{
+      padding:12px 14px 14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap;
+    }
+    html[data-theme="day"] .modalFoot{border-top-color:rgba(10,10,20,.10)}
+
+    .ghostBtn{
+      min-width:140px; justify-content:center; height:48px; border-radius:18px;
+    }
+    .bookBtn{
+      height:48px; padding:0 14px; border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg, rgba(92,246,199,.34), rgba(255,255,255,.07));
+      color:var(--text);
+      font-weight:900; letter-spacing:.2px;
+      display:flex; align-items:center; gap:10px;
+      flex:1; justify-content:center;
+      box-shadow:0 18px 60px rgba(92,246,199,.12);
+      user-select:none;
+    }
+    .hold{font-size:12px; color:var(--muted2); margin-left:6px}
+
+    .timeGrid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    @media (max-width:520px){.timeGrid{grid-template-columns:repeat(2, minmax(0,1fr))}}
+    .timeItem{
+      height:44px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:900;
+      letter-spacing:.2px;
+      transition:transform .16s ease, background .16s ease, border-color .16s ease;
+      user-select:none;
+    }
+    html[data-theme="day"] .timeItem{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    .timeItem:hover{background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.14)}
+    .timeItem:active{transform:scale(.985)}
+    .timeItem.disabled{opacity:.35; pointer-events:none}
+    .timeItem.active{
+      background:rgba(92,246,199,.16);
+      border-color:rgba(92,246,199,.30);
+      box-shadow:0 18px 60px rgba(92,246,199,.10);
+    }
+
+    .aiPill{
+      height:36px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-size:13px;
+      display:flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    html[data-theme="day"] .aiPill{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    .aiPill.primary{
+      background:rgba(139,92,246,.18);
+      border-color:rgba(139,92,246,.32);
+    }
+
+    .aiList{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .aiItem{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      padding:10px 12px;
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    }
+    html[data-theme="day"] .aiItem{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+    }
+    .aiItem .n{font-weight:900}
+    .aiItem .m{color:var(--muted); font-size:12.5px; margin-top:4px; line-height:1.25}
+    .aiItem .go{
+      height:38px; padding:0 12px; border-radius:14px;
+      justify-content:center;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:calc(90px + var(--safe-bottom));
+      z-index:95;
+      min-width:260px;
+      max-width:min(680px, calc(100% - 24px));
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.86);
+      box-shadow:0 22px 70px rgba(0,0,0,.60);
+      color:var(--text);
+      display:none;
+      backdrop-filter:blur(14px);
+    }
+    html[data-theme="day"] .toast{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.86);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .toast.show{display:block; animation:toastIn .22s ease}
+    @keyframes toastIn{
+      from{opacity:0; transform:translateX(-50%) translateY(10px)}
+      to{opacity:1; transform:translateX(-50%) translateY(0)}
+    }
+    .toast .t1{font-weight:900; margin-bottom:4px}
+    .toast .t2{color:var(--muted); font-size:13px; line-height:1.35}
+
+    .netbar{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      top:calc(10px + var(--safe-top));
+      z-index:120;
+      width:min(860px, calc(100% - 24px));
+      padding:10px 12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.82);
+      backdrop-filter:blur(14px);
+      box-shadow:0 22px 70px rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    html[data-theme="day"] .netbar{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.86);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .netbar.show{display:flex}
+    .netbar .txt{font-size:13px; color:var(--text)}
+    .netbar .btns{display:flex; gap:8px; flex-wrap:wrap}
+    .netbar .nb.primary{
+      background:rgba(92,246,199,.18);
+      border-color:rgba(92,246,199,.30);
+    }
+
+    .trustWrap{
+      margin-top:18px;
+      border-radius:var(--r2);
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.18), transparent 55%),
+        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.16), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+    }
+    html[data-theme="day"] .trustWrap{
+      border-color:rgba(10,10,20,.10);
+      background:
+        radial-gradient(700px 260px at 15% 0%, rgba(255,79,216,.12), transparent 55%),
+        radial-gradient(700px 260px at 90% 0%, rgba(139,92,246,.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+    }
+    .trustInner{padding:16px}
+    .trustGrid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width:840px){.trustGrid{grid-template-columns:1fr}}
+    .trustTitle{
+      font-family:var(--font-title);
+      font-weight:700;
+      font-size:20px;
+      margin:0 0 8px;
+      letter-spacing:.2px;
+    }
+    .trustText{color:var(--muted); font-size:13px; line-height:1.55}
+    .trustBullets{
+      margin:10px 0 0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:8px;
+    }
+    .trustBullets li{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      padding:10px 12px;
+      font-size:13px;
+      color:var(--text);
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    html[data-theme="day"] .trustBullets li{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .trustRight{
+      border-radius:var(--r);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      padding:12px;
+      box-shadow:var(--glow);
+    }
+    html[data-theme="day"] .trustRight{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .socialRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .trustMini{
+      margin-top:10px;
       color:var(--muted2);
+      font-size:12px;
+      line-height:1.45;
     }
-    <script>
 
-/* ===== helpers ===== */
-
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-
-function safeText(el,val){
-  if(!el) return;
-  el.textContent = val ?? "";
-}
-
-function safeHTML(el,val){
-  if(!el) return;
-  el.innerHTML = val ?? "";
-}
-
-/* ===== theme ===== */
-
-const themeBtn=$("#themeBtn");
-
-themeBtn.onclick=()=>{
-  const t=document.documentElement.dataset.theme==="night"?"day":"night";
-  document.documentElement.dataset.theme=t;
-  localStorage.setItem("bb-theme",t);
-}
-
-const savedTheme=localStorage.getItem("bb-theme");
-if(savedTheme) document.documentElement.dataset.theme=savedTheme;
-
-
-/* ===== language ===== */
-
-const langBtn=$("#langBtn");
-let lang="ua";
-
-langBtn.onclick=()=>{
-  lang=lang==="ua"?"en":"ua";
-  langBtn.textContent=lang==="ua"?"🌐":"EN";
-}
-
-/* ===== favorites filter ===== */
-
-const favBtn=$("#favBtn");
-
-favBtn.onclick=()=>{
-  favBtn.classList.toggle("active");
-  renderListings();
-}
-
-/* ===== services chips ===== */
-
-$$(".chip").forEach(ch=>{
-  ch.onclick=()=>{
-    $$(".chip").forEach(c=>c.classList.remove("active"));
-    ch.classList.add("active");
-    renderListings(ch.dataset.service);
-  }
-})
-
-
-/* ===== render salons ===== */
-
-function renderListings(service){
-
-const wrap=$("#listings");
-
-if(!wrap) return;
-
-wrap.innerHTML="";
-
-const data=window.LISTINGS || [];
-
-let arr=[...data];
-
-if(service){
-  arr=arr.filter(s=>s.services?.some(x=>x.id===service));
-}
-
-if(favBtn.classList.contains("active")){
-  arr=arr.filter(x=>localStorage.getItem("fav-"+x.id));
-}
-
-arr.forEach(s=>{
-
-const card=document.createElement("div");
-card.className="card";
-
-card.innerHTML=`
-
-<img src="${s.images?.[0]||''}">
-
-<div class="cardBody">
-
-<div class="cardTitle">
-${s.name}
-<span class="rating">${s.rating||"4.9"} ★</span>
-</div>
-
-<div class="cardAddr">
-${s.address||""}
-</div>
-
-<div class="cardActions">
-
-<button onclick="openProfile('${s.id}')">
-🏛 Профіль
-</button>
-
-<button class="bookBtn" onclick="quickBook('${s.id}')">
-⚡ Запис
-</button>
-
-</div>
-
-</div>
-
-`;
-
-wrap.appendChild(card);
-
-});
-
-}
-
-
-/* ===== profile open ===== */
-
-function openProfile(id){
-  location.href=`profile.html?id=${id}`;
-}
-
-
-/* ===== booking ===== */
-
-function quickBook(id){
-
-const s=window.LISTINGS.find(x=>x.id===id);
-
-if(!s) return;
-
-$("#bookModal").classList.add("show");
-
-safeText($("#bookSalon"),s.name);
-safeText($("#bookAddr"),s.address);
-
-$("#bookSubmit").onclick=()=>{
-sendBooking(s);
-};
-
-}
-
-
-/* ===== send booking ===== */
-
-async function sendBooking(salon){
-
-const name=$("#bookName").value;
-const phone=$("#bookPhone").value;
-
-if(!name||!phone){
-  alert("Заповни дані");
-  return;
-}
-
-const payload={
-name,
-phone,
-salon:salon.name,
-address:salon.address
-};
-
-try{
-
-await fetch("https://snowy-shadow-0b58.irafarm2000.workers.dev/book",{
-method:"POST",
-headers:{'content-type':'application/json'},
-body:JSON.stringify(payload)
-});
-
-alert("Запис відправлено");
-
-$("#bookModal").classList.remove("show");
-
-}catch(e){
-
-alert("Помилка відправки");
-
-}
-
-}
-
-
-/* ===== next slot rotation ===== */
-
-let slotIndex=0;
-
-function rotateSlot(){
-
-const arr=window.LISTINGS||[];
-
-if(!arr.length) return;
-
-slotIndex++;
-
-if(slotIndex>=arr.length) slotIndex=0;
-
-const s=arr[slotIndex];
-
-safeText($("#slotName"),s.name);
-safeText($("#slotAddr"),s.address);
-
-}
-
-setInterval(rotateSlot,10000);
-
-
-/* ===== launch screen ===== */
-
-window.addEventListener("load",()=>{
-
-setTimeout(()=>{
-
-const l=$("#launch");
-
-if(l) l.classList.add("hide");
-
-},1100);
-
-});
-
-
-/* ===== PWA ===== */
-
-if("serviceWorker" in navigator){
-
-navigator.serviceWorker.register("./worker.js");
-
-}
-
-
-/* ===== init ===== */
-
-function init(){
-
-renderListings();
-
-rotateSlot();
-
-}
-
-init();
-
-</script>
-
+    .footerMeta{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .footerStat{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .fStat{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      font-size:12px;
+      color:var(--muted);
+    }
+    html[data-theme="day"] .fStat{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+
+    .sep{height:1px; background:rgba(255,255,255,.06); margin:18px 0}
+    html[data-theme="day"] .sep{background:rgba(10,10,20,.10)}
+    .muted{color:var(--muted)}
+    .hidden{display:none!important}
+    .empty{
+      border-radius:20px;
+      padding:22px 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      text-align:center;
+    }
+    html[data-theme="day"] .empty{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.72);
+    }
+
+    .toTop{
+      position:fixed;
+      left:calc(14px + var(--safe-left));
+      bottom:calc(14px + var(--safe-bottom));
+      z-index:55;
+      width:48px; height:48px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:grid; place-items:center;
+      box-shadow:var(--shadow2);
+      opacity:0; pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease;
+    }
+    html[data-theme="day"] .toTop{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.72);
+    }
+    .toTop.show{opacity:1; pointer-events:auto}
+    .toTop:active{transform:scale(.985)}
+
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none!important; transition:none!important; scroll-behavior:auto!important}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="aurora" aria-hidden="true">
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+    <div class="orb d"></div>
+  </div>
+
+  <div class="netbar" id="netbar">
+    <div class="txt" id="netbarText">…</div>
+    <div class="btns">
+      <button class="nb" id="netbarOk" type="button">OK</button>
+      <button class="nb primary" id="netbarRefresh" type="button">Refresh</button>
+      <button class="nb primary hidden" id="netbarUpdate" type="button">Update</button>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbarRow">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brandText">
+          <div class="name" id="t_brand">Beauty Booking</div>
+          <div class="sub" id="t_sub">Verified salons & masters</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="pillBtn" id="btnFavOnly" title="Only favorites" type="button">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="t_favOnly">Only ❤️</span>
+        </button>
+        <button class="iconBtn" id="btnAI" title="AI help" type="button">✨</button>
+        <button class="iconBtn" id="btnLang" title="Language" type="button">🌐</button>
+        <button class="iconBtn" id="btnTheme" title="Theme" aria-label="Theme" type="button">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="heroVideo" aria-hidden="true">
+        <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=80">
+          <source src="https://cdn.coverr.co/videos/coverr-woman-getting-her-nails-done-1560679830828?download=1080p" type="video/mp4">
+        </video>
+      </div>
+      <div class="heroSparkles" aria-hidden="true"></div>
+
+      <div class="heroInner">
+        <div>
+          <div class="eyebrow"><span>✦</span><span id="t_eyebrow">Luxury beauty booking, but fast.</span></div>
+
+          <div class="heroTitle" id="t_heroTitle">Book beauty in seconds.</div>
+          <div class="heroLead" id="t_heroLead">Premium picks in Montréal — verified salons, home masters, fast booking.</div>
+
+          <div class="heroCtas">
+            <button class="cta primary" id="ctaQuick" type="button">
+              <span>⚡️</span><span id="t_quick">Quick book</span>
+            </button>
+            <a class="cta" href="./profile.html?id=romanukova" target="_blank" rel="noopener">
+              <span>🏛</span><span id="t_openProfile">Open profile</span>
+            </a>
+          </div>
+
+          <div class="chips" id="serviceChips"></div>
+
+          <div class="stories" id="storiesRow"></div>
+        </div>
+
+        <div class="nextCard" id="nextCard">
+          <div class="nextTop">
+            <div class="nextLabel"><span class="pulse"></span><span id="t_nextLabel">Next available near you</span></div>
+            <div class="hint" id="nextDots">● ○ ○</div>
+          </div>
+
+          <div class="nextBody">
+            <div class="nextName" id="nextName">—</div>
+            <div class="nextMeta" id="nextMeta">—</div>
+            <div class="nextWhyLine" id="nextWhyLine"></div>
+          </div>
+
+          <div class="nextAction">
+            <button class="miniBtn primary" id="nextBook" type="button"><span>📅</span><span id="t_bookSlot">Book this slot</span></button>
+            <button class="miniBtn" id="nextWhy" type="button"><span>💡</span><span id="t_why">Why this one?</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <input class="search" id="search" placeholder="Search salon, master, service…" />
+      <div class="tabs">
+        <button class="tab active" id="tabAll" type="button"><span>🏛</span><span id="t_tabAll">All</span></button>
+        <button class="tab" id="tabPartners" type="button"><span>⭐️</span><span id="t_tabPartners">Top</span></button>
+        <button class="tab" id="tabRecommended" type="button"><span>✨</span><span id="t_tabRec">Recommended</span></button>
+      </div>
+    </div>
+
+    <section class="section" id="secPartners">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_partners">Top salons / partners</h2>
+        <div class="hint" id="t_partnersHint">Paid partners</div>
+      </div>
+      <div class="strip" id="stripPartners"></div>
+    </section>
+
+    <section class="section" id="secRec">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_recommended">Recommended</h2>
+        <div class="hint" id="t_recHint">Smart picks for you</div>
+      </div>
+      <div class="grid" id="gridRec"></div>
+    </section>
+
+    <section class="section" id="secAll">
+      <div class="sectionHead">
+        <h2 class="h2" id="t_allOthers">All others</h2>
+        <div class="hint" id="t_allHint">Browse everything</div>
+      </div>
+      <div class="grid" id="gridAll"></div>
+    </section>
+
+    <div class="trustWrap" id="trustWrap">
+      <div class="trustInner">
+        <div class="trustGrid">
+          <div>
+            <h3 class="trustTitle" id="t_trustTitle">Why people trust Beauty Booking</h3>
+            <div class="trustText" id="t_trustText">
+              Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.
+            </div>
+
+            <ul class="trustBullets" id="trustBullets">
+              <li><span>🛡</span><span id="t_trustB1">Verified salons & masters — curated quality.</span></li>
+              <li><span>🧼</span><span id="t_trustB2">Sterile tools & hygiene standards highlighted.</span></li>
+              <li><span>⏱️</span><span id="t_trustB3">Fast booking — in ~30 seconds.</span></li>
+              <li><span>📍</span><span id="t_trustB4">Clear address & profile link for every booking.</span></li>
+            </ul>
+          </div>
+
+          <div class="trustRight">
+            <div style="font-weight:900" id="t_socialTitle">Follow us</div>
+            <div class="trustMini" id="t_socialLead">Updates, new partners, and weekly trending picks.</div>
+
+            <div class="socialRow">
+              <a class="socialBtn" href="https://instagram.com" target="_blank" rel="noopener"><span>📷</span><span id="t_insta">Instagram</span></a>
+              <a class="socialBtn" href="https://facebook.com" target="_blank" rel="noopener"><span>📘</span><span id="t_fb">Facebook</span></a>
+              <button class="socialBtn" id="btnCopyLink" type="button"><span>🔗</span><span id="t_copyLink">Copy site link</span></button>
+            </div>
+
+            <div class="trustMini" id="t_legal">
+              By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.
+            </div>
+
+            <div class="footerMeta">
+              <div class="footerStat">
+                <div class="fStat" id="statPartners">Top partners</div>
+                <div class="fStat" id="statSmart">AI smart picks</div>
+                <div class="fStat" id="statFast">~30 sec booking</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+    <div class="muted" id="t_footer">Your place for self-care — fast booking, clean UI, premium feel.</div>
+  </main>
+
+  <button class="toTop" id="toTop" type="button" aria-label="Back to top">↑</button>
+  <button class="fab" id="fab" type="button"><span>⚡️</span><span id="t_fab">Quick book</span></button>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Booking">
+      <div class="modalHead">
+        <h3 class="modalTitle" id="m_title">Booking</h3>
+        <button class="closeBtn" id="m_close" type="button">✕</button>
+      </div>
+
+      <div class="modalBody">
+        <div class="field">
+          <div class="label" id="m_lblListing">Salon / Master</div>
+          <select class="input" id="m_listingSel"></select>
+          <div class="muted" style="font-size:12px;margin-top:6px" id="m_listingInfo">—</div>
+        </div>
+
+        <div class="field">
+          <div class="label" id="m_lblService">Service</div>
+          <select class="input" id="m_service"></select>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label" id="m_lblDate">Date</div>
+            <input class="input" type="date" id="m_date" />
+          </div>
+
+          <div class="field">
+            <div class="label" id="m_lblTime">Time</div>
+            <button class="timeBtn" id="m_timeBtn" type="button">
+              <span id="m_timeText">—</span>
+              <span>▾</span>
+            </button>
+
+            <div class="quickPicks">
+              <button class="pickBtn" id="pickFast" type="button">⚡️ <span id="t_pickFast">Fastest</span></button>
+              <button class="pickBtn" id="pickCheap" type="button">💸 <span id="t_pickCheap">Cheapest</span></button>
+              <button class="pickBtn" id="pickNear" type="button">📍 <span id="t_pickNear">Nearest</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label" id="m_lblName">Your name</div>
+            <input class="input" id="m_name" placeholder="Name" />
+          </div>
+          <div class="field">
+            <div class="label" id="m_lblPhone">Phone</div>
+            <input class="input" id="m_phone" placeholder="(438)..." inputmode="tel" />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label" id="m_lblEmail">Email</div>
+            <input class="input" id="m_email" placeholder="email@example.com" inputmode="email" />
+          </div>
+          <div class="field">
+            <div class="label" id="m_lblNotes">Notes</div>
+            <input class="input" id="m_notes" placeholder="Optional" />
+          </div>
+        </div>
+
+        <div class="muted" style="font-size:12px" id="m_addrLine">—</div>
+      </div>
+
+      <div class="modalFoot">
+        <button class="ghostBtn" id="m_openProfileBtn" type="button">Profile</button>
+        <button class="bookBtn" id="m_bookBtn" type="button">
+          <span>✅</span><span id="t_confirm">Confirm booking</span>
+          <span class="hold" id="holdText"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="sheetCard">
+      <div class="sheetHead">
+        <h4 class="sheetTitle" id="t_sheetTitle">Choose time</h4>
+        <button class="closeBtn" id="sheetClose" type="button">✕</button>
+      </div>
+      <div class="sheetBody">
+        <div class="timeGrid" id="timeGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet" id="aiSheet">
+    <div class="sheetCard">
+      <div class="sheetHead">
+        <h4 class="sheetTitle" id="t_aiTitle">AI help</h4>
+        <button class="closeBtn" id="aiClose" type="button">✕</button>
+      </div>
+      <div class="sheetBody">
+        <div class="muted" style="font-size:13px;line-height:1.35" id="t_aiLead">
+          Pick a service and I’ll show Top / Recommended / Nearest — no random.
+        </div>
+
+        <div class="aiRow" id="aiServiceRow"></div>
+
+        <div class="aiRow">
+          <button class="aiPill primary" id="aiTop" type="button">⭐️ Top</button>
+          <button class="aiPill" id="aiRec" type="button">✨ Recommended</button>
+          <button class="aiPill" id="aiNear" type="button">📍 Nearest</button>
+          <button class="aiPill" id="aiClear" type="button">↺ Reset</button>
+        </div>
+
+        <div class="aiList" id="aiList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="t1" id="toastT1">—</div>
+    <div class="t2" id="toastT2">—</div>
+  </div>
+
+  <script src="./data.js"></script>
+
+  <script>
+  ;(() => {
+    const $ = (q, el = document) => el.querySelector(q);
+    const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
+
+    const safeSetText = (el, txt) => { if (el) el.textContent = String(txt ?? ""); };
+    const safeSetHTML = (el, html) => { if (el) el.innerHTML = String(html ?? ""); };
+
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+    const pad = n => String(n).padStart(2, "0");
+    const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
+    const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    const escapeHtml = s => String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+    const lsGet = (k, fallback = null) => {
+      try {
+        const raw = localStorage.getItem(k);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+    const lsSet = (k, v) => {
+      try { localStorage.setItem(k, JSON.stringify(v)); } catch {}
+    };
+
+    const isStandalone = () => {
+      try {
+        return !!(
+          window.matchMedia?.("(display-mode: standalone)")?.matches ||
+          window.matchMedia?.("(display-mode: fullscreen)")?.matches ||
+          window.navigator?.standalone === true
+        );
+      } catch {
+        return false;
+      }
+    };
+    if (isStandalone()) document.body.classList.add("is-standalone");
+
+    const FALLBACK_SERVICES = [
+      { id: "manicure", ua: "Манікюр", en: "Manicure", fr: "Manucure", ru: "Маникюр", icon: "💅" },
+      { id: "pedicure", ua: "Педикюр", en: "Pedicure", fr: "Pédicure", ru: "Педикюр", icon: "🦶" },
+      { id: "brows", ua: "Брови", en: "Brows", fr: "Sourcils", ru: "Брови", icon: "✨" },
+      { id: "haircut_w", ua: "Жіноча стрижка", en: "Women haircut", fr: "Coupe femme", ru: "Женская стрижка", icon: "✂️" },
+      { id: "haircut_m", ua: "Чоловіча стрижка", en: "Men haircut", fr: "Coupe homme", ru: "Мужская стрижка", icon: "💈" }
+    ];
+
+    const futureDatesISO = (n = 10) => {
+      const out = [];
+      const now = new Date();
+      for (let i = 0; i < n; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+        out.push(isoLocal(d));
+      }
+      return out;
+    };
+
+    const makeAvailability = (timesByDay) => {
+      const days = futureDatesISO(7);
+      const obj = {};
+      days.forEach((d, i) => {
+        obj[d] = i === 0 ? timesByDay.today : (i === 1 ? timesByDay.tomorrow : timesByDay.rest);
+      });
+      return obj;
+    };
+
+    const FALLBACK_LISTINGS = [
+      {
+        id: "romanukova",
+        name: "Romanukova Nail Studio",
+        city: "Montréal",
+        address: "Montréal, QC",
+        lat: 45.5019, lng: -73.5674,
+        partner: true,
+        recommended: true,
+        verified: true,
+        rating: 4.9,
+        distance: 1.4,
+        image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80",
+        services: ["manicure", "pedicure", "brows"],
+        prices: { manicure: 55, pedicure: 70, brows: 35 },
+        availability: makeAvailability({
+          today: { manicure:["11:00","13:30","16:00"], pedicure:["12:00","15:00"], brows:["10:30","14:00","18:00"] },
+          tomorrow: { manicure:["10:00","12:30","17:00"], pedicure:["11:30","16:30"], brows:["10:00","13:00"] },
+          rest: { manicure:["10:00","11:30","14:30","17:30"], pedicure:["12:00","16:00"], brows:["10:30","15:30"] }
+        })
+      },
+      {
+        id: "iryna-stovban",
+        name: "Iryna Stovban — Home Master",
+        city: "Montréal",
+        address: "Montréal, QC",
+        lat: 45.5089, lng: -73.5617,
+        partner: false,
+        recommended: true,
+        verified: true,
+        rating: 4.8,
+        distance: 2.1,
+        image: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?auto=format&fit=crop&w=1400&q=80",
+        services: ["manicure", "brows"],
+        prices: { manicure: 48, brows: 32 },
+        availability: makeAvailability({
+          today: { manicure:["10:30","12:00","18:30"], brows:["11:00","16:00"] },
+          tomorrow: { manicure:["09:30","14:00","17:00"], brows:["13:30","18:00"] },
+          rest: { manicure:["10:00","12:30","15:30"], brows:["11:30","16:30"] }
+        })
+      },
+      {
+        id: "velour-house",
+        name: "Velour Beauty House",
+        city: "Montréal",
+        address: "Downtown Montréal",
+        lat: 45.5034, lng: -73.5701,
+        partner: true,
+        recommended: false,
+        verified: true,
+        rating: 4.7,
+        distance: 1.0,
+        image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1400&q=80",
+        services: ["haircut_w", "brows", "manicure"],
+        prices: { haircut_w: 95, brows: 40, manicure: 58 },
+        availability: makeAvailability({
+          today: { haircut_w:["13:00","17:30"], brows:["10:00","15:00"], manicure:["11:30","16:30"] },
+          tomorrow: { haircut_w:["11:00","14:30"], brows:["10:00","17:00"], manicure:["12:00","18:00"] },
+          rest: { haircut_w:["10:30","13:30","16:30"], brows:["11:00","14:30"], manicure:["12:00","15:00"] }
+        })
+      },
+      {
+        id: "atelier-noir",
+        name: "Atelier Noir Studio",
+        city: "Montréal",
+        address: "Plateau, Montréal",
+        lat: 45.525, lng: -73.582,
+        partner: false,
+        recommended: true,
+        verified: true,
+        rating: 4.9,
+        distance: 3.3,
+        image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=80",
+        services: ["pedicure", "manicure", "haircut_w"],
+        prices: { pedicure: 78, manicure: 60, haircut_w: 88 },
+        availability: makeAvailability({
+          today: { pedicure:["12:30","16:30"], manicure:["11:30","15:00"], haircut_w:["14:30"] },
+          tomorrow: { pedicure:["10:30","17:00"], manicure:["11:00","13:30"], haircut_w:["16:30"] },
+          rest: { pedicure:["10:00","13:00","17:30"], manicure:["11:30","14:30"], haircut_w:["15:30"] }
+        })
+      },
+      {
+        id: "golden-brow-lab",
+        name: "Golden Brow Lab",
+        city: "Montréal",
+        address: "Old Montréal",
+        lat: 45.507, lng: -73.554,
+        partner: false,
+        recommended: false,
+        verified: true,
+        rating: 4.6,
+        distance: 2.8,
+        image: "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1400&q=80",
+        services: ["brows"],
+        prices: { brows: 38 },
+        availability: makeAvailability({
+          today: { brows:["10:00","12:00","17:00"] },
+          tomorrow: { brows:["11:00","14:00","18:00"] },
+          rest: { brows:["10:30","13:30","16:30"] }
+        })
+      },
+      {
+        id: "club-luxe-cut",
+        name: "Club Luxe Cut",
+        city: "Montréal",
+        address: "Westmount, Montréal",
+        lat: 45.486, lng: -73.596,
+        partner: false,
+        recommended: false,
+        verified: true,
+        rating: 4.7,
+        distance: 4.1,
+        image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=80",
+        services: ["haircut_m", "haircut_w"],
+        prices: { haircut_m: 42, haircut_w: 74 },
+        availability: makeAvailability({
+          today: { haircut_m:["10:00","13:00","18:00"], haircut_w:["11:30","16:30"] },
+          tomorrow: { haircut_m:["09:30","12:30","17:00"], haircut_w:["14:00","18:30"] },
+          rest: { haircut_m:["10:00","12:00","15:00"], haircut_w:["11:00","16:00"] }
+        })
+      }
+    ];
+
+    const normalizeWorkerUrl = u => {
+      const s = String(u || "").trim();
+      if (!s) return "/book";
+      if (s.startsWith("/")) return s.endsWith("/book") ? s : `${s.replace(/\/+$/, "")}/book`;
+      try {
+        const url = new URL(s);
+        if (!url.pathname || url.pathname === "/") url.pathname = "/book";
+        else if (!url.pathname.endsWith("/book")) url.pathname = `${url.pathname.replace(/\/+$/, "")}/book`;
+        return url.toString();
+      } catch {
+        return "/book";
+      }
+    };
+
+    const SERVICES = Array.isArray(window.SERVICES) && window.SERVICES.length ? window.SERVICES.slice() : FALLBACK_SERVICES.slice();
+    const LISTINGS = Array.isArray(window.LISTINGS) && window.LISTINGS.length ? window.LISTINGS.slice() : FALLBACK_LISTINGS.slice();
+    const RAW_WORKER = window.WORKER_URL || window.bb?.WORKER_URL || "/book";
+    const WORKER_URL = normalizeWorkerUrl(RAW_WORKER);
+
+    const LANGS = ["uk","en","fr","ru"];
+    const normalizeLang = v => LANGS.includes(v) ? v : "uk";
+
+    const bookingInit = lsGet("bb.booking", {}) || {};
+    const STATE = {
+      lang: normalizeLang(lsGet("bb.lang", "uk")),
+      theme: lsGet("bb.theme", "night") === "day" ? "day" : "night",
+      favOnly: !!lsGet("bb.favOnly", false),
+      favorites: new Set(lsGet("bb.favorites", [])),
+      serviceId: lsGet("bb.serviceId", ""),
+      search: lsGet("bb.search", ""),
+      tab: lsGet("bb.tab", "all"),
+      aiMode: lsGet("bb.aiMode", "top"),
+      lastNextIndex: Number(lsGet("bb.lastNextIndex", 0)) || 0,
+
+      booking: {
+        open: false,
+        listingId: String(bookingInit.listingId || ""),
+        serviceId: String(bookingInit.serviceId || ""),
+        dateISO: String(bookingInit.dateISO || ""),
+        time: String(bookingInit.time || "")
+      },
+
+      hold: {
+        until: 0,
+        key: ""
+      }
+    };
+
+    const T = {
+      uk: {
+        brand: "Beauty Booking",
+        sub: "Перевірені салони & майстри",
+        eyebrow: "Люкс-бронювання beauty, але швидко.",
+        heroTitle: "Запис за секунди.",
+        heroLead: "Преміальні варіанти в Montréal — verified salons, home masters, швидке бронювання.",
+        quick: "Швидкий запис",
+        openProfile: "Відкрити профіль",
+        nextLabel: "Найближчий слот поруч",
+        bookSlot: "Записати цей слот",
+        why: "Чому цей?",
+        tabAll: "Всі",
+        tabPartners: "Топ",
+        tabRec: "Рекомендовано",
+        partners: "Топ салони / партнери",
+        partnersHint: "Paid partners",
+        recommended: "Recommended",
+        recHint: "Smart picks для тебе",
+        allOthers: "Усі інші",
+        allHint: "Переглянути всіх",
+        footer: "Твоє місце для self-care — швидкий запис, чистий UI, premium feel.",
+        favOnly: "Only ❤️",
+        pickFast: "Найшвидше",
+        pickCheap: "Найдешевше",
+        pickNear: "Найближче",
+        sheetTitle: "Обери час",
+        confirm: "Підтвердити бронювання",
+        booking: "Бронювання",
+        listing: "Салон / Майстер",
+        service: "Послуга",
+        date: "Дата",
+        time: "Час",
+        yourName: "Імʼя",
+        phone: "Телефон",
+        email: "Email",
+        notes: "Нотатки",
+        profile: "Профіль",
+        btnBook: "Запис",
+        btnProfile: "Профіль",
+        fab: "Швидкий запис",
+        aiTitle: "AI help",
+        aiLead: "Обери послугу — я покажу Top / Recommended / Nearest без рандому.",
+        aiTop: "Топ",
+        aiRec: "Рекомендовано",
+        aiNear: "Найближче",
+        aiReset: "Скинути",
+        toastWhyTitle: "Чому цей?",
+        toastWhyText: "1) збіг по послузі 2) хороший рейтинг/ціна 3) найближчий слот.",
+        missing: "Заповни дату / час / імʼя / телефон 🙏",
+        sent: "Відправлено ✅",
+        sentText: "Бронювання відправлено в Telegram. Скоро підтвердять.",
+        failed: "Помилка ❌",
+        failedText: "Не вдалось надіслати. Перевір Worker /book та інтернет.",
+        hold: "Hold 2 min",
+        offline: "Ти офлайн — деякі фічі можуть не працювати.",
+        cached: "Відкрито з кешу. Якщо щось не оновилось — натисни Refresh.",
+        update: "Є нова версія. Натисни Update.",
+        reset: "Скинуто ✅",
+        noResults: "Нічого не знайдено. Спробуй іншу послугу або вимкни Only ❤️.",
+        trustTitle: "Чому довіряють Beauty Booking",
+        trustText: "Преміум-досвід бронювання: clean UI, перевірені партнери, прозорі деталі — щоб ти записувався з впевненістю.",
+        trustB1: "Перевірені салони & майстри — підібрана якість.",
+        trustB2: "Гігієна та стерильність — виділяємо важливе.",
+        trustB3: "Швидкий запис — реально за ~30 сек.",
+        trustB4: "Адреса + профіль-лінк у кожному бронюванні.",
+        socialTitle: "Ми в соцмережах",
+        socialLead: "Оновлення, нові партнери, тренди тижня.",
+        copyLink: "Скопіювати лінк",
+        legal: "Бронюючи, ти погоджуєшся на коректний контакт без спаму. Підтвердження приходить у Telegram.",
+        stories: [
+          ["Today’s glow", "Швидкий слот сьогодні"],
+          ["Partner picks", "Топ салони міста"],
+          ["Home masters", "Комфортний запис поруч"],
+          ["AI concierge", "Підбір без рандому"]
+        ]
+      },
+      en: {
+        brand: "Beauty Booking",
+        sub: "Verified salons & masters",
+        eyebrow: "Luxury beauty booking, but fast.",
+        heroTitle: "Book in seconds.",
+        heroLead: "Premium picks in Montréal — verified salons, home masters, fast booking.",
+        quick: "Quick book",
+        openProfile: "Open profile",
+        nextLabel: "Next available near you",
+        bookSlot: "Book this slot",
+        why: "Why this one?",
+        tabAll: "All",
+        tabPartners: "Top",
+        tabRec: "Recommended",
+        partners: "Top salons / partners",
+        partnersHint: "Paid partners",
+        recommended: "Recommended",
+        recHint: "Smart picks for you",
+        allOthers: "All others",
+        allHint: "Browse everything",
+        footer: "Your place for self-care — fast booking, clean UI, premium feel.",
+        favOnly: "Only ❤️",
+        pickFast: "Fastest",
+        pickCheap: "Cheapest",
+        pickNear: "Nearest",
+        sheetTitle: "Choose time",
+        confirm: "Confirm booking",
+        booking: "Booking",
+        listing: "Salon / Master",
+        service: "Service",
+        date: "Date",
+        time: "Time",
+        yourName: "Your name",
+        phone: "Phone",
+        email: "Email",
+        notes: "Notes",
+        profile: "Profile",
+        btnBook: "Book",
+        btnProfile: "Profile",
+        fab: "Quick book",
+        aiTitle: "AI help",
+        aiLead: "Pick a service and I’ll show Top / Recommended / Nearest — no random.",
+        aiTop: "Top",
+        aiRec: "Recommended",
+        aiNear: "Nearest",
+        aiReset: "Reset",
+        toastWhyTitle: "Why this one?",
+        toastWhyText: "1) service match 2) strong rating/price 3) nearest slot.",
+        missing: "Fill date / time / name / phone 🙏",
+        sent: "Sent ✅",
+        sentText: "Booking sent to Telegram. Confirmation soon.",
+        failed: "Error ❌",
+        failedText: "Couldn’t send. Check Worker /book and internet.",
+        hold: "Hold 2 min",
+        offline: "You’re offline — some features may not work.",
+        cached: "Loaded from cache. If something didn’t update — press Refresh.",
+        update: "New version available. Tap Update.",
+        reset: "Reset ✅",
+        noResults: "No results. Try another service or turn off Only ❤️.",
+        trustTitle: "Why people trust Beauty Booking",
+        trustText: "Premium-first booking experience. Clean UI, verified partners, and clear details — so you can book with confidence.",
+        trustB1: "Verified salons & masters — curated quality.",
+        trustB2: "Hygiene & sterile tools — what matters is visible.",
+        trustB3: "Fast booking — really ~30 seconds.",
+        trustB4: "Clear address + profile link in each booking.",
+        socialTitle: "Follow us",
+        socialLead: "Updates, new partners, and weekly trending picks.",
+        copyLink: "Copy site link",
+        legal: "By booking you agree to fair no-spam contact. Confirmation arrives via Telegram.",
+        stories: [
+          ["Today’s glow", "Fast slots today"],
+          ["Partner picks", "Top city spots"],
+          ["Home masters", "Comfort close to you"],
+          ["AI concierge", "Smart picks only"]
+        ]
+      },
+      fr: {
+        brand: "Beauty Booking",
+        sub: "Salons & artistes vérifiés",
+        eyebrow: "Réservation beauté luxe, mais rapide.",
+        heroTitle: "Réservation en quelques secondes.",
+        heroLead: "Sélection premium à Montréal — salons vérifiés, à domicile, réservation rapide.",
+        quick: "Réserver vite",
+        openProfile: "Voir le profil",
+        nextLabel: "Prochain créneau près de toi",
+        bookSlot: "Réserver ce créneau",
+        why: "Pourquoi celui-ci ?",
+        tabAll: "Tout",
+        tabPartners: "Top",
+        tabRec: "Recommandé",
+        partners: "Top salons / partenaires",
+        partnersHint: "Partenaires payants",
+        recommended: "Recommandé",
+        recHint: "Sélections pour toi",
+        allOthers: "Tous les autres",
+        allHint: "Parcourir tout",
+        footer: "Ton espace self-care — réservation rapide, UI clean, sensation premium.",
+        favOnly: "Only ❤️",
+        pickFast: "Le plus rapide",
+        pickCheap: "Le moins cher",
+        pickNear: "Le plus proche",
+        sheetTitle: "Choisir l’heure",
+        confirm: "Confirmer la réservation",
+        booking: "Réservation",
+        listing: "Salon / Artiste",
+        service: "Service",
+        date: "Date",
+        time: "Heure",
+        yourName: "Ton nom",
+        phone: "Téléphone",
+        email: "Email",
+        notes: "Notes",
+        profile: "Profil",
+        btnBook: "Réserver",
+        btnProfile: "Profil",
+        fab: "Réserver vite",
+        aiTitle: "AI help",
+        aiLead: "Choisis un service — Top / Recommandé / Proche, sans hasard.",
+        aiTop: "Top",
+        aiRec: "Recommandé",
+        aiNear: "Proche",
+        aiReset: "Réinitialiser",
+        toastWhyTitle: "Pourquoi celui-ci ?",
+        toastWhyText: "1) bon service 2) bonne note/prix 3) créneau proche.",
+        missing: "Remplis date / heure / nom / téléphone 🙏",
+        sent: "Envoyé ✅",
+        sentText: "Réservation envoyée sur Telegram. Confirmation bientôt.",
+        failed: "Erreur ❌",
+        failedText: "Envoi impossible. Vérifie Worker /book et internet.",
+        hold: "Hold 2 min",
+        offline: "Hors ligne — certaines fonctions peuvent ne pas marcher.",
+        cached: "Ouvert depuis le cache. Si rien n’a changé — Refresh.",
+        update: "Nouvelle version disponible. Appuie sur Update.",
+        reset: "Réinitialisé ✅",
+        noResults: "Aucun résultat. Essaie un autre service ou désactive Only ❤️.",
+        trustTitle: "Pourquoi on fait confiance à Beauty Booking",
+        trustText: "Expérience premium: UI clean, partenaires vérifiés, détails clairs — pour réserver en confiance.",
+        trustB1: "Salons & artistes vérifiés — qualité sélectionnée.",
+        trustB2: "Hygiène & stérilisation — l’essentiel est visible.",
+        trustB3: "Réservation rapide — ~30 secondes.",
+        trustB4: "Adresse + lien profil dans chaque réservation.",
+        socialTitle: "Nous suivre",
+        socialLead: "Nouveaux partenaires, actus, tendances de la semaine.",
+        copyLink: "Copier le lien",
+        legal: "En réservant, tu acceptes un contact correct sans spam. Confirmation via Telegram.",
+        stories: [
+          ["Glow du jour", "Créneaux rapides aujourd’hui"],
+          ["Partner picks", "Top salons de la ville"],
+          ["À domicile", "Confort près de toi"],
+          ["AI concierge", "Choix intelligents"]
+        ]
+      },
+      ru: {
+        brand: "Beauty Booking",
+        sub: "Проверенные салоны и мастера",
+        eyebrow: "Люкс-бронирование beauty, но быстро.",
+        heroTitle: "Запись за секунды.",
+        heroLead: "Премиум-подборка в Montréal — салоны, мастера на дому, быстрая запись.",
+        quick: "Быстрая запись",
+        openProfile: "Открыть профиль",
+        nextLabel: "Ближайший слот рядом",
+        bookSlot: "Записать на слот",
+        why: "Почему этот?",
+        tabAll: "Все",
+        tabPartners: "Топ",
+        tabRec: "Рекоменд.",
+        partners: "Топ салоны / партнёры",
+        partnersHint: "Платные партнёры",
+        recommended: "Рекомендовано",
+        recHint: "Подборка для тебя",
+        allOthers: "Остальные",
+        allHint: "Смотреть всё",
+        footer: "Твоё место для self-care — быстрая запись, clean UI, premium vibe.",
+        favOnly: "Only ❤️",
+        pickFast: "Самое быстрое",
+        pickCheap: "Самое дешёвое",
+        pickNear: "Ближе всего",
+        sheetTitle: "Выбери время",
+        confirm: "Подтвердить запись",
+        booking: "Запись",
+        listing: "Салон / Мастер",
+        service: "Услуга",
+        date: "Дата",
+        time: "Время",
+        yourName: "Имя",
+        phone: "Телефон",
+        email: "Email",
+        notes: "Заметки",
+        profile: "Профиль",
+        btnBook: "Записаться",
+        btnProfile: "Профиль",
+        fab: "Быстрая запись",
+        aiTitle: "AI help",
+        aiLead: "Выбери услугу — покажу Top / Recommended / Nearest без рандома.",
+        aiTop: "Топ",
+        aiRec: "Рекоменд.",
+        aiNear: "Ближайшее",
+        aiReset: "Сбросить",
+        toastWhyTitle: "Почему этот?",
+        toastWhyText: "1) подходит услуга 2) хороший рейтинг/цена 3) ближайший слот.",
+        missing: "Заполни дату / время / имя / телефон 🙏",
+        sent: "Отправлено ✅",
+        sentText: "Бронирование отправлено в Telegram. Скоро подтвердят.",
+        failed: "Ошибка ❌",
+        failedText: "Не удалось отправить. Проверь Worker /book и интернет.",
+        hold: "Hold 2 min",
+        offline: "Ты офлайн — часть функций может не работать.",
+        cached: "Открыто из кеша. Если не обновилось — нажми Refresh.",
+        update: "Доступна новая версия. Нажми Update.",
+        reset: "Сброшено ✅",
+        noResults: "Ничего не найдено. Попробуй другую услугу или выключи Only ❤️.",
+        trustTitle: "Почему доверяют Beauty Booking",
+        trustText: "Премиум-опыт: clean UI, проверенные партнёры, понятные детали — чтобы записываться уверенно.",
+        trustB1: "Проверенные салоны и мастера — отбор качества.",
+        trustB2: "Гигиена и стерильность — важное видно сразу.",
+        trustB3: "Быстрая запись — реально ~30 секунд.",
+        trustB4: "Адрес + ссылка профиля в каждом бронировании.",
+        socialTitle: "Мы в соцсетях",
+        socialLead: "Обновления, новые партнёры и тренды недели.",
+        copyLink: "Скопировать ссылку",
+        legal: "Бронируя, ты соглашаешься на корректный контакт без спама. Подтверждение через Telegram.",
+        stories: [
+          ["Glow today", "Быстрые слоты сегодня"],
+          ["Partner picks", "Топ точки города"],
+          ["Home masters", "Комфорт рядом"],
+          ["AI concierge", "Умный подбор"]
+        ]
+      }
+    };
+
+    const txt = () => T[STATE.lang] || T.uk;
+
+    const normalize = s => String(s ?? "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+
+    const normalizeServiceId = v => {
+      if (v == null) return "";
+      if (typeof v === "string" || typeof v === "number") return String(v);
+      return String(v.id ?? v.serviceId ?? v.key ?? "");
+    };
+
+    const SERVICE_I18N = {
+      manicure:   { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" },
+      pedicure:   { uk:"Педикюр", en:"Pedicure", fr:"Pédicure", ru:"Педикюр", icon:"🦶" },
+      brows:      { uk:"Брови", en:"Brows", fr:"Sourcils", ru:"Брови", icon:"✨" },
+      haircut_m:  { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
+      haircut_w:  { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
+      hair_m:     { uk:"Чоловіча стрижка", en:"Men haircut", fr:"Coupe homme", ru:"Мужская стрижка", icon:"💈" },
+      hair_w:     { uk:"Жіноча стрижка", en:"Women haircut", fr:"Coupe femme", ru:"Женская стрижка", icon:"✂️" },
+      nails:      { uk:"Манікюр", en:"Manicure", fr:"Manucure", ru:"Маникюр", icon:"💅" }
+    };
+
+    const serviceIcon = serviceId => SERVICE_I18N[String(serviceId || "").trim()]?.icon || "💅";
+    const serviceLabelFromId = serviceId => {
+      const m = SERVICE_I18N[String(serviceId || "").trim()];
+      return m ? (m[STATE.lang] || m.uk || m.en) : String(serviceId || "");
+    };
+
+    const serviceLabel = s => {
+      if (!s) return STATE.lang === "en" ? "Service" : STATE.lang === "fr" ? "Service" : STATE.lang === "ru" ? "Услуга" : "Послуга";
+      const sid = normalizeServiceId(s);
+      const name = s.name ?? s.title ?? s.label ?? s.id ?? sid;
+      if (typeof name === "object" && name) return name[STATE.lang] || name.uk || name.en || name.fr || name.ru || serviceLabelFromId(sid) || sid;
+      if (typeof name === "string" && name.trim()) return SERVICE_I18N[name.trim()] ? serviceLabelFromId(name.trim()) : name.trim();
+      return serviceLabelFromId(sid) || sid;
+    };
+
+    const uniqueServiceIds = () => {
+      const ids = [];
+      if (SERVICES.length) {
+        SERVICES.forEach(s => {
+          const sid = normalizeServiceId(s);
+          if (sid) ids.push(sid);
+        });
+      } else {
+        LISTINGS.forEach(l => listingServices(l).forEach(sid => ids.push(sid)));
+      }
+      return Array.from(new Set(ids)).filter(Boolean);
+    };
+
+    function listingServices(listing){
+      const raw = listing?.services ?? listing?.serviceIds ?? listing?.service_ids ?? [];
+      if (Array.isArray(raw)) {
+        return Array.from(new Set(raw.map(normalizeServiceId).filter(Boolean)));
+      }
+      const one = normalizeServiceId(raw);
+      return one ? [one] : [];
+    }
+
+    const resolveServiceName = serviceId => {
+      const sid = String(serviceId || "");
+      const found = SERVICES.find(x => String(x?.id ?? x?.key ?? "") === sid);
+      return found ? serviceLabel(found) : serviceLabelFromId(sid);
+    };
+
+    const todayISO = () => isoLocal(new Date());
+
+    function fmtPretty(dateISO, time, lang){
+      try{
+        const [y,m,d] = String(dateISO || "").split("-").map(x => parseInt(x, 10));
+        const [hh,mm] = String(time || "").split(":").map(x => parseInt(x, 10));
+        if (!y || !m || !d || isNaN(hh) || isNaN(mm)) {
+          return `${dateISO || ""} ${time || ""}`.trim() || "—";
+        }
+        const dt = new Date(y, m - 1, d, hh, mm, 0, 0);
+        const locale = lang === "en" ? "en-CA" : lang === "fr" ? "fr-CA" : lang === "ru" ? "ru-RU" : "uk-UA";
+        return dt.toLocaleString(locale, { weekday:"short", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
+      } catch {
+        return `${dateISO || ""} ${time || ""}`.trim() || "—";
+      }
+    }
+
+    function applyTheme(){
+      const theme = STATE.theme === "day" ? "day" : "night";
+      document.documentElement.setAttribute("data-theme", theme);
+      $("#metaTheme")?.setAttribute("content", theme === "day" ? "#f6f3ff" : "#0b0b0f");
+      const btn = $("#btnTheme");
+      if (btn) btn.textContent = theme === "day" ? "☀️" : "🌙";
+      lsSet("bb.theme", theme);
+    }
+
+    function applyTexts(){
+      safeSetText($("#t_brand"), txt().brand);
+      safeSetText($("#t_sub"), txt().sub);
+      safeSetText($("#t_eyebrow"), txt().eyebrow);
+      safeSetText($("#t_heroTitle"), txt().heroTitle);
+      safeSetText($("#t_heroLead"), txt().heroLead);
+      safeSetText($("#t_quick"), txt().quick);
+      safeSetText($("#t_openProfile"), txt().openProfile);
+      safeSetText($("#t_nextLabel"), txt().nextLabel);
+      safeSetText($("#t_bookSlot"), txt().bookSlot);
+      safeSetText($("#t_why"), txt().why);
+      safeSetText($("#t_tabAll"), txt().tabAll);
+      safeSetText($("#t_tabPartners"), txt().tabPartners);
+      safeSetText($("#t_tabRec"), txt().tabRec);
+      safeSetText($("#t_partners"), txt().partners);
+      safeSetText($("#t_partnersHint"), txt().partnersHint);
+      safeSetText($("#t_recommended"), txt().recommended);
+      safeSetText($("#t_recHint"), txt().recHint);
+      safeSetText($("#t_allOthers"), txt().allOthers);
+      safeSetText($("#t_allHint"), txt().allHint);
+      safeSetText($("#t_footer"), txt().footer);
+      safeSetText($("#t_favOnly"), txt().favOnly);
+      safeSetText($("#t_pickFast"), txt().pickFast);
+      safeSetText($("#t_pickCheap"), txt().pickCheap);
+      safeSetText($("#t_pickNear"), txt().pickNear);
+      safeSetText($("#t_sheetTitle"), txt().sheetTitle);
+      safeSetText($("#t_confirm"), txt().confirm);
+      safeSetText($("#m_title"), txt().booking);
+      safeSetText($("#m_lblListing"), txt().listing);
+      safeSetText($("#m_lblService"), txt().service);
+      safeSetText($("#m_lblDate"), txt().date);
+      safeSetText($("#m_lblTime"), txt().time);
+      safeSetText($("#m_lblName"), txt().yourName);
+      safeSetText($("#m_lblPhone"), txt().phone);
+      safeSetText($("#m_lblEmail"), txt().email);
+      safeSetText($("#m_lblNotes"), txt().notes);
+      safeSetText($("#m_openProfileBtn"), txt().profile);
+      safeSetText($("#t_aiTitle"), txt().aiTitle);
+      safeSetText($("#t_aiLead"), txt().aiLead);
+      safeSetText($("#t_fab"), txt().fab);
+
+      safeSetText($("#aiTop"), `⭐️ ${txt().aiTop}`);
+      safeSetText($("#aiRec"), `✨ ${txt().aiRec}`);
+      safeSetText($("#aiNear"), `📍 ${txt().aiNear}`);
+      safeSetText($("#aiClear"), `↺ ${txt().aiReset}`);
+
+      safeSetText($("#t_trustTitle"), txt().trustTitle);
+      safeSetText($("#t_trustText"), txt().trustText);
+      safeSetText($("#t_trustB1"), txt().trustB1);
+      safeSetText($("#t_trustB2"), txt().trustB2);
+      safeSetText($("#t_trustB3"), txt().trustB3);
+      safeSetText($("#t_trustB4"), txt().trustB4);
+      safeSetText($("#t_socialTitle"), txt().socialTitle);
+      safeSetText($("#t_socialLead"), txt().socialLead);
+      safeSetText($("#t_copyLink"), txt().copyLink);
+      safeSetText($("#t_legal"), txt().legal);
+
+      const search = $("#search");
+      if (search) {
+        search.placeholder =
+          STATE.lang === "en" ? "Search salon, master, service…" :
+          STATE.lang === "fr" ? "Rechercher salon, artiste, service…" :
+          STATE.lang === "ru" ? "Поиск салон, мастер, услуга…" :
+          "Пошук салон / майстер / послуга…";
+      }
+
+      const name = $("#m_name");
+      if (name) {
+        name.placeholder =
+          STATE.lang === "en" ? "Name" :
+          STATE.lang === "fr" ? "Nom" :
+          STATE.lang === "ru" ? "Имя" : "Імʼя";
+      }
+      $("#m_phone") && ($("#m_phone").placeholder = "(438)...");
+      $("#m_email") && ($("#m_email").placeholder = "email@example.com");
+      const notes = $("#m_notes");
+      if (notes) {
+        notes.placeholder =
+          STATE.lang === "en" ? "Optional" :
+          STATE.lang === "fr" ? "Optionnel" :
+          STATE.lang === "ru" ? "Необязательно" :
+          "Опційно";
+      }
+    }
+
+    function renderStories(){
+      const row = $("#storiesRow");
+      if (!row) return;
+      const stories = txt().stories || [];
+      safeSetHTML(row, stories.map(([a,b]) => `
+        <div class="story">
+          <div class="t1">${escapeHtml(a)}</div>
+          <div class="t2">${escapeHtml(b)}</div>
+        </div>
+      `).join(""));
+    }
+
+    function showNetbar(msg, showUpdate = false){
+      safeSetText($("#netbarText"), msg);
+      $("#netbar")?.classList.add("show");
+      $("#netbarUpdate")?.classList.toggle("hidden", !showUpdate);
+    }
+    function hideNetbar(){
+      $("#netbar")?.classList.remove("show");
+      $("#netbarUpdate")?.classList.add("hidden");
+    }
+
+    $("#netbarOk")?.addEventListener("click", hideNetbar);
+    $("#netbarRefresh")?.addEventListener("click", () => location.reload());
+
+    function initNetbar(){
+      const onOnline = () => hideNetbar();
+      const onOffline = () => showNetbar(txt().offline, false);
+
+      window.addEventListener("online", onOnline);
+      window.addEventListener("offline", onOffline);
+
+      if (!navigator.onLine) onOffline();
+
+      try {
+        const nav = performance.getEntriesByType?.("navigation")?.[0];
+        if (nav && typeof nav.transferSize === "number" && nav.transferSize === 0) {
+          showNetbar(txt().cached, false);
+        }
+      } catch {}
+    }
+
+    let swReg = null;
+    async function initSWUpdate(){
+      try{
+        if (!("serviceWorker" in navigator)) return;
+        swReg = await navigator.serviceWorker.register("./worker.js");
+        const maybeUpdate = () => {
+          if (swReg?.waiting) showNetbar(txt().update, true);
+        };
+
+        swReg.addEventListener("updatefound", () => {
+          const nw = swReg.installing;
+          if (!nw) return;
+          nw.addEventListener("statechange", () => {
+            if (nw.state === "installed" && navigator.serviceWorker.controller) maybeUpdate();
+          });
+        });
+
+        navigator.serviceWorker.addEventListener("controllerchange", () => location.reload());
+
+        $("#netbarUpdate")?.addEventListener("click", () => {
+          try {
+            if (swReg?.waiting) {
+              swReg.waiting.postMessage({ type: "SKIP_WAITING" });
+              setTimeout(() => location.reload(), 400);
+            } else {
+              location.reload();
+            }
+          } catch {
+            location.reload();
+          }
+        });
+
+        maybeUpdate();
+      } catch {}
+    }
+
+    let toastTimer = null;
+    function toast(t1, t2, ms = 2600){
+      safeSetText($("#toastT1"), t1);
+      safeSetText($("#toastT2"), t2);
+      $("#toast")?.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $("#toast")?.classList.remove("show"), ms);
+    }
+
+    const INFO = {
+      uk: [
+        "Стерильні інструменти • одноразові пилочки • clean luxury service.",
+        "Топ майстер • акуратні кутикули • стійке покриття.",
+        "Комфортна атмосфера • швидкий запис • premium vibe.",
+        "Преміум догляд • уважність до деталей • без поспіху.",
+        "Мʼякі техніки • мінімальна травматизація • чиста робота."
+      ],
+      en: [
+        "Sterile tools • premium care • clean results.",
+        "Top master • attention to detail • long-lasting finish.",
+        "Comfort vibe • quick booking • you’ll love it.",
+        "Premium care • precise work • no rush.",
+        "Gentle technique • clean cuticle • neat shape."
+      ],
+      fr: [
+        "Outils stériles • soin premium • résultat net.",
+        "Top artiste • détail parfait • tenue longue.",
+        "Ambiance confortable • réservation rapide.",
+        "Soin premium • précision • sans stress.",
+        "Technique douce • cuticule propre • forme nette."
+      ],
+      ru: [
+        "Стерильные инструменты • премиум-уход • чистый результат.",
+        "Топ мастер • внимание к деталям • стойкое покрытие.",
+        "Комфорт • быстрая запись • кайф.",
+        "Премиум-уход • точность • без спешки.",
+        "Мягкая техника • чистая кутикула • аккуратно."
+      ]
+    };
+
+    function pickInfo(){
+      const arr = INFO[STATE.lang] || INFO.uk;
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function matchesSearch(listing, q){
+      if (!q) return true;
+      const hay = [
+        listing?.name,
+        listing?.title,
+        listing?.address,
+        listing?.city,
+        listingServices(listing).map(resolveServiceName).join(" ")
+      ].join(" ");
+      return normalize(hay).includes(normalize(q));
+    }
+
+    function hasService(listing, serviceId){
+      if (!serviceId) return true;
+      return listingServices(listing).includes(String(serviceId));
+    }
+
+    const isPartner = listing => !!(listing?.partner || listing?.isPartner || listing?.tier === "partner");
+    const isRecommended = listing => !!(listing?.recommended || listing?.isRecommended || listing?.tier === "recommended");
+    const ratingValue = listing => {
+      const r = Number(listing?.rating ?? listing?.stars ?? 0);
+      return isNaN(r) ? 0 : r;
+    };
+    const distanceValue = listing => {
+      const d = Number(listing?.distance ?? listing?.km ?? listing?.dist ?? 999);
+      return isNaN(d) ? 999 : d;
+    };
+
+    function fromPrice(listing, serviceId){
+      const sid = String(serviceId || "");
+      const pMap = listing?.prices || listing?.priceMap || {};
+      const p = pMap[sid] ?? listing?.from ?? listing?.price ?? null;
+      const n = Number(p);
+      return isNaN(n) ? null : n;
+    }
+
+    function listingTimesFor(listing, serviceId, dateISO){
+      const sid = String(serviceId || "");
+      const av = listing?.availability || listing?.avail || null;
+
+      try{
+        const util = window.bb?.util;
+        if (util && typeof util.getTimes === "function") {
+          const res = util.getTimes(listing?.id, sid, dateISO);
+          if (Array.isArray(res)) return res.slice();
+        }
+      } catch {}
+
+      if (av && typeof av === "object") {
+        const day = av[dateISO] || av[String(dateISO)] || null;
+        if (Array.isArray(day)) return day.slice();
+        if (day && typeof day === "object") {
+          const byService = day[sid] || day[String(sid)] || null;
+          if (Array.isArray(byService)) return byService.slice();
+        }
+      }
+
+      const fallback = listing?.times || listing?.slots || listing?.hours || null;
+      if (Array.isArray(fallback)) return fallback.slice();
+
+      return ["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"];
+    }
+
+    function nextSlotForListing(listing, serviceId){
+      const sid = String(serviceId || "");
+      const dates = futureDatesISO(7);
+      for (const d of dates) {
+        const times = listingTimesFor(listing, sid, d);
+        if (times && times.length) {
+          return { dateISO: d, time: String(times[0]) };
+        }
+      }
+      return null;
+    }
+
+    function bestNextSlots(serviceId){
+      const sid = String(serviceId || "");
+      const pool = LISTINGS
+        .filter(l => hasService(l, sid))
+        .map(l => {
+          const slot = nextSlotForListing(l, sid);
+          return slot ? { listing: l, slot } : null;
+        })
+        .filter(Boolean);
+
+      pool.sort((a, b) => {
+        const da = `${a.slot.dateISO} ${a.slot.time}`;
+        const db = `${b.slot.dateISO} ${b.slot.time}`;
+        if (da < db) return -1;
+        if (da > db) return 1;
+
+        const pa = isPartner(a.listing) ? 1 : 0;
+        const pb = isPartner(b.listing) ? 1 : 0;
+        if (pb !== pa) return pb - pa;
+
+        return ratingValue(b.listing) - ratingValue(a.listing);
+      });
+
+      return pool.slice(0, 8);
+    }
+
+    function whyReasons(listing, serviceId){
+      const out = [];
+      if (serviceId) out.push(resolveServiceName(serviceId));
+      const rating = ratingValue(listing);
+      if (rating) out.push(`⭐ ${rating.toFixed(1)}`);
+      const p = fromPrice(listing, serviceId);
+      if (p != null) out.push(`$${Math.round(p)}+`);
+      const slot = nextSlotForListing(listing, serviceId);
+      if (slot) out.push(slot.dateISO === todayISO() ? "Today" : "Next slot");
+      return out.slice(0, 3);
+    }
+
+    function cardHTML(listing, opts = {}){
+      const sid = opts.serviceId || "";
+      const name = listing?.name || listing?.title || "—";
+      const addr = listing?.address || listing?.addr || "—";
+      const rating = ratingValue(listing);
+      const from = fromPrice(listing, sid);
+      const img = listing?.image || listing?.photo || listing?.img || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80";
+
+      const badges = [];
+      if (isPartner(listing)) badges.push(`<span class="badge partner">Partner</span>`);
+      if (isRecommended(listing)) badges.push(`<span class="badge recommended">Recommended</span>`);
+      if (listing?.verified) badges.push(`<span class="badge verified">Verified</span>`);
+      const slot = nextSlotForListing(listing, sid);
+      if (slot?.dateISO === todayISO()) badges.push(`<span class="badge today">Today</span>`);
+
+      const fav = STATE.favorites.has(String(listing?.id || ""));
+      const favIcon = fav ? "❤️" : "🤍";
+
+      const priceStr = from != null ? `$${Math.round(from)}+` : "—";
+      const rateStr = rating ? `⭐️ ${rating.toFixed(1)}` : "⭐️ —";
+
+      const why = whyReasons(listing, sid).map(x => `<span class="whyPill">${escapeHtml(x)}</span>`).join("");
+
+      return `
+        <div class="card" data-id="${escapeHtml(listing?.id)}">
+          <div class="img">
+            <div class="badges">${badges.join("")}</div>
+            <img
+              alt="${escapeHtml(name)}"
+              src="${escapeHtml(img)}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1500840216050-6ffa99d75160?auto=format&fit=crop&w=1200&q=80';"
+            >
+          </div>
+
+          <div class="cardBody">
+            <div class="row1">
+              <div style="min-width:0">
+                <p class="title">${escapeHtml(name)}</p>
+                <div class="subline">${escapeHtml(addr)}</div>
+              </div>
+
+              <div class="rightMeta">
+                <div class="price">${escapeHtml(priceStr)}</div>
+                <div class="rating">${escapeHtml(rateStr)}</div>
+              </div>
+            </div>
+
+            <div class="whyRow">${why}</div>
+
+            <div class="cardActions">
+              <button class="small primary" data-act="book" type="button">
+                <span>${serviceIcon(sid)}</span><span>${escapeHtml(txt().btnBook)}</span>
+              </button>
+
+              <button class="small" data-act="fav" title="Favorite" type="button">${favIcon}</button>
+
+              <a class="small" data-act="profile" href="./profile.html?id=${encodeURIComponent(listing?.id || "")}" target="_blank" rel="noopener">
+                <span>🏛</span><span>${escapeHtml(txt().btnProfile)}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function stripCardHTML(listing, opts = {}){
+      const sid = opts.serviceId || "";
+      const name = listing?.name || listing?.title || "—";
+      const addr = listing?.address || listing?.addr || "—";
+      const img = listing?.image || listing?.photo || listing?.img || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
+      const slot = nextSlotForListing(listing, sid);
+      const slotTxt = slot ? fmtPretty(slot.dateISO, slot.time, STATE.lang) : "—";
+      const from = fromPrice(listing, sid);
+      const priceStr = from != null ? `$${Math.round(from)}+` : "—";
+
+      return `
+        <div class="stripCard" data-id="${escapeHtml(listing?.id)}">
+          <div class="stripImg">
+            <div class="badges">
+              <span class="badge partner">Partner</span>
+              ${slot?.dateISO === todayISO() ? `<span class="badge today">Today</span>` : ``}
+            </div>
+            <img
+              alt="${escapeHtml(name)}"
+              src="${escapeHtml(img)}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1500840216050-6ffa99d75160?auto=format&fit=crop&w=1400&q=80';"
+            >
+          </div>
+
+          <div class="stripBody">
+            <div class="stripTop">
+              <div class="stripName">${escapeHtml(name)}</div>
+              <div class="price">${escapeHtml(priceStr)}</div>
+            </div>
+
+            <div class="stripMeta">
+              ${escapeHtml(addr)}<br>
+              <span class="muted">${escapeHtml(slotTxt)}</span>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <button class="small primary" data-act="book" type="button" style="width:100%;justify-content:center">
+              <span>⚡️</span><span>${escapeHtml(txt().btnBook)}</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderServiceChips(){
+      const wrap = $("#serviceChips");
+      if (!wrap) return;
+
+      const ids = uniqueServiceIds();
+      safeSetHTML(wrap, ids.map(sid => {
+        const label = serviceLabelFromId(sid) || resolveServiceName(sid) || sid;
+        const icon = serviceIcon(sid);
+        const active = STATE.serviceId === sid ? "active" : "";
+        return `<button class="chip ${active}" data-sid="${escapeHtml(sid)}" type="button"><span>${icon}</span><span>${escapeHtml(label)}</span></button>`;
+      }).join(""));
+
+      $$(".chip", wrap).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sid = btn.getAttribute("data-sid") || "";
+          STATE.serviceId = STATE.serviceId === sid ? "" : sid;
+          lsSet("bb.serviceId", STATE.serviceId);
+          renderAll();
+        });
+      });
+    }
+
+    function renderServiceSelect(){
+      const sel = $("#m_service");
+      if (!sel) return;
+
+      const ids = uniqueServiceIds();
+      safeSetHTML(sel, ids.map(sid => {
+        const label = serviceLabelFromId(sid) || resolveServiceName(sid) || sid;
+        const icon = serviceIcon(sid);
+        return `<option value="${escapeHtml(sid)}">${icon} ${escapeHtml(label)}</option>`;
+      }).join(""));
+
+      const want = STATE.booking.serviceId || STATE.serviceId || ids[0] || "";
+      sel.value = ids.includes(want) ? want : (ids[0] || "");
+      STATE.booking.serviceId = sel.value;
+
+      sel.onchange = () => {
+        STATE.booking.serviceId = sel.value;
+        lsSet("bb.booking", { ...STATE.booking, open: true });
+        renderListingSelect();
+        refreshListingInfo();
+        refreshTimeGrid();
+      };
+    }
+
+    function renderListingSelect(){
+      const sel = $("#m_listingSel");
+      if (!sel) return;
+
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const filtered = LISTINGS.filter(l => hasService(l, sid));
+
+      safeSetHTML(sel, filtered.map(l => {
+        const name = l?.name || l?.title || l?.id;
+        return `<option value="${escapeHtml(l?.id)}">${escapeHtml(name)}</option>`;
+      }).join(""));
+
+      let want = STATE.booking.listingId;
+      if (!filtered.some(l => String(l.id) === String(want))) {
+        want = filtered[0]?.id || LISTINGS[0]?.id || "";
+      }
+
+      sel.value = want ? String(want) : "";
+      STATE.booking.listingId = sel.value;
+
+      sel.onchange = () => {
+        STATE.booking.listingId = sel.value;
+        lsSet("bb.booking", { ...STATE.booking, open: true });
+        refreshListingInfo(true);
+        refreshTimeGrid();
+      };
+    }
+
+    function refreshListingInfo(forceRandom = false){
+      const info = $("#m_listingInfo");
+      const addr = $("#m_addrLine");
+      const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
+
+      if (info) {
+        if (forceRandom) safeSetText(info, pickInfo());
+        else safeSetText(info, info.textContent && info.textContent !== "—" ? info.textContent : pickInfo());
+      }
+
+      if (addr) {
+        const a = listing?.address || listing?.addr || "";
+        safeSetText(addr, a ? `📍 ${a}` : "—");
+      }
+
+      const btn = $("#m_openProfileBtn");
+      if (btn) {
+        btn.onclick = () => {
+          if (!listing?.id) return;
+          window.open(`./profile.html?id=${encodeURIComponent(listing.id)}`, "_blank", "noopener");
+        };
+      }
+    }
+
+    function getFilteredListings(){
+      let arr = LISTINGS.filter(l => hasService(l, STATE.serviceId) && matchesSearch(l, STATE.search));
+      if (STATE.favOnly) {
+        arr = arr.filter(l => STATE.favorites.has(String(l.id)));
+      }
+      return arr;
+    }
+
+    function emptyHTML(){
+      return `<div class="empty">${escapeHtml(txt().noResults)}</div>`;
+    }
+
+    function bindCardGrid(grid, sid){
+      if (!grid) return;
+
+      $$(".card", grid).forEach(card => {
+        card.addEventListener("click", e => {
+          const act = e.target?.getAttribute?.("data-act") || e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
+          const id = card.getAttribute("data-id");
+
+          if (act === "profile") return;
+
+          if (act === "fav") {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFav(id);
+            return;
+          }
+
+          if (act === "book") {
+            e.preventDefault();
+            e.stopPropagation();
+            openBooking({ listingId: id, serviceId: sid });
+            return;
+          }
+
+          window.open(`./profile.html?id=${encodeURIComponent(id || "")}`, "_blank", "noopener");
+        });
+      });
+    }
+
+    function renderGrids(){
+      const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
+      const all = getFilteredListings();
+
+      const partners = all.filter(isPartner);
+      const rec = all.filter(l => !isPartner(l) && isRecommended(l));
+      const others = all.filter(l => !isPartner(l) && !isRecommended(l));
+
+      const strip = $("#stripPartners");
+      if (strip) {
+        safeSetHTML(strip, partners.length ? partners.map(l => stripCardHTML(l, { serviceId: sid })).join("") : emptyHTML());
+
+        $$(".stripCard", strip).forEach(el => {
+          el.addEventListener("click", e => {
+            const act = e.target?.getAttribute?.("data-act") || e.target?.closest?.("[data-act]")?.getAttribute?.("data-act");
+            if (act === "book") return;
+            openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
+          });
+
+          const bookBtn = el.querySelector('[data-act="book"]');
+          if (bookBtn) {
+            bookBtn.addEventListener("click", e => {
+              e.preventDefault();
+              e.stopPropagation();
+              openBooking({ listingId: el.getAttribute("data-id"), serviceId: sid });
+            });
+          }
+        });
+      }
+
+      const gridRec = $("#gridRec");
+      const gridAll = $("#gridAll");
+
+      if (gridRec) safeSetHTML(gridRec, rec.length ? rec.map(l => cardHTML(l, { serviceId: sid })).join("") : emptyHTML());
+      if (gridAll) safeSetHTML(gridAll, others.length ? others.map(l => cardHTML(l, { serviceId: sid })).join("") : emptyHTML());
+
+      bindCardGrid(gridRec, sid);
+      bindCardGrid(gridAll, sid);
+
+      $("#secPartners")?.classList.toggle("hidden", STATE.tab === "rec");
+      $("#secRec")?.classList.toggle("hidden", STATE.tab === "partners");
+      $("#secAll")?.classList.toggle("hidden", STATE.tab !== "all");
+    }
+
+    function setTab(v){
+      STATE.tab = v;
+      lsSet("bb.tab", v);
+
+      $("#tabAll")?.classList.toggle("active", v === "all");
+      $("#tabPartners")?.classList.toggle("active", v === "partners");
+      $("#tabRecommended")?.classList.toggle("active", v === "rec");
+
+      renderGrids();
+    }
+
+    function toggleFav(id){
+      const k = String(id || "");
+      if (!k) return;
+
+      if (STATE.favorites.has(k)) STATE.favorites.delete(k);
+      else STATE.favorites.add(k);
+
+      lsSet("bb.favorites", Array.from(STATE.favorites));
+      renderGrids();
+    }
+
+    let nextTimer = null;
+    let nextPool = [];
+
+    function renderNext(){
+      const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
+      nextPool = bestNextSlots(sid);
+
+      if (!nextPool.length) {
+        safeSetText($("#nextName"), "—");
+        safeSetText($("#nextMeta"), "—");
+        safeSetHTML($("#nextWhyLine"), "");
+        safeSetText($("#nextDots"), "○ ○ ○");
+        return;
+      }
+
+      STATE.lastNextIndex = clamp(STATE.lastNextIndex, 0, nextPool.length - 1);
+      lsSet("bb.lastNextIndex", STATE.lastNextIndex);
+
+      const item = nextPool[STATE.lastNextIndex];
+      const l = item.listing;
+      const slot = item.slot;
+      const name = l?.name || l?.title || "—";
+      const addr = l?.address || l?.addr || "";
+      const from = fromPrice(l, sid);
+      const fromTxt = from != null ? `$${Math.round(from)}+` : "";
+      const when = fmtPretty(slot.dateISO, slot.time, STATE.lang);
+
+      safeSetText($("#nextName"), name);
+      safeSetText($("#nextMeta"), `${when}${fromTxt ? " • " + fromTxt : ""}${addr ? " • " + addr : ""}`);
+
+      const reasons = whyReasons(l, sid).map(x => `<span class="miniTag">${escapeHtml(x)}</span>`).join("");
+      safeSetHTML($("#nextWhyLine"), reasons);
+
+      const dotsCount = Math.min(3, nextPool.length);
+      const idx = STATE.lastNextIndex % dotsCount;
+      let dots = "";
+      for (let i = 0; i < dotsCount; i++) dots += i === idx ? "● " : "○ ";
+      safeSetText($("#nextDots"), dots.trim());
+    }
+
+    function startNextRotation(){
+      clearInterval(nextTimer);
+      renderNext();
+
+      nextTimer = setInterval(() => {
+        if (!nextPool.length) {
+          renderNext();
+          return;
+        }
+
+        STATE.lastNextIndex = (STATE.lastNextIndex + 1) % nextPool.length;
+        lsSet("bb.lastNextIndex", STATE.lastNextIndex);
+
+        const card = $("#nextCard");
+        if (!card) {
+          renderNext();
+          return;
+        }
+
+        card.style.opacity = "0";
+        card.style.transform = "translateY(4px)";
+        setTimeout(() => {
+          renderNext();
+          card.style.transition = "opacity .22s ease, transform .22s ease";
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        }, 180);
+      }, 10000);
+    }
+
+    $("#nextBook")?.addEventListener("click", () => {
+      const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
+      const pool = bestNextSlots(sid);
+      if (!pool.length) return;
+      const item = pool[STATE.lastNextIndex] || pool[0];
+      openBooking({
+        listingId: item.listing?.id,
+        serviceId: sid,
+        dateISO: item.slot?.dateISO,
+        time: item.slot?.time
+      });
+    });
+
+    $("#nextWhy")?.addEventListener("click", () => {
+      toast(txt().toastWhyTitle, txt().toastWhyText, 3200);
+    });
+
+    function lockBody(lock){
+      document.body.style.overflow = lock ? "hidden" : "";
+      document.documentElement.style.overflow = lock ? "hidden" : "";
+    }
+
+    function openBooking(patch = {}){
+      STATE.booking.open = true;
+      if (patch.listingId != null) STATE.booking.listingId = String(patch.listingId || "");
+      if (patch.serviceId != null) STATE.booking.serviceId = String(patch.serviceId || "");
+      if (patch.dateISO != null) STATE.booking.dateISO = String(patch.dateISO || "");
+      if (patch.time != null) STATE.booking.time = String(patch.time || "");
+
+      lsSet("bb.booking", { ...STATE.booking, open: true });
+
+      $("#overlay")?.classList.add("show");
+      $("#overlay")?.setAttribute("aria-hidden", "false");
+      lockBody(true);
+
+      const dInput = $("#m_date");
+      if (dInput) {
+        if (!STATE.booking.dateISO) STATE.booking.dateISO = todayISO();
+        dInput.value = STATE.booking.dateISO;
+      }
+
+      renderServiceSelect();
+      renderListingSelect();
+      refreshListingInfo(true);
+      refreshTimeGrid();
+      safeSetText($("#m_timeText"), STATE.booking.time || "—");
+      updateHoldUI();
+    }
+
+    function closeBooking(){
+      STATE.booking.open = false;
+      lsSet("bb.booking", { ...STATE.booking, open: false });
+      $("#overlay")?.classList.remove("show");
+      $("#overlay")?.setAttribute("aria-hidden", "true");
+      closeSheet();
+      closeAISheet();
+      lockBody(false);
+    }
+
+    $("#m_close")?.addEventListener("click", closeBooking);
+    $("#overlay")?.addEventListener("click", e => {
+      if (e.target === $("#overlay")) closeBooking();
+    });
+
+    $("#ctaQuick")?.addEventListener("click", () => openBooking({ serviceId: STATE.serviceId || "" }));
+    $("#fab")?.addEventListener("click", () => openBooking({ serviceId: STATE.serviceId || "" }));
+
+    function openSheet(){ $("#sheet")?.classList.add("show"); }
+    function closeSheet(){ $("#sheet")?.classList.remove("show"); }
+
+    $("#sheetClose")?.addEventListener("click", closeSheet);
+    $("#sheet")?.addEventListener("click", e => {
+      if (e.target === $("#sheet")) closeSheet();
+    });
+
+    $("#m_timeBtn")?.addEventListener("click", () => {
+      refreshTimeGrid();
+      openSheet();
+    });
+
+    function refreshTimeGrid(){
+      const grid = $("#timeGrid");
+      if (!grid) return;
+
+      const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const dateISO = STATE.booking.dateISO || todayISO();
+      const times = listing ? listingTimesFor(listing, sid, dateISO) : [];
+      const active = String(STATE.booking.time || "");
+
+      safeSetHTML(grid,
+        (times || []).length
+          ? (times || []).map(t => {
+              const cls = String(t) === active ? "timeItem active" : "timeItem";
+              return `<button class="${cls}" data-t="${escapeHtml(String(t))}" type="button">${escapeHtml(String(t))}</button>`;
+            }).join("")
+          : `<div class="muted" style="padding:10px">—</div>`
+      );
+
+      $$(".timeItem", grid).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const t = btn.getAttribute("data-t") || "";
+          STATE.booking.time = t;
+          lsSet("bb.booking", { ...STATE.booking, open: true });
+
+          safeSetText($("#m_timeText"), t || "—");
+          $$(".timeItem", grid).forEach(x => x.classList.remove("active"));
+          btn.classList.add("active");
+          closeSheet();
+          updateHoldUI(true);
+        });
+      });
+    }
+
+    $("#m_date")?.addEventListener("change", e => {
+      STATE.booking.dateISO = e.target.value || todayISO();
+      STATE.booking.time = "";
+      safeSetText($("#m_timeText"), "—");
+      lsSet("bb.booking", { ...STATE.booking, open: true });
+      refreshTimeGrid();
+      updateHoldUI();
+    });
+
+    function startHold(){
+      const k = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+      STATE.hold.key = k;
+      STATE.hold.until = Date.now() + 2 * 60 * 1000;
+    }
+
+    function holdLeft(){
+      if (!STATE.hold.until) return 0;
+      return Math.max(0, STATE.hold.until - Date.now());
+    }
+
+    function updateHoldUI(forceStart = false){
+      const el = $("#holdText");
+      if (!el) return;
+
+      const ready = STATE.booking.listingId && STATE.booking.serviceId && STATE.booking.dateISO && STATE.booking.time;
+      if (!ready) {
+        safeSetText(el, "");
+        return;
+      }
+
+      const k = `${STATE.booking.listingId}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+      if (forceStart || STATE.hold.key !== k || holdLeft() === 0) {
+        startHold();
+      }
+
+      const ms = holdLeft();
+      if (ms <= 0) {
+        safeSetText(el, "");
+        return;
+      }
+
+      const s = Math.ceil(ms / 1000);
+      safeSetText(el, `· ${txt().hold} ${Math.floor(s / 60)}:${pad(s % 60)}`);
+
+      if (!updateHoldUI._t) {
+        updateHoldUI._t = setInterval(() => {
+          if (!STATE.booking.open) {
+            safeSetText(el, "");
+            return;
+          }
+          const left = holdLeft();
+          if (left <= 0) {
+            safeSetText(el, "");
+          } else {
+            const sec = Math.ceil(left / 1000);
+            safeSetText(el, `· ${txt().hold} ${Math.floor(sec / 60)}:${pad(sec % 60)}`);
+          }
+        }, 500);
+      }
+    }
+
+    function currentPoolForPicks(){
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      let arr = LISTINGS.filter(l => hasService(l, sid) && matchesSearch(l, STATE.search));
+      if (!arr.length) arr = LISTINGS.filter(l => hasService(l, sid));
+      return arr;
+    }
+
+    $("#pickFast")?.addEventListener("click", () => {
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const pool = currentPoolForPicks()
+        .map(l => ({ l, slot: nextSlotForListing(l, sid) }))
+        .filter(x => x.slot)
+        .sort((a, b) => {
+          const da = `${a.slot.dateISO} ${a.slot.time}`;
+          const db = `${b.slot.dateISO} ${b.slot.time}`;
+          return da < db ? -1 : da > db ? 1 : 0;
+        });
+
+      const best = pool[0];
+      if (best) openBooking({ listingId: best.l.id, serviceId: sid, dateISO: best.slot.dateISO, time: best.slot.time });
+    });
+
+    $("#pickCheap")?.addEventListener("click", () => {
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const pool = currentPoolForPicks()
+        .map(l => ({ l, p: fromPrice(l, sid) }))
+        .filter(x => x.p != null)
+        .sort((a, b) => a.p - b.p);
+
+      const best = pool[0];
+      if (best) openBooking({ listingId: best.l.id, serviceId: sid });
+    });
+
+    $("#pickNear")?.addEventListener("click", () => {
+      const sid = STATE.booking.serviceId || STATE.serviceId || "";
+      const pool = currentPoolForPicks().slice().sort((a, b) => distanceValue(a) - distanceValue(b));
+      const best = pool[0];
+      if (best) openBooking({ listingId: best.id, serviceId: sid });
+    });
+
+    function openAISheet(){
+      $("#aiSheet")?.classList.add("show");
+      lockBody(true);
+      renderAIServiceRow();
+      renderAIList();
+    }
+
+    function closeAISheet(){
+      $("#aiSheet")?.classList.remove("show");
+      if (!STATE.booking.open) lockBody(false);
+    }
+
+    $("#btnAI")?.addEventListener("click", openAISheet);
+    $("#aiClose")?.addEventListener("click", closeAISheet);
+    $("#aiSheet")?.addEventListener("click", e => {
+      if (e.target === $("#aiSheet")) closeAISheet();
+    });
+
+    function renderAIServiceRow(){
+      const row = $("#aiServiceRow");
+      if (!row) return;
+
+      const ids = uniqueServiceIds();
+      safeSetHTML(row, ids.map(sid => {
+        const label = serviceLabelFromId(sid) || sid;
+        const icon = serviceIcon(sid);
+        const active = STATE.serviceId === sid ? "primary" : "";
+        return `<button class="aiPill ${active}" data-sid="${escapeHtml(sid)}" type="button">${icon} ${escapeHtml(label)}</button>`;
+      }).join(""));
+
+      $$(".aiPill[data-sid]", row).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sid = btn.getAttribute("data-sid") || "";
+          STATE.serviceId = sid;
+          lsSet("bb.serviceId", sid);
+          renderServiceChips();
+          renderAIServiceRow();
+          renderAIList();
+          renderAll();
+        });
+      });
+    }
+
+    function setAiMode(mode){
+      STATE.aiMode = mode;
+      lsSet("bb.aiMode", mode);
+      $("#aiTop")?.classList.toggle("primary", mode === "top");
+      $("#aiRec")?.classList.toggle("primary", mode === "rec");
+      $("#aiNear")?.classList.toggle("primary", mode === "near");
+    }
+
+    $("#aiTop")?.addEventListener("click", () => { setAiMode("top"); renderAIList(); });
+    $("#aiRec")?.addEventListener("click", () => { setAiMode("rec"); renderAIList(); });
+    $("#aiNear")?.addEventListener("click", () => { setAiMode("near"); renderAIList(); });
+
+    $("#aiClear")?.addEventListener("click", () => {
+      STATE.serviceId = "";
+      STATE.search = "";
+      lsSet("bb.serviceId", "");
+      lsSet("bb.search", "");
+      if ($("#search")) $("#search").value = "";
+      toast("OK", txt().reset, 1800);
+      renderServiceChips();
+      renderAIServiceRow();
+      renderAIList();
+      renderAll();
+    });
+
+    function renderAIList(){
+      const list = $("#aiList");
+      if (!list) return;
+
+      const sid = STATE.serviceId || uniqueServiceIds()[0] || "";
+      let pool = LISTINGS.filter(l => hasService(l, sid));
+
+      if (STATE.aiMode === "top") {
+        pool.sort((a, b) => {
+          const pa = isPartner(a) ? 1 : 0;
+          const pb = isPartner(b) ? 1 : 0;
+          if (pb !== pa) return pb - pa;
+          return ratingValue(b) - ratingValue(a);
+        });
+      } else if (STATE.aiMode === "rec") {
+        pool.sort((a, b) => {
+          const ra = isRecommended(a) ? 1 : 0;
+          const rb = isRecommended(b) ? 1 : 0;
+          if (rb !== ra) return rb - ra;
+          return ratingValue(b) - ratingValue(a);
+        });
+      } else {
+        pool.sort((a, b) => distanceValue(a) - distanceValue(b));
+      }
+
+      pool = pool.slice(0, 6);
+
+      safeSetHTML(list, pool.map(l => {
+        const slot = nextSlotForListing(l, sid);
+        const when = slot ? fmtPretty(slot.dateISO, slot.time, STATE.lang) : "—";
+        const from = fromPrice(l, sid);
+        const price = from != null ? `$${Math.round(from)}+` : "—";
+        const r = ratingValue(l);
+        const meta = `${when} • ${price}${r ? ` • ⭐️ ${r.toFixed(1)}` : ""}`;
+        return `
+          <div class="aiItem">
+            <div style="min-width:0">
+              <div class="n">${escapeHtml(l?.name || l?.title || "—")}</div>
+              <div class="m">${escapeHtml(meta)}</div>
+            </div>
+            <button class="go" data-id="${escapeHtml(l?.id)}" type="button">Go</button>
+          </div>
+        `;
+      }).join(""));
+
+      $$(".go", list).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          closeAISheet();
+          openBooking({ listingId: id, serviceId: sid });
+        });
+      });
+
+      setAiMode(STATE.aiMode || "top");
+    }
+
+    function cycleLang(){
+      const i = LANGS.indexOf(STATE.lang);
+      STATE.lang = LANGS[(i + 1) % LANGS.length];
+      lsSet("bb.lang", STATE.lang);
+      applyTexts();
+      renderStories();
+      renderServiceChips();
+      renderNext();
+      renderGrids();
+      renderAIServiceRow();
+      renderAIList();
+    }
+
+    $("#btnLang")?.addEventListener("click", cycleLang);
+    $("#btnTheme")?.addEventListener("click", () => {
+      STATE.theme = STATE.theme === "day" ? "night" : "day";
+      applyTheme();
+    });
+
+    $("#btnFavOnly")?.addEventListener("click", () => {
+      STATE.favOnly = !STATE.favOnly;
+      lsSet("bb.favOnly", STATE.favOnly);
+      $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
+      renderGrids();
+    });
+
+    const searchEl = $("#search");
+    if (searchEl) {
+      searchEl.value = STATE.search || "";
+      searchEl.addEventListener("input", () => {
+        STATE.search = searchEl.value || "";
+        lsSet("bb.search", STATE.search);
+        renderGrids();
+      });
+    }
+
+    $("#tabAll")?.addEventListener("click", () => setTab("all"));
+    $("#tabPartners")?.addEventListener("click", () => setTab("partners"));
+    $("#tabRecommended")?.addEventListener("click", () => setTab("rec"));
+
+    $("#btnCopyLink")?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        toast(
+          "OK",
+          STATE.lang === "fr" ? "Lien copié ✅" :
+          STATE.lang === "ru" ? "Ссылка скопирована ✅" :
+          STATE.lang === "en" ? "Link copied ✅" :
+          "Лінк скопійовано ✅",
+          1800
+        );
+      } catch {
+        toast("OK", location.href, 2200);
+      }
+    });
+
+    async function sendBooking(payload){
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 12000);
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(t);
+        let j = null;
+        try { j = await res.json(); } catch {}
+        return { ok: res.ok, data: j };
+      } catch (e) {
+        clearTimeout(t);
+        return { ok: false, error: String(e) };
+      }
+    }
+
+    $("#m_bookBtn")?.addEventListener("click", async () => {
+      const listing = LISTINGS.find(l => String(l.id) === String(STATE.booking.listingId)) || null;
+      const sid = STATE.booking.serviceId || "";
+      const dateISO = (STATE.booking.dateISO || $("#m_date")?.value || "").trim();
+      const time = (STATE.booking.time || "").trim();
+
+      const name = ($("#m_name")?.value || "").trim();
+      const phone = ($("#m_phone")?.value || "").trim();
+      const email = ($("#m_email")?.value || "").trim();
+      const notes = ($("#m_notes")?.value || "").trim();
+
+      if (!listing || !sid || !dateISO || !time || !name || !phone) {
+        toast(txt().failed, txt().missing, 2600);
+        return;
+      }
+
+      const serviceName = resolveServiceName(sid);
+      const pretty = fmtPretty(dateISO, time, STATE.lang);
+
+      const basePath = location.pathname.replace(/\/index\.html?$/i, "/");
+      const payload = {
+        id: uid(),
+        lang: STATE.lang,
+        theme: STATE.theme,
+        listingId: String(listing.id),
+        listingName: listing.name || listing.title || String(listing.id),
+        address: listing.address || listing.addr || "",
+        serviceId: sid,
+        serviceName,
+        dateISO,
+        time,
+        pretty,
+        customer: { name, phone, email },
+        notes,
+        profileUrl: `${location.origin}${basePath}profile.html?id=${encodeURIComponent(listing.id)}`
+      };
+
+      toast("…", "Sending…", 1200);
+
+      const r = await sendBooking(payload);
+      if (r.ok && r.data?.ok !== false) {
+        toast(txt().sent, txt().sentText, 3200);
+        closeBooking();
+      } else {
+        toast(txt().failed, txt().failedText, 3600);
+      }
+    });
+
+    function parseQS(){
+      const p = new URLSearchParams(location.search || "");
+      return {
+        book: p.get("book"),
+        id: p.get("id"),
+        service: p.get("service")
+      };
+    }
+
+    function initBackToTop(){
+      const btn = $("#toTop");
+      if (!btn) return;
+
+      const sync = () => {
+        btn.classList.toggle("show", window.scrollY > 420);
+      };
+
+      window.addEventListener("scroll", sync, { passive: true });
+      btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      sync();
+    }
+
+    function renderAll(){
+      applyTheme();
+      applyTexts();
+      renderStories();
+
+      $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
+
+      renderServiceChips();
+      renderNext();
+      setTab(STATE.tab || "all");
+    }
+
+    function init(){
+      applyTheme();
+      applyTexts();
+      renderStories();
+
+      initNetbar();
+      initSWUpdate();
+      initBackToTop();
+
+      renderServiceChips();
+      renderNext();
+      startNextRotation();
+
+      setTab(STATE.tab || "all");
+
+      if ($("#search")) $("#search").value = STATE.search || "";
+      $("#btnFavOnly")?.classList.toggle("active", STATE.favOnly);
+
+      const qs = parseQS();
+      if (qs.book === "1") {
+        const sid = qs.service || STATE.serviceId || "";
+        const id = qs.id || "";
+        setTimeout(() => openBooking({ listingId: id, serviceId: sid }), 80);
+      } else if (STATE.booking.open) {
+        setTimeout(() => openBooking({}), 80);
+      }
+    }
+
+    init();
+  })();
+  </script>
 </body>
 </html>
