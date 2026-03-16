@@ -1,1193 +1,1645 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en" data-theme="night">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#0b0b0f" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0f" id="metaTheme" />
   <title>Beauty Booking · Profile</title>
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" /><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="BookingClub">
 
-<link rel="apple-touch-startup-image" href="/apple-splash-1179x2556.png"
-      media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)">
+  <meta name="description" content="Beauty Booking profile — verified salon or master, services, address, and quick booking." />
+  <meta property="og:title" content="Beauty Booking · Profile" />
+  <meta property="og:description" content="Verified beauty profile with clear services, address, and fast booking." />
+  <meta property="og:type" content="website" />
 
-<link rel="apple-touch-startup-image" href="/apple-splash-1290x2796.png"
-      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Beauty Booking" />
+  <meta name="format-detection" content="telephone=no,email=no,address=no" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg:#07070b; --bg2:#0b0b11;
-      --text:#f4f3f8; --muted:rgba(244,243,248,.68);
-      --pink:#ff4fd8; --gold:#ffd27a; --violet:#8b5cf6;
-      --r:22px; --r2:28px;
-      --shadow: 0 22px 70px rgba(0,0,0,.55);
-      --shadow2: 0 10px 30px rgba(0,0,0,.35);
-      --max:1100px;
+      --bg:#07070b;
+      --bg2:#0c0c12;
+      --bg3:#12121a;
+      --card:rgba(255,255,255,.05);
+      --card2:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.14);
+      --text:#f5f6fb;
+      --muted:rgba(245,246,251,.72);
+      --muted2:rgba(245,246,251,.54);
+
+      --pink:#ff4fd8;
+      --gold:#ffd27a;
+      --violet:#8b5cf6;
+      --mint:#5cf6c7;
+      --cyan:#55d9ff;
+
+      --r:22px;
+      --r2:28px;
+      --r3:34px;
+
+      --shadow:0 24px 70px rgba(0,0,0,.54);
+      --shadow2:0 12px 32px rgba(0,0,0,.36);
+      --glow:0 0 0 1px rgba(255,255,255,.06), 0 18px 50px rgba(255,79,216,.10);
+
+      --safe-top:env(safe-area-inset-top);
+      --safe-bottom:env(safe-area-inset-bottom);
+      --safe-left:env(safe-area-inset-left);
+      --safe-right:env(safe-area-inset-right);
+
+      --font-title:"Playfair Display", ui-serif, Georgia, serif;
+      --font-ui:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+      --glassA:rgba(10,10,16,.88);
+      --glassB:rgba(10,10,16,.58);
     }
+
+    html[data-theme="day"]{
+      --bg:#f7f3ff;
+      --bg2:#fff8fc;
+      --bg3:#ffffff;
+      --card:rgba(10,10,20,.055);
+      --card2:rgba(10,10,20,.08);
+      --line:rgba(10,10,20,.12);
+      --line2:rgba(10,10,20,.18);
+      --text:#0a0a14;
+      --muted:rgba(10,10,20,.68);
+      --muted2:rgba(10,10,20,.52);
+      --shadow:0 18px 60px rgba(10,10,20,.16);
+      --shadow2:0 12px 28px rgba(10,10,20,.12);
+      --glow:0 0 0 1px rgba(10,10,20,.08), 0 16px 50px rgba(255,79,216,.08);
+      --glassA:rgba(255,255,255,.86);
+      --glassB:rgba(255,255,255,.66);
+    }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
     body{
-      margin:0; color:var(--text);
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      margin:0;
+      color:var(--text);
+      font-family:var(--font-ui);
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
       background:
-        radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),
-        radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),
-        radial-gradient(900px 700px at 70% 90%, rgba(255,210,122,.10), transparent 60%),
+        radial-gradient(900px 520px at 10% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(900px 520px at 92% 8%, rgba(139,92,246,.14), transparent 60%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.10), transparent 65%),
         linear-gradient(180deg, var(--bg), var(--bg2));
     }
-    a{color:inherit; text-decoration:none}
-    .wrap{max-width:var(--max); margin:0 auto; padding:18px 18px 90px}
-    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px}
-    .back{display:inline-flex; gap:10px; align-items:center; padding:10px 12px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05);}
-    .card{
-      border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .hero{height:320px; position:relative; background:rgba(255,255,255,.06)}
-    .hero img{width:100%; height:100%; object-fit:cover; filter:saturate(1.05) contrast(1.02)}
-    .hero:after{content:""; position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.75));}
-    .heroInner{position:absolute; left:16px; right:16px; bottom:16px; z-index:2}
-    h1{margin:0; font-family:"Playfair Display",serif; font-size:34px; letter-spacing:-.3px}
-    .addr{margin-top:6px; color:rgba(244,243,248,.78)}
-    .badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .tag{font-size:12px; font-weight:800; padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.25)}
-    .tag.partner{border-color: rgba(255,79,216,.32); background: rgba(255,79,216,.12)}
-    .tag.good{border-color: rgba(32,227,165,.28); background: rgba(32,227,165,.10)}
-    .tag.today{border-color: rgba(255,210,122,.32); background: rgba(255,210,122,.10)}
-    .content{padding:16px}
-    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px}
-    .glass{
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-    }
-    .pad{padding:14px}
-    .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,243,248,.62)}
-    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .btn{
-      border:0; cursor:pointer;
-      padding:12px 14px; border-radius:14px; font-weight:900;
-      color:#0b0b0f;
-      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
-      box-shadow: 0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4);
-    }
-    .btn.secondary{
-      background: rgba(255,255,255,.08);
-      color: rgba(244,243,248,.92);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:none;
-    }
-    .svc{display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08)}
-    .svc:last-child{border-bottom:0}
-    .muted{color:var(--muted)}
-    iframe{width:100%; height:320px; border:0}
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr} .hero{height:280px} }
-
-    /* ===========================
-       BOOKING MODAL (DROP-IN)
-       =========================== */
-    .bbModal{
-      position:fixed; inset:0; z-index:9999;
-      display:none;
-      align-items:flex-end; justify-content:center;
-      background:rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding:14px;
-    }
-    .bbModal.isOpen{display:flex}
-    .bbSheet{
-      width:min(980px, 100%);
-      border-radius: 26px;
-      border:1px solid rgba(255,255,255,.12);
+    html[data-theme="day"] body{
       background:
-        radial-gradient(900px 500px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
-        radial-gradient(700px 500px at 85% 10%, rgba(139,92,246,.14), transparent 60%),
-        linear-gradient(180deg, rgba(20,20,28,.96), rgba(10,10,14,.98));
-      box-shadow: 0 30px 120px rgba(0,0,0,.70);
-      overflow:hidden;
-      transform: translateY(12px);
-      animation: bbUp .18s ease-out forwards;
-    }
-    @keyframes bbUp{to{transform:translateY(0)}}
-    .bbTopbar{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .bbTopbar .t{
-      display:flex; flex-direction:column; gap:3px;
-    }
-    .bbTopbar .t .h{
-      font-family:"Playfair Display",serif;
-      font-size:18px; letter-spacing:-.2px;
-    }
-    .bbTopbar .t .s{font-size:12.5px; opacity:.75}
-    .bbX{
-      width:40px;height:40px;border-radius:14px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:rgba(244,243,248,.92);
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
-    }
-    .bbX:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
-    .bbBody{
-      padding:14px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-    }
-    @media (max-width: 900px){
-      .bbBody{grid-template-columns:1fr}
-    }
-    .bbPane{
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-    }
-    .bbPane .pad{padding:12px}
-    .bbLabel{
-      font-size:12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:rgba(244,243,248,.62);
+        radial-gradient(900px 520px at 10% 0%, rgba(255,79,216,.18), transparent 60%),
+        radial-gradient(900px 520px at 92% 8%, rgba(139,92,246,.18), transparent 60%),
+        radial-gradient(900px 520px at 50% 100%, rgba(255,210,122,.18), transparent 65%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
     }
 
-    /* services cards */
-    .bbSvcGrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px}
-    @media (min-width:720px){.bbSvcGrid{grid-template-columns:repeat(3,minmax(0,1fr));}}
-    .bbSvc{
-      text-align:left;
+    a{color:inherit;text-decoration:none}
+    button,input,select{font-family:inherit}
+    button{cursor:pointer}
+    img{display:block;max-width:100%}
+    [hidden]{display:none!important}
+
+    .aurora{
+      position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+    }
+    .orb{
+      position:absolute; border-radius:999px; filter:blur(50px); opacity:.24;
+      animation:floatOrb 18s ease-in-out infinite;
+      mix-blend-mode:screen;
+    }
+    .orb.a{width:280px;height:280px;background:rgba(255,79,216,.30);left:-60px;top:8%}
+    .orb.b{width:320px;height:320px;background:rgba(139,92,246,.26);right:-70px;top:16%;animation-delay:-6s}
+    .orb.c{width:280px;height:280px;background:rgba(255,210,122,.22);left:16%;bottom:4%;animation-delay:-11s}
+    .orb.d{width:260px;height:260px;background:rgba(92,246,199,.20);right:16%;bottom:2%;animation-delay:-8s}
+    @keyframes floatOrb{
+      0%,100%{transform:translate3d(0,0,0) scale(1)}
+      50%{transform:translate3d(20px,-26px,0) scale(1.08)}
+    }
+
+    .topbar{
+      position:sticky; top:0; z-index:40;
+      padding:calc(14px + var(--safe-top)) calc(16px + var(--safe-right)) 12px calc(16px + var(--safe-left));
+      backdrop-filter:blur(18px);
+      background:linear-gradient(180deg, var(--glassA), var(--glassB));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    html[data-theme="day"] .topbar{border-bottom-color:rgba(10,10,20,.10)}
+
+    .topbarRow{
+      max-width:1180px; margin:8px auto 0;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px; min-width:0;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:15px;flex:0 0 auto;
+      background:
+        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, rgba(255,79,216,.95), rgba(255,210,122,.86), rgba(139,92,246,.90));
+      box-shadow:0 12px 38px rgba(255,79,216,.20), 0 0 0 1px rgba(255,255,255,.10);
+      position:relative; overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.30), transparent 55%);
+      transform:rotate(25deg);
+    }
+
+    .brandText{display:flex;flex-direction:column;line-height:1.04}
+    .brandText .name{
+      font-family:var(--font-title);
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .brandText .sub{
+      margin-top:2px;
+      color:var(--muted2);
+      font-size:12px;
+    }
+
+    .topActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+    .backBtn,.iconBtn,.ctaBtn,.chipBtn,.socialBtn,.bookBtn,.sheetBtn,.closeBtn,.slotBtn,.svcBtn,.quickBtn,.toTop{
+      -webkit-tap-highlight-color:transparent;
+      transition:transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+    }
+
+    .backBtn,.iconBtn,.ctaBtn,.chipBtn,.socialBtn,.sheetBtn,.closeBtn,.slotBtn,.quickBtn,.toTop{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .backBtn,
+    html[data-theme="day"] .iconBtn,
+    html[data-theme="day"] .ctaBtn,
+    html[data-theme="day"] .chipBtn,
+    html[data-theme="day"] .socialBtn,
+    html[data-theme="day"] .sheetBtn,
+    html[data-theme="day"] .closeBtn,
+    html[data-theme="day"] .slotBtn,
+    html[data-theme="day"] .quickBtn,
+    html[data-theme="day"] .toTop{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.78);
+      box-shadow:0 12px 28px rgba(10,10,20,.10);
+    }
+
+    .backBtn:hover,.iconBtn:hover,.ctaBtn:hover,.chipBtn:hover,.socialBtn:hover,.sheetBtn:hover,.closeBtn:hover,.slotBtn:hover,.quickBtn:hover,.toTop:hover{
+      background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.16);
+    }
+    html[data-theme="day"] .backBtn:hover,
+    html[data-theme="day"] .iconBtn:hover,
+    html[data-theme="day"] .ctaBtn:hover,
+    html[data-theme="day"] .chipBtn:hover,
+    html[data-theme="day"] .socialBtn:hover,
+    html[data-theme="day"] .sheetBtn:hover,
+    html[data-theme="day"] .closeBtn:hover,
+    html[data-theme="day"] .slotBtn:hover,
+    html[data-theme="day"] .quickBtn:hover,
+    html[data-theme="day"] .toTop:hover{
+      background:rgba(255,255,255,.88);
+      border-color:rgba(10,10,20,.18);
+    }
+
+    .backBtn:active,.iconBtn:active,.ctaBtn:active,.chipBtn:active,.socialBtn:active,.bookBtn:active,.sheetBtn:active,.closeBtn:active,.slotBtn:active,.svcBtn:active,.quickBtn:active,.toTop:active{
+      transform:scale(.985);
+    }
+
+    .backBtn{
+      min-height:46px;padding:0 14px;border-radius:16px;
+      display:flex;align-items:center;gap:10px;font-weight:700;
+    }
+    .iconBtn{
+      width:46px;height:46px;border-radius:16px;
+      display:grid;place-items:center;font-size:18px;
+    }
+
+    .wrap{
+      position:relative;z-index:1;
+      max-width:1180px;
+      margin:0 auto;
+      padding:16px calc(16px + var(--safe-right)) calc(120px + var(--safe-bottom)) calc(16px + var(--safe-left));
+    }
+
+    .heroCard{
+      overflow:hidden;
+      border-radius:var(--r3);
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(620px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(560px 280px at 90% 16%, rgba(139,92,246,.20), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow:var(--shadow);
+      position:relative;
+      isolation:isolate;
+    }
+    html[data-theme="day"] .heroCard{
+      border-color:rgba(10,10,20,.10);
+      background:
+        radial-gradient(620px 280px at 15% 20%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(560px 280px at 90% 16%, rgba(139,92,246,.20), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.90), rgba(255,255,255,.56));
+    }
+
+    .heroMedia{
+      height:360px;
       position:relative;
       overflow:hidden;
-      border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      padding:12px;
-      cursor:pointer;
-      transition:transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-    .bbSvc:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.18); background:rgba(255,255,255,.075)}
-    .bbSvc.isActive{border-color:rgba(214,169,255,.55); box-shadow:0 0 0 1px rgba(214,169,255,.20) inset}
-    .bbSvc .n{font-weight:800}
-    .bbSvc .m{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; font-size:12px; opacity:.88}
-    .bbPill{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:5px 8px; border-radius:999px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:11px;
-    }
-    .bbPill.hot{
-      background:linear-gradient(135deg,rgba(255,79,216,.18),rgba(214,169,255,.10));
-      border-color:rgba(255,79,216,.25);
-    }
-    .bbPill.value{
-      background:linear-gradient(135deg,rgba(255,210,122,.16),rgba(214,169,255,.10));
-      border-color:rgba(255,210,122,.22);
-    }
-
-    /* chips */
-    .bbChips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-    .bbChip{
-      border-radius:999px;
-      padding:7px 10px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:12px;
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
-      color:rgba(244,243,248,.92);
-    }
-    .bbChip:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
-    .bbChip.isActive{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
-
-    /* calendar */
-    .bbCal{
-      margin-top:10px;
-      border-radius:18px;
-      background:rgba(0,0,0,.14);
-      border:1px solid rgba(255,255,255,.10);
-      padding:10px;
-    }
-    .bbCalBar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
-    .bbCalMonth{font-weight:800; opacity:.92}
-    .bbCalNav{
-      width:34px; height:34px; border-radius:12px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:rgba(244,243,248,.92);
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
-    }
-    .bbCalNav:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
-    .bbDow{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; padding:0 2px; margin-bottom:6px; opacity:.6; font-size:11px}
-    .bbGrid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
-    .bbDay{
-      height:38px;
-      border-radius:14px;
       background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
-      user-select:none;
-      color:rgba(244,243,248,.92);
     }
-    .bbDay:hover{transform:translateY(-1px); background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.14)}
-    .bbDay.out{opacity:.32; cursor:default}
-    .bbDay.disabled{opacity:.26; cursor:not-allowed}
-    .bbDay.today{border-color:rgba(255,210,122,.18)}
-    .bbDay.active{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+    .heroMedia img{
+      width:100%;height:100%;object-fit:cover;
+      filter:saturate(1.06) contrast(1.02);
+      transform:scale(1.02);
+    }
+    .heroMedia:after{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(260px 140px at 20% 10%, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.74));
+      pointer-events:none;
+    }
 
-    /* time grid */
-    .bbTimeGroup{margin-top:12px}
-    .bbTimeH{
-      font-size:12px; opacity:.72;
-      letter-spacing:.12em; text-transform:uppercase;
-      margin-bottom:6px;
+    .heroInner{
+      position:absolute;
+      left:16px;right:16px;bottom:16px;z-index:2;
     }
-    .bbSlots{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
-    @media (min-width:720px){.bbSlots{grid-template-columns:repeat(4,minmax(0,1fr));}}
-    .bbSlot{
-      padding:10px 10px;
-      border-radius:14px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      cursor:pointer;
-      font-size:13px;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
-      color:rgba(244,243,248,.92);
-    }
-    .bbSlot:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
-    .bbSlot.disabled{opacity:.35; cursor:not-allowed}
-    .bbSlot.active{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
 
-    /* hold */
-    .bbHold{display:flex; align-items:center; gap:8px; margin-top:8px}
-    .bbHoldP{
-      padding:5px 9px;
-      border-radius:999px;
-      font-size:11px;
-      background:rgba(214,169,255,.10);
-      border:1px solid rgba(214,169,255,.30);
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(0,0,0,.26);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-size:12px;
+      box-shadow:var(--shadow2);
+      backdrop-filter:blur(10px);
+      margin-bottom:12px;
     }
-    .bbHoldT{font-variant-numeric:tabular-nums; opacity:.9; font-size:12px}
 
-    /* receipt + client */
-    .bbReceipt{
-      margin-top:10px;
-      border-radius:18px;
-      padding:12px;
-      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.10);
-    }
-    .bbRRow{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0}
-    .bbRK{opacity:.72; font-size:12px}
-    .bbRV{font-weight:800}
-    .bbRNote{margin-top:6px; opacity:.7; font-size:12px}
-    .bbMini{
-      margin-top:10px; width:100%;
-      border-radius:14px; padding:10px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
-      color:rgba(244,243,248,.92);
+    .heroTitle{
+      margin:0;
+      font-family:var(--font-title);
       font-weight:800;
+      font-size:clamp(28px,4vw,44px);
+      line-height:1.02;
+      letter-spacing:.12px;
+      color:#fff;
     }
-    .bbMini:hover{transform:translateY(-1px); background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.16)}
-
-    .bbForm{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px}
-    @media (min-width:720px){.bbForm{grid-template-columns:1fr 1fr 1fr}}
-    .bbField{display:flex; flex-direction:column; gap:6px}
-    .bbField span{font-size:12px; opacity:.7}
-    .bbField input{
-      height:44px;
-      border-radius:14px;
-      padding:0 12px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:inherit;
-      outline:none;
+    .heroAddr{
+      margin-top:8px;
+      color:rgba(255,255,255,.84);
+      font-size:14px;
+      line-height:1.42;
     }
-    .bbField input:focus{border-color:rgba(214,169,255,.45); box-shadow:0 0 0 2px rgba(214,169,255,.12)}
 
-    .bbActions{display:flex; gap:10px; justify-content:space-between; margin-top:12px}
-    .bbBtn{
-      height:46px; border-radius:16px;
-      padding:0 14px;
-      border:1px solid rgba(255,255,255,.10);
-      cursor:pointer;
-      color:rgba(244,243,248,.92);
+    .badgeRow{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+    }
+    .badge{
+      font-size:11px;
       font-weight:900;
-      background:rgba(255,255,255,.06);
-      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(0,0,0,.34);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      backdrop-filter:blur(10px);
     }
-    .bbBtn:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
-    .bbBtn.primary{
+    .badge.partner{border-color:rgba(255,210,122,.30); background:rgba(255,210,122,.12)}
+    .badge.verified{border-color:rgba(139,92,246,.32); background:rgba(139,92,246,.12)}
+    .badge.sterile{border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.10)}
+    .badge.rating{border-color:rgba(92,246,199,.28); background:rgba(92,246,199,.10)}
+
+    .content{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:14px;
+    }
+    @media (max-width:940px){
+      .content{grid-template-columns:1fr}
+      .heroMedia{height:300px}
+    }
+
+    .glass{
+      border-radius:var(--r2);
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+    }
+    html[data-theme="day"] .glass{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.80);
+    }
+
+    .pad{padding:14px}
+    .sectionKicker{
+      font-size:11px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted2);
+    }
+
+    .infoGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+    @media (max-width:560px){
+      .infoGrid{grid-template-columns:1fr}
+    }
+    .infoBox{
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .infoBox{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.82);
+    }
+    .infoBox .k{
+      font-size:11px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted2);
+    }
+    .infoBox .v{
+      margin-top:8px;
+      font-weight:900;
+      font-size:18px;
+      line-height:1.18;
+    }
+    .infoBox .m{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.42;
+    }
+
+    .serviceList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:12px;
+    }
+    .svcRow{
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .svcRow{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.84);
+    }
+    .svcLeft{min-width:0}
+    .svcTitle{
+      font-weight:900;
+      line-height:1.18;
+    }
+    .svcMeta{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.38;
+    }
+    .svcPrice{
+      white-space:nowrap;
+      font-weight:900;
+      font-size:13px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+    }
+    html[data-theme="day"] .svcPrice{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.88);
+    }
+
+    .actionRow{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;
+    }
+    .ctaBtn,.socialBtn{
+      min-height:46px;
+      padding:0 14px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      user-select:none;
+    }
+    .ctaBtn.primary,.bookBtn{
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(135deg, rgba(255,79,216,.84), rgba(255,210,122,.66), rgba(139,92,246,.76));
+      box-shadow:0 18px 60px rgba(255,79,216,.14);
+    }
+    .ctaBtn.primary:hover,.bookBtn:hover{filter:brightness(1.04)}
+
+    .bio{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.58;
+      white-space:pre-line;
+    }
+
+    .mapWrap{
+      margin-top:12px;
+      border-radius:20px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .mapWrap{
+      border-color:rgba(10,10,20,.12);
+    }
+    iframe{
+      width:100%;
+      height:340px;
+      border:0;
+    }
+
+    .quickBookBox{
+      margin-top:12px;
+      padding:14px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(360px 160px at 14% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(360px 160px at 100% 0%, rgba(139,92,246,.14), transparent 60%),
+        rgba(255,255,255,.04);
+      box-shadow:var(--glow);
+    }
+    html[data-theme="day"] .quickBookBox{
+      border-color:rgba(10,10,20,.12);
+      background:
+        radial-gradient(360px 160px at 14% 0%, rgba(255,79,216,.12), transparent 60%),
+        radial-gradient(360px 160px at 100% 0%, rgba(139,92,246,.12), transparent 60%),
+        rgba(255,255,255,.86);
+    }
+
+    .quickBookTop{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+    .quickBookTitle{
+      font-weight:900;
+      font-size:18px;
+      line-height:1.18;
+    }
+    .quickBookMeta{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.42;
+    }
+
+    .quickRow{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+    }
+    .quickBtn,.chipBtn{
+      min-height:36px;
+      padding:0 12px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      font-weight:700;
+      user-select:none;
+    }
+
+    .bookBtn{
+      margin-top:14px;
+      min-height:50px;
+      width:100%;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:900;
+      letter-spacing:.15px;
+      user-select:none;
+    }
+
+    .overlay,.sheet{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.62);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      display:none;
+      align-items:flex-end;
+      padding:14px calc(14px + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(14px + var(--safe-left));
+    }
+    .overlay{z-index:80}
+    .sheet{z-index:90}
+    .overlay.show,.sheet.show{display:flex}
+
+    .modal,.sheetCard{
+      width:min(760px, 100%);
+      margin:0 auto;
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 30px 120px rgba(0,0,0,.72);
+      overflow:hidden;
+      max-height:92vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal{
+      background:
+        radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.20), transparent 55%),
+        radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.20), transparent 58%),
+        linear-gradient(180deg, rgba(20,20,30,.95), rgba(12,12,18,.92));
+    }
+    .sheetCard{
+      width:min(560px, 100%);
+      background:linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,16,.94));
+    }
+    html[data-theme="day"] .modal,
+    html[data-theme="day"] .sheetCard{
+      border-color:rgba(10,10,20,.14);
+      background:
+        radial-gradient(680px 260px at 20% 0%, rgba(255,79,216,.18), transparent 55%),
+        radial-gradient(600px 260px at 90% 0%, rgba(139,92,246,.18), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+      box-shadow:0 30px 100px rgba(10,10,20,.18);
+    }
+
+    .modalHead,.sheetHead{
+      padding:14px 14px 12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    html[data-theme="day"] .modalHead,
+    html[data-theme="day"] .sheetHead{border-bottom-color:rgba(10,10,20,.10)}
+
+    .modalTitle,.sheetTitle{
+      margin:0;
+      font-family:var(--font-title);
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .modalTitle{font-size:20px}
+    .sheetTitle{font-size:17px}
+
+    .closeBtn{
+      width:42px;height:42px;border-radius:16px;
+      display:grid;place-items:center;
+    }
+
+    .modalBody,.sheetBody{
+      padding:14px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+    }
+
+    .field{margin-bottom:12px}
+    .label{font-size:12px;color:var(--muted2);margin-bottom:6px}
+    .input,.sheetBtn{
+      width:100%;
+      height:48px;
+      border-radius:16px;
+      padding:0 12px;
+      outline:none;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      box-shadow:var(--shadow2);
+    }
+    .sheetBtn{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      font-weight:700;
+    }
+    html[data-theme="day"] .input,
+    html[data-theme="day"] .sheetBtn{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.82);
+      box-shadow:0 12px 28px rgba(10,10,20,.10);
+    }
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width:560px){
+      .row2{grid-template-columns:1fr}
+    }
+
+    .quickPickRow{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;
+    }
+    .quickPick{
+      min-height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      display:flex;align-items:center;gap:8px;
+      font-size:13px;font-weight:700;
+      box-shadow:none;
+      user-select:none;
+    }
+    html[data-theme="day"] .quickPick{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.80);
+    }
+    .quickPick.active{
+      background:rgba(92,246,199,.16);
+      border-color:rgba(92,246,199,.30);
+    }
+
+    .timeGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+    @media (max-width:520px){
+      .timeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    .slotBtn{
+      min-height:44px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      letter-spacing:.2px;
+      user-select:none;
+    }
+    .slotBtn.active{
+      background:rgba(92,246,199,.16);
+      border-color:rgba(92,246,199,.30);
+      box-shadow:0 18px 60px rgba(92,246,199,.10);
+    }
+
+    .modalFoot{
+      padding:12px 14px 14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;
+    }
+    html[data-theme="day"] .modalFoot{border-top-color:rgba(10,10,20,.10)}
+
+    .sheetAction,.confirmBtn{
+      min-height:48px;
+      border-radius:18px;
+      padding:0 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:900;
+      user-select:none;
+    }
+    .sheetAction{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      min-width:140px;
+      box-shadow:var(--shadow2);
+    }
+    html[data-theme="day"] .sheetAction{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.82);
+    }
+    .confirmBtn{
       flex:1;
-      color:#0b0b0f;
-      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
-      border-color:rgba(255,255,255,.0);
-      box-shadow: 0 18px 50px rgba(255,210,122,.12), 0 12px 34px rgba(0,0,0,.35);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(135deg, rgba(255,79,216,.84), rgba(255,210,122,.66), rgba(139,92,246,.76));
+      box-shadow:0 18px 60px rgba(255,79,216,.14);
     }
-    .bbHint{margin-top:10px; opacity:.74; font-size:13px}
+
+    .holdText{
+      font-size:12px;
+      color:var(--muted2);
+      margin-left:6px;
+      white-space:nowrap;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:calc(90px + var(--safe-bottom));
+      transform:translateX(-50%);
+      z-index:95;
+      min-width:260px;
+      max-width:min(680px, calc(100% - 24px));
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(10,10,16,.88);
+      box-shadow:0 22px 70px rgba(0,0,0,.60);
+      color:var(--text);
+      display:none;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+    }
+    html[data-theme="day"] .toast{
+      border-color:rgba(10,10,20,.12);
+      background:rgba(255,255,255,.90);
+      box-shadow:0 22px 60px rgba(10,10,20,.16);
+    }
+    .toast.show{display:block;animation:toastIn .22s ease}
+    @keyframes toastIn{
+      from{opacity:0;transform:translateX(-50%) translateY(10px)}
+      to{opacity:1;transform:translateX(-50%) translateY(0)}
+    }
+    .toast .t1{font-weight:900;margin-bottom:4px}
+    .toast .t2{color:var(--muted);font-size:13px;line-height:1.35}
+
+    .toTop{
+      position:fixed;
+      left:calc(14px + var(--safe-left));
+      bottom:calc(14px + var(--safe-bottom));
+      z-index:55;
+      width:48px;height:48px;border-radius:16px;
+      display:grid;place-items:center;
+      opacity:0;pointer-events:none;
+    }
+    .toTop.show{opacity:1;pointer-events:auto}
+
+    .errorBox{
+      margin-top:16px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+      box-shadow:var(--shadow2);
+      padding:16px;
+      display:none;
+    }
+    html[data-theme="day"] .errorBox{
+      border-color:rgba(10,10,20,.10);
+      background:rgba(255,255,255,.84);
+    }
+
+    @media (max-width:640px){
+      .topbarRow{flex-direction:column;align-items:flex-start}
+      .topActions{width:100%;justify-content:flex-start}
+      .actionRow{display:grid;grid-template-columns:1fr 1fr}
+      .actionRow .ctaBtn,.actionRow .socialBtn{justify-content:center}
+      .modalFoot{flex-direction:column}
+      .sheetAction,.confirmBtn{width:100%}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <a class="back" href="./index.html">← Back</a>
-      <a class="back" href="./index.html" style="opacity:.85">Beauty Booking</a>
-    </div>
+  <div class="aurora" aria-hidden="true">
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+    <div class="orb d"></div>
+  </div>
 
-    <div id="main" class="card" style="display:none">
-      <div class="hero">
-        <img id="heroImg" alt="">
+  <header class="topbar">
+    <div class="topbarRow">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brandText">
+          <div class="name">Beauty Booking</div>
+          <div class="sub">Verified salons & masters</div>
+        </div>
+      </div>
+
+      <div class="topActions">
+        <a class="backBtn" href="./index.html"><span>←</span><span>Back</span></a>
+        <button class="iconBtn" id="btnTheme" type="button" title="Theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="main" hidden>
+      <section class="heroCard">
+        <div class="heroMedia">
+          <img id="heroImg" alt="">
+        </div>
+
         <div class="heroInner">
-          <h1 id="name">—</h1>
-          <div class="addr" id="address">—</div>
-          <div class="badges" id="badges"></div>
+          <div class="eyebrow"><span>✦</span><span id="eyebrowText">Verified beauty profile</span></div>
+          <h1 class="heroTitle" id="name">—</h1>
+          <div class="heroAddr" id="address">—</div>
+          <div class="badgeRow" id="badges"></div>
         </div>
-      </div>
+      </section>
 
-      <div class="content">
-        <div class="grid">
-          <div class="glass">
-            <div class="pad">
-              <div class="kicker">Services</div>
-              <div id="services" style="margin-top:10px"></div>
+      <section class="content">
+        <div class="glass">
+          <div class="pad">
+            <div class="sectionKicker">Overview</div>
 
-              <div class="row">
-                <a id="callBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Call</a>
-                <a id="mapsBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Maps</a>
-                <a id="igBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Instagram</a>
-                <!-- CHANGED: Book now opens modal -->
-                <button id="bookBtn" class="btn" type="button">Book</button>
+            <div class="infoGrid">
+              <div class="infoBox">
+                <div class="k">From price</div>
+                <div class="v" id="boxPrice">—</div>
+                <div class="m">Clear starting price for fast decision.</div>
               </div>
-
-              <div id="bio" class="muted" style="margin-top:14px; white-space:pre-line"></div>
-            </div>
-          </div>
-
-          <div class="glass">
-            <div class="pad">
-              <div class="kicker">Location</div>
-              <div style="margin-top:10px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.10)">
-                <iframe id="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <div class="infoBox">
+                <div class="k">Rating</div>
+                <div class="v" id="boxRating">—</div>
+                <div class="m">Strong profile trust signal.</div>
               </div>
-              <div class="muted" style="margin-top:10px; font-size:12.5px">
-                Tip: можеш відкрити Maps і одразу прокласти маршрут.
+              <div class="infoBox">
+                <div class="k">Next slot</div>
+                <div class="v" id="boxNext">—</div>
+                <div class="m">Best available time right now.</div>
               </div>
             </div>
+
+            <div class="quickBookBox">
+              <div class="quickBookTop">
+                <div style="min-width:0">
+                  <div class="quickBookTitle">Quick book this profile</div>
+                  <div class="quickBookMeta" id="quickMeta">Choose the best service and jump into the fast booking flow.</div>
+                </div>
+              </div>
+
+              <div class="quickRow" id="quickServiceChips"></div>
+
+              <button class="bookBtn" id="bookBtn" type="button">
+                <span>⚡</span><span>Book now</span>
+              </button>
+            </div>
+
+            <div class="actionRow">
+              <a id="callBtn" class="ctaBtn" href="#" target="_blank" rel="noopener"><span>📞</span><span>Call</span></a>
+              <a id="mapsBtn" class="ctaBtn" href="#" target="_blank" rel="noopener"><span>📍</span><span>Maps</span></a>
+              <a id="igBtn" class="socialBtn" href="#" target="_blank" rel="noopener"><span>📷</span><span>Instagram</span></a>
+              <button class="socialBtn" id="copyProfileLink" type="button"><span>🔗</span><span>Copy link</span></button>
+            </div>
+
+            <div class="bio" id="bio"></div>
           </div>
         </div>
-      </div>
+
+        <div class="glass">
+          <div class="pad">
+            <div class="sectionKicker">Services</div>
+            <div class="serviceList" id="services"></div>
+
+            <div class="sectionKicker" style="margin-top:16px">Location</div>
+            <div class="mapWrap">
+              <iframe id="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="bio" style="margin-top:10px;font-size:12.5px">
+              Tip: open Maps and route instantly from this profile.
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <div id="err" class="glass" style="display:none">
-      <div class="pad">
-        <div class="kicker">Error</div>
-        <div style="margin-top:8px" id="errText">—</div>
+    <div class="errorBox" id="err">
+      <div class="sectionKicker">Error</div>
+      <div style="margin-top:8px" id="errText">—</div>
+    </div>
+  </main>
+
+  <button class="toTop" id="toTop" type="button" aria-label="Back to top">↑</button>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Booking">
+      <div class="modalHead">
+        <h3 class="modalTitle" id="m_title">Booking</h3>
+        <button class="closeBtn" id="m_close" type="button">✕</button>
+      </div>
+
+      <div class="modalBody">
+        <div class="field">
+          <div class="label">Salon / Master</div>
+          <input class="input" id="m_listing" readonly />
+        </div>
+
+        <div class="field">
+          <div class="label">Service</div>
+          <select class="input" id="m_service"></select>
+        </div>
+
+        <div class="field">
+          <div class="label">Quick date</div>
+          <div class="quickPickRow" id="quickDateRow"></div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label">Date</div>
+            <input class="input" type="date" id="m_date" />
+          </div>
+
+          <div class="field">
+            <div class="label">Time</div>
+            <button class="sheetBtn" id="m_timeBtn" type="button">
+              <span id="m_timeText">—</span>
+              <span>▾</span>
+            </button>
+
+            <div class="quickPickRow">
+              <button class="quickPick" id="pickFast" type="button">⚡ Fastest</button>
+              <button class="quickPick" id="pickCheap" type="button">💸 Cheapest</button>
+              <button class="quickPick" id="pickEvening" type="button">🌙 Evening</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label">Your name</div>
+            <input class="input" id="m_name" placeholder="Your name" autocomplete="name" />
+          </div>
+          <div class="field">
+            <div class="label">Phone</div>
+            <input class="input" id="m_phone" placeholder="+1 ..." inputmode="tel" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <div class="label">Email</div>
+            <input class="input" id="m_email" placeholder="email@example.com" inputmode="email" autocomplete="email" />
+          </div>
+          <div class="field">
+            <div class="label">Notes</div>
+            <input class="input" id="m_notes" placeholder="Optional" />
+          </div>
+        </div>
+
+        <div class="bio" style="margin-top:0;font-size:12.5px" id="m_addrLine">—</div>
+      </div>
+
+      <div class="modalFoot">
+        <button class="sheetAction" id="m_openIndex" type="button">Open main page</button>
+        <button class="confirmBtn" id="m_bookBtn" type="button">
+          <span>✅</span><span>Confirm booking</span>
+          <span class="holdText" id="holdText"></span>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- ===========================
-       BOOKING MODAL (HTML)
-       =========================== -->
-  <div class="bbModal" id="bbModal" aria-hidden="true">
-    <div class="bbSheet" role="dialog" aria-modal="true" aria-label="Booking">
-      <div class="bbTopbar">
-        <div class="t">
-          <div class="h" id="bbTitle">Book</div>
-          <div class="s" id="bbSub">Pick a service, then choose a date & time.</div>
-        </div>
-        <button class="bbX" id="bbClose" type="button" aria-label="Close">✕</button>
+  <div class="sheet" id="sheet">
+    <div class="sheetCard">
+      <div class="sheetHead">
+        <h4 class="sheetTitle">Choose time</h4>
+        <button class="closeBtn" id="sheetClose" type="button">✕</button>
       </div>
-
-      <div class="bbBody">
-        <!-- LEFT: Service + Date -->
-        <div class="bbPane">
-          <div class="pad">
-            <div class="bbLabel">Service</div>
-            <div class="bbSvcGrid" id="bbSvcGrid"></div>
-
-            <div style="margin-top:14px">
-              <div class="bbLabel">Date</div>
-              <div class="bbChips" id="bbChips">
-                <button class="bbChip" data-chip="soonest" type="button">Soonest</button>
-                <button class="bbChip" data-chip="weekend" type="button">Weekend</button>
-                <button class="bbChip" data-chip="evening" type="button">Evening</button>
-              </div>
-
-              <div class="bbCal" id="bbCal">
-                <div class="bbCalBar">
-                  <button class="bbCalNav" id="bbPrev" type="button" aria-label="Previous month">‹</button>
-                  <div class="bbCalMonth" id="bbMonth">—</div>
-                  <button class="bbCalNav" id="bbNext" type="button" aria-label="Next month">›</button>
-                </div>
-                <div class="bbDow">
-                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                </div>
-                <div class="bbGrid" id="bbGrid"></div>
-              </div>
-
-              <div class="bbHint" id="bbNoSlotsHint" style="display:none">No online slots yet.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT: Time + receipt + client -->
-        <div class="bbPane">
-          <div class="pad">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
-              <div class="bbLabel">Time</div>
-              <div class="bbHold" id="bbHold" style="display:none">
-                <span class="bbHoldP">Held</span>
-                <span class="bbHoldT" id="bbHoldT">02:00</span>
-              </div>
-            </div>
-
-            <div class="bbTimeGroup">
-              <div class="bbTimeH">Morning</div>
-              <div class="bbSlots" id="bbMorning"></div>
-            </div>
-            <div class="bbTimeGroup">
-              <div class="bbTimeH">Afternoon</div>
-              <div class="bbSlots" id="bbAfternoon"></div>
-            </div>
-            <div class="bbTimeGroup">
-              <div class="bbTimeH">Evening</div>
-              <div class="bbSlots" id="bbEvening"></div>
-            </div>
-
-            <div class="bbReceipt" id="bbReceipt" style="display:none">
-              <div class="bbRRow"><div class="bbRK">Service</div><div class="bbRV" id="bbRService">—</div></div>
-              <div class="bbRRow"><div class="bbRK">Date & time</div><div class="bbRV" id="bbRWhen">—</div></div>
-              <div class="bbRRow"><div class="bbRK">Duration</div><div class="bbRV" id="bbRDur">—</div></div>
-              <div class="bbRRow"><div class="bbRK">Price</div><div class="bbRV" id="bbRPrice">—</div></div>
-              <div class="bbRNote">No hidden fees</div>
-              <button class="bbMini" id="bbEdit" type="button">Edit selection</button>
-            </div>
-
-            <div style="margin-top:14px">
-              <div class="bbLabel">Your details</div>
-              <div class="bbForm">
-                <label class="bbField"><span>Name</span><input id="bbName" autocomplete="name" placeholder="Your name"></label>
-                <label class="bbField"><span>Email</span><input id="bbEmail" autocomplete="email" placeholder="you@email.com"></label>
-                <label class="bbField"><span>Phone</span><input id="bbPhone" autocomplete="tel" placeholder="+1 (___) ___-____"></label>
-              </div>
-
-              <div class="bbActions">
-                <button class="bbBtn" id="bbCancel" type="button">Cancel</button>
-                <button class="bbBtn primary" id="bbConfirm" type="button">Confirm booking</button>
-              </div>
-            </div>
-
-            <input type="hidden" id="bbChosenServiceId">
-            <input type="hidden" id="bbChosenISO">
-          </div>
-        </div>
+      <div class="sheetBody">
+        <div class="timeGrid" id="timeGrid"></div>
       </div>
     </div>
   </div>
 
+  <div class="toast" id="toast">
+    <div class="t1" id="toastT1">—</div>
+    <div class="t2" id="toastT2">—</div>
+  </div>
+
+  <script src="./data.js"></script>
   <script>
-    const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost";
-    const VERSION = "1.0.0";
-    const DATA_URL = "./data.js" + (isLocal ? ("?v=" + Date.now()) : ("?v=" + VERSION));
+    ;(() => {
+      const $ = (q, el = document) => el.querySelector(q);
+      const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
 
-    function qs(name){
-      return new URLSearchParams(location.search).get(name);
-    }
-    function safeImg(url){
-      return url || "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80";
-    }
-    function showErr(msg){
-      document.getElementById("err").style.display = "block";
-      document.getElementById("errText").textContent = msg;
-    }
-    function esc(s){
-      return String(s).replace(/[&<>"']/g, m => (
-        m==='&'?'&amp;': m==='<'?'&lt;': m==='>'?'&gt;': m==='"'?'&quot;':'&#039;'
-      ));
-    }
-    const pad = n => (n<10 ? "0"+n : ""+n);
-    const toDayISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    const startOfMonth = d => new Date(d.getFullYear(), d.getMonth(), 1);
-    const addMonths = (d,m) => new Date(d.getFullYear(), d.getMonth()+m, 1);
-    const parseISO = s => new Date(s);
-    const isSameDay = (a,b)=> a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+      const safeSetText = (el, txt) => { if (el) el.textContent = String(txt ?? ""); };
+      const safeSetHTML = (el, html) => { if (el) el.innerHTML = String(html ?? ""); };
 
-    function fmtWhen(iso){
-      const d = parseISO(iso);
-      const dd = pad(d.getDate()), mm = pad(d.getMonth()+1), yy = d.getFullYear();
-      const hh = pad(d.getHours()), mi = pad(d.getMinutes());
-      return `${dd}.${mm}.${yy} ${hh}:${mi}`;
-    }
-    function fmtTime(iso){
-      const d = parseISO(iso);
-      const h = d.getHours();
-      const m = pad(d.getMinutes());
-      const hh = (h%12)||12;
-      const ap = h<12?'AM':'PM';
-      return `${hh}:${m} ${ap}`;
-    }
-    function bucket(iso){
-      const h = parseISO(iso).getHours();
-      if (h < 12) return "morning";
-      if (h < 17) return "afternoon";
-      return "evening";
-    }
+      const pad = n => String(n).padStart(2, "0");
+      const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 
-    // Booking state
-    const st = {
-      listing: null,
-      month: startOfMonth(new Date()),
-      serviceId: null,
-      dayISO: null,
-      slotISO: null,
-      dayMap: new Map(),  // dayISO -> [slotISO...]
-      enabledDays: new Set(),
-      holdUntil: 0,
-      holdTimer: null
-    };
+      const escapeHtml = s => String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-    function getSvcMeta(serviceId){
-      return (window.SERVICES||[]).find(x=>String(x.id)===String(serviceId)) || null;
-    }
-
-    // listing availability: supports l.availability[serviceId] OR l.slots
-   function getSlotsForService(l, serviceId){
-  if (!l) return [];
-  // NEW: правильний формат для service-filter
-  if (l.availabilityByService && l.availabilityByService[serviceId]) return l.availabilityByService[serviceId].slice();
-  // fallback: загальні слоти
-  if (Array.isArray(l.slots)) return l.slots.slice();
-  return [];
-}
-
-
-    function splitByDay(slots){
-      const map = new Map();
-      for (const iso of slots){
-        const d = parseISO(iso);
-        if (isNaN(d)) continue;
-        const k = toDayISO(d);
-        if (!map.has(k)) map.set(k, []);
-        map.get(k).push(iso);
-      }
-      for (const [k, arr] of map.entries()){
-        arr.sort((a,b)=>parseISO(a)-parseISO(b));
-      }
-      // sort by day key asc
-      return new Map([...map.entries()].sort((a,b)=>a[0].localeCompare(b[0])));
-    }
-
-    // modal
-    const bbModal = document.getElementById("bbModal");
-    const bbClose = document.getElementById("bbClose");
-    const bbCancel = document.getElementById("bbCancel");
-    function openModal(){
-      bbModal.classList.add("isOpen");
-      bbModal.setAttribute("aria-hidden","false");
-      document.body.style.overflow = "hidden";
-      // focus
-      setTimeout(()=>document.getElementById("bbName")?.focus(), 60);
-    }
-    function closeModal(){
-      bbModal.classList.remove("isOpen");
-      bbModal.setAttribute("aria-hidden","true");
-      document.body.style.overflow = "";
-    }
-    bbClose.addEventListener("click", closeModal);
-    bbCancel.addEventListener("click", closeModal);
-    bbModal.addEventListener("click", (e)=>{
-      if (e.target === bbModal) closeModal();
-    });
-    document.addEventListener("keydown", (e)=>{
-      if (e.key === "Escape" && bbModal.classList.contains("isOpen")) closeModal();
-    });
-
-    function shake(el){
-      if (!el) return;
-      el.animate([
-        {transform:'translateX(0)'},
-        {transform:'translateX(-6px)'},
-        {transform:'translateX(6px)'},
-        {transform:'translateX(-4px)'},
-        {transform:'translateX(4px)'},
-        {transform:'translateX(0)'}
-      ], {duration:320, easing:'ease-out'});
-    }
-
-    function loadClientPrefill(){
-      try{
-        const raw = localStorage.getItem("bb.lastClient");
-        if(!raw) return;
-        const c = JSON.parse(raw);
-        if (c?.name) document.getElementById("bbName").value = c.name;
-        if (c?.email) document.getElementById("bbEmail").value = c.email;
-        if (c?.phone) document.getElementById("bbPhone").value = c.phone;
-      }catch(_){}
-    }
-    function saveClientPrefill(){
-      const c = {
-        name: (document.getElementById("bbName").value||"").trim(),
-        email: (document.getElementById("bbEmail").value||"").trim(),
-        phone: (document.getElementById("bbPhone").value||"").trim()
-      };
-      try{ localStorage.setItem("bb.lastClient", JSON.stringify(c)); }catch(_){}
-    }
-
-    function stopHold(){
-      if (st.holdTimer) clearInterval(st.holdTimer);
-      st.holdTimer = null;
-      st.holdUntil = 0;
-      document.getElementById("bbHold").style.display = "none";
-      try{ localStorage.removeItem(holdKey()); }catch(_){}
-    }
-    function holdKey(){
-      return `bb.hold.${st.listing ? st.listing.id : "unknown"}`;
-    }
-    function tickHold(){
-      const left = Math.max(0, st.holdUntil - Date.now());
-      const mm = pad(Math.floor(left/60000));
-      const ss = pad(Math.floor((left%60000)/1000));
-      document.getElementById("bbHoldT").textContent = `${mm}:${ss}`;
-      if (left<=0) stopHold();
-    }
-    function startHold(slotISO){
-      stopHold();
-      st.holdUntil = Date.now() + 2*60*1000;
-      try{
-        localStorage.setItem(holdKey(), JSON.stringify({iso: slotISO, until: st.holdUntil}));
-      }catch(_){}
-      document.getElementById("bbHold").style.display = "flex";
-      tickHold();
-      st.holdTimer = setInterval(tickHold, 500);
-    }
-
-    function restoreHoldIfValid(){
-      try{
-        const raw = localStorage.getItem(holdKey());
-        if(!raw) return;
-        const obj = JSON.parse(raw);
-        if(!obj?.iso || !obj?.until) return;
-        if(Date.now() > obj.until) return;
-        st.slotISO = obj.iso;
-        st.holdUntil = obj.until;
-        document.getElementById("bbChosenISO").value = obj.iso;
-        document.getElementById("bbHold").style.display = "flex";
-        tickHold();
-        st.holdTimer = setInterval(tickHold, 500);
-        const d = parseISO(obj.iso);
-        st.month = startOfMonth(d);
-        st.dayISO = toDayISO(d);
-      }catch(_){}
-    }
-
-    function renderServicesForBooking(){
-      const grid = document.getElementById("bbSvcGrid");
-      grid.innerHTML = "";
-
-      const l = st.listing;
-      const svcList = (l?.services || []).slice();
-
-      if (!svcList.length){
-        grid.innerHTML = `<div class="muted" style="padding:6px 2px">No services</div>`;
-        return;
-      }
-
-      // Determine "best value" = lowest from
-      let cheapest = null;
-      for (const s of svcList){
-        if (cheapest === null || Number(s.from) < Number(cheapest.from)) cheapest = s;
-      }
-
-      // Auto pick last service or first
-      if (!st.serviceId){
+      const lsGet = (k, fallback = null) => {
         try{
-          const last = localStorage.getItem("bb.lastServiceId");
-          const ok = svcList.find(x=>String(x.serviceId)===String(last));
-          st.serviceId = ok ? ok.serviceId : svcList[0].serviceId;
-        }catch(_){
-          st.serviceId = svcList[0].serviceId;
+          const raw = localStorage.getItem(k);
+          return raw ? JSON.parse(raw) : fallback;
+        }catch{
+          return fallback;
         }
-      }
+      };
+      const lsSet = (k, v) => {
+        try{ localStorage.setItem(k, JSON.stringify(v)); }catch{}
+      };
 
-      svcList.forEach((s, idx)=>{
-        const meta = getSvcMeta(s.serviceId);
-        const name = meta ? (meta.ua || meta.en || meta.name || s.serviceId) : s.serviceId;
-        const price = `$${s.from}${s.to?`–$${s.to}`:""}`;
-        const dur = `${s.durationMin} min`;
+      const normalizeWorkerUrl = raw => {
+        const s = String(raw || "").trim();
+        if (!s) return "/book";
+        if (s.startsWith("/")) return s.endsWith("/book") ? s : `${s.replace(/\/+$/, "")}/book`;
+        try{
+          const u = new URL(s);
+          if (!u.pathname || u.pathname === "/") u.pathname = "/book";
+          else if (!u.pathname.endsWith("/book")) u.pathname = `${u.pathname.replace(/\/+$/, "")}/book`;
+          return u.toString();
+        }catch{
+          return "/book";
+        }
+      };
 
-        const isHot = idx === 0;
-        const isValue = cheapest && String(cheapest.serviceId)===String(s.serviceId);
+      const SERVICES = Array.isArray(window.SERVICES) ? window.SERVICES.slice() : [];
+      const LISTINGS = Array.isArray(window.LISTINGS) ? window.LISTINGS.slice() : [];
+      const WORKER_URL = normalizeWorkerUrl(window.WORKER_URL || window.bb?.WORKER_URL || "/book");
 
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "bbSvc" + (String(st.serviceId)===String(s.serviceId) ? " isActive" : "");
-        b.innerHTML = `
-          <div class="n">${esc(name)}</div>
-          <div class="m">
-            <span class="bbPill">from ${esc(price)}</span>
-            <span class="bbPill">${esc(dur)}</span>
-            ${isHot ? `<span class="bbPill hot">popular</span>` : ``}
-            ${isValue ? `<span class="bbPill value">best value</span>` : ``}
-          </div>
-        `;
-        b.addEventListener("click", ()=>{
-          st.serviceId = s.serviceId;
-          document.getElementById("bbChosenServiceId").value = String(st.serviceId);
-          // reset date/time
-          st.dayISO = null;
-          st.slotISO = null;
-          document.getElementById("bbChosenISO").value = "";
-          stopHold();
-          renderServicesForBooking();
-          buildAvailability();
-          renderCalendar();
-          renderTimes();
-          renderReceipt();
-        });
-        grid.appendChild(b);
-      });
+      const STATE = {
+        theme: lsGet("bb.theme", "night") === "day" ? "day" : "night",
+        listing: null,
+        booking: {
+          serviceId: "",
+          dateISO: "",
+          time: ""
+        },
+        hold: {
+          until: 0,
+          key: ""
+        }
+      };
 
-      document.getElementById("bbChosenServiceId").value = String(st.serviceId);
-    }
+      const qs = name => new URLSearchParams(location.search).get(name);
 
-    function buildAvailability(){
-      const l = st.listing;
-      const slots = getSlotsForService(l, st.serviceId);
+      const serviceLabel = sid => {
+        const found = SERVICES.find(s => String(s.id) === String(sid));
+        return found?.en || found?.ua || String(sid || "");
+      };
+      const serviceIcon = sid => {
+        const found = SERVICES.find(s => String(s.id) === String(sid));
+        return found?.icon || "💅";
+      };
 
-      st.dayMap = splitByDay(slots);
-      st.enabledDays = new Set(st.dayMap.keys());
+      const listingServices = listing => {
+        const raw = Array.isArray(listing?.services) ? listing.services : [];
+        return raw.map(s => String(s.serviceId || s.id || s)).filter(Boolean);
+      };
 
-      const hint = document.getElementById("bbNoSlotsHint");
-      hint.style.display = (slots.length ? "none" : "block");
-    }
+      const listingServiceMeta = (listing, sid) => {
+        const raw = Array.isArray(listing?.services) ? listing.services : [];
+        return raw.find(s => String(s.serviceId || s.id || s) === String(sid)) || null;
+      };
 
-    function renderCalendar(){
-      const monthEl = document.getElementById("bbMonth");
-      const grid = document.getElementById("bbGrid");
-      grid.innerHTML = "";
+      const ratingValue = listing => {
+        const v = Number(listing?.rating ?? 0);
+        return isNaN(v) ? 0 : v;
+      };
 
-      const m = st.month || startOfMonth(new Date());
-      monthEl.textContent = m.toLocaleString(undefined, {month:"long", year:"numeric"});
+      const fromPrice = (listing, sid) => {
+        if (!listing) return null;
+        const svc = sid ? listingServiceMeta(listing, sid) : null;
+        const raw = svc?.from ?? (Array.isArray(listing?.services) ? Math.min(...listing.services.map(x => Number(x.from || 0)).filter(Boolean)) : null);
+        const n = Number(raw);
+        return isNaN(n) ? null : n;
+      };
 
-      // Monday-first grid
-      const first = new Date(m.getFullYear(), m.getMonth(), 1);
-      const last = new Date(m.getFullYear(), m.getMonth()+1, 0);
-      const firstDow = (first.getDay()+6)%7; // 0=Mon
-      const totalDays = last.getDate();
+      const durationFor = (listing, sid) => {
+        const svc = listingServiceMeta(listing, sid);
+        const n = Number(svc?.durMin ?? svc?.durationMin ?? 0);
+        return isNaN(n) || !n ? null : n;
+      };
 
-      // prev month trailing
-      const prevLast = new Date(m.getFullYear(), m.getMonth(), 0).getDate();
-      for (let i=0;i<firstDow;i++){
-        const dayNum = prevLast - (firstDow-1-i);
-        const cell = document.createElement("button");
-        cell.type="button";
-        cell.className="bbDay out disabled";
-        cell.textContent=String(dayNum);
-        cell.disabled=true;
-        grid.appendChild(cell);
-      }
+      const imageFor = listing => listing?.image || listing?.photo || listing?.img || (listing?.images && listing.images[0]) || "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80";
 
-      const today = new Date();
-      for (let d=1; d<=totalDays; d++){
-        const date = new Date(m.getFullYear(), m.getMonth(), d);
-        const dISO = toDayISO(date);
-        const enabled = st.enabledDays.has(dISO);
+      function listSlotsForService(listing, sid){
+        if (!listing || !sid) return [];
+        if (listing?.availabilityByService && Array.isArray(listing.availabilityByService[sid])) {
+          return listing.availabilityByService[sid].slice().sort();
+        }
 
-        const cell = document.createElement("button");
-        cell.type="button";
-        cell.className="bbDay" + (!enabled ? " disabled" : "") + (isSameDay(date,today) ? " today" : "") + (st.dayISO===dISO ? " active" : "");
-        cell.textContent=String(d);
-        if (!enabled){
-          cell.disabled = true;
-        } else {
-          cell.addEventListener("click", ()=>{
-            st.dayISO = dISO;
-            st.slotISO = null;
-            document.getElementById("bbChosenISO").value = "";
-            stopHold();
-            renderCalendar();
-            renderTimes();
-            renderReceipt();
+        if (listing?.availability && typeof listing.availability === "object" && !Array.isArray(listing.availability)) {
+          const slots = [];
+          Object.keys(listing.availability).sort().forEach(dateISO => {
+            const day = listing.availability[dateISO];
+            if (Array.isArray(day)) {
+              day.forEach(t => slots.push(`${dateISO} ${String(t).slice(0,5)}`));
+            } else if (day && Array.isArray(day[sid])) {
+              day[sid].forEach(t => slots.push(`${dateISO} ${String(t).slice(0,5)}`));
+            }
           });
+          if (slots.length) return slots.sort();
         }
-        grid.appendChild(cell);
+        return [];
       }
 
-      while (grid.children.length % 7 !== 0){
-        const cell = document.createElement("button");
-        cell.type="button";
-        cell.className="bbDay out disabled";
-        cell.textContent=" ";
-        cell.disabled=true;
-        grid.appendChild(cell);
-      }
-      while (grid.children.length < 42){
-        const cell = document.createElement("button");
-        cell.type="button";
-        cell.className="bbDay out disabled";
-        cell.textContent=" ";
-        cell.disabled=true;
-        grid.appendChild(cell);
-      }
-    }
-
-    function renderTimes(){
-      const m = document.getElementById("bbMorning");
-      const a = document.getElementById("bbAfternoon");
-      const e = document.getElementById("bbEvening");
-      m.innerHTML = ""; a.innerHTML=""; e.innerHTML="";
-
-      if (!st.dayISO){
-        m.innerHTML = `<div class="muted" style="padding:6px 2px">Choose a date to see times.</div>`;
-        return;
+      function listingTimesFor(listing, sid, dateISO){
+        return listSlotsForService(listing, sid)
+          .filter(s => s.slice(0,10) === String(dateISO))
+          .map(s => s.slice(11,16));
       }
 
-      const slots = st.dayMap.get(st.dayISO) || [];
-      if (!slots.length){
-        m.innerHTML = `<div class="muted" style="padding:6px 2px">No times available.</div>`;
-        return;
+      function nextSlotForListing(listing, sid){
+        const slots = listSlotsForService(listing, sid);
+        if (slots.length) {
+          return {
+            fullISO: slots[0],
+            dateISO: slots[0].slice(0,10),
+            time: slots[0].slice(11,16)
+          };
+        }
+        return null;
       }
 
-      for (const iso of slots){
-        const b = document.createElement("button");
-        b.type="button";
-        b.className = "bbSlot" + (st.slotISO===iso ? " active" : "");
-        b.textContent = fmtTime(iso);
-        b.addEventListener("click", ()=>{
-          st.slotISO = iso;
-          document.getElementById("bbChosenISO").value = iso;
-          renderTimes();
-          startHold(iso);
-          renderReceipt();
+      function fmtPretty(dateISO, time){
+        try{
+          const [y,m,d] = String(dateISO).split("-").map(n => parseInt(n, 10));
+          const [hh,mm] = String(time).split(":").map(n => parseInt(n, 10));
+          const dt = new Date(y, m - 1, d, hh, mm, 0, 0);
+          return dt.toLocaleString("en-CA", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+        }catch{
+          return `${dateISO} ${time}`.trim();
+        }
+      }
+
+      function applyTheme(){
+        const theme = STATE.theme === "day" ? "day" : "night";
+        document.documentElement.setAttribute("data-theme", theme);
+        $("#metaTheme")?.setAttribute("content", theme === "day" ? "#f7f3ff" : "#0b0b0f");
+        $("#btnTheme") && ($("#btnTheme").textContent = theme === "day" ? "☀️" : "🌙");
+        lsSet("bb.theme", theme);
+      }
+
+      function toast(t1, t2, ms = 2600){
+        safeSetText($("#toastT1"), t1);
+        safeSetText($("#toastT2"), t2);
+        $("#toast")?.classList.add("show");
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => $("#toast")?.classList.remove("show"), ms);
+      }
+
+      function renderProfile(){
+        const id = qs("id");
+        const listing = LISTINGS.find(x => String(x.id) === String(id)) || LISTINGS[0] || null;
+        if (!listing) {
+          $("#err").hidden = false;
+          safeSetText($("#errText"), "No listing found.");
+          return;
+        }
+
+        STATE.listing = listing;
+        $("#main").hidden = false;
+
+        const sid = listingServices(listing)[0] || "";
+        if (!STATE.booking.serviceId) STATE.booking.serviceId = sid;
+        if (!STATE.booking.dateISO) STATE.booking.dateISO = isoLocal(new Date());
+
+        const next = nextSlotForListing(listing, STATE.booking.serviceId || sid);
+        const price = fromPrice(listing, STATE.booking.serviceId || sid);
+        const rating = ratingValue(listing);
+
+        $("#heroImg").src = imageFor(listing);
+        $("#heroImg").alt = listing.name || "Profile";
+        safeSetText($("#name"), listing.name || "—");
+        safeSetText($("#address"), listing.address || listing.city || "—");
+        safeSetText($("#eyebrowText"), listing.partner ? "Partner beauty profile" : "Verified beauty profile");
+
+        const badges = [];
+        if (listing.partner) badges.push(`<span class="badge partner">Partner</span>`);
+        if (listing.verified) badges.push(`<span class="badge verified">Verified</span>`);
+        if (listing.sterile) badges.push(`<span class="badge sterile">Sterile</span>`);
+        if (rating) badges.push(`<span class="badge rating">⭐ ${rating.toFixed(1)}</span>`);
+        safeSetHTML($("#badges"), badges.join(""));
+
+        safeSetText($("#boxPrice"), price != null ? `$${Math.round(price)}+` : "—");
+        safeSetText($("#boxRating"), rating ? `${rating.toFixed(1)} / 5` : "—");
+        safeSetText($("#boxNext"), next ? fmtPretty(next.dateISO, next.time) : "—");
+
+        safeSetText($("#quickMeta"), listing.subtitle || "Choose the best service and jump into the fast booking flow.");
+
+        const serviceHtml = (listing.services || []).map(svc => {
+          const label = serviceLabel(svc.serviceId || svc.id || "");
+          const dur = Number(svc.durMin ?? svc.durationMin ?? 0);
+          const price = Number(svc.from ?? 0);
+          return `
+            <div class="svcRow">
+              <div class="svcLeft">
+                <div class="svcTitle">${escapeHtml(label)}</div>
+                <div class="svcMeta">${dur ? `${dur} min` : "Duration on request"}</div>
+              </div>
+              <div class="svcPrice">${price ? `$${Math.round(price)}+` : "—"}</div>
+            </div>
+          `;
+        }).join("");
+        safeSetHTML($("#services"), serviceHtml || `<div class="svcRow"><div class="svcLeft"><div class="svcTitle">No services</div></div></div>`);
+
+        const quickChips = listingServices(listing).map((serviceId, index) => `
+          <button class="chipBtn ${STATE.booking.serviceId === serviceId ? "active" : ""}" data-sid="${escapeHtml(serviceId)}" type="button">
+            <span>${serviceIcon(serviceId)}</span><span>${escapeHtml(serviceLabel(serviceId))}</span>
+          </button>
+        `).join("");
+        safeSetHTML($("#quickServiceChips"), quickChips);
+
+        $$("#quickServiceChips .chipBtn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            STATE.booking.serviceId = btn.getAttribute("data-sid") || "";
+            renderProfile();
+          });
         });
 
-        const g = bucket(iso);
-        if (g==="morning") m.appendChild(b);
-        else if (g==="afternoon") a.appendChild(b);
-        else e.appendChild(b);
+        const bio = listing.bio_en || listing.bio_ua || listing.subtitle || "";
+        safeSetText($("#bio"), bio);
+
+        const phone = String(listing.phone || "").replace(/[^\d+]/g, "");
+        const callBtn = $("#callBtn");
+        callBtn.href = phone ? `tel:${phone}` : "#";
+        callBtn.style.opacity = phone ? "1" : ".55";
+
+        const q = encodeURIComponent(listing.address || listing.city || "");
+        $("#mapsBtn").href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+        $("#map").src = `https://www.google.com/maps?q=${q}&output=embed`;
+
+        const igBtn = $("#igBtn");
+        igBtn.href = listing.instagram || "#";
+        igBtn.style.opacity = listing.instagram ? "1" : ".55";
+
+        $("#bookBtn").onclick = () => openBooking();
       }
 
-      if (!m.children.length) m.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
-      if (!a.children.length) a.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
-      if (!e.children.length) e.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
-    }
-
-    function renderReceipt(){
-      const r = document.getElementById("bbReceipt");
-      if (!st.serviceId || !st.slotISO){
-        r.style.display = "none";
-        return;
+      function quickDatePills(){
+        const now = new Date();
+        const d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const d2 = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+        return [
+          { id: isoLocal(d0), label: "Today" },
+          { id: isoLocal(d1), label: "Tomorrow" },
+          { id: isoLocal(d2), label: d2.toLocaleDateString("en-CA", { weekday: "short" }) }
+        ];
       }
 
-      const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
-      const meta = getSvcMeta(st.serviceId);
-      const name = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+      function refreshQuickDateRow(){
+        const wrap = $("#quickDateRow");
+        if (!wrap) return;
+        safeSetHTML(wrap, quickDatePills().map(p => `
+          <button class="quickPick ${STATE.booking.dateISO === p.id ? "active" : ""}" data-date="${escapeHtml(p.id)}" type="button">${escapeHtml(p.label)}</button>
+        `).join(""));
 
-      document.getElementById("bbRService").textContent = name;
-      document.getElementById("bbRWhen").textContent = fmtWhen(st.slotISO);
-      document.getElementById("bbRDur").textContent = `${svc?.durationMin ?? "—"} min`;
-      document.getElementById("bbRPrice").textContent = `$${svc?.from ?? "—"}`;
+        $$("#quickDateRow .quickPick").forEach(btn => {
+          btn.addEventListener("click", () => {
+            STATE.booking.dateISO = btn.getAttribute("data-date") || "";
+            STATE.booking.time = "";
+            $("#m_date") && ($("#m_date").value = STATE.booking.dateISO);
+            safeSetText($("#m_timeText"), "—");
+            refreshQuickDateRow();
+            refreshTimeGrid();
+            updateHoldUI();
+          });
+        });
+      }
 
-      r.style.display = "block";
-    }
+      function renderBookingServiceSelect(){
+        const listing = STATE.listing;
+        if (!listing) return;
+        const sel = $("#m_service");
+        safeSetHTML(sel, (listing.services || []).map(svc => {
+          const sid = String(svc.serviceId || svc.id || "");
+          return `<option value="${escapeHtml(sid)}">${serviceIcon(sid)} ${escapeHtml(serviceLabel(sid))}</option>`;
+        }).join(""));
 
-    function pickSoonest(){
-      const now = new Date();
-      let best = null;
-
-      for (const [dISO, arr] of st.dayMap.entries()){
-        for (const iso of arr){
-          const dt = parseISO(iso);
-          if (dt >= now){ best = iso; break; }
+        if (!(listing.services || []).some(s => String(s.serviceId || s.id || "") === String(STATE.booking.serviceId))) {
+          STATE.booking.serviceId = String(listing.services?.[0]?.serviceId || listing.services?.[0]?.id || "");
         }
-        if (best) break;
+
+        sel.value = STATE.booking.serviceId || "";
+        sel.onchange = () => {
+          STATE.booking.serviceId = sel.value || "";
+          STATE.booking.time = "";
+          safeSetText($("#m_timeText"), "—");
+          renderProfile();
+          renderBookingServiceSelect();
+          refreshQuickDateRow();
+          refreshTimeGrid();
+          updateHoldUI();
+        };
       }
-      if (!best) return;
 
-      const d = parseISO(best);
-      st.month = startOfMonth(d);
-      st.dayISO = toDayISO(d);
-      st.slotISO = best;
-      document.getElementById("bbChosenISO").value = best;
+      function openBooking(){
+        const listing = STATE.listing;
+        if (!listing) return;
 
-      renderCalendar();
-      renderTimes();
-      startHold(best);
-      renderReceipt();
-    }
+        $("#overlay")?.classList.add("show");
+        $("#overlay")?.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
 
-    function pickWeekend(){
-      for (const [dISO, arr] of st.dayMap.entries()){
-        const d = new Date(dISO+"T12:00:00");
-        const dow = d.getDay(); // 0 Sun, 6 Sat
-        if (dow===0 || dow===6){
-          st.month = startOfMonth(d);
-          st.dayISO = dISO;
-          st.slotISO = arr[0];
-          document.getElementById("bbChosenISO").value = arr[0];
+        $("#m_listing") && ($("#m_listing").value = listing.name || "");
+        $("#m_date") && ($("#m_date").value = STATE.booking.dateISO || isoLocal(new Date()));
+        safeSetText($("#m_addrLine"), listing.address ? `📍 ${listing.address}` : "—");
 
-          renderCalendar();
-          renderTimes();
-          startHold(arr[0]);
-          renderReceipt();
+        const last = lsGet("bb.lastClient", {});
+        if ($("#m_name") && !$("#m_name").value) $("#m_name").value = last.name || "";
+        if ($("#m_phone") && !$("#m_phone").value) $("#m_phone").value = last.phone || "";
+        if ($("#m_email") && !$("#m_email").value) $("#m_email").value = last.email || "";
+
+        renderBookingServiceSelect();
+        refreshQuickDateRow();
+        refreshTimeGrid();
+        safeSetText($("#m_timeText"), STATE.booking.time || "—");
+        updateHoldUI(!!STATE.booking.time);
+      }
+
+      function closeBooking(){
+        $("#overlay")?.classList.remove("show");
+        $("#overlay")?.setAttribute("aria-hidden", "true");
+        $("#sheet")?.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+
+      function openSheet(){ $("#sheet")?.classList.add("show"); }
+      function closeSheet(){ $("#sheet")?.classList.remove("show"); }
+
+      $("#m_close")?.addEventListener("click", closeBooking);
+      $("#overlay")?.addEventListener("click", e => { if (e.target === $("#overlay")) closeBooking(); });
+      $("#sheetClose")?.addEventListener("click", closeSheet);
+      $("#sheet")?.addEventListener("click", e => { if (e.target === $("#sheet")) closeSheet(); });
+
+      $("#m_timeBtn")?.addEventListener("click", () => {
+        refreshTimeGrid();
+        openSheet();
+      });
+
+      $("#m_date")?.addEventListener("change", e => {
+        STATE.booking.dateISO = e.target.value || isoLocal(new Date());
+        STATE.booking.time = "";
+        safeSetText($("#m_timeText"), "—");
+        refreshQuickDateRow();
+        refreshTimeGrid();
+        updateHoldUI();
+      });
+
+      function refreshTimeGrid(){
+        const grid = $("#timeGrid");
+        const listing = STATE.listing;
+        if (!grid || !listing) return;
+
+        const sid = STATE.booking.serviceId || "";
+        const dateISO = STATE.booking.dateISO || isoLocal(new Date());
+        const times = listingTimesFor(listing, sid, dateISO);
+
+        safeSetHTML(grid, times.length ? times.map(t => `
+          <button class="slotBtn ${STATE.booking.time === t ? "active" : ""}" data-time="${escapeHtml(t)}" type="button">${escapeHtml(t)}</button>
+        `).join("") : `<div class="bio" style="margin:0;font-size:13px">No online times for this date.</div>`);
+
+        $$("#timeGrid .slotBtn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            STATE.booking.time = btn.getAttribute("data-time") || "";
+            safeSetText($("#m_timeText"), STATE.booking.time || "—");
+            refreshTimeGrid();
+            closeSheet();
+            updateHoldUI(true);
+          });
+        });
+      }
+
+      function currentPoolForPicks(){
+        const listing = STATE.listing;
+        if (!listing) return [];
+        return listSlotsForService(listing, STATE.booking.serviceId || "");
+      }
+
+      $("#pickFast")?.addEventListener("click", () => {
+        const slots = currentPoolForPicks();
+        if (!slots.length) return;
+        const s = slots[0];
+        STATE.booking.dateISO = s.slice(0,10);
+        STATE.booking.time = s.slice(11,16);
+        $("#m_date") && ($("#m_date").value = STATE.booking.dateISO);
+        safeSetText($("#m_timeText"), STATE.booking.time);
+        refreshQuickDateRow();
+        refreshTimeGrid();
+        updateHoldUI(true);
+      });
+
+      $("#pickCheap")?.addEventListener("click", () => {
+        const listing = STATE.listing;
+        if (!listing) return;
+        const cheapest = (listing.services || []).slice().sort((a,b) => Number(a.from || 999999) - Number(b.from || 999999))[0];
+        if (!cheapest) return;
+        STATE.booking.serviceId = String(cheapest.serviceId || cheapest.id || "");
+        STATE.booking.time = "";
+        renderProfile();
+        renderBookingServiceSelect();
+        refreshTimeGrid();
+        updateHoldUI();
+      });
+
+      $("#pickEvening")?.addEventListener("click", () => {
+        const slots = currentPoolForPicks().filter(s => Number(s.slice(11,13)) >= 17);
+        if (!slots.length) return;
+        const s = slots[0];
+        STATE.booking.dateISO = s.slice(0,10);
+        STATE.booking.time = s.slice(11,16);
+        $("#m_date") && ($("#m_date").value = STATE.booking.dateISO);
+        safeSetText($("#m_timeText"), STATE.booking.time);
+        refreshQuickDateRow();
+        refreshTimeGrid();
+        updateHoldUI(true);
+      });
+
+      function startHold(){
+        const k = `${STATE.listing?.id}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+        STATE.hold.key = k;
+        STATE.hold.until = Date.now() + 2 * 60 * 1000;
+      }
+
+      function holdLeft(){
+        return Math.max(0, (STATE.hold.until || 0) - Date.now());
+      }
+
+      function updateHoldUI(forceStart = false){
+        const el = $("#holdText");
+        if (!el) return;
+
+        const ready = STATE.listing?.id && STATE.booking.serviceId && STATE.booking.dateISO && STATE.booking.time;
+        if (!ready) {
+          safeSetText(el, "");
+          clearInterval(updateHoldUI._t);
           return;
         }
-      }
-    }
 
-    function pickEvening(){
-      for (const [dISO, arr] of st.dayMap.entries()){
-        const evening = arr.find(x=>parseISO(x).getHours()>=17);
-        if (evening){
-          const d = new Date(dISO+"T12:00:00");
-          st.month = startOfMonth(d);
-          st.dayISO = dISO;
-          st.slotISO = evening;
-          document.getElementById("bbChosenISO").value = evening;
+        const key = `${STATE.listing.id}|${STATE.booking.serviceId}|${STATE.booking.dateISO}|${STATE.booking.time}`;
+        if (forceStart || key !== STATE.hold.key || holdLeft() === 0) startHold();
 
-          renderCalendar();
-          renderTimes();
-          startHold(evening);
-          renderReceipt();
+        const left = holdLeft();
+        if (left <= 0) {
+          safeSetText(el, "");
+          clearInterval(updateHoldUI._t);
           return;
         }
+
+        const sec = Math.ceil(left / 1000);
+        safeSetText(el, `· Hold 2 min ${Math.floor(sec/60)}:${pad(sec%60)}`);
+
+        clearInterval(updateHoldUI._t);
+        updateHoldUI._t = setInterval(() => {
+          const l = holdLeft();
+          if (l <= 0 || !$("#overlay")?.classList.contains("show")) {
+            safeSetText(el, "");
+            clearInterval(updateHoldUI._t);
+            return;
+          }
+          const s = Math.ceil(l / 1000);
+          safeSetText(el, `· Hold 2 min ${Math.floor(s/60)}:${pad(s%60)}`);
+        }, 500);
       }
-    }
 
-    function setChipActive(btn){
-      document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
-      btn.classList.add("isActive");
-    }
+      function saveClientPrefill(){
+        lsSet("bb.lastClient", {
+          name: ($("#m_name")?.value || "").trim(),
+          phone: ($("#m_phone")?.value || "").trim(),
+          email: ($("#m_email")?.value || "").trim()
+        });
+      }
 
-    function bindBookingUI(){
-      document.getElementById("bbPrev").addEventListener("click", ()=>{
-        st.month = addMonths(st.month, -1);
-        renderCalendar();
-      });
-      document.getElementById("bbNext").addEventListener("click", ()=>{
-        st.month = addMonths(st.month, +1);
-        renderCalendar();
-      });
+      async function sendBooking(payload){
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
 
-      document.getElementById("bbChips").addEventListener("click", (e)=>{
-        const b = e.target.closest(".bbChip");
-        if (!b) return;
-        setChipActive(b);
-        const t = b.getAttribute("data-chip");
-        if (t==="soonest") pickSoonest();
-        if (t==="weekend") pickWeekend();
-        if (t==="evening") pickEvening();
-      });
-
-      document.getElementById("bbEdit").addEventListener("click", ()=>{
-        st.dayISO = null;
-        st.slotISO = null;
-        document.getElementById("bbChosenISO").value = "";
-        stopHold();
-        renderCalendar();
-        renderTimes();
-        renderReceipt();
-      });
-
-      document.getElementById("bbConfirm").addEventListener("click", async ()=>{
-        const name = (document.getElementById("bbName").value||"").trim();
-        const email = (document.getElementById("bbEmail").value||"").trim();
-        const phone = (document.getElementById("bbPhone").value||"").trim();
-
-        if (!st.serviceId || !st.slotISO){
-          shake(document.getElementById("bbConfirm"));
-          return;
+        try{
+          const res = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+          clearTimeout(timeout);
+          let data = null;
+          try{ data = await res.json(); }catch{}
+          return { ok: res.ok, data };
+        }catch(error){
+          clearTimeout(timeout);
+          return { ok: false, error: String(error) };
         }
-        if (!name || !phone){
-          shake(document.querySelector(".bbForm"));
+      }
+
+      $("#m_bookBtn")?.addEventListener("click", async () => {
+        const listing = STATE.listing;
+        if (!listing) return;
+
+        const sid = STATE.booking.serviceId || "";
+        const dateISO = (STATE.booking.dateISO || "").trim();
+        const time = (STATE.booking.time || "").trim();
+        const name = ($("#m_name")?.value || "").trim();
+        const phone = ($("#m_phone")?.value || "").trim();
+        const email = ($("#m_email")?.value || "").trim();
+        const notes = ($("#m_notes")?.value || "").trim();
+
+        if (!sid || !dateISO || !time || !name || !phone) {
+          toast("Error ❌", "Fill date / time / name / phone.", 2600);
           return;
         }
 
         saveClientPrefill();
-        try{ localStorage.setItem("bb.lastServiceId", String(st.serviceId)); }catch(_){}
-
-        const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
-        const meta = getSvcMeta(st.serviceId);
-        const svcName = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
-
-        // Worker URL: use window.WORKER_URL if defined in data.js; else fallback to your saved endpoint
-        const WORKER_URL = (window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev").replace(/\/$/,"");
 
         const payload = {
-          name, email, phone,
-          serviceId: st.serviceId,
-          serviceName: svcName,
-          durationMin: svc?.durationMin ?? null,
-          priceFrom: svc?.from ?? null,
-          priceTo: svc?.to ?? null,
-          datetimeISO: st.slotISO,
-          listingId: st.listing.id,
-          listingName: st.listing.name,
-          address: st.listing.address,
+          id: Math.random().toString(16).slice(2) + Date.now().toString(16),
+          lang: "en",
+          theme: STATE.theme,
+          listingId: String(listing.id),
+          listingName: listing.name || listing.id,
+          address: listing.address || "",
+          serviceId: sid,
+          serviceName: serviceLabel(sid),
+          durationMin: durationFor(listing, sid),
+          priceFrom: fromPrice(listing, sid),
+          datetimeISO: `${dateISO} ${time}`,
+          dateISO,
+          time,
+          pretty: fmtPretty(dateISO, time),
+          customer: { name, phone, email },
+          notes,
           profileUrl: location.href
         };
 
-        const btn = document.getElementById("bbConfirm");
-        const prev = btn.textContent;
-        btn.textContent = "Booking…";
-        btn.style.opacity = ".9";
-        btn.disabled = true;
+        toast("Sending…", "Please wait a moment.", 1200);
 
-        try{
-          const res = await fetch(WORKER_URL + "/book", {
-            method:"POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(payload)
-          });
-          if (!res.ok) throw new Error("Booking failed");
-
-          stopHold();
-          document.getElementById("bbSub").textContent = "You're all set. We'll see you soon ✨";
-          btn.textContent = "Booked ✓";
-          setTimeout(()=>{ closeModal(); }, 900);
-
-        }catch(err){
-          console.error(err);
-          shake(btn);
-          btn.textContent = "Try again";
-          setTimeout(()=>{ btn.textContent = prev; }, 1200);
-        }finally{
-          btn.disabled = false;
-          btn.style.opacity = "1";
+        const result = await sendBooking(payload);
+        if (result.ok && result.data?.ok !== false) {
+          toast("Sent ✅", "Booking sent to Telegram. Confirmation soon.", 3200);
+          closeBooking();
+        } else {
+          toast("Error ❌", "Couldn’t send. Check Worker /book and internet.", 3600);
         }
       });
-    }
 
-    function initBookingForListing(l){
-      st.listing = l;
-      st.month = startOfMonth(new Date());
-      st.dayISO = null;
-      st.slotISO = null;
-      stopHold();
+      $("#m_openIndex")?.addEventListener("click", () => {
+        const listing = STATE.listing;
+        if (!listing) return;
+        const sid = STATE.booking.serviceId || listingServices(listing)[0] || "";
+        location.href = `./index.html?book=1&id=${encodeURIComponent(listing.id)}${sid ? `&service=${encodeURIComponent(sid)}` : ""}`;
+      });
 
-      document.getElementById("bbTitle").textContent = `Book · ${l.name || "Profile"}`;
-      document.getElementById("bbSub").textContent = "Pick a service, then choose a date & time.";
+      $("#copyProfileLink")?.addEventListener("click", async () => {
+        try{
+          await navigator.clipboard.writeText(location.href);
+          toast("OK", "Profile link copied ✅", 1800);
+        }catch{
+          toast("OK", location.href, 2200);
+        }
+      });
 
-      loadClientPrefill();
-      renderServicesForBooking();
-      buildAvailability();
-      restoreHoldIfValid();
-      renderCalendar();
-      renderTimes();
-      renderReceipt();
+      $("#btnTheme")?.addEventListener("click", () => {
+        STATE.theme = STATE.theme === "day" ? "night" : "day";
+        applyTheme();
+      });
 
-      // default chip none
-      document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
-    }
-
-    // Load data.js + render profile
-    const s = document.createElement("script");
-    s.src = DATA_URL;
-
-    s.onload = () => {
-      try{
-        const id = qs("id");
-        const l = (window.LISTINGS||[]).find(x=>x.id===id) || window.LISTINGS?.[0];
-        if(!l){ showErr("No listing found"); return; }
-
-        // expose for booking
-        window.bb = window.bb || {};
-        window.bb.profileId = l.id;
-        window.bb.currentListing = l;
-
-        document.getElementById("main").style.display = "block";
-        document.getElementById("heroImg").src = safeImg((l.images||[])[0]);
-        document.getElementById("name").textContent = l.name;
-        document.getElementById("address").textContent = l.address;
-
-        const badges = [];
-        if(l.partner) badges.push(`<span class="tag partner">💎 Partner</span>`);
-        if(l.verified) badges.push(`<span class="tag good">Verified</span>`);
-        if(l.sterile) badges.push(`<span class="tag good">Sterile</span>`);
-        document.getElementById("badges").innerHTML = badges.join("");
-
-        // services list (unchanged)
-        const svcBox = document.getElementById("services");
-        const services = (l.services||[]).map(svc=>{
-          const meta = (window.SERVICES||[]).find(x=>x.id===svc.serviceId);
-          const label = meta ? (meta.ua || meta.en || meta.name || svc.serviceId) : svc.serviceId;
-          const price = `$${svc.from}${svc.to?`–$${svc.to}`:""}`;
-          return `<div class="svc"><div><b>${esc(label)}</b><div class="muted" style="margin-top:3px">${esc(String(svc.durationMin))} min</div></div><div><b>${esc(price)}</b></div></div>`;
-        }).join("");
-        svcBox.innerHTML = services || `<div class="muted">No services</div>`;
-
-        // bio
-        document.getElementById("bio").textContent = l.bio_ua || "";
-
-        // actions
-        const phone = (l.phone||"").replace(/[^\d+]/g,"");
-        const call = document.getElementById("callBtn");
-        call.href = phone ? `tel:${phone}` : "#";
-        call.style.opacity = phone ? "1" : ".5";
-
-        const maps = document.getElementById("mapsBtn");
-        const q = encodeURIComponent(l.address || "");
-        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
-
-        const ig = document.getElementById("igBtn");
-        ig.href = l.instagram || "#";
-        ig.style.opacity = l.instagram ? "1" : ".5";
-
-        // map embed
-        document.getElementById("map").src = `https://www.google.com/maps?q=${q}&output=embed`;
-
-       // ✅ Book -> redirect to index with auto-open booking modal
-// book button -> go to index and auto-open booking modal there
-const bookBtn = document.getElementById("bookBtn");
-bookBtn.addEventListener("click", () => {
-  // choose a valid service id for this listing
-  const svcId =
-    (l.services && l.services[0] && l.services[0].serviceId)
-      ? l.services[0].serviceId
-      : "";
-
-  const url =
-    `./index.html?book=1&id=${encodeURIComponent(l.id)}` +
-    (svcId ? `&service=${encodeURIComponent(svcId)}` : "");
-
-  // open in same tab (reliable)
-  location.href = url;
-});
-
-
-        // bind booking UI once
-        bindBookingUI();
-
-      }catch(e){
-        showErr(e.message || String(e));
+      function initBackToTop(){
+        const btn = $("#toTop");
+        if (!btn) return;
+        const sync = () => btn.classList.toggle("show", window.scrollY > 420);
+        window.addEventListener("scroll", sync, { passive: true });
+        btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+        sync();
       }
-    };
 
-    s.onerror = ()=> showErr("Failed to load data.js");
-    document.head.appendChild(s);
+      function init(){
+        applyTheme();
+        initBackToTop();
+        renderProfile();
+      }
+
+      init();
+    })();
   </script>
 </body>
 </html>
-
