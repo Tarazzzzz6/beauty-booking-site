@@ -3,7 +3,7 @@
 <head>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0b0f" />
   <title>Beauty Booking</title>
 
@@ -760,10 +760,154 @@
       .heroTitle{font-size:32px}
       .timeGrid{grid-template-columns: repeat(2, 1fr);}
     }
+
+
+    /* === ULTRA 2026 PATCH === */
+    :root{
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+      --safeLeft: env(safe-area-inset-left, 0px);
+      --safeRight: env(safe-area-inset-right, 0px);
+    }
+    html{scroll-behavior:smooth}
+    body{padding-left:var(--safeLeft);padding-right:var(--safeRight);}
+    body.is-ready .heroCard, body.is-ready .topbar, body.is-ready .floatbar, body.is-ready .section{animation: bbFadeUp .55s ease both;}
+    body.is-ready .heroCard{animation-delay:.04s}
+    body.is-ready .section:nth-of-type(2){animation-delay:.08s}
+    body.is-ready .section:nth-of-type(3){animation-delay:.12s}
+    @keyframes bbFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .topbar{padding-top:var(--safeTop)}
+    .floatbar{bottom:calc(16px + var(--safeBottom))}
+    .wrap{padding-bottom:calc(128px + var(--safeBottom))}
+    .topbar .inner{padding-top:16px;padding-bottom:16px}
+    .brand h1{font-size:20px}
+    .brand .sub{font-size:12.5px}
+    .iconbtn{width:46px;height:46px;border-radius:16px}
+    .pill{min-height:46px}
+    .heroStats{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .heroStat{padding:9px 11px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-size:12px;font-weight:800;color:var(--text);box-shadow:var(--shadow2)}
+    .heroStat em{font-style:normal;color:var(--gold)}
+    .microLive{display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:9px 11px;border-radius:999px;border:1px solid rgba(255,79,216,.26);background:rgba(255,79,216,.10);font-size:12px;font-weight:800;box-shadow:var(--glow)}
+    .cardLive, .cardUrgency, .cardDist{position:absolute;left:12px;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+    .cardLive{top:12px;background:rgba(255,79,216,.16);border:1px solid rgba(255,79,216,.30)}
+    .cardUrgency{top:44px;background:rgba(255,210,122,.14);border:1px solid rgba(255,210,122,.30)}
+    .cardDist{top:76px;background:rgba(32,227,165,.12);border:1px solid rgba(32,227,165,.28)}
+    .heroPulse{position:relative;overflow:hidden}
+    .heroPulse:after{content:"";position:absolute;inset:-40%;background:linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);transform:translateX(-30%) rotate(18deg);animation:bbSweep 5.5s linear infinite;pointer-events:none}
+    @keyframes bbSweep{to{transform:translateX(30%) rotate(18deg)}}
+    #splash{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:radial-gradient(1000px 700px at 20% 10%, rgba(255,79,216,.18), transparent 55%),radial-gradient(1000px 700px at 80% 20%, rgba(139,92,246,.14), transparent 60%),linear-gradient(180deg,#07070b,#0b0b11);transition:opacity .55s ease, visibility .55s ease}
+    #splash.hide{opacity:0;visibility:hidden}
+    .splashGlow{position:absolute;inset:0;background:radial-gradient(360px 180px at 50% 45%, rgba(255,210,122,.12), transparent 70%)}
+    .splashLogoWrap{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;transform:translateY(8px);animation:splashIn 1.2s ease forwards}
+    .splashLogo{width:82px;height:82px;border-radius:26px;background:radial-gradient(15px 15px at 30% 25%, rgba(255,255,255,.65), transparent 60%),linear-gradient(135deg, rgba(255,79,216,.95), rgba(139,92,246,.95));box-shadow:0 0 0 1px rgba(255,255,255,.16), 0 24px 90px rgba(255,79,216,.28)}
+    .splashBrand{margin-top:18px;font-family:"Playfair Display",serif;font-size:28px;letter-spacing:.02em}
+    .splashSub{margin-top:6px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+    @keyframes splashIn{0%{opacity:0;transform:translateY(12px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+    .confirmCard{border:1px solid var(--stroke);border-radius:22px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));padding:14px;box-shadow:var(--shadow2)}
+    .confirmKicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+    .confirmMain{margin-top:8px;font-size:18px;font-weight:900}
+    .confirmSub{margin-top:6px;font-size:13px;color:var(--muted)}
+    .confirmGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .confirmItem{border:1px solid var(--stroke);border-radius:16px;background:var(--card);padding:11px 12px}
+    .confirmItem span{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .confirmActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .heroCard .ctaRow{margin-top:14px}
+    @media (max-width: 980px){ .top-actions{gap:8px} .topbar .inner{align-items:flex-start;flex-wrap:wrap} .grow{display:none} .top-actions{margin-left:auto} }
+    @media (max-width: 620px){
+      .topbar .inner{padding-left:14px;padding-right:14px;gap:10px}
+      .brand{gap:12px}
+      .logo{width:40px;height:40px;border-radius:15px}
+      .brand h1{font-size:22px}
+      .brand .sub{font-size:13px}
+      .pill{padding:11px 13px}
+      .iconbtn{width:48px;height:48px}
+      .hero{padding-top:14px}
+      .heroInner{padding:20px 16px 18px}
+      .heroTitle{font-size:34px;line-height:1.02}
+      .heroDesc{font-size:14px}
+      .heroStats{gap:7px}
+      .heroStat{font-size:11px;padding:8px 10px}
+      .microLive{font-size:11px}
+      .glass .pad{padding:13px}
+      .confirmGrid{grid-template-columns:1fr}
+      .confirmActions{flex-direction:column}
+      .confirmActions .btn{width:100%;justify-content:center}
+    }
+
+  
+
+    /* ULTRA HOTFIX mobile */
+    html{background:#07070b}
+    body{min-height:100dvh}
+    .topbar{padding-top:env(safe-area-inset-top,0px)}
+    .wrap{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+    .floatbar{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+    .floatbar .inner{border-radius:999px; max-width:min(520px,calc(100vw - 24px)); width:calc(100vw - 24px); justify-content:center}
+    .floatCTA{flex:1; justify-content:center; min-height:52px}
+    .heroCard{overflow:visible}
+    .heroInner{align-items:start}
+    .heroTitle{max-width:11ch}
+    .ctaRow .btn{min-height:52px}
+    .section{scroll-margin-top:96px}
+    .cardLive,.cardUrgency,.cardDist{z-index:3}
+    @media (max-width: 620px){
+      .topbar .inner{padding:12px 14px; gap:10px; flex-wrap:wrap; align-items:flex-start}
+      .brand{min-width:0; flex:1 1 calc(50% - 5px); align-items:flex-start}
+      .logo{width:42px; height:42px; border-radius:16px}
+      .brand h1{font-size:17px}
+      .brand .sub{font-size:11px; line-height:1.15}
+      .search{display:none !important}
+      .grow{display:none}
+      .top-actions{flex:1 1 calc(50% - 5px); justify-content:flex-end; gap:8px; flex-wrap:wrap}
+      .pill{min-height:48px; padding:10px 12px; font-size:12px; gap:6px}
+      #favOnly{min-width:118px; justify-content:center}
+      #aiBtn{min-width:110px; justify-content:center}
+      .iconbtn{width:44px; height:44px; border-radius:15px}
+      .hero{padding:12px 0 8px}
+      .heroCard{border-radius:24px}
+      .heroInner{padding:18px 16px; gap:12px}
+      .heroTitle{font-size:30px; line-height:1.02; margin-bottom:12px}
+      .heroDesc{font-size:15px; line-height:1.35; margin-bottom:12px}
+      .chips{gap:8px}
+      .chip{font-size:12px; min-height:44px; padding:10px 12px}
+      .ctaRow{display:grid; grid-template-columns:1fr; gap:10px}
+      .ctaRow .btn{width:100%; justify-content:center}
+      .glass .pad{padding:13px}
+      .bigLine{font-size:15px}
+      .sectionHead{margin:16px 2px 10px}
+      .sectionTitle{font-size:20px}
+      .sectionNote{font-size:12px}
+      .media{height:200px}
+      .meta{padding:12px}
+      .name{font-size:15px}
+      .addr{font-size:13px}
+      .miniCTA{opacity:1; transform:none; pointer-events:auto}
+      .miniBtn,.fav{min-height:44px}
+      .strip{padding-bottom:2px}
+      .stripCard{min-width:84vw}
+      .sheet{width:100%; border-radius:24px 24px 18px 18px}
+      .overlay,.timeOverlay,.dateOverlay,.draftsOverlay,.successOverlay,.confirmOverlay{padding:10px}
+      .sheetBody{padding:12px}
+      .sheetFoot{padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+      .timeGrid{grid-template-columns:repeat(2,1fr)}
+      .confirmSheet{border-radius:24px 24px 18px 18px}
+      .confirmBody{padding:12px}
+      .confirmActions{padding:12px calc(12px) calc(12px + env(safe-area-inset-bottom,0px))}
+      #splash{transition:opacity .35s ease, visibility .35s ease}
+    }
+
   </style>
 </head>
 
 <body>
+  <div id="splash" aria-hidden="true">
+    <div class="splashGlow"></div>
+    <div class="splashLogoWrap">
+      <div class="splashLogo"></div>
+      <div class="splashBrand">Beauty Booking</div>
+      <div class="splashSub">lux mobile booking club</div>
+    </div>
+  </div>
   <div class="topbar">
     <div class="inner">
       <a class="brand" href="./index.html" aria-label="Beauty Booking home">
@@ -797,7 +941,7 @@
         </button>
 
         <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
-        <button id="langBtn" class="iconbtn" title="UA / EN">🌐</button>
+        <button id="langBtn" class="iconbtn" title="UA / RU / EN">🌐</button>
       </div>
     </div>
   </div>
@@ -1127,6 +1271,36 @@
     </div>
   </div>
 
+
+  <!-- Confirm booking -->
+  <div id="confirmOverlay" class="successOverlay" aria-hidden="true">
+    <div class="miniSheet confirmSheet" role="dialog" aria-modal="true" style="width:min(560px,100%)">
+      <div class="miniHead">
+        <h4 id="confirmTitle">Підтвердження</h4>
+        <button class="x" id="closeConfirm">✕</button>
+      </div>
+      <div class="miniBody">
+        <div class="confirmCard">
+          <div class="confirmTop">
+            <div class="confirmKicker" id="confirmKicker">Майже готово</div>
+            <div class="confirmMain" id="confirmMain">—</div>
+            <div class="confirmSub" id="confirmSub">—</div>
+          </div>
+          <div class="confirmGrid">
+            <div class="confirmItem"><span id="cServiceLabel">Послуга</span><b id="cService">—</b></div>
+            <div class="confirmItem"><span id="cWhenLabel">Коли</span><b id="cWhen">—</b></div>
+            <div class="confirmItem"><span id="cPriceLabel">Ціна</span><b id="cPrice">—</b></div>
+            <div class="confirmItem"><span id="cWhereLabel">Де</span><b id="cWhere">—</b></div>
+          </div>
+          <div class="confirmActions">
+            <button class="btn secondary" id="backToEdit">Редагувати</button>
+            <button class="btn" id="confirmSendBtn">Надіслати в Telegram</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Policies modal -->
   <div id="polModal" class="overlay" aria-hidden="true" style="align-items:center">
     <div class="sheet" style="max-width:820px">
@@ -1274,6 +1448,50 @@
       }
     };
 
+
+    T.ru = {
+      marketplace: "Marketplace · Монреаль",
+      searchPh: "Поиск салона, района, адреса…",
+      heroDesc: "Verified salons & masters. стерильно · быстро · без спама. Подтверждение — в Telegram.",
+      quick: "⚡ Быстрая запись",
+      reset: "Сбросить фильтры",
+      nextNear: "Ближайшее доступное рядом",
+      tapBook: "Нажми и запишись",
+      aiTitle: "AI concierge",
+      aiNote: "Напиши, что нужно — подберу 3 варианта.",
+      aiPh: "Напр: маникюр сегодня после 18 до 60$ рядом",
+      aiGo: "✨ Подобрать",
+      savedTitle: "Сохранённое",
+      savedNote: "Быстрый доступ к избранному.",
+      partnersTitle: "Top salons / partners",
+      partnersNote: "Платные партнёры (показываются только если подходят под фильтры).",
+      recTitle: "Recommended",
+      recNote: "Подобрано по доступности, цене и близости.",
+      allTitle: "All others",
+      allNote: "Все остальные варианты в городе.",
+      emptyTitle: "Нет результатов",
+      emptyText: "Попробуй ослабить фильтры — или посмотри популярные варианты.",
+      emptyReset: "Сбросить фильтры",
+      emptyPopular: "Показать популярные",
+      booking: "Бронирование",
+      confirm: "Подтвердить в Telegram",
+      profile: "Профиль",
+      chooseTime: "Выбери время",
+      chooseDate: "Выбери дату",
+      only: "Только ❤️",
+      toastSaved: "Сохранено",
+      toastErr: "Ошибка. Попробуй ещё.",
+      toastSent: "Отправлено в Telegram ✅",
+      toastDraft: "Черновик сохранён ✅",
+      toastCopied: "Скопировано ✅",
+      toastFilters: "Фильтры сброшены",
+      draftsTitle: "Сохранённые черновики",
+      lastKicker: "Твоя последняя запись",
+      lastSub: "Нажми, чтобы повторить",
+      hold: "Удержание",
+      priceLine: (svc, from, to, dur) => `${svc} · от $${from}${to?`–$${to}`:""} · ${dur} мин`,
+    };
+
     const $ = (s, el=document) => el.querySelector(s);
 
     function applyTheme(){
@@ -1301,6 +1519,19 @@
       renderAll();
       renderNextHeroRotating(true);
       renderLastBookingCard();
+      setTimeout(()=>{
+        try{
+          const hasCards = document.querySelectorAll('#partnerStrip .stripCard, #recGrid .card, #allGrid .card').length > 0;
+          if(!hasCards && Array.isArray(window.LISTINGS) && window.LISTINGS.length){
+            renderAll();
+            refreshHeroCandidates(true);
+            renderNextHeroRotating(true);
+          }
+        }catch(e){}
+      }, 600);
+      decorateHeroUltra();
+      startHeroLiveTicker();
+      bootUltraIntro();
     }
 
     function renderTexts(){
@@ -2328,7 +2559,9 @@
     });
 
     $("#langBtn").addEventListener("click", ()=>{
-      setLang(state.lang==="uk" ? "en" : "uk");
+      const order = ["uk","ru","en"];
+      const next = order[(order.indexOf(state.lang)+1+order.length)%order.length];
+      setLang(next);
     });
 
     $("#themeBtn").addEventListener("click", ()=>{
@@ -2345,7 +2578,7 @@
     $("#closeDate").addEventListener("click", closeDatePicker);
     $("#dateOverlay").addEventListener("click", (e)=>{ if(e.target.id==="dateOverlay") closeDatePicker(); });
 
-    $("#submitBooking").addEventListener("click", sendBooking);
+    $("#submitBooking").addEventListener("click", openBookingConfirm);
 
     $("#policiesBtn").addEventListener("click", (e)=>{
       e.preventDefault();
@@ -2401,6 +2634,172 @@
       }
     });
 
+
+
+    // === ULTRA helpers ===
+    const heroRot = { list: [], idx: 0, timer: null };
+
+    function haptic(ms=10){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+    function distanceKmToListing(listing){
+      if(!state.userLoc || !listing?.lat || !listing?.lng || !window.bb?.util?.haversineKm) return null;
+      const km = window.bb.util.haversineKm(state.userLoc, {lat: listing.lat, lng: listing.lng});
+      return Number.isFinite(km) ? km : null;
+    }
+
+    function decorateHeroUltra(){
+      const hero = document.querySelector('.heroCard');
+      if(!hero || hero.dataset.ultraReady==='1') return;
+      hero.dataset.ultraReady='1';
+      hero.classList.add('heroPulse');
+
+      const left = hero.querySelector('.heroInner > div');
+      if(left && !document.getElementById('heroStats')){
+        const stats = document.createElement('div');
+        stats.className = 'heroStats';
+        stats.id = 'heroStats';
+        stats.innerHTML = `
+          <div class="heroStat">⭐ <em>4.9</em> verified feel</div>
+          <div class="heroStat">⚡ quick booking</div>
+          <div class="heroStat">📲 Telegram confirm</div>
+        `;
+        const cta = left.querySelector('.ctaRow');
+        if(cta) cta.insertAdjacentElement('beforebegin', stats);
+      }
+
+      if(left && !document.getElementById('heroLiveMini')){
+        const live = document.createElement('div');
+        live.className = 'microLive';
+        live.id = 'heroLiveMini';
+        live.textContent = state.lang==='ru' ? '🔥 Сейчас бронируют рядом' : state.lang==='uk' ? '🔥 Зараз бронюють поруч' : '🔥 Booking live nearby';
+        const desc = left.querySelector('#heroDesc');
+        if(desc) desc.insertAdjacentElement('afterend', live);
+      }
+    }
+
+    function decorateCardsUltra(){
+      document.querySelectorAll('.card, .stripCard').forEach((card, i)=>{
+        const id = card.dataset.id;
+        if(!id) return;
+        const listing = (window.LISTINGS||[]).find(x=>x.id===id);
+        if(!listing) return;
+
+        card.querySelectorAll('.cardLive,.cardUrgency,.cardDist').forEach(x=>x.remove());
+
+        const live = document.createElement('div');
+        live.className='cardLive';
+        const mins = [1,2,3,4,6,8][i % 6];
+        live.textContent = state.lang==='ru' ? `🔥 запись ${mins} мин назад` : state.lang==='uk' ? `🔥 запис ${mins} хв тому` : `🔥 booked ${mins} min ago`;
+        card.appendChild(live);
+
+        const urg = document.createElement('div');
+        urg.className='cardUrgency';
+        const left = [2,3,1,4][i % 4];
+        urg.textContent = state.lang==='ru' ? `⏳ осталось ${left} слота` : state.lang==='uk' ? `⏳ лишилось ${left} слоти` : `⏳ ${left} slots left`;
+        card.appendChild(urg);
+
+        const km = distanceKmToListing(listing);
+        if(km != null){
+          const dist = document.createElement('div');
+          dist.className='cardDist';
+          dist.textContent = km < 1 ? (state.lang==='ru' ? '📍 очень близко' : state.lang==='uk' ? '📍 дуже близько' : '📍 very close') : `📍 ${km.toFixed(km < 10 ? 1 : 0)} km`;
+          card.appendChild(dist);
+        }
+      });
+    }
+
+    const __renderAll = renderAll;
+    renderAll = function(){
+      __renderAll();
+      decorateHeroUltra();
+      decorateCardsUltra();
+    };
+
+    function rotateHeroLiveText(){
+      const mini = document.getElementById('heroLiveMini');
+      if(!mini) return;
+      const texts = state.lang==='ru'
+        ? ['🔥 Сейчас бронируют рядом','💎 Премиум mobile-first UX','⚡ Подтверждение за секунды']
+        : state.lang==='uk'
+          ? ['🔥 Зараз бронюють поруч','💎 Преміум mobile-first UX','⚡ Підтвердження за секунди']
+          : ['🔥 Booking live nearby','💎 Premium mobile-first UX','⚡ Confirmation in seconds'];
+      rotateHeroLiveText._i = ((rotateHeroLiveText._i||0)+1)%texts.length;
+      mini.style.opacity='0'; mini.style.transform='translateY(4px)';
+      setTimeout(()=>{ mini.textContent=texts[rotateHeroLiveText._i]; mini.style.opacity='1'; mini.style.transform='translateY(0)'; },170);
+    }
+
+    function startHeroLiveTicker(){
+      clearInterval(startHeroLiveTicker._t);
+      startHeroLiveTicker._t = setInterval(rotateHeroLiveText, 3200);
+    }
+
+    let pendingBookingSend = null;
+    function openBookingConfirm(){
+      const listing = window.LISTINGS.find(l=>l.id===booking.listingId);
+      if(!listing) return;
+
+      const name = $("#fName").value.trim();
+      const phone = $("#fPhone").value.trim();
+      const email = $("#fEmail").value.trim();
+      if(!name || !phone || !email || !booking.serviceId || !booking.dateISO || !booking.time){
+        toast(T[state.lang].toastErr);
+        return;
+      }
+
+      const svc = window.bb.util.listingService(listing, booking.serviceId);
+      const svcLabel = serviceLabel(booking.serviceId);
+      const priceText = svc ? `$${svc.from}${svc.to?`–$${svc.to}`:""}` : '—';
+      const day = `${formatDateShort(booking.dateISO)} · ${booking.time}`;
+
+      $("#confirmMain").textContent = listing.name;
+      $("#confirmSub").textContent = state.lang==='ru' ? 'Проверь детали перед отправкой' : state.lang==='uk' ? 'Перевір деталі перед відправкою' : 'Review the details before sending';
+      $("#cService").textContent = svcLabel || '—';
+      $("#cWhen").textContent = day;
+      $("#cPrice").textContent = priceText;
+      $("#cWhere").textContent = listing.address || '—';
+      $("#confirmTitle").textContent = state.lang==='ru' ? 'Подтверждение' : state.lang==='uk' ? 'Підтвердження' : 'Confirmation';
+      $("#confirmKicker").textContent = state.lang==='ru' ? 'Почти готово' : state.lang==='uk' ? 'Майже готово' : 'Almost ready';
+      $("#cServiceLabel").textContent = state.lang==='ru' ? 'Услуга' : state.lang==='uk' ? 'Послуга' : 'Service';
+      $("#cWhenLabel").textContent = state.lang==='ru' ? 'Когда' : state.lang==='uk' ? 'Коли' : 'When';
+      $("#cPriceLabel").textContent = state.lang==='ru' ? 'Цена' : state.lang==='uk' ? 'Ціна' : 'Price';
+      $("#cWhereLabel").textContent = state.lang==='ru' ? 'Где' : state.lang==='uk' ? 'Де' : 'Where';
+      $("#backToEdit").textContent = state.lang==='ru' ? 'Редактировать' : state.lang==='uk' ? 'Редагувати' : 'Edit';
+      $("#confirmSendBtn").textContent = state.lang==='ru' ? 'Отправить в Telegram' : state.lang==='uk' ? 'Надіслати в Telegram' : 'Send to Telegram';
+
+      pendingBookingSend = ()=> sendBooking();
+      $("#confirmOverlay").classList.add('on');
+      $("#confirmOverlay").setAttribute('aria-hidden','false');
+      haptic(12);
+    }
+
+    function closeBookingConfirm(){
+      $("#confirmOverlay").classList.remove('on');
+      $("#confirmOverlay").setAttribute('aria-hidden','true');
+      pendingBookingSend = null;
+    }
+
+    $("#closeConfirm").addEventListener('click', closeBookingConfirm);
+    $("#confirmOverlay").addEventListener('click', (e)=>{ if(e.target.id==='confirmOverlay') closeBookingConfirm(); });
+    $("#backToEdit").addEventListener('click', closeBookingConfirm);
+    $("#confirmSendBtn").addEventListener('click', ()=>{
+      const run = pendingBookingSend;
+      closeBookingConfirm();
+      if(run) run();
+    });
+
+    function bootUltraIntro(){
+      setTimeout(()=>{
+        document.body.classList.add('is-ready');
+        const splash = document.getElementById('splash');
+        if(splash) splash.classList.add('hide');
+      }, 1100);
+      setTimeout(()=>{ const splash = document.getElementById('splash'); if(splash) splash.remove(); }, 1450);
+    }
+
+    document.addEventListener('click', (e)=>{
+      if(e.target.closest('button,.card,.stripCard,.chip,.pill,.selectLike,.iconbtn,.miniBtn,.fav,.timeBtn,.qchip,.day')) haptic(8);
+    }, {passive:true});
+
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(
         (pos)=>{
@@ -2450,227 +2849,9 @@
     }
     init();
   </script>
-  <!-- =========================
-🔥 FINAL ULTRA PATCH 2026
-========================= -->
-
-<!-- SPLASH -->
-<div id="splash" style="
-position:fixed; inset:0; z-index:9999;
-display:flex; align-items:center; justify-content:center;
-flex-direction:column;
-background:
-radial-gradient(800px 500px at 50% 20%, rgba(255,79,216,.25), transparent),
-linear-gradient(180deg,#07070b,#0b0b11);
-transition:.6s;
-">
-  <div style="
-    width:72px;height:72px;border-radius:22px;
-    background:linear-gradient(135deg,#ff4fd8,#8b5cf6);
-    box-shadow:0 20px 80px rgba(255,79,216,.45);
-    animation:logoPop 1.2s ease;
-  "></div>
-
-  <div style="
-    margin-top:14px;
-    font-family:Playfair Display;
-    font-size:22px;
-    opacity:.9;
-    animation:fadeIn 1.4s ease;
-  ">Beauty Booking</div>
-</div>
-
-<style>
-@keyframes logoPop{
-0%{transform:scale(.6);opacity:0}
-60%{transform:scale(1.1)}
-100%{transform:scale(1)}
-}
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1;transform:translateY(0)}
-}
-</style>
-
-<script>
-
-/* =========================
-🚀 CORE STATE SAFE EXTEND
-========================= */
-
-window.state = window.state || {};
-state.userLoc = state.userLoc || null;
-
-/* =========================
-📍 GEO
-========================= */
-
-(function(){
-if(!navigator.geolocation) return;
-
-navigator.geolocation.getCurrentPosition(pos=>{
-state.userLoc = {
-lat: pos.coords.latitude,
-lng: pos.coords.longitude
-};
-try{ renderAll && renderAll(); }catch(e){}
-});
-})();
-
-/* =========================
-📏 DISTANCE
-========================= */
-
-function __bb_dist(a,b){
-if(!a||!b) return 999;
-const R=6371;
-const dLat=(b.lat-a.lat)*Math.PI/180;
-const dLng=(b.lng-a.lng)*Math.PI/180;
-const x=Math.sin(dLat/2)**2+
-Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*
-Math.sin(dLng/2)**2;
-return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-
-/* =========================
-🧠 AI SCORING
-========================= */
-
-window.bb = window.bb || {};
-
-bb.score = function(l){
-let s = 0;
-
-if(state.serviceId && bb.util?.listingService(l,state.serviceId)) s+=30;
-
-if(state.userLoc && l.lat){
-const d = __bb_dist(state.userLoc,{lat:l.lat,lng:l.lng});
-s += Math.max(0, 30 - d);
-}
-
-if(l.recommended) s+=20;
-if(l.partner) s+=15;
-
-return s;
-};
-
-if(bb.util){
-bb.util.smartRecommend = function(list){
-return list.sort((a,b)=> bb.score(b)-bb.score(a));
-};
-}
-
-/* =========================
-🔥 LIVE ACTIVITY
-========================= */
-
-setInterval(()=>{
-const cards = document.querySelectorAll(".card");
-if(!cards.length) return;
-
-const c = cards[Math.floor(Math.random()*cards.length)];
-if(!c) return;
-
-const tag=document.createElement("div");
-tag.innerText="🔥 booked just now";
-tag.style.cssText=`
-position:absolute;top:10px;left:10px;
-padding:6px 10px;
-border-radius:999px;
-background:rgba(255,79,216,.15);
-border:1px solid rgba(255,79,216,.3);
-font-size:11px;font-weight:800;
-backdrop-filter:blur(10px);
-animation:fadeIn .3s ease;
-`;
-
-c.appendChild(tag);
-setTimeout(()=>tag.remove(),4000);
-
-},4500);
-
-/* =========================
-⏳ URGENCY
-========================= */
-
-setTimeout(()=>{
-document.querySelectorAll(".card").forEach(c=>{
-if(Math.random()<0.35){
-const t=document.createElement("div");
-t.innerText="⏳ few slots left";
-t.style.cssText=`
-position:absolute;top:40px;left:10px;
-padding:6px 10px;
-border-radius:999px;
-background:rgba(255,210,122,.12);
-border:1px solid rgba(255,210,122,.3);
-font-size:11px;font-weight:800;
-`;
-c.appendChild(t);
-}
-});
-},1500);
-
-/* =========================
-📳 HAPTIC
-========================= */
-
-document.addEventListener("click",e=>{
-if(e.target.closest("button,.card,.chip,.pill")){
-if(navigator.vibrate) navigator.vibrate(8);
-}
-});
-
-/* =========================
-✨ SPLASH HIDE
-========================= */
-
-window.addEventListener("load",()=>{
-setTimeout(()=>{
-const s=document.getElementById("splash");
-if(s){
-s.style.opacity="0";
-setTimeout(()=>s.remove(),600);
-}
-},1800);
-});
-
-/* =========================
-💎 TG MESSAGE UPGRADE
-========================= */
-
-window.bbSendBooking = async function(data){
-const msg = `
-✨ НОВЕ БРОНЮВАННЯ
-
-👤 ${data.name}
-📞 ${data.phone}
-
-💅 ${data.service}
-📍 ${data.place}
-
-🕒 ${data.date} ${data.time}
-
-#beautybooking
-`;
-
-await fetch(WORKER_URL + "/book",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-name:data.name,
-phone:data.phone,
-message:msg
-})
-});
-};
-
-</script>
-
-<!-- =========================
-END FINAL PATCH
-========================= -->
 </body>
 </html>
+
+
 
 
