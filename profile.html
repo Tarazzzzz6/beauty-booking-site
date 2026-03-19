@@ -2,34 +2,33 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0b0f" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="BookingClub">
   <title>Beauty Booking · Profile</title>
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" /><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BookingClub">
+
+<link rel="apple-touch-startup-image" href="/apple-splash-1179x2556.png"
+      media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)">
+
+<link rel="apple-touch-startup-image" href="/apple-splash-1290x2796.png"
+      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#07070b; --bg2:#0b0b11;
-      --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.09);
-      --stroke:rgba(255,255,255,.10); --stroke2:rgba(255,255,255,.15);
       --text:#f4f3f8; --muted:rgba(244,243,248,.68);
-      --pink:#ff4fd8; --gold:#ffd27a; --violet:#8b5cf6; --mint:#20e3a5;
-      --r:22px; --r2:28px; --r3:18px;
-      --shadow:0 22px 70px rgba(0,0,0,.55);
-      --shadow2:0 10px 30px rgba(0,0,0,.35);
-      --glow:0 0 0 1px rgba(255,79,216,.18), 0 18px 60px rgba(255,79,216,.15);
-      --glow2:0 0 0 1px rgba(255,210,122,.15), 0 18px 60px rgba(255,210,122,.10);
-      --safeT: max(16px, env(safe-area-inset-top));
-      --safeB: max(16px, env(safe-area-inset-bottom));
+      --pink:#ff4fd8; --gold:#ffd27a; --violet:#8b5cf6;
+      --r:22px; --r2:28px;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
       --max:1100px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0; color:var(--text);
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
@@ -38,216 +37,365 @@
         radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),
         radial-gradient(900px 700px at 70% 90%, rgba(255,210,122,.10), transparent 60%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      overflow-x:hidden;
     }
-    a{color:inherit;text-decoration:none}
-    button{font:inherit}
-    .wrap{max-width:var(--max); margin:0 auto; padding:calc(var(--safeT) + 6px) 16px calc(110px + var(--safeB));}
-    .topbar{
-      position:sticky; top:0; z-index:60;
-      backdrop-filter: blur(14px);
-      background: linear-gradient(180deg, rgba(7,7,11,.88), rgba(7,7,11,.55));
-      border-bottom:1px solid rgba(255,255,255,.06);
-      margin: calc(var(--safeT) * -1 - 6px) -16px 14px;
-      padding-top: calc(var(--safeT) + 6px);
-    }
-    .topInner{max-width:var(--max); margin:0 auto; padding:12px 16px; display:flex; align-items:center; gap:10px;}
-    .pill,.iconbtn,.back{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      min-height:46px; padding:0 14px;
-      border-radius:999px; border:1px solid var(--stroke);
-      background:var(--card); color:var(--text);
-      box-shadow: var(--shadow2);
-      backdrop-filter: blur(12px);
-    }
-    .iconbtn{width:46px; min-width:46px; padding:0; border-radius:16px; cursor:pointer}
-    .brandMini{font-family:"Playfair Display",serif; font-size:18px; margin-left:auto; opacity:.9}
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px 18px 90px}
+    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px}
+    .back{display:inline-flex; gap:10px; align-items:center; padding:10px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05);}
     .card{
       border-radius: var(--r2);
-      border:1px solid var(--stroke);
-      background: var(--card);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .hero{position:relative; min-height:440px; background:rgba(255,255,255,.06)}
-    .hero img{width:100%; height:100%; min-height:440px; object-fit:cover; display:block; filter:saturate(1.06) contrast(1.02)}
-    .hero:after{content:""; position:absolute; inset:0; background:
-      radial-gradient(600px 260px at 10% 0%, rgba(255,210,122,.16), transparent 60%),
-      linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.78));}
-    .heroInner{position:absolute; inset:auto 16px 16px; z-index:2}
-    .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,243,248,.72); margin-bottom:8px}
-    h1{margin:0; font-family:"Playfair Display",serif; font-size:36px; line-height:1.02; letter-spacing:-.4px}
-    .addr{margin-top:8px; color:rgba(244,243,248,.82); font-size:14px; line-height:1.35}
-    .badges{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
-    .tag{font-size:11px; font-weight:800; padding:8px 10px; border-radius:999px; border:1px solid var(--stroke2); background:rgba(0,0,0,.24); backdrop-filter:blur(8px)}
-    .tag.partner{border-color: rgba(255,79,216,.35); background: rgba(255,79,216,.12); box-shadow: var(--glow)}
-    .tag.good{border-color: rgba(32,227,165,.30); background: rgba(32,227,165,.10)}
-    .tag.today{border-color: rgba(255,210,122,.34); background: rgba(255,210,122,.12); box-shadow: var(--glow2)}
-    .galleryDots{display:flex; gap:8px; margin-top:14px}
-    .galleryDots button{width:9px; height:9px; border-radius:999px; border:0; background:rgba(255,255,255,.34); padding:0; cursor:pointer}
-    .galleryDots button.on{background:linear-gradient(135deg,var(--gold),var(--pink)); width:24px}
-    .heroActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
-    .btn{
-      border:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      min-height:48px; padding:0 16px; border-radius:16px; font-weight:900;
-      color:#0b0b0f; background:linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
-      box-shadow:0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4);
-      transition:transform .18s ease, filter .18s ease;
-    }
-    .btn:active,.iconbtn:active,.back:active,.serviceCta:active,.floatingBtn:active,.miniBtn:active{transform:scale(.98)}
-    .btn.secondary,.miniBtn,.serviceCta{
-      background:rgba(255,255,255,.08); color:rgba(244,243,248,.94); border:1px solid rgba(255,255,255,.12); box-shadow:none;
-    }
-    .trustStrip{display:grid; grid-template-columns: repeat(4,1fr); gap:10px; margin-top:14px}
-    .trustItem{padding:12px; border-radius:18px; border:1px solid var(--stroke); background:rgba(0,0,0,.18); box-shadow:var(--shadow2)}
-    .trustItem b{display:block; font-size:18px}
-    .trustItem span{display:block; margin-top:4px; color:var(--muted); font-size:12px}
+    .hero{height:320px; position:relative; background:rgba(255,255,255,.06)}
+    .hero img{width:100%; height:100%; object-fit:cover; filter:saturate(1.05) contrast(1.02)}
+    .hero:after{content:""; position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.75));}
+    .heroInner{position:absolute; left:16px; right:16px; bottom:16px; z-index:2}
+    h1{margin:0; font-family:"Playfair Display",serif; font-size:34px; letter-spacing:-.3px}
+    .addr{margin-top:6px; color:rgba(244,243,248,.78)}
+    .badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .tag{font-size:12px; font-weight:800; padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.25)}
+    .tag.partner{border-color: rgba(255,79,216,.32); background: rgba(255,79,216,.12)}
+    .tag.good{border-color: rgba(32,227,165,.28); background: rgba(32,227,165,.10)}
+    .tag.today{border-color: rgba(255,210,122,.32); background: rgba(255,210,122,.10)}
     .content{padding:16px}
-    .grid{display:grid; grid-template-columns:1.18fr .82fr; gap:14px}
-    .glass{border-radius:20px; border:1px solid var(--stroke); background: rgba(0,0,0,.18); box-shadow: var(--shadow2); overflow:hidden}
+    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px}
+    .glass{
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
     .pad{padding:14px}
     .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,243,248,.62)}
-    .subline{margin-top:6px; color:var(--muted); font-size:13px}
-    .nextAvail{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; padding:14px; border-radius:18px; border:1px solid rgba(255,210,122,.28); background:rgba(255,210,122,.08); box-shadow:var(--glow2)}
-    .nextAvail strong{display:block}
-    .sectionTitle{font-family:"Playfair Display",serif; font-size:22px; margin:0}
-    .svc{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.08)}
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{
+      border:0; cursor:pointer;
+      padding:12px 14px; border-radius:14px; font-weight:900;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
+      box-shadow: 0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4);
+    }
+    .btn.secondary{
+      background: rgba(255,255,255,.08);
+      color: rgba(244,243,248,.92);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:none;
+    }
+    .svc{display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08)}
     .svc:last-child{border-bottom:0}
-    .svcMain b{display:block; font-size:15px}
     .muted{color:var(--muted)}
-    .svcMeta{margin-top:4px; font-size:12.5px}
-    .svcActions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-    .serviceCta,.miniBtn{display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:0 12px; border-radius:14px; cursor:pointer; font-weight:800}
-    .whyBox{display:grid; gap:10px; margin-top:12px}
-    .whyItem{padding:12px; border-radius:16px; border:1px solid var(--stroke); background:rgba(255,255,255,.04)}
-    .whyItem b{display:block; margin-bottom:4px}
-    .contactGrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
-    iframe{width:100%; height:320px; border:0; display:block}
-    .floatingBar{position:fixed; left:0; right:0; bottom:calc(12px + env(safe-area-inset-bottom)); z-index:80; display:flex; justify-content:center; pointer-events:none}
-    .floatingInner{pointer-events:auto; display:flex; gap:10px; align-items:center; padding:10px; border-radius:999px; border:1px solid var(--stroke); background:rgba(7,7,11,.65); backdrop-filter:blur(16px); box-shadow:0 18px 60px rgba(0,0,0,.45)}
-    .floatingBtn{border:0; cursor:pointer; min-height:48px; padding:0 16px; border-radius:999px; font-weight:900; display:inline-flex; align-items:center; gap:10px}
-    .floatingBtn.primary{color:#0b0b0f; background:linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98)); box-shadow:0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4)}
-    .floatingBtn.secondary{background:var(--card2); color:var(--text); border:1px solid var(--stroke)}
-    .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(86px + env(safe-area-inset-bottom)); z-index:100; display:none; padding:10px 14px; border-radius:999px; background:rgba(0,0,0,.62); border:1px solid var(--stroke2); backdrop-filter:blur(14px); font-weight:800}
-    .toast.on{display:block}
-    #splash{position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; background:radial-gradient(800px 500px at 50% 20%, rgba(255,79,216,.25), transparent), linear-gradient(180deg,#07070b,#0b0b11); transition:opacity .6s ease}
-    .splashLogo{width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,#ff4fd8,#8b5cf6);box-shadow:0 20px 80px rgba(255,79,216,.45);animation:logoPop 1.2s ease}
-    .splashText{margin-top:14px;font-family:"Playfair Display",serif;font-size:22px;opacity:.92;animation:fadeIn .9s ease}
-    .skeleton{background:linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.10), rgba(255,255,255,.05)); background-size:200% 100%; animation:sh 1.2s linear infinite}
-    @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-    @keyframes logoPop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1)}}
-    @keyframes fadeIn{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:translateY(0)}}
-    @keyframes rise{from{opacity:0; transform:translateY(16px)}to{opacity:1; transform:translateY(0)}}
-    .rise{animation:rise .45s ease both}
+    iframe{width:100%; height:320px; border:0}
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} .hero{height:280px} }
+
+    /* ===========================
+       BOOKING MODAL (DROP-IN)
+       =========================== */
+    .bbModal{
+      position:fixed; inset:0; z-index:9999;
+      display:none;
+      align-items:flex-end; justify-content:center;
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding:14px;
+    }
+    .bbModal.isOpen{display:flex}
+    .bbSheet{
+      width:min(980px, 100%);
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(700px 500px at 85% 10%, rgba(139,92,246,.14), transparent 60%),
+        linear-gradient(180deg, rgba(20,20,28,.96), rgba(10,10,14,.98));
+      box-shadow: 0 30px 120px rgba(0,0,0,.70);
+      overflow:hidden;
+      transform: translateY(12px);
+      animation: bbUp .18s ease-out forwards;
+    }
+    @keyframes bbUp{to{transform:translateY(0)}}
+    .bbTopbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .bbTopbar .t{
+      display:flex; flex-direction:column; gap:3px;
+    }
+    .bbTopbar .t .h{
+      font-family:"Playfair Display",serif;
+      font-size:18px; letter-spacing:-.2px;
+    }
+    .bbTopbar .t .s{font-size:12.5px; opacity:.75}
+    .bbX{
+      width:40px;height:40px;border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(244,243,248,.92);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .bbX:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbBody{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
     @media (max-width: 900px){
-      .grid{grid-template-columns:1fr}
-      .hero{min-height:380px}
-      .hero img{min-height:380px}
-      .trustStrip{grid-template-columns:repeat(2,1fr)}
+      .bbBody{grid-template-columns:1fr}
     }
-    @media (max-width: 640px){
-      .wrap{padding-left:12px; padding-right:12px}
-      h1{font-size:32px}
-      .heroInner{left:12px; right:12px; bottom:12px}
-      .content{padding:12px}
-      .contactGrid{grid-template-columns:1fr}
-      .topInner{padding:10px 12px}
-      .brandMini{font-size:16px}
+    .bbPane{
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
     }
+    .bbPane .pad{padding:12px}
+    .bbLabel{
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(244,243,248,.62);
+    }
+
+    /* services cards */
+    .bbSvcGrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px}
+    @media (min-width:720px){.bbSvcGrid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+    .bbSvc{
+      text-align:left;
+      position:relative;
+      overflow:hidden;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding:12px;
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .bbSvc:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.18); background:rgba(255,255,255,.075)}
+    .bbSvc.isActive{border-color:rgba(214,169,255,.55); box-shadow:0 0 0 1px rgba(214,169,255,.20) inset}
+    .bbSvc .n{font-weight:800}
+    .bbSvc .m{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; font-size:12px; opacity:.88}
+    .bbPill{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:5px 8px; border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:11px;
+    }
+    .bbPill.hot{
+      background:linear-gradient(135deg,rgba(255,79,216,.18),rgba(214,169,255,.10));
+      border-color:rgba(255,79,216,.25);
+    }
+    .bbPill.value{
+      background:linear-gradient(135deg,rgba(255,210,122,.16),rgba(214,169,255,.10));
+      border-color:rgba(255,210,122,.22);
+    }
+
+    /* chips */
+    .bbChips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .bbChip{
+      border-radius:999px;
+      padding:7px 10px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px;
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      color:rgba(244,243,248,.92);
+    }
+    .bbChip:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbChip.isActive{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+
+    /* calendar */
+    .bbCal{
+      margin-top:10px;
+      border-radius:18px;
+      background:rgba(0,0,0,.14);
+      border:1px solid rgba(255,255,255,.10);
+      padding:10px;
+    }
+    .bbCalBar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+    .bbCalMonth{font-weight:800; opacity:.92}
+    .bbCalNav{
+      width:34px; height:34px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(244,243,248,.92);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .bbCalNav:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbDow{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; padding:0 2px; margin-bottom:6px; opacity:.6; font-size:11px}
+    .bbGrid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+    .bbDay{
+      height:38px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+      user-select:none;
+      color:rgba(244,243,248,.92);
+    }
+    .bbDay:hover{transform:translateY(-1px); background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.14)}
+    .bbDay.out{opacity:.32; cursor:default}
+    .bbDay.disabled{opacity:.26; cursor:not-allowed}
+    .bbDay.today{border-color:rgba(255,210,122,.18)}
+    .bbDay.active{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+
+    /* time grid */
+    .bbTimeGroup{margin-top:12px}
+    .bbTimeH{
+      font-size:12px; opacity:.72;
+      letter-spacing:.12em; text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .bbSlots{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+    @media (min-width:720px){.bbSlots{grid-template-columns:repeat(4,minmax(0,1fr));}}
+    .bbSlot{
+      padding:10px 10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      font-size:13px;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+      color:rgba(244,243,248,.92);
+    }
+    .bbSlot:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbSlot.disabled{opacity:.35; cursor:not-allowed}
+    .bbSlot.active{border-color:rgba(214,169,255,.55); background:rgba(214,169,255,.10)}
+
+    /* hold */
+    .bbHold{display:flex; align-items:center; gap:8px; margin-top:8px}
+    .bbHoldP{
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:11px;
+      background:rgba(214,169,255,.10);
+      border:1px solid rgba(214,169,255,.30);
+    }
+    .bbHoldT{font-variant-numeric:tabular-nums; opacity:.9; font-size:12px}
+
+    /* receipt + client */
+    .bbReceipt{
+      margin-top:10px;
+      border-radius:18px;
+      padding:12px;
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bbRRow{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0}
+    .bbRK{opacity:.72; font-size:12px}
+    .bbRV{font-weight:800}
+    .bbRNote{margin-top:6px; opacity:.7; font-size:12px}
+    .bbMini{
+      margin-top:10px; width:100%;
+      border-radius:14px; padding:10px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      color:rgba(244,243,248,.92);
+      font-weight:800;
+    }
+    .bbMini:hover{transform:translateY(-1px); background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.16)}
+
+    .bbForm{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px}
+    @media (min-width:720px){.bbForm{grid-template-columns:1fr 1fr 1fr}}
+    .bbField{display:flex; flex-direction:column; gap:6px}
+    .bbField span{font-size:12px; opacity:.7}
+    .bbField input{
+      height:44px;
+      border-radius:14px;
+      padding:0 12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:inherit;
+      outline:none;
+    }
+    .bbField input:focus{border-color:rgba(214,169,255,.45); box-shadow:0 0 0 2px rgba(214,169,255,.12)}
+
+    .bbActions{display:flex; gap:10px; justify-content:space-between; margin-top:12px}
+    .bbBtn{
+      height:46px; border-radius:16px;
+      padding:0 14px;
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      color:rgba(244,243,248,.92);
+      font-weight:900;
+      background:rgba(255,255,255,.06);
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+    }
+    .bbBtn:hover{transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16)}
+    .bbBtn.primary{
+      flex:1;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
+      border-color:rgba(255,255,255,.0);
+      box-shadow: 0 18px 50px rgba(255,210,122,.12), 0 12px 34px rgba(0,0,0,.35);
+    }
+    .bbHint{margin-top:10px; opacity:.74; font-size:13px}
   </style>
 </head>
 <body>
-  <div id="splash">
-    <div class="splashLogo"></div>
-    <div class="splashText">Beauty Booking</div>
-  </div>
-
-  <div class="topbar">
-    <div class="topInner">
-      <a class="back" href="./index.html">← <span id="txtBack">Назад</span></a>
-      <button class="iconbtn" id="shareBtn" title="Share">↗</button>
-      <button class="iconbtn" id="langBtn" title="Language">UA</button>
-      <div class="brandMini">Profile</div>
-    </div>
-  </div>
-
   <div class="wrap">
+    <div class="top">
+      <a class="back" href="./index.html">← Back</a>
+      <a class="back" href="./index.html" style="opacity:.85">Beauty Booking</a>
+    </div>
+
     <div id="main" class="card" style="display:none">
       <div class="hero">
         <img id="heroImg" alt="">
         <div class="heroInner">
-          <div class="eyebrow" id="eyebrow">Verified beauty profile</div>
           <h1 id="name">—</h1>
           <div class="addr" id="address">—</div>
           <div class="badges" id="badges"></div>
-          <div class="galleryDots" id="galleryDots" style="display:none"></div>
-          <div class="heroActions">
-            <a id="bookHeroBtn" class="btn" href="./index.html">⚡ <span id="txtBookNow">Book now</span></a>
-            <a id="mapsHeroBtn" class="btn secondary" href="#" target="_blank" rel="noopener">📍 <span id="txtRoute">Маршрут</span></a>
-          </div>
         </div>
       </div>
 
       <div class="content">
-        <div class="trustStrip rise">
-          <div class="trustItem"><b id="trustRating">4.9</b><span id="txtTrust1">середня довіра</span></div>
-          <div class="trustItem"><b id="trustSpeed">~30с</b><span id="txtTrust2">до бронювання</span></div>
-          <div class="trustItem"><b id="trustConfirm">TG</b><span id="txtTrust3">підтвердження</span></div>
-          <div class="trustItem"><b id="trustPay">on-site</b><span id="txtTrust4">оплата зазвичай на місці</span></div>
-        </div>
-
-        <div class="grid" style="margin-top:14px">
-          <div class="glass rise">
+        <div class="grid">
+          <div class="glass">
             <div class="pad">
-              <div class="kicker" id="txtServicesKick">Послуги</div>
-              <div class="subline" id="txtServicesSub">Обери послугу й одразу переходь на швидке бронювання.</div>
+              <div class="kicker">Services</div>
+              <div id="services" style="margin-top:10px"></div>
 
-              <div id="nextAvail" class="nextAvail" style="display:none">
-                <div>
-                  <div class="kicker" id="txtNextKick">Найближчий слот</div>
-                  <strong id="nextAvailLine">—</strong>
-                  <div class="subline" id="nextAvailSub">Tap → book instantly</div>
-                </div>
-                <a id="nextAvailBtn" class="miniBtn" href="./index.html">Book</a>
-              </div>
-
-              <div id="services" style="margin-top:12px"></div>
-
-              <div class="contactGrid">
-                <a id="callBtn" class="btn secondary" href="#" target="_blank" rel="noopener">📞 <span id="txtCall">Call</span></a>
-                <a id="mapsBtn" class="btn secondary" href="#" target="_blank" rel="noopener">🗺️ <span id="txtMaps">Maps</span></a>
-                <a id="igBtn" class="btn secondary" href="#" target="_blank" rel="noopener">◎ Instagram</a>
-                <a id="bookBtn" class="btn" href="./index.html">✨ <span id="txtBook">Book</span></a>
+              <div class="row">
+                <a id="callBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Call</a>
+                <a id="mapsBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Maps</a>
+                <a id="igBtn" class="btn secondary" href="#" target="_blank" rel="noopener">Instagram</a>
+                <!-- CHANGED: Book now opens modal -->
+                <button id="bookBtn" class="btn" type="button">Book</button>
               </div>
 
               <div id="bio" class="muted" style="margin-top:14px; white-space:pre-line"></div>
             </div>
           </div>
 
-          <div class="glass rise">
+          <div class="glass">
             <div class="pad">
-              <div class="kicker" id="txtWhyKick">Why choose this</div>
-              <div class="whyBox" id="whyBox"></div>
-
-              <div style="margin-top:16px">
-                <div class="kicker" id="txtLocationKick">Локація</div>
-                <div style="margin-top:10px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.10)">
-                  <iframe id="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-                <div class="muted" style="margin-top:10px; font-size:12.5px" id="txtLocationTip">
-                  Відкрий Maps і одразу проклади маршрут.
-                </div>
+              <div class="kicker">Location</div>
+              <div style="margin-top:10px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.10)">
+                <iframe id="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+              <div class="muted" style="margin-top:10px; font-size:12.5px">
+                Tip: можеш відкрити Maps і одразу прокласти маршрут.
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div id="loading" class="card">
-      <div class="hero skeleton"></div>
-      <div class="content">
-        <div class="glass"><div class="pad"><div class="skeleton" style="height:18px;border-radius:8px"></div><div class="skeleton" style="height:14px;border-radius:8px;margin-top:10px"></div></div></div>
       </div>
     </div>
 
@@ -259,267 +407,787 @@
     </div>
   </div>
 
-  <div class="floatingBar" id="floatingBar" style="display:none">
-    <div class="floatingInner">
-      <a id="floatingBook" class="floatingBtn primary" href="./index.html">⚡ <span id="txtFloating">Quick book</span></a>
-      <a id="floatingMaps" class="floatingBtn secondary" href="#" target="_blank" rel="noopener">📍</a>
+  <!-- ===========================
+       BOOKING MODAL (HTML)
+       =========================== -->
+  <div class="bbModal" id="bbModal" aria-hidden="true">
+    <div class="bbSheet" role="dialog" aria-modal="true" aria-label="Booking">
+      <div class="bbTopbar">
+        <div class="t">
+          <div class="h" id="bbTitle">Book</div>
+          <div class="s" id="bbSub">Pick a service, then choose a date & time.</div>
+        </div>
+        <button class="bbX" id="bbClose" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="bbBody">
+        <!-- LEFT: Service + Date -->
+        <div class="bbPane">
+          <div class="pad">
+            <div class="bbLabel">Service</div>
+            <div class="bbSvcGrid" id="bbSvcGrid"></div>
+
+            <div style="margin-top:14px">
+              <div class="bbLabel">Date</div>
+              <div class="bbChips" id="bbChips">
+                <button class="bbChip" data-chip="soonest" type="button">Soonest</button>
+                <button class="bbChip" data-chip="weekend" type="button">Weekend</button>
+                <button class="bbChip" data-chip="evening" type="button">Evening</button>
+              </div>
+
+              <div class="bbCal" id="bbCal">
+                <div class="bbCalBar">
+                  <button class="bbCalNav" id="bbPrev" type="button" aria-label="Previous month">‹</button>
+                  <div class="bbCalMonth" id="bbMonth">—</div>
+                  <button class="bbCalNav" id="bbNext" type="button" aria-label="Next month">›</button>
+                </div>
+                <div class="bbDow">
+                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+                <div class="bbGrid" id="bbGrid"></div>
+              </div>
+
+              <div class="bbHint" id="bbNoSlotsHint" style="display:none">No online slots yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Time + receipt + client -->
+        <div class="bbPane">
+          <div class="pad">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+              <div class="bbLabel">Time</div>
+              <div class="bbHold" id="bbHold" style="display:none">
+                <span class="bbHoldP">Held</span>
+                <span class="bbHoldT" id="bbHoldT">02:00</span>
+              </div>
+            </div>
+
+            <div class="bbTimeGroup">
+              <div class="bbTimeH">Morning</div>
+              <div class="bbSlots" id="bbMorning"></div>
+            </div>
+            <div class="bbTimeGroup">
+              <div class="bbTimeH">Afternoon</div>
+              <div class="bbSlots" id="bbAfternoon"></div>
+            </div>
+            <div class="bbTimeGroup">
+              <div class="bbTimeH">Evening</div>
+              <div class="bbSlots" id="bbEvening"></div>
+            </div>
+
+            <div class="bbReceipt" id="bbReceipt" style="display:none">
+              <div class="bbRRow"><div class="bbRK">Service</div><div class="bbRV" id="bbRService">—</div></div>
+              <div class="bbRRow"><div class="bbRK">Date & time</div><div class="bbRV" id="bbRWhen">—</div></div>
+              <div class="bbRRow"><div class="bbRK">Duration</div><div class="bbRV" id="bbRDur">—</div></div>
+              <div class="bbRRow"><div class="bbRK">Price</div><div class="bbRV" id="bbRPrice">—</div></div>
+              <div class="bbRNote">No hidden fees</div>
+              <button class="bbMini" id="bbEdit" type="button">Edit selection</button>
+            </div>
+
+            <div style="margin-top:14px">
+              <div class="bbLabel">Your details</div>
+              <div class="bbForm">
+                <label class="bbField"><span>Name</span><input id="bbName" autocomplete="name" placeholder="Your name"></label>
+                <label class="bbField"><span>Email</span><input id="bbEmail" autocomplete="email" placeholder="you@email.com"></label>
+                <label class="bbField"><span>Phone</span><input id="bbPhone" autocomplete="tel" placeholder="+1 (___) ___-____"></label>
+              </div>
+
+              <div class="bbActions">
+                <button class="bbBtn" id="bbCancel" type="button">Cancel</button>
+                <button class="bbBtn primary" id="bbConfirm" type="button">Confirm booking</button>
+              </div>
+            </div>
+
+            <input type="hidden" id="bbChosenServiceId">
+            <input type="hidden" id="bbChosenISO">
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div id="toast" class="toast">Saved</div>
 
   <script>
     const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost";
     const VERSION = "1.0.0";
     const DATA_URL = "./data.js" + (isLocal ? ("?v=" + Date.now()) : ("?v=" + VERSION));
-    const LS_LANG = 'bb_lang';
 
-    const I18N = {
-      uk: {
-        back:'Назад', book:'Book', bookNow:'Book now', quick:'Quick book', route:'Маршрут',
-        servicesKick:'Послуги', servicesSub:'Обери послугу й одразу переходь на швидке бронювання.',
-        nextKick:'Найближчий слот', nextSub:'Тапни — і відкриємо бронювання вже з вибраною послугою.',
-        call:'Call', maps:'Maps', whyKick:'Чому обирають це місце', locationKick:'Локація',
-        locationTip:'Відкрий Maps і одразу проклади маршрут.', eyebrow:'Verified beauty profile',
-        trust1:'середня довіра', trust2:'до бронювання', trust3:'підтвердження', trust4:'оплата зазвичай на місці',
-        why1t:'Швидкий запис', why1d:'Можна перейти одразу в бронювання з обраною послугою і часом.',
-        why2t:'Чіткі ціни', why2d:'Показуємо from / to і тривалість до підтвердження.',
-        why3t:'Зручно з мобільного', why3d:'Вся логіка зібрана під one-thumb flow і Telegram confirmation.',
-        noServices:'Немає послуг', from:(a,b)=>`від $${a}${b?`–$${b}`:''}`,
-        mins:m=>`${m} хв`, nextLine:(svc,dt)=>`${svc} · ${dt}`,
-        toastCopied:'Скопійовано ✅', toastShared:'Лінк готовий ✅', profile:'Profile'
-      },
-      ru: {
-        back:'Назад', book:'Book', bookNow:'Book now', quick:'Quick book', route:'Маршрут',
-        servicesKick:'Услуги', servicesSub:'Выбери услугу и сразу переходи к быстрому бронированию.',
-        nextKick:'Ближайший слот', nextSub:'Нажми — и откроем бронь уже с выбранной услугой.',
-        call:'Call', maps:'Maps', whyKick:'Почему выбирают это место', locationKick:'Локация',
-        locationTip:'Открой Maps и сразу построй маршрут.', eyebrow:'Verified beauty profile',
-        trust1:'среднее доверие', trust2:'до брони', trust3:'подтверждение', trust4:'оплата обычно на месте',
-        why1t:'Быстрая запись', why1d:'Можно сразу перейти в бронь с выбранной услугой и временем.',
-        why2t:'Понятные цены', why2d:'Показываем from / to и длительность до подтверждения.',
-        why3t:'Удобно с телефона', why3d:'Вся логика собрана под one-thumb flow и Telegram confirmation.',
-        noServices:'Нет услуг', from:(a,b)=>`от $${a}${b?`–$${b}`:''}`,
-        mins:m=>`${m} мин`, nextLine:(svc,dt)=>`${svc} · ${dt}`,
-        toastCopied:'Скопировано ✅', toastShared:'Ссылка готова ✅', profile:'Profile'
-      },
-      en: {
-        back:'Back', book:'Book', bookNow:'Book now', quick:'Quick book', route:'Route',
-        servicesKick:'Services', servicesSub:'Choose a service and jump straight into quick booking.',
-        nextKick:'Next available slot', nextSub:'Tap and we’ll open booking with the service already selected.',
-        call:'Call', maps:'Maps', whyKick:'Why choose this place', locationKick:'Location',
-        locationTip:'Open Maps and start directions instantly.', eyebrow:'Verified beauty profile',
-        trust1:'average trust', trust2:'to booking', trust3:'confirmation', trust4:'pay on site usually',
-        why1t:'Fast booking', why1d:'Jump straight into booking with a service and time preselected.',
-        why2t:'Clear pricing', why2d:'We show from / to pricing and duration before confirmation.',
-        why3t:'Mobile-first', why3d:'The full flow is built for one-thumb use and Telegram confirmation.',
-        noServices:'No services', from:(a,b)=>`from $${a}${b?`–$${b}`:''}`,
-        mins:m=>`${m} min`, nextLine:(svc,dt)=>`${svc} · ${dt}`,
-        toastCopied:'Copied ✅', toastShared:'Link ready ✅', profile:'Profile'
-      }
+    function qs(name){
+      return new URLSearchParams(location.search).get(name);
+    }
+    function safeImg(url){
+      return url || "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80";
+    }
+    function showErr(msg){
+      document.getElementById("err").style.display = "block";
+      document.getElementById("errText").textContent = msg;
+    }
+    function esc(s){
+      return String(s).replace(/[&<>"']/g, m => (
+        m==='&'?'&amp;': m==='<'?'&lt;': m==='>'?'&gt;': m==='"'?'&quot;':'&#039;'
+      ));
+    }
+    const pad = n => (n<10 ? "0"+n : ""+n);
+    const toDayISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const startOfMonth = d => new Date(d.getFullYear(), d.getMonth(), 1);
+    const addMonths = (d,m) => new Date(d.getFullYear(), d.getMonth()+m, 1);
+    const parseISO = s => new Date(s);
+    const isSameDay = (a,b)=> a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+
+    function fmtWhen(iso){
+      const d = parseISO(iso);
+      const dd = pad(d.getDate()), mm = pad(d.getMonth()+1), yy = d.getFullYear();
+      const hh = pad(d.getHours()), mi = pad(d.getMinutes());
+      return `${dd}.${mm}.${yy} ${hh}:${mi}`;
+    }
+    function fmtTime(iso){
+      const d = parseISO(iso);
+      const h = d.getHours();
+      const m = pad(d.getMinutes());
+      const hh = (h%12)||12;
+      const ap = h<12?'AM':'PM';
+      return `${hh}:${m} ${ap}`;
+    }
+    function bucket(iso){
+      const h = parseISO(iso).getHours();
+      if (h < 12) return "morning";
+      if (h < 17) return "afternoon";
+      return "evening";
+    }
+
+    // Booking state
+    const st = {
+      listing: null,
+      month: startOfMonth(new Date()),
+      serviceId: null,
+      dayISO: null,
+      slotISO: null,
+      dayMap: new Map(),  // dayISO -> [slotISO...]
+      enabledDays: new Set(),
+      holdUntil: 0,
+      holdTimer: null
     };
 
-    let lang = localStorage.getItem(LS_LANG) || 'uk';
-    let currentListing = null;
-    let currentImageIdx = 0;
+    function getSvcMeta(serviceId){
+      return (window.SERVICES||[]).find(x=>String(x.id)===String(serviceId)) || null;
+    }
 
-    function $(s, el=document){ return el.querySelector(s); }
-    function qs(name){ return new URLSearchParams(location.search).get(name); }
-    function safeImg(url){ return url || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80'; }
-    function showErr(msg){ $('#loading').style.display='none'; $('#err').style.display='block'; $('#errText').textContent = msg; }
-    function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'),1500); }
-    function haptic(){ if(navigator.vibrate) navigator.vibrate(8); }
-    function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
-    function serviceLabel(svc){ if(!window.SERVICES) return svc?.serviceId || ''; const m = window.SERVICES.find(x=>x.id===svc.serviceId); return m ? (lang==='en' ? m.en : m.ua) : (svc.serviceId||''); }
-    function localIso(y,m,d){ return [y, String(m+1).padStart(2,'0'), String(d).padStart(2,'0')].join('-'); }
-    function formatDateShort(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d); const locale = lang==='uk' ? 'uk-UA' : (lang==='ru' ? 'ru-RU' : 'en-CA'); return dt.toLocaleDateString(locale,{ weekday:'short', month:'short', day:'numeric'}); }
-    function buildBookHref(l, serviceId){ const base = `./index.html?book=1&id=${encodeURIComponent(l.id)}`; return serviceId ? `${base}&service=${encodeURIComponent(serviceId)}` : base; }
+    // listing availability: supports l.availability[serviceId] OR l.slots
+   function getSlotsForService(l, serviceId){
+  if (!l) return [];
+  // NEW: правильний формат для service-filter
+  if (l.availabilityByService && l.availabilityByService[serviceId]) return l.availabilityByService[serviceId].slice();
+  // fallback: загальні слоти
+  if (Array.isArray(l.slots)) return l.slots.slice();
+  return [];
+}
 
-    function getNextAvailable(listing){
-      const today = new Date();
-      const maxDays = 45;
-      const avail = listing.availability || {};
-      const services = listing.services || [];
-      for(let i=0;i<maxDays;i++){
-        const d = new Date(today.getFullYear(), today.getMonth(), today.getDate()+i);
-        const iso = localIso(d.getFullYear(), d.getMonth(), d.getDate());
-        const daySlots = avail[iso];
-        if(!daySlots) continue;
-        for(const svc of services){
-          const slots = daySlots[svc.serviceId] || [];
-          if(slots.length){
-            return { iso, time: slots[0], service: svc, label: serviceLabel(svc) };
-          }
+
+    function splitByDay(slots){
+      const map = new Map();
+      for (const iso of slots){
+        const d = parseISO(iso);
+        if (isNaN(d)) continue;
+        const k = toDayISO(d);
+        if (!map.has(k)) map.set(k, []);
+        map.get(k).push(iso);
+      }
+      for (const [k, arr] of map.entries()){
+        arr.sort((a,b)=>parseISO(a)-parseISO(b));
+      }
+      // sort by day key asc
+      return new Map([...map.entries()].sort((a,b)=>a[0].localeCompare(b[0])));
+    }
+
+    // modal
+    const bbModal = document.getElementById("bbModal");
+    const bbClose = document.getElementById("bbClose");
+    const bbCancel = document.getElementById("bbCancel");
+    function openModal(){
+      bbModal.classList.add("isOpen");
+      bbModal.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+      // focus
+      setTimeout(()=>document.getElementById("bbName")?.focus(), 60);
+    }
+    function closeModal(){
+      bbModal.classList.remove("isOpen");
+      bbModal.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+    bbClose.addEventListener("click", closeModal);
+    bbCancel.addEventListener("click", closeModal);
+    bbModal.addEventListener("click", (e)=>{
+      if (e.target === bbModal) closeModal();
+    });
+    document.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape" && bbModal.classList.contains("isOpen")) closeModal();
+    });
+
+    function shake(el){
+      if (!el) return;
+      el.animate([
+        {transform:'translateX(0)'},
+        {transform:'translateX(-6px)'},
+        {transform:'translateX(6px)'},
+        {transform:'translateX(-4px)'},
+        {transform:'translateX(4px)'},
+        {transform:'translateX(0)'}
+      ], {duration:320, easing:'ease-out'});
+    }
+
+    function loadClientPrefill(){
+      try{
+        const raw = localStorage.getItem("bb.lastClient");
+        if(!raw) return;
+        const c = JSON.parse(raw);
+        if (c?.name) document.getElementById("bbName").value = c.name;
+        if (c?.email) document.getElementById("bbEmail").value = c.email;
+        if (c?.phone) document.getElementById("bbPhone").value = c.phone;
+      }catch(_){}
+    }
+    function saveClientPrefill(){
+      const c = {
+        name: (document.getElementById("bbName").value||"").trim(),
+        email: (document.getElementById("bbEmail").value||"").trim(),
+        phone: (document.getElementById("bbPhone").value||"").trim()
+      };
+      try{ localStorage.setItem("bb.lastClient", JSON.stringify(c)); }catch(_){}
+    }
+
+    function stopHold(){
+      if (st.holdTimer) clearInterval(st.holdTimer);
+      st.holdTimer = null;
+      st.holdUntil = 0;
+      document.getElementById("bbHold").style.display = "none";
+      try{ localStorage.removeItem(holdKey()); }catch(_){}
+    }
+    function holdKey(){
+      return `bb.hold.${st.listing ? st.listing.id : "unknown"}`;
+    }
+    function tickHold(){
+      const left = Math.max(0, st.holdUntil - Date.now());
+      const mm = pad(Math.floor(left/60000));
+      const ss = pad(Math.floor((left%60000)/1000));
+      document.getElementById("bbHoldT").textContent = `${mm}:${ss}`;
+      if (left<=0) stopHold();
+    }
+    function startHold(slotISO){
+      stopHold();
+      st.holdUntil = Date.now() + 2*60*1000;
+      try{
+        localStorage.setItem(holdKey(), JSON.stringify({iso: slotISO, until: st.holdUntil}));
+      }catch(_){}
+      document.getElementById("bbHold").style.display = "flex";
+      tickHold();
+      st.holdTimer = setInterval(tickHold, 500);
+    }
+
+    function restoreHoldIfValid(){
+      try{
+        const raw = localStorage.getItem(holdKey());
+        if(!raw) return;
+        const obj = JSON.parse(raw);
+        if(!obj?.iso || !obj?.until) return;
+        if(Date.now() > obj.until) return;
+        st.slotISO = obj.iso;
+        st.holdUntil = obj.until;
+        document.getElementById("bbChosenISO").value = obj.iso;
+        document.getElementById("bbHold").style.display = "flex";
+        tickHold();
+        st.holdTimer = setInterval(tickHold, 500);
+        const d = parseISO(obj.iso);
+        st.month = startOfMonth(d);
+        st.dayISO = toDayISO(d);
+      }catch(_){}
+    }
+
+    function renderServicesForBooking(){
+      const grid = document.getElementById("bbSvcGrid");
+      grid.innerHTML = "";
+
+      const l = st.listing;
+      const svcList = (l?.services || []).slice();
+
+      if (!svcList.length){
+        grid.innerHTML = `<div class="muted" style="padding:6px 2px">No services</div>`;
+        return;
+      }
+
+      // Determine "best value" = lowest from
+      let cheapest = null;
+      for (const s of svcList){
+        if (cheapest === null || Number(s.from) < Number(cheapest.from)) cheapest = s;
+      }
+
+      // Auto pick last service or first
+      if (!st.serviceId){
+        try{
+          const last = localStorage.getItem("bb.lastServiceId");
+          const ok = svcList.find(x=>String(x.serviceId)===String(last));
+          st.serviceId = ok ? ok.serviceId : svcList[0].serviceId;
+        }catch(_){
+          st.serviceId = svcList[0].serviceId;
         }
       }
-      return null;
-    }
 
-    function renderTexts(){
-      const t = I18N[lang] || I18N.uk;
-      $('#txtBack').textContent = t.back;
-      $('#txtBookNow').textContent = t.bookNow;
-      $('#txtRoute').textContent = t.route;
-      $('#txtServicesKick').textContent = t.servicesKick;
-      $('#txtServicesSub').textContent = t.servicesSub;
-      $('#txtNextKick').textContent = t.nextKick;
-      $('#nextAvailSub').textContent = t.nextSub;
-      $('#txtCall').textContent = t.call;
-      $('#txtMaps').textContent = t.maps;
-      $('#txtBook').textContent = t.book;
-      $('#txtWhyKick').textContent = t.whyKick;
-      $('#txtLocationKick').textContent = t.locationKick;
-      $('#txtLocationTip').textContent = t.locationTip;
-      $('#eyebrow').textContent = t.eyebrow;
-      $('#txtFloating').textContent = t.quick;
-      $('.brandMini').textContent = t.profile;
-      $('#trustRating').textContent = currentListing?.rating ? String(currentListing.rating) : '4.9';
-      $('#txtTrust1').textContent = t.trust1;
-      $('#txtTrust2').textContent = t.trust2;
-      $('#txtTrust3').textContent = t.trust3;
-      $('#txtTrust4').textContent = t.trust4;
-      const why = $('#whyBox');
-      why.innerHTML = `
-        <div class="whyItem"><b>${escapeHtml(t.why1t)}</b><div class="muted">${escapeHtml(t.why1d)}</div></div>
-        <div class="whyItem"><b>${escapeHtml(t.why2t)}</b><div class="muted">${escapeHtml(t.why2d)}</div></div>
-        <div class="whyItem"><b>${escapeHtml(t.why3t)}</b><div class="muted">${escapeHtml(t.why3d)}</div></div>
-      `;
-      $('#langBtn').textContent = lang.toUpperCase();
-    }
+      svcList.forEach((s, idx)=>{
+        const meta = getSvcMeta(s.serviceId);
+        const name = meta ? (meta.ua || meta.en || meta.name || s.serviceId) : s.serviceId;
+        const price = `$${s.from}${s.to?`–$${s.to}`:""}`;
+        const dur = `${s.durationMin} min`;
 
-    function renderGalleryDots(images){
-      const box = $('#galleryDots');
-      if(!images || images.length < 2){ box.style.display='none'; box.innerHTML=''; return; }
-      box.style.display='flex';
-      box.innerHTML = images.map((_,i)=>`<button class="${i===currentImageIdx?'on':''}" data-idx="${i}" aria-label="image ${i+1}"></button>`).join('');
-      box.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{ currentImageIdx = Number(btn.dataset.idx||0); $('#heroImg').src = safeImg(images[currentImageIdx]); renderGalleryDots(images); haptic(); });
-    }
+        const isHot = idx === 0;
+        const isValue = cheapest && String(cheapest.serviceId)===String(s.serviceId);
 
-    function renderListing(l){
-      currentListing = l;
-      $('#loading').style.display = 'none';
-      $('#main').style.display = 'block';
-      $('#floatingBar').style.display = 'flex';
-
-      const images = (l.images||[]).length ? l.images : [safeImg('')];
-      $('#heroImg').src = safeImg(images[currentImageIdx] || images[0]);
-      $('#heroImg').alt = l.name || 'Profile image';
-      $('#name').textContent = l.name || '—';
-      $('#address').textContent = l.address || '—';
-      renderGalleryDots(images);
-
-      const badges = [];
-      if(l.partner) badges.push(`<span class="tag partner">💎 Partner</span>`);
-      if(l.verified) badges.push(`<span class="tag good">Verified</span>`);
-      if(l.sterile) badges.push(`<span class="tag good">Sterile</span>`);
-      if(getNextAvailable(l)) badges.push(`<span class="tag today">Available soon</span>`);
-      if(l.city) badges.push(`<span class="tag">${escapeHtml(l.city)}</span>`);
-      $('#badges').innerHTML = badges.join('');
-
-      const q = encodeURIComponent(l.address || '');
-      const mapsHref = `https://www.google.com/maps/search/?api=1&query=${q}`;
-      $('#mapsBtn').href = mapsHref;
-      $('#mapsHeroBtn').href = mapsHref;
-      $('#floatingMaps').href = mapsHref;
-      $('#map').src = `https://www.google.com/maps?q=${q}&output=embed`;
-
-      const phone = (l.phone||'').replace(/[^\d+]/g,'');
-      $('#callBtn').href = phone ? `tel:${phone}` : '#';
-      $('#callBtn').style.opacity = phone ? '1' : '.5';
-
-      $('#igBtn').href = l.instagram || '#';
-      $('#igBtn').style.opacity = l.instagram ? '1' : '.5';
-
-      const bookHref = buildBookHref(l, null);
-      $('#bookBtn').href = bookHref;
-      $('#bookHeroBtn').href = bookHref;
-      $('#floatingBook').href = bookHref;
-
-      $('#bio').textContent = l.bio_ua || l.bio_en || '';
-
-      const t = I18N[lang] || I18N.uk;
-      const services = (l.services||[]).map(svc=>{
-        const label = serviceLabel(svc);
-        const price = t.from(svc.from, svc.to);
-        const dur = t.mins(svc.durationMin || 0);
-        const href = buildBookHref(l, svc.serviceId);
-        return `
-          <div class="svc">
-            <div class="svcMain">
-              <b>${escapeHtml(label)}</b>
-              <div class="muted svcMeta">${escapeHtml(dur)} · ${escapeHtml(price)}</div>
-              <div class="svcActions">
-                <a class="serviceCta" href="${href}">⚡ ${escapeHtml(t.book)}</a>
-              </div>
-            </div>
-            <div><b>${escapeHtml(price)}</b></div>
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "bbSvc" + (String(st.serviceId)===String(s.serviceId) ? " isActive" : "");
+        b.innerHTML = `
+          <div class="n">${esc(name)}</div>
+          <div class="m">
+            <span class="bbPill">from ${esc(price)}</span>
+            <span class="bbPill">${esc(dur)}</span>
+            ${isHot ? `<span class="bbPill hot">popular</span>` : ``}
+            ${isValue ? `<span class="bbPill value">best value</span>` : ``}
           </div>
         `;
-      }).join('');
-      $('#services').innerHTML = services || `<div class="muted">${escapeHtml(t.noServices)}</div>`;
+        b.addEventListener("click", ()=>{
+          st.serviceId = s.serviceId;
+          document.getElementById("bbChosenServiceId").value = String(st.serviceId);
+          // reset date/time
+          st.dayISO = null;
+          st.slotISO = null;
+          document.getElementById("bbChosenISO").value = "";
+          stopHold();
+          renderServicesForBooking();
+          buildAvailability();
+          renderCalendar();
+          renderTimes();
+          renderReceipt();
+        });
+        grid.appendChild(b);
+      });
 
-      const next = getNextAvailable(l);
-      const nextBox = $('#nextAvail');
-      if(next){
-        nextBox.style.display = 'flex';
-        $('#nextAvailLine').textContent = t.nextLine(next.label, `${formatDateShort(next.iso)} · ${next.time}`);
-        $('#nextAvailBtn').href = buildBookHref(l, next.service.serviceId);
-      }else{
-        nextBox.style.display = 'none';
-      }
-
-      renderTexts();
+      document.getElementById("bbChosenServiceId").value = String(st.serviceId);
     }
 
-    $('#langBtn').addEventListener('click', ()=>{
-      lang = lang === 'uk' ? 'ru' : (lang === 'ru' ? 'en' : 'uk');
-      localStorage.setItem(LS_LANG, lang);
-      if(currentListing) renderListing(currentListing); else renderTexts();
-      haptic();
-    });
+    function buildAvailability(){
+      const l = st.listing;
+      const slots = getSlotsForService(l, st.serviceId);
 
-    $('#shareBtn').addEventListener('click', async ()=>{
-      const url = location.href;
-      try{
-        if(navigator.share){
-          await navigator.share({ title: currentListing?.name || 'Beauty Booking', text: currentListing?.address || '', url });
-        }else if(navigator.clipboard){
-          await navigator.clipboard.writeText(url);
-          toast((I18N[lang]||I18N.uk).toastCopied);
-        }
-      }catch(e){
-        try{ await navigator.clipboard.writeText(url); toast((I18N[lang]||I18N.uk).toastShared); }catch(_e){}
+      st.dayMap = splitByDay(slots);
+      st.enabledDays = new Set(st.dayMap.keys());
+
+      const hint = document.getElementById("bbNoSlotsHint");
+      hint.style.display = (slots.length ? "none" : "block");
+    }
+
+    function renderCalendar(){
+      const monthEl = document.getElementById("bbMonth");
+      const grid = document.getElementById("bbGrid");
+      grid.innerHTML = "";
+
+      const m = st.month || startOfMonth(new Date());
+      monthEl.textContent = m.toLocaleString(undefined, {month:"long", year:"numeric"});
+
+      // Monday-first grid
+      const first = new Date(m.getFullYear(), m.getMonth(), 1);
+      const last = new Date(m.getFullYear(), m.getMonth()+1, 0);
+      const firstDow = (first.getDay()+6)%7; // 0=Mon
+      const totalDays = last.getDate();
+
+      // prev month trailing
+      const prevLast = new Date(m.getFullYear(), m.getMonth(), 0).getDate();
+      for (let i=0;i<firstDow;i++){
+        const dayNum = prevLast - (firstDow-1-i);
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay out disabled";
+        cell.textContent=String(dayNum);
+        cell.disabled=true;
+        grid.appendChild(cell);
       }
-      haptic();
-    });
 
-    document.addEventListener('click', e=>{
-      if(e.target.closest('a,button')) haptic();
-    });
+      const today = new Date();
+      for (let d=1; d<=totalDays; d++){
+        const date = new Date(m.getFullYear(), m.getMonth(), d);
+        const dISO = toDayISO(date);
+        const enabled = st.enabledDays.has(dISO);
 
-    const s = document.createElement('script');
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay" + (!enabled ? " disabled" : "") + (isSameDay(date,today) ? " today" : "") + (st.dayISO===dISO ? " active" : "");
+        cell.textContent=String(d);
+        if (!enabled){
+          cell.disabled = true;
+        } else {
+          cell.addEventListener("click", ()=>{
+            st.dayISO = dISO;
+            st.slotISO = null;
+            document.getElementById("bbChosenISO").value = "";
+            stopHold();
+            renderCalendar();
+            renderTimes();
+            renderReceipt();
+          });
+        }
+        grid.appendChild(cell);
+      }
+
+      while (grid.children.length % 7 !== 0){
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay out disabled";
+        cell.textContent=" ";
+        cell.disabled=true;
+        grid.appendChild(cell);
+      }
+      while (grid.children.length < 42){
+        const cell = document.createElement("button");
+        cell.type="button";
+        cell.className="bbDay out disabled";
+        cell.textContent=" ";
+        cell.disabled=true;
+        grid.appendChild(cell);
+      }
+    }
+
+    function renderTimes(){
+      const m = document.getElementById("bbMorning");
+      const a = document.getElementById("bbAfternoon");
+      const e = document.getElementById("bbEvening");
+      m.innerHTML = ""; a.innerHTML=""; e.innerHTML="";
+
+      if (!st.dayISO){
+        m.innerHTML = `<div class="muted" style="padding:6px 2px">Choose a date to see times.</div>`;
+        return;
+      }
+
+      const slots = st.dayMap.get(st.dayISO) || [];
+      if (!slots.length){
+        m.innerHTML = `<div class="muted" style="padding:6px 2px">No times available.</div>`;
+        return;
+      }
+
+      for (const iso of slots){
+        const b = document.createElement("button");
+        b.type="button";
+        b.className = "bbSlot" + (st.slotISO===iso ? " active" : "");
+        b.textContent = fmtTime(iso);
+        b.addEventListener("click", ()=>{
+          st.slotISO = iso;
+          document.getElementById("bbChosenISO").value = iso;
+          renderTimes();
+          startHold(iso);
+          renderReceipt();
+        });
+
+        const g = bucket(iso);
+        if (g==="morning") m.appendChild(b);
+        else if (g==="afternoon") a.appendChild(b);
+        else e.appendChild(b);
+      }
+
+      if (!m.children.length) m.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
+      if (!a.children.length) a.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
+      if (!e.children.length) e.innerHTML = `<div class="muted" style="padding:6px 2px">—</div>`;
+    }
+
+    function renderReceipt(){
+      const r = document.getElementById("bbReceipt");
+      if (!st.serviceId || !st.slotISO){
+        r.style.display = "none";
+        return;
+      }
+
+      const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
+      const meta = getSvcMeta(st.serviceId);
+      const name = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+
+      document.getElementById("bbRService").textContent = name;
+      document.getElementById("bbRWhen").textContent = fmtWhen(st.slotISO);
+      document.getElementById("bbRDur").textContent = `${svc?.durationMin ?? "—"} min`;
+      document.getElementById("bbRPrice").textContent = `$${svc?.from ?? "—"}`;
+
+      r.style.display = "block";
+    }
+
+    function pickSoonest(){
+      const now = new Date();
+      let best = null;
+
+      for (const [dISO, arr] of st.dayMap.entries()){
+        for (const iso of arr){
+          const dt = parseISO(iso);
+          if (dt >= now){ best = iso; break; }
+        }
+        if (best) break;
+      }
+      if (!best) return;
+
+      const d = parseISO(best);
+      st.month = startOfMonth(d);
+      st.dayISO = toDayISO(d);
+      st.slotISO = best;
+      document.getElementById("bbChosenISO").value = best;
+
+      renderCalendar();
+      renderTimes();
+      startHold(best);
+      renderReceipt();
+    }
+
+    function pickWeekend(){
+      for (const [dISO, arr] of st.dayMap.entries()){
+        const d = new Date(dISO+"T12:00:00");
+        const dow = d.getDay(); // 0 Sun, 6 Sat
+        if (dow===0 || dow===6){
+          st.month = startOfMonth(d);
+          st.dayISO = dISO;
+          st.slotISO = arr[0];
+          document.getElementById("bbChosenISO").value = arr[0];
+
+          renderCalendar();
+          renderTimes();
+          startHold(arr[0]);
+          renderReceipt();
+          return;
+        }
+      }
+    }
+
+    function pickEvening(){
+      for (const [dISO, arr] of st.dayMap.entries()){
+        const evening = arr.find(x=>parseISO(x).getHours()>=17);
+        if (evening){
+          const d = new Date(dISO+"T12:00:00");
+          st.month = startOfMonth(d);
+          st.dayISO = dISO;
+          st.slotISO = evening;
+          document.getElementById("bbChosenISO").value = evening;
+
+          renderCalendar();
+          renderTimes();
+          startHold(evening);
+          renderReceipt();
+          return;
+        }
+      }
+    }
+
+    function setChipActive(btn){
+      document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
+      btn.classList.add("isActive");
+    }
+
+    function bindBookingUI(){
+      document.getElementById("bbPrev").addEventListener("click", ()=>{
+        st.month = addMonths(st.month, -1);
+        renderCalendar();
+      });
+      document.getElementById("bbNext").addEventListener("click", ()=>{
+        st.month = addMonths(st.month, +1);
+        renderCalendar();
+      });
+
+      document.getElementById("bbChips").addEventListener("click", (e)=>{
+        const b = e.target.closest(".bbChip");
+        if (!b) return;
+        setChipActive(b);
+        const t = b.getAttribute("data-chip");
+        if (t==="soonest") pickSoonest();
+        if (t==="weekend") pickWeekend();
+        if (t==="evening") pickEvening();
+      });
+
+      document.getElementById("bbEdit").addEventListener("click", ()=>{
+        st.dayISO = null;
+        st.slotISO = null;
+        document.getElementById("bbChosenISO").value = "";
+        stopHold();
+        renderCalendar();
+        renderTimes();
+        renderReceipt();
+      });
+
+      document.getElementById("bbConfirm").addEventListener("click", async ()=>{
+        const name = (document.getElementById("bbName").value||"").trim();
+        const email = (document.getElementById("bbEmail").value||"").trim();
+        const phone = (document.getElementById("bbPhone").value||"").trim();
+
+        if (!st.serviceId || !st.slotISO){
+          shake(document.getElementById("bbConfirm"));
+          return;
+        }
+        if (!name || !phone){
+          shake(document.querySelector(".bbForm"));
+          return;
+        }
+
+        saveClientPrefill();
+        try{ localStorage.setItem("bb.lastServiceId", String(st.serviceId)); }catch(_){}
+
+        const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
+        const meta = getSvcMeta(st.serviceId);
+        const svcName = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+
+        // Worker URL: use window.WORKER_URL if defined in data.js; else fallback to your saved endpoint
+        const WORKER_URL = (window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev").replace(/\/$/,"");
+
+        const payload = {
+          name, email, phone,
+          serviceId: st.serviceId,
+          serviceName: svcName,
+          durationMin: svc?.durationMin ?? null,
+          priceFrom: svc?.from ?? null,
+          priceTo: svc?.to ?? null,
+          datetimeISO: st.slotISO,
+          listingId: st.listing.id,
+          listingName: st.listing.name,
+          address: st.listing.address,
+          profileUrl: location.href
+        };
+
+        const btn = document.getElementById("bbConfirm");
+        const prev = btn.textContent;
+        btn.textContent = "Booking…";
+        btn.style.opacity = ".9";
+        btn.disabled = true;
+
+        try{
+          const res = await fetch(WORKER_URL + "/book", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error("Booking failed");
+
+          stopHold();
+          document.getElementById("bbSub").textContent = "You're all set. We'll see you soon ✨";
+          btn.textContent = "Booked ✓";
+          setTimeout(()=>{ closeModal(); }, 900);
+
+        }catch(err){
+          console.error(err);
+          shake(btn);
+          btn.textContent = "Try again";
+          setTimeout(()=>{ btn.textContent = prev; }, 1200);
+        }finally{
+          btn.disabled = false;
+          btn.style.opacity = "1";
+        }
+      });
+    }
+
+    function initBookingForListing(l){
+      st.listing = l;
+      st.month = startOfMonth(new Date());
+      st.dayISO = null;
+      st.slotISO = null;
+      stopHold();
+
+      document.getElementById("bbTitle").textContent = `Book · ${l.name || "Profile"}`;
+      document.getElementById("bbSub").textContent = "Pick a service, then choose a date & time.";
+
+      loadClientPrefill();
+      renderServicesForBooking();
+      buildAvailability();
+      restoreHoldIfValid();
+      renderCalendar();
+      renderTimes();
+      renderReceipt();
+
+      // default chip none
+      document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
+    }
+
+    // Load data.js + render profile
+    const s = document.createElement("script");
     s.src = DATA_URL;
+
     s.onload = () => {
       try{
-        const id = qs('id');
+        const id = qs("id");
         const l = (window.LISTINGS||[]).find(x=>x.id===id) || window.LISTINGS?.[0];
-        if(!l){ showErr('No listing found'); return; }
-        renderListing(l);
+        if(!l){ showErr("No listing found"); return; }
+
+        // expose for booking
+        window.bb = window.bb || {};
+        window.bb.profileId = l.id;
+        window.bb.currentListing = l;
+
+        document.getElementById("main").style.display = "block";
+        document.getElementById("heroImg").src = safeImg((l.images||[])[0]);
+        document.getElementById("name").textContent = l.name;
+        document.getElementById("address").textContent = l.address;
+
+        const badges = [];
+        if(l.partner) badges.push(`<span class="tag partner">💎 Partner</span>`);
+        if(l.verified) badges.push(`<span class="tag good">Verified</span>`);
+        if(l.sterile) badges.push(`<span class="tag good">Sterile</span>`);
+        document.getElementById("badges").innerHTML = badges.join("");
+
+        // services list (unchanged)
+        const svcBox = document.getElementById("services");
+        const services = (l.services||[]).map(svc=>{
+          const meta = (window.SERVICES||[]).find(x=>x.id===svc.serviceId);
+          const label = meta ? (meta.ua || meta.en || meta.name || svc.serviceId) : svc.serviceId;
+          const price = `$${svc.from}${svc.to?`–$${svc.to}`:""}`;
+          return `<div class="svc"><div><b>${esc(label)}</b><div class="muted" style="margin-top:3px">${esc(String(svc.durationMin))} min</div></div><div><b>${esc(price)}</b></div></div>`;
+        }).join("");
+        svcBox.innerHTML = services || `<div class="muted">No services</div>`;
+
+        // bio
+        document.getElementById("bio").textContent = l.bio_ua || "";
+
+        // actions
+        const phone = (l.phone||"").replace(/[^\d+]/g,"");
+        const call = document.getElementById("callBtn");
+        call.href = phone ? `tel:${phone}` : "#";
+        call.style.opacity = phone ? "1" : ".5";
+
+        const maps = document.getElementById("mapsBtn");
+        const q = encodeURIComponent(l.address || "");
+        maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+
+        const ig = document.getElementById("igBtn");
+        ig.href = l.instagram || "#";
+        ig.style.opacity = l.instagram ? "1" : ".5";
+
+        // map embed
+        document.getElementById("map").src = `https://www.google.com/maps?q=${q}&output=embed`;
+
+       // ✅ Book -> redirect to index with auto-open booking modal
+// book button -> go to index and auto-open booking modal there
+const bookBtn = document.getElementById("bookBtn");
+bookBtn.addEventListener("click", () => {
+  // choose a valid service id for this listing
+  const svcId =
+    (l.services && l.services[0] && l.services[0].serviceId)
+      ? l.services[0].serviceId
+      : "";
+
+  const url =
+    `./index.html?book=1&id=${encodeURIComponent(l.id)}` +
+    (svcId ? `&service=${encodeURIComponent(svcId)}` : "");
+
+  // open in same tab (reliable)
+  location.href = url;
+});
+
+
+        // bind booking UI once
+        bindBookingUI();
+
       }catch(e){
         showErr(e.message || String(e));
       }
     };
-    s.onerror = ()=> showErr('Failed to load data.js');
-    document.head.appendChild(s);
 
-    window.addEventListener('load', ()=>{
-      setTimeout(()=>{
-        const sp = document.getElementById('splash');
-        if(sp){ sp.style.opacity='0'; setTimeout(()=>sp.remove(), 650); }
-      }, 1700);
-    });
+    s.onerror = ()=> showErr("Failed to load data.js");
+    document.head.appendChild(s);
   </script>
 </body>
 </html>
-
 
