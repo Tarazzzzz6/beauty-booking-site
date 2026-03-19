@@ -2450,6 +2450,226 @@
     }
     init();
   </script>
+  <!-- =========================
+🔥 FINAL ULTRA PATCH 2026
+========================= -->
+
+<!-- SPLASH -->
+<div id="splash" style="
+position:fixed; inset:0; z-index:9999;
+display:flex; align-items:center; justify-content:center;
+flex-direction:column;
+background:
+radial-gradient(800px 500px at 50% 20%, rgba(255,79,216,.25), transparent),
+linear-gradient(180deg,#07070b,#0b0b11);
+transition:.6s;
+">
+  <div style="
+    width:72px;height:72px;border-radius:22px;
+    background:linear-gradient(135deg,#ff4fd8,#8b5cf6);
+    box-shadow:0 20px 80px rgba(255,79,216,.45);
+    animation:logoPop 1.2s ease;
+  "></div>
+
+  <div style="
+    margin-top:14px;
+    font-family:Playfair Display;
+    font-size:22px;
+    opacity:.9;
+    animation:fadeIn 1.4s ease;
+  ">Beauty Booking</div>
+</div>
+
+<style>
+@keyframes logoPop{
+0%{transform:scale(.6);opacity:0}
+60%{transform:scale(1.1)}
+100%{transform:scale(1)}
+}
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:translateY(0)}
+}
+</style>
+
+<script>
+
+/* =========================
+🚀 CORE STATE SAFE EXTEND
+========================= */
+
+window.state = window.state || {};
+state.userLoc = state.userLoc || null;
+
+/* =========================
+📍 GEO
+========================= */
+
+(function(){
+if(!navigator.geolocation) return;
+
+navigator.geolocation.getCurrentPosition(pos=>{
+state.userLoc = {
+lat: pos.coords.latitude,
+lng: pos.coords.longitude
+};
+try{ renderAll && renderAll(); }catch(e){}
+});
+})();
+
+/* =========================
+📏 DISTANCE
+========================= */
+
+function __bb_dist(a,b){
+if(!a||!b) return 999;
+const R=6371;
+const dLat=(b.lat-a.lat)*Math.PI/180;
+const dLng=(b.lng-a.lng)*Math.PI/180;
+const x=Math.sin(dLat/2)**2+
+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*
+Math.sin(dLng/2)**2;
+return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+
+/* =========================
+🧠 AI SCORING
+========================= */
+
+window.bb = window.bb || {};
+
+bb.score = function(l){
+let s = 0;
+
+if(state.serviceId && bb.util?.listingService(l,state.serviceId)) s+=30;
+
+if(state.userLoc && l.lat){
+const d = __bb_dist(state.userLoc,{lat:l.lat,lng:l.lng});
+s += Math.max(0, 30 - d);
+}
+
+if(l.recommended) s+=20;
+if(l.partner) s+=15;
+
+return s;
+};
+
+if(bb.util){
+bb.util.smartRecommend = function(list){
+return list.sort((a,b)=> bb.score(b)-bb.score(a));
+};
+}
+
+/* =========================
+🔥 LIVE ACTIVITY
+========================= */
+
+setInterval(()=>{
+const cards = document.querySelectorAll(".card");
+if(!cards.length) return;
+
+const c = cards[Math.floor(Math.random()*cards.length)];
+if(!c) return;
+
+const tag=document.createElement("div");
+tag.innerText="🔥 booked just now";
+tag.style.cssText=`
+position:absolute;top:10px;left:10px;
+padding:6px 10px;
+border-radius:999px;
+background:rgba(255,79,216,.15);
+border:1px solid rgba(255,79,216,.3);
+font-size:11px;font-weight:800;
+backdrop-filter:blur(10px);
+animation:fadeIn .3s ease;
+`;
+
+c.appendChild(tag);
+setTimeout(()=>tag.remove(),4000);
+
+},4500);
+
+/* =========================
+⏳ URGENCY
+========================= */
+
+setTimeout(()=>{
+document.querySelectorAll(".card").forEach(c=>{
+if(Math.random()<0.35){
+const t=document.createElement("div");
+t.innerText="⏳ few slots left";
+t.style.cssText=`
+position:absolute;top:40px;left:10px;
+padding:6px 10px;
+border-radius:999px;
+background:rgba(255,210,122,.12);
+border:1px solid rgba(255,210,122,.3);
+font-size:11px;font-weight:800;
+`;
+c.appendChild(t);
+}
+});
+},1500);
+
+/* =========================
+📳 HAPTIC
+========================= */
+
+document.addEventListener("click",e=>{
+if(e.target.closest("button,.card,.chip,.pill")){
+if(navigator.vibrate) navigator.vibrate(8);
+}
+});
+
+/* =========================
+✨ SPLASH HIDE
+========================= */
+
+window.addEventListener("load",()=>{
+setTimeout(()=>{
+const s=document.getElementById("splash");
+if(s){
+s.style.opacity="0";
+setTimeout(()=>s.remove(),600);
+}
+},1800);
+});
+
+/* =========================
+💎 TG MESSAGE UPGRADE
+========================= */
+
+window.bbSendBooking = async function(data){
+const msg = `
+✨ НОВЕ БРОНЮВАННЯ
+
+👤 ${data.name}
+📞 ${data.phone}
+
+💅 ${data.service}
+📍 ${data.place}
+
+🕒 ${data.date} ${data.time}
+
+#beautybooking
+`;
+
+await fetch(WORKER_URL + "/book",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+name:data.name,
+phone:data.phone,
+message:msg
+})
+});
+};
+
+</script>
+
+<!-- =========================
+END FINAL PATCH
+========================= -->
 </body>
 </html>
 
