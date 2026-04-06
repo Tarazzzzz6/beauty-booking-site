@@ -1,294 +1,2456 @@
 <!doctype html>
 <html lang="uk">
 <head>
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0b0f" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>BookingClub Montreal</title>
+  <title>Beauty Booking</title>
+
+  <meta property="og:title" content="Beauty Booking" />
+  <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
+
+  <link rel="manifest" href="./manifest.webmanifest" /><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BookingClub">
+
+<link rel="apple-touch-startup-image" href="/apple-splash-1179x2556.png"
+      media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)">
+
+<link rel="apple-touch-startup-image" href="/apple-splash-1290x2796.png"
+      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
+
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg: #07070a; --bg-sec: #111116; --bg-card: #18181f;
-      --accent: #ff4fd8; --text: #f4f3f8; --muted: rgba(244,243,248,0.5);
-      --stroke: rgba(255,255,255,0.08); --r: 14px;
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
+    :root{
+      --bg:#07070b;
+      --bg2:#0b0b11;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.085);
+      --stroke:rgba(255,255,255,.10);
+      --stroke2:rgba(255,255,255,.14);
+      --text:#f4f3f8;
+      --muted:rgba(244,243,248,.68);
+
+      --pink:#ff4fd8;
+      --gold:#ffd27a;
+      --violet:#8b5cf6;
+
+      --ok:#20e3a5;
+      --warn:#ffd27a;
+
+      --r:22px;
+      --r2:28px;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+
+      --glow: 0 0 0 1px rgba(255,79,216,.18), 0 18px 60px rgba(255,79,216,.15);
+      --glow2: 0 0 0 1px rgba(255,210,122,.15), 0 18px 60px rgba(255,210,122,.10);
+
+      --max:1200px;
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { 
-      margin: 0; background: var(--bg); color: var(--text); 
-      font-family: 'Inter', sans-serif; overflow-x: hidden; font-size: 14px;
-      -webkit-font-smoothing: antialiased;
+    /* Light theme (lux light) */
+    body[data-theme="light"]{
+      --bg:#fbfbff;
+      --bg2:#f3f4ff;
+      --card:rgba(10,10,18,.05);
+      --card2:rgba(10,10,18,.08);
+      --stroke:rgba(10,10,18,.10);
+      --stroke2:rgba(10,10,18,.14);
+      --text:#0b0b0f;
+      --muted:rgba(11,11,15,.62);
+      --shadow: 0 22px 70px rgba(10,10,18,.14);
+      --shadow2: 0 10px 30px rgba(10,10,18,.10);
     }
 
-    /* Анімації появи */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),
+        radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),
+        radial-gradient(900px 700px at 70% 90%, rgba(255,210,122,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    button,input{font:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:20px 18px 120px}
+
+    mark{
+      background: rgba(255,210,122,.18);
+      color: inherit;
+      padding: 0 .18em;
+      border-radius: .35em;
+      box-shadow: 0 0 0 1px rgba(255,210,122,.18);
     }
 
-    /* HEADER - Компактний */
-    header {
-      position: sticky; top: 0; z-index: 1000;
-      background: rgba(7, 7, 10, 0.85); backdrop-filter: blur(15px);
-      padding: calc(var(--safe-top) + 10px) 15px 10px;
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid var(--stroke);
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(7,7,11,.88), rgba(7,7,11,.55));
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    .brand { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
-    .loc-tag { 
-      font-size: 10px; background: var(--bg-sec); border: 1px solid var(--stroke);
-      padding: 4px 10px; border-radius: 20px; font-weight: 700;
+    body[data-theme="light"] .topbar{
+      background: linear-gradient(180deg, rgba(251,251,255,.88), rgba(251,251,255,.55));
+      border-bottom:1px solid rgba(10,10,18,.08);
     }
 
-    /* КАТЕГОРІЇ - Маленькі */
-    .cats { display: flex; gap: 8px; overflow-x: auto; padding: 12px 15px; scrollbar-width: none; }
-    .cats::-webkit-scrollbar { display: none; }
-    .cat { 
-      padding: 6px 14px; background: var(--bg-sec); border: 1px solid var(--stroke);
-      border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    .topbar .inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:12px}
+    .brand{display:flex; align-items:center; gap:10px; min-width:180px}
+    .logo{
+      width:36px; height:36px; border-radius:14px;
+      background:
+        radial-gradient(10px 10px at 30% 25%, rgba(255,255,255,.65), transparent 60%),
+        radial-gradient(18px 18px at 70% 20%, rgba(255,210,122,.35), transparent 65%),
+        linear-gradient(135deg, rgba(255,79,216,.85), rgba(139,92,246,.85));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 12px 40px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
     }
-    .cat.active { background: var(--accent); color: #000; border-color: var(--accent); transform: scale(1.05); }
-
-    /* ФІД КАРТОК */
-    .feed { padding: 0 15px 120px; display: grid; gap: 15px; }
-    .card { 
-      background: var(--bg-sec); border-radius: var(--r); border: 1px solid var(--stroke);
-      overflow: hidden; animation: fadeInUp 0.5s ease backwards; transition: transform 0.2s;
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+      transform: rotate(20deg);
+      animation: sweep 5.8s linear infinite;
+      opacity:.65;
     }
-    .card:active { transform: scale(0.98); }
-    
-    .card-img { height: 160px; position: relative; }
-    .card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
-    .rating-badge {
-      position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(5px); padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 800;
+    @keyframes sweep{0%{transform:translateX(-35%) rotate(20deg)}100%{transform:translateX(35%) rotate(20deg)}}
+
+    .brand h1{
+      font-family:"Playfair Display",serif;
+      font-size:18px; line-height:1.1; margin:0;
+      letter-spacing:.2px;
+    }
+    .brand .sub{font-size:12px; color:var(--muted); margin-top:2px}
+    .grow{flex:1}
+    .search{
+      flex:1;
+      display:flex; gap:10px; align-items:center;
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:999px;
+      padding:10px 12px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+    }
+    body[data-theme="light"] .search{box-shadow: inset 0 0 0 1px rgba(10,10,18,.06)}
+    .search input{
+      background:transparent; border:0; outline:0; color:var(--text);
+      width:100%;
+      font-size:14px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--stroke);
+      background:var(--card);
+      padding:10px 12px;
+      border-radius:999px;
+      color:rgba(244,243,248,.9);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    body[data-theme="light"] .pill{color:rgba(11,11,15,.92)}
+    .pill:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
+    .pill:active{transform: translateY(0px) scale(.98)}
+    .pill .dot{width:8px; height:8px; border-radius:99px; background:rgba(255,255,255,.22)}
+    body[data-theme="light"] .pill .dot{background:rgba(10,10,18,.22)}
+    .pill.on{
+      border-color: rgba(255,79,216,.35);
+      background: rgba(255,79,216,.12);
+      box-shadow: 0 0 0 1px rgba(255,79,216,.14);
+    }
+    .top-actions{display:flex; gap:10px; align-items:center}
+    .iconbtn{
+      width:42px; height:42px; border-radius:14px;
+      border:1px solid var(--stroke);
+      background:var(--card);
+      color:var(--text);
+      cursor:pointer;
+      display:grid; place-items:center;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      position:relative;
+    }
+    .iconbtn:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
+    .iconbtn:active{transform: translateY(0px) scale(.98)}
+    .badge{
+      position:absolute; top:-6px; right:-6px;
+      min-width:18px; height:18px; padding:0 6px;
+      border-radius:999px;
+      background: linear-gradient(135deg, rgba(255,79,216,.95), rgba(139,92,246,.95));
+      color:#0b0b0f;
+      font-weight:700; font-size:11px;
+      display:grid; place-items:center;
+      box-shadow: 0 8px 20px rgba(0,0,0,.35);
     }
 
-    .card-body { padding: 12px; }
-    .card-h { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-    .card-title { font-size: 16px; font-weight: 700; margin: 0; }
-    .card-price { color: var(--accent); font-weight: 800; }
-    
-    .card-addr { font-size: 11px; color: var(--muted); margin: 4px 0 10px; display: flex; align-items: center; gap: 4px; }
-    .map-btn { color: #5dade2; text-decoration: none; font-weight: 700; font-size: 10px; text-transform: uppercase; }
-
-    /* ВІДГУКИ - Компактні */
-    .reviews-mini { 
-      background: rgba(255,255,255,0.03); border-radius: 8px; padding: 8px; 
-      margin-bottom: 12px; border-left: 2px solid var(--accent);
+    /* Hero */
+    .hero{ padding:22px 0 10px; }
+    .heroCard{
+      border-radius: var(--r2);
+      border: 1px solid var(--stroke);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(900px 500px at 80% 20%, rgba(139,92,246,.18), transparent 60%),
+        var(--card);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
     }
-    .rev-text { font-size: 10px; font-style: italic; color: #ccc; line-height: 1.3; }
-
-    .btn-main {
-      width: 100%; padding: 12px; background: #fff; color: #000; border: none;
-      border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer;
+    .heroCard:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: radial-gradient(400px 220px at 20% 0%, rgba(255,210,122,.16), transparent 60%);
+      pointer-events:none;
+    }
+    .heroInner{padding:26px 22px; display:grid; grid-template-columns: 1.2fr .8fr; gap:16px; align-items:stretch}
+    .heroTitle{
+      font-family:"Playfair Display",serif;
+      font-size:38px;
+      letter-spacing:-.4px;
+      line-height:1.06;
+      margin:0 0 10px;
+    }
+    .heroTitle span{
+      background: linear-gradient(90deg, rgba(255,79,216,1), rgba(255,210,122,1));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .heroDesc{margin:0 0 14px; color:var(--muted); max-width:56ch}
+    .chips{display:flex; gap:10px; flex-wrap:wrap}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:var(--card);
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
+      font-size:13px;
+    }
+    .chip:hover{transform: translateY(-1px); background:var(--card2); border-color:var(--stroke2)}
+    .chip:active{transform: translateY(0px) scale(.98)}
+    .chip.on{
+      border-color: rgba(255,210,122,.35);
+      background: rgba(255,210,122,.10);
+      box-shadow: 0 0 0 1px rgba(255,210,122,.12);
     }
 
-    /* ПАНЕЛЬ БРОНЮВАННЯ (Sheet) */
-    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; opacity: 0; transition: 0.3s; }
-    .sheet { 
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card);
-      border-radius: 20px 20px 0 0; z-index: 2001; padding: 15px 15px calc(15px + var(--safe-bottom));
-      transform: translateY(100%); transition: 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+    .heroSide{display:flex; flex-direction:column; gap:10px;}
+    .glass{
+      border-radius: 20px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
     }
-    .sheet.active { transform: translateY(0); }
-    .sheet-overlay.active { display: block; opacity: 1; }
-
-    .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
-    .time-item { 
-      padding: 8px; background: var(--bg-sec); border: 1px solid var(--stroke);
-      border-radius: 8px; text-align: center; font-size: 11px; 
+    body[data-theme="light"] .glass{background: rgba(255,255,255,.55)}
+    .glass .pad{padding:14px 14px}
+    .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,243,248,.62)}
+    body[data-theme="light"] .kicker{color:rgba(11,11,15,.58)}
+    .bigLine{font-weight:700; margin-top:6px; font-size:14px}
+    .smallLine{margin-top:6px; color:var(--muted); font-size:12.5px}
+    .ctaRow{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+    .btn{
+      border:0;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, rgba(255,79,216,.98), rgba(139,92,246,.98));
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow: 0 18px 50px rgba(255,79,216,.16), 0 12px 34px rgba(0,0,0,.4);
+      transition: transform .18s ease, filter .18s ease;
+      display:inline-flex; align-items:center; gap:10px;
     }
-    .time-item.active { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
-    .time-item.busy { opacity: 0.2; pointer-events: none; text-decoration: line-through; }
-
-    /* NAV */
-    nav {
-      position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
-      backdrop-filter: blur(20px); border-top: 1px solid var(--stroke);
-      display: flex; justify-content: space-around; padding: 8px 0 calc(8px + var(--safe-bottom));
-      z-index: 1000;
+    .btn:hover{transform: translateY(-1px); filter:saturate(1.1)}
+    .btn:active{transform: translateY(0px) scale(.98)}
+    .btn.secondary{
+      background: var(--card2);
+      color: rgba(244,243,248,.92);
+      border:1px solid var(--stroke);
+      box-shadow:none;
     }
-    .nav-link { color: var(--muted); text-decoration: none; font-size: 9px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
-    .nav-link.active { color: var(--accent); }
-    .nav-link i { font-size: 18px; font-style: normal; }
+    body[data-theme="light"] .btn.secondary{color: rgba(11,11,15,.92)}
 
+    /* Sections */
+    .section{margin-top:18px}
+    .sectionHead{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin:20px 2px 10px;}
+    .sectionTitle{margin:0; font-family:"Playfair Display",serif; font-size:22px; letter-spacing:-.2px;}
+    .sectionNote{margin:0; color:var(--muted); font-size:13px}
+    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px;}
+
+    /* Cards */
+    .card{
+      grid-column: span 4;
+      border-radius: var(--r);
+      border:1px solid var(--stroke);
+      background: var(--card);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      position:relative;
+      transform: translateZ(0);
+      transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+      cursor:pointer;
+    }
+    .card:hover{transform: translateY(-2px); border-color: var(--stroke2); background: var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45);}
+    .media{height:178px; background: rgba(255,255,255,.06); position:relative; overflow:hidden;}
+    .media img{
+      width:100%; height:100%; object-fit:cover;
+      transform: scale(1.02);
+      transition: transform .55s cubic-bezier(.2,.9,.2,1), filter .55s ease;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .card:hover .media img{transform: scale(1.10)}
+    .media:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1200px 300px at 20% 0%, rgba(255,255,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.55));
+      opacity:.95;
+      pointer-events:none;
+    }
+    .shine{
+      content:"";
+      position:absolute; inset:-50%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+      transform: rotate(18deg) translateX(-35%);
+      opacity:0;
+      pointer-events:none;
+    }
+    .card:hover .shine{opacity:.9; animation: shine 1.1s ease forwards;}
+    @keyframes shine{0%{transform: rotate(18deg) translateX(-35%)} 100%{transform: rotate(18deg) translateX(35%)}}
+
+    .meta{padding:12px 12px 14px;}
+    .row1{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .name{font-weight:800; letter-spacing:.1px; font-size:14px; margin:0}
+    .addr{margin:4px 0 0; color:var(--muted); font-size:12.5px; line-height:1.25}
+    .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .tag{
+      font-size:11px; font-weight:700;
+      padding:6px 9px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: var(--card);
+      color: rgba(244,243,248,.86);
+    }
+    body[data-theme="light"] .tag{color: rgba(11,11,15,.86)}
+    .tag.good{border-color: rgba(32,227,165,.28); background: rgba(32,227,165,.10)}
+    .tag.today{border-color: rgba(255,210,122,.32); background: rgba(255,210,122,.10); box-shadow: var(--glow2)}
+    .tag.partner{border-color: rgba(255,79,216,.32); background: rgba(255,79,216,.10); box-shadow: var(--glow)}
+
+    .why{margin-top:10px; font-size:12.5px; color:rgba(244,243,248,.82)}
+    body[data-theme="light"] .why{color:rgba(11,11,15,.78)}
+    .why span{color: rgba(255,210,122,.95); font-weight:800;}
+
+    .miniCTA{
+      position:absolute; left:12px; right:12px; bottom:12px;
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+      opacity:0; transform: translateY(8px);
+      transition: opacity .22s ease, transform .22s ease;
+      pointer-events:none;
+    }
+    .card:hover .miniCTA{opacity:1; transform: translateY(0); pointer-events:auto}
+    .miniBtn{
+      flex:1;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.25);
+      color: rgba(244,243,248,.92);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight:800;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      backdrop-filter: blur(10px);
+    }
+    body[data-theme="light"] .miniBtn{background: rgba(255,255,255,.65); color: rgba(11,11,15,.92)}
+    .miniBtn:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.28); background: rgba(0,0,0,.30)}
+    body[data-theme="light"] .miniBtn:hover{background: rgba(255,255,255,.82)}
+    .miniBtn:active{transform: translateY(0px) scale(.98)}
+
+    .fav{
+      width:44px; height:44px;
+      border-radius: 16px;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.22);
+      display:grid; place-items:center;
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      backdrop-filter: blur(10px);
+    }
+    body[data-theme="light"] .fav{background: rgba(255,255,255,.72)}
+    .fav:hover{transform: translateY(-1px); border-color: rgba(255,79,216,.28)}
+    .fav:active{transform: translateY(0px) scale(.98)}
+    .fav.on{background: rgba(255,79,216,.16); border-color: rgba(255,79,216,.34); box-shadow: 0 0 0 1px rgba(255,79,216,.12);}
+    .favPop{animation: pop .25s ease}
+    @keyframes pop{0%{transform:scale(.9)} 60%{transform:scale(1.08)} 100%{transform:scale(1)}}
+
+    /* Featured strip (partners) */
+    .strip{display:flex; gap:14px; overflow:auto; padding-bottom:8px; scroll-snap-type:x mandatory;}
+    .strip::-webkit-scrollbar{height:10px}
+    .strip::-webkit-scrollbar-thumb{background: rgba(255,255,255,.10); border-radius:999px}
+    body[data-theme="light"] .strip::-webkit-scrollbar-thumb{background: rgba(10,10,18,.12)}
+    .stripCard{
+      min-width: 320px;
+      scroll-snap-align:start;
+      border-radius: var(--r2);
+      border:1px solid var(--stroke);
+      background: var(--card);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      position:relative;
+      cursor:pointer;
+      transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+    }
+    .stripCard:hover{transform: translateY(-2px); border-color: var(--stroke2); background: var(--card2); box-shadow: 0 18px 60px rgba(0,0,0,.45)}
+    .stripMedia{height:190px; position:relative; overflow:hidden}
+    .stripMedia img{width:100%; height:100%; object-fit:cover; transform: scale(1.03); transition: transform .55s cubic-bezier(.2,.9,.2,1)}
+    .stripCard:hover .stripMedia img{transform: scale(1.10)}
+    .stripMedia:after{content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.60)); pointer-events:none;}
+    .partnerBadge{
+      position:absolute; top:12px; left:12px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,79,216,.35);
+      background: rgba(255,79,216,.14);
+      box-shadow: var(--glow);
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size:12px;
+    }
+    .microShimmer{
+      position:absolute; inset:-60%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+      transform: rotate(20deg) translateX(-35%);
+      opacity:.65;
+      animation: shimmer 3.8s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes shimmer{0%{transform: rotate(20deg) translateX(-35%)}100%{transform: rotate(20deg) translateX(35%)}}
+
+    /* Empty state */
+    .empty{
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius: var(--r2);
+      box-shadow: var(--shadow2);
+      padding:18px;
+      margin-top:12px;
+    }
+    .empty h3{margin:0 0 6px; font-family:"Playfair Display",serif; font-size:18px}
+    .empty p{margin:0 0 10px; color:var(--muted); font-size:13px}
+    .empty .row{display:flex; gap:10px; flex-wrap:wrap}
+
+    /* Floating quick-book + back-to-top */
+    .floatbar{
+      position:fixed; left:0; right:0; bottom:16px;
+      display:flex; justify-content:center;
+      z-index:80;
+      pointer-events:none;
+    }
+    .floatbar .inner{
+      pointer-events:auto;
+      display:flex; gap:10px; align-items:center;
+      padding:10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(7,7,11,.55);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+    body[data-theme="light"] .floatbar .inner{background: rgba(251,251,255,.68)}
+    .floatCTA{
+      border:0; cursor:pointer;
+      padding:12px 14px;
+      border-radius: 999px;
+      font-weight:900;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, rgba(255,210,122,.98), rgba(255,79,216,.98));
+      box-shadow: 0 18px 50px rgba(255,210,122,.14), 0 12px 34px rgba(0,0,0,.4);
+      transition: transform .18s ease;
+      display:flex; align-items:center; gap:10px;
+    }
+    .floatCTA:hover{transform: translateY(-1px)}
+    .floatCTA:active{transform: translateY(0px) scale(.98)}
+    .topBtn{
+      width:44px; height:44px; border-radius: 999px;
+      border:1px solid var(--stroke2);
+      background: var(--card);
+      color:rgba(244,243,248,.92);
+      cursor:pointer;
+      transition: transform .18s ease;
+    }
+    body[data-theme="light"] .topBtn{color:rgba(11,11,15,.92)}
+    .topBtn:hover{transform: translateY(-1px)}
+    .topBtn:active{transform: translateY(0px) scale(.98)}
+
+    /* Modal */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(10px);
+      display:none;
+      z-index:100;
+      align-items:flex-end;
+      justify-content:center;
+      padding:18px;
+    }
+    body[data-theme="light"] .overlay{background: rgba(10,10,18,.35)}
+    .overlay.on{display:flex}
+    .sheet{
+      width:min(760px, 100%);
+      border-radius: 26px;
+      border:1px solid var(--stroke2);
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(255,79,216,.14), transparent 60%),
+        radial-gradient(900px 500px at 80% 20%, rgba(139,92,246,.14), transparent 60%),
+        rgba(12,12,18,.92);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      transform: translateY(10px);
+      animation: sheetIn .22s ease forwards;
+    }
+    body[data-theme="light"] .sheet{background: rgba(251,251,255,.92)}
+    @keyframes sheetIn{to{transform: translateY(0)}}
+    .sheetHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    body[data-theme="light"] .sheetHead{border-bottom:1px solid rgba(10,10,18,.08)}
+    .sheetHead h3{margin:0; font-size:14px; letter-spacing:.2px}
+    .x{
+      width:40px; height:40px; border-radius:14px;
+      border:1px solid var(--stroke2);
+      background: var(--card);
+      color:rgba(244,243,248,.92);
+      cursor:pointer;
+      transition: transform .18s ease;
+    }
+    body[data-theme="light"] .x{color:rgba(11,11,15,.92)}
+    .x:hover{transform: translateY(-1px)}
+    .x:active{transform: translateY(0px) scale(.98)}
+    .sheetBody{padding:14px}
+    .formGrid{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    .field{
+      border-radius: 18px;
+      border:1px solid var(--stroke);
+      background: var(--card);
+      padding:10px 12px;
+    }
+    .field label{display:block; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,243,248,.62)}
+    body[data-theme="light"] .field label{color:rgba(11,11,15,.58)}
+    .field input{
+      margin-top:6px;
+      width:100%;
+      border:0; outline:0;
+      background: transparent;
+      color: rgba(244,243,248,.95);
+      font-size:14px;
+    }
+    body[data-theme="light"] .field input{color: rgba(11,11,15,.95)}
+
+    .selectLike{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-top:6px;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid var(--stroke2);
+      background: rgba(0,0,0,.18);
+      cursor:pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    body[data-theme="light"] .selectLike{background: rgba(255,255,255,.65)}
+    .selectLike:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.22); background: rgba(0,0,0,.22)}
+    body[data-theme="light"] .selectLike:hover{background: rgba(255,255,255,.82)}
+    .selectLike:active{transform: translateY(0px) scale(.99)}
+    .selectLike .val{font-weight:800}
+    .selectLike .hint{color:var(--muted); font-size:12px}
+    .timeGlow{box-shadow: 0 0 0 1px rgba(255,210,122,.12), 0 16px 50px rgba(255,210,122,.08);}
+
+    .sheetFoot{
+      padding:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    body[data-theme="light"] .sheetFoot{border-top:1px solid rgba(10,10,18,.08)}
+    .note{color:var(--muted); font-size:12.5px}
+    .note b{color: rgba(255,210,122,.95)}
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%);
+      bottom:88px;
+      background: rgba(0,0,0,.55);
+      border:1px solid var(--stroke2);
+      border-radius: 999px;
+      padding:10px 12px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      color: rgba(244,243,248,.92);
+      font-weight:700;
+      display:none;
+      z-index:120;
+    }
+    body[data-theme="light"] .toast{background: rgba(251,251,255,.78); color: rgba(11,11,15,.92)}
+    .toast.on{display:block; animation: toastIn .18s ease}
+    @keyframes toastIn{from{transform:translateX(-50%) translateY(8px); opacity:0}to{transform:translateX(-50%) translateY(0); opacity:1}}
+
+    /* Time picker bottom sheet inside modal */
+    .timeOverlay, .dateOverlay, .draftsOverlay, .successOverlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      display:none;
+      z-index:130;
+      align-items:flex-end;
+      justify-content:center;
+      padding:18px;
+    }
+    body[data-theme="light"] .timeOverlay,
+    body[data-theme="light"] .dateOverlay,
+    body[data-theme="light"] .draftsOverlay,
+    body[data-theme="light"] .successOverlay{background: rgba(10,10,18,.35)}
+    .timeOverlay.on, .dateOverlay.on, .draftsOverlay.on, .successOverlay.on{display:flex}
+
+    .miniSheet{
+      width:min(520px, 100%);
+      border-radius: 24px;
+      border:1px solid var(--stroke2);
+      background: rgba(12,12,18,.92);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      transform: translateY(10px);
+      animation: sheetIn .22s ease forwards;
+    }
+    body[data-theme="light"] .miniSheet{background: rgba(251,251,255,.92)}
+    .miniHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    body[data-theme="light"] .miniHead{border-bottom:1px solid rgba(10,10,18,.08)}
+    .miniHead h4{margin:0; font-size:13px; letter-spacing:.2px}
+    .miniBody{padding:12px}
+    .timeGrid{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;}
+    .timeBtn{
+      border-radius: 16px;
+      border:1px solid var(--stroke2);
+      background: var(--card);
+      color: rgba(244,243,248,.92);
+      padding:12px 10px;
+      font-weight:900;
+      cursor:pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    body[data-theme="light"] .timeBtn{color: rgba(11,11,15,.92)}
+    .timeBtn:hover{transform: translateY(-1px); border-color: rgba(255,210,122,.24); background: var(--card2)}
+    .timeBtn:active{transform: translateY(0px) scale(.98)}
+    .timeBtn.on{border-color: rgba(255,210,122,.34); background: rgba(255,210,122,.12); box-shadow: var(--glow2); color: rgba(255,210,122,.95);}
+
+    .quickRow{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+    .qchip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 11px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: var(--card);
+      cursor:pointer;
+      user-select:none;
+      font-size:12.5px;
+      font-weight:900;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .qchip:hover{transform: translateY(-1px); background: var(--card2); border-color: var(--stroke2)}
+    .qchip.on{border-color: rgba(255,210,122,.35); background: rgba(255,210,122,.10); box-shadow: 0 0 0 1px rgba(255,210,122,.12)}
+    .qchip:active{transform: translateY(0px) scale(.98)}
+
+    /* Calendar */
+    .calTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+    .calNav{display:flex; gap:10px}
+    .calBtn{
+      width:40px; height:40px; border-radius:14px;
+      border:1px solid var(--stroke2);
+      background: var(--card);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .calBtn:hover{transform: translateY(-1px); background: var(--card2); border-color: var(--stroke2)}
+    .calBtn:active{transform: translateY(0px) scale(.98)}
+    .calTitle{font-weight:900}
+    .calGrid{display:grid; grid-template-columns: repeat(7, 1fr); gap:8px;}
+    .calDow{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-align:center; padding:4px 0}
+    .day{
+      border-radius: 14px;
+      border:1px solid var(--stroke);
+      background: var(--card);
+      padding:10px 0;
+      text-align:center;
+      font-weight:900;
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      user-select:none;
+    }
+    .day:hover{transform: translateY(-1px); background: var(--card2); border-color: var(--stroke2)}
+    .day:active{transform: translateY(0px) scale(.98)}
+    .day.off{
+      opacity:.35;
+      cursor:not-allowed;
+      transform:none !important;
+    }
+    .day.on{
+      border-color: rgba(255,210,122,.34);
+      background: rgba(255,210,122,.10);
+      box-shadow: var(--glow2);
+      color: rgba(255,210,122,.95);
+    }
+    .day.has{border-color: rgba(32,227,165,.25); background: rgba(32,227,165,.08)}
+
+    /* Drafts */
+    .draftItem{
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius: 18px;
+      padding:12px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      margin-bottom:10px;
+    }
+    .draftItem b{display:block}
+    .draftActions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .miniBtn2{
+      border:1px solid var(--stroke2);
+      background: var(--card2);
+      color: rgba(244,243,248,.92);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight:900;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    body[data-theme="light"] .miniBtn2{color: rgba(11,11,15,.92)}
+    .miniBtn2:hover{transform: translateY(-1px); background: var(--card); border-color: var(--stroke2)}
+    .miniBtn2:active{transform: translateY(0px) scale(.98)}
+    .miniBtn2.danger{border-color: rgba(255,79,216,.28); background: rgba(255,79,216,.10)}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .heroInner{grid-template-columns: 1fr; }
+      .card{grid-column: span 6;}
+      .search{display:none;}
+      .brand{min-width:auto}
+    }
+    @media (max-width: 620px){
+      .card{grid-column: span 12;}
+      .formGrid{grid-template-columns: 1fr;}
+      .heroTitle{font-size:32px}
+      .timeGrid{grid-template-columns: repeat(2, 1fr);}
+    }
   </style>
 </head>
+
 <body>
-
-<header>
-  <div class="brand">BookingClub</div>
-  <div class="loc-tag">🇨🇦 MONTREAL</div>
-</header>
-
-<div class="cats" id="catBar">
-  <div class="cat active" data-id="all">✨ ВСІ</div>
-  <div class="cat" data-id="manicure">💅 МАНІКЮР</div>
-  <div class="cat" data-id="brows">✨ БРОВИ</div>
-  <div class="cat" data-id="mens_haircut">✂️ БАРБЕР</div>
-</div>
-
-<main class="feed" id="mainFeed"></main>
-
-<nav>
-  <a href="#" class="nav-link active"><i>🏠</i><b>Головна</b></a>
-  <a href="#" class="nav-link"><i>📅</i><b>Записи</b></a>
-  <a href="./profile.html" class="nav-link"><i>👤</i><b>Профіль</b></a>
-</nav>
-
-<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
-<div class="sheet" id="sheet">
-  <div style="width: 35px; height: 4px; background: var(--stroke); border-radius: 10px; margin: 0 auto 15px;"></div>
-  <h3 id="sh-name" style="margin:0; font-size: 17px;"></h3>
-  <p id="sh-addr" style="font-size: 11px; color: var(--muted); margin: 4px 0 15px;"></p>
-
-  <div style="font-size: 10px; font-weight: 800; opacity: 0.5; text-transform: uppercase;">1. Оберіть день</div>
-  <div id="day-picker" style="display:flex; gap:8px; overflow-x:auto; padding:10px 0; scrollbar-width:none;"></div>
-
-  <div style="font-size: 10px; font-weight: 800; opacity: 0.5; text-transform: uppercase; margin-top: 10px;">2. Вільний час</div>
-  <div class="time-grid" id="time-picker"></div>
-
-  <button class="btn-main" id="btnConfirm" onclick="confirmOrder()" style="background:var(--accent); margin-top:20px;">ПІДТВЕРДИТИ ЗАПИС</button>
-</div>
-
-<script src="./data.js"></script>
-<script>
-  const DUMMY_REVIEWS = [
-    "Найкращий манікюр у Монреалі! Дуже задоволена. 😍",
-    "Професійно, швидко та дуже затишно. Рекомендую!",
-    "Барбер знає свою справу. Тепер тільки сюди. ✂️",
-    "Чудове обслуговування, приємні ціни."
-  ];
-
-  let currentSalon = null, selectedDate = null, selectedTime = null;
-
-  function renderFeed(filter = 'all') {
-    const feed = document.getElementById('mainFeed');
-    let data = window.LISTINGS || [];
-    if(filter !== 'all') data = data.filter(l => l.services.some(s => s.serviceId === filter));
-
-    feed.innerHTML = data.map((l, index) => `
-      <div class="card" style="animation-delay: ${index * 0.1}s">
-        <div class="card-img" onclick="location.href='./profile.html?id=${l.id}'">
-          <img src="${l.img || 'https://via.placeholder.com/400x200'}" loading="lazy">
-          <div class="rating-badge">⭐ ${l.rating}</div>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="./index.html" aria-label="Beauty Booking home">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Beauty Booking</h1>
+          <div class="sub">Marketplace · Montréal</div>
         </div>
-        <div class="card-body">
-          <div class="card-h">
-            <h3 class="card-title">${l.name}</h3>
-            <span class="card-price">$${l.services[0].price}+</span>
-          </div>
-          <div class="card-addr">
-            📍 ${l.address} • 
-            <a href="https://www.google.com/maps/search/${encodeURIComponent(l.address + ' Montreal')}" target="_blank" class="map-btn">Мапа</a>
-          </div>
-          
-          <div class="reviews-mini">
-            <div class="rev-text">"${DUMMY_REVIEWS[Math.floor(Math.random()*DUMMY_REVIEWS.length)]}"</div>
+      </a>
+
+      <div class="grow"></div>
+
+      <div class="search" title="Search">
+        <span style="opacity:.7">⌕</span>
+        <input id="q" placeholder="Пошук салону, району, адреси…" autocomplete="off" />
+      </div>
+
+      <div class="top-actions">
+        <div id="favOnly" class="pill" role="button" tabindex="0" title="Only favorites">
+          <span style="opacity:.85">❤️</span><span style="font-weight:900" id="favOnlyLabel">Only ❤️</span>
+          <span class="dot"></span>
+        </div>
+
+        <button id="aiBtn" class="pill" title="AI help" style="border-color:rgba(255,210,122,.22); background:rgba(255,210,122,.08)">
+          <span>✨</span><span style="font-weight:900">AI help</span>
+        </button>
+
+        <button id="cartBtn" class="iconbtn" title="Saved drafts">
+          🧾
+          <span id="cartBadge" class="badge" style="display:none">0</span>
+        </button>
+
+        <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
+        <button id="langBtn" class="iconbtn" title="UA / EN">🌐</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero">
+      <div class="heroCard">
+        <div class="heroInner">
+          <div>
+            <h2 class="heroTitle">Book beauty in <span>seconds</span>.</h2>
+            <p class="heroDesc" id="heroDesc">
+              Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.
+            </p>
+
+            <div class="chips" id="serviceChips"></div>
+
+            <div class="ctaRow">
+              <button class="btn" id="openQuick">
+                ⚡ Quick booking
+                <span style="opacity:.85; font-weight:800">today</span>
+              </button>
+              <button class="btn secondary" id="resetBtn">Скинути фільтри</button>
+            </div>
+
+            <div style="margin-top:14px; color:rgba(244,243,248,.70); font-size:12.5px">
+              <span style="color:rgba(255,210,122,.95); font-weight:900">Tip:</span>
+              вибери послугу — ми одразу покажемо доступні слоти.
+            </div>
           </div>
 
-          <button class="btn-main" onclick="openSheet('${l.id}')">ЗАБРОНЮВАТИ</button>
+          <div class="heroSide">
+            <div class="glass" id="nextAvailCard" role="button" tabindex="0" title="Next available">
+              <div class="pad">
+                <div class="kicker" id="nextKicker">Next available near you</div>
+                <div class="bigLine" id="nextLine">—</div>
+                <div class="smallLine" id="nextSub">Tap to book instantly</div>
+              </div>
+            </div>
+
+            <div class="glass" id="lastCard" style="display:none">
+              <div class="pad">
+                <div class="kicker" id="lastKicker">Your last booking</div>
+                <div class="bigLine" id="lastLine">—</div>
+                <div class="smallLine" id="lastSub">Tap to book again</div>
+              </div>
+            </div>
+
+            <div class="glass">
+              <div class="pad">
+                <div class="kicker">Trust</div>
+                <div class="bigLine">Telegram confirmation · spam-free</div>
+                <div class="smallLine">No accounts needed. Clear pricing. стерильність.</div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
-    `).join('');
-  }
+    </section>
 
-  function openSheet(id) {
-    currentSalon = window.LISTINGS.find(l => l.id === id);
-    document.getElementById('sh-name').innerText = currentSalon.name;
-    document.getElementById('sh-addr').innerText = currentSalon.address;
-
-    const dp = document.getElementById('day-picker');
-    dp.innerHTML = '';
-    for(let i=0; i<7; i++) {
-      const d = new Date(); d.setDate(d.getDate() + i);
-      const iso = d.toISOString().split('T')[0];
-      if(i===0) selectedDate = iso;
-      dp.innerHTML += `
-        <div onclick="setDay(this, '${iso}')" style="min-width:55px; padding:10px; background:var(--bg-sec); border:1px solid ${i===0?'var(--accent)':'var(--stroke)'}; border-radius:12px; text-align:center;">
-          <div style="font-size:9px; opacity:0.5;">${d.toLocaleDateString('uk',{weekday:'short'})}</div>
-          <b style="font-size:14px;">${d.getDate()}</b>
+    <section class="section" id="aiSection" style="display:none">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle" id="aiTitle">AI concierge</h3>
+          <p class="sectionNote" id="aiNote">Напиши, що потрібно — підберу 3 варіанти.</p>
         </div>
-      `;
-    }
-    renderSlots();
-    document.getElementById('sheet').classList.add('active');
-    document.getElementById('overlay').classList.add('active');
-  }
+      </div>
 
-  function renderSlots() {
-    const tp = document.getElementById('time-picker');
-    const slots = ["09:00", "11:00", "13:30", "15:00", "16:30", "18:00", "19:30"];
-    tp.innerHTML = slots.map(s => {
-      const busy = Math.random() < 0.2;
-      return `<div class="time-item ${busy?'busy':''}" onclick="setTime(this, '${s}')">${s}</div>`;
-    }).join('');
-  }
+      <div class="glass">
+        <div class="pad">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+            <input id="aiInput" placeholder="Напр: манікюр сьогодні після 18 до 60$ недалеко" style="
+              flex:1; min-width:220px;
+              padding:12px 12px;
+              border-radius: 16px;
+              border:1px solid var(--stroke2);
+              background: var(--card);
+              color: rgba(244,243,248,.92);
+              outline:none;
+            "/>
+            <button class="btn" id="aiGo">✨ Підібрати</button>
+          </div>
+          <div id="aiPicks" class="grid" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </section>
 
-  function setDay(el, d) {
-    document.querySelectorAll('#day-picker > div').forEach(i => i.style.borderColor = 'var(--stroke)');
-    el.style.borderColor = 'var(--accent)';
-    selectedDate = d;
-    renderSlots();
-  }
+    <section class="section" id="savedSection" style="display:none">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle" id="savedTitle">Your saved</h3>
+          <p class="sectionNote" id="savedNote">Швидкий доступ до улюблених.</p>
+        </div>
+      </div>
+      <div class="grid" id="savedGrid"></div>
+    </section>
 
-  function setTime(el, t) {
-    document.querySelectorAll('.time-item').forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
-    selectedTime = t;
-  }
+    <section class="section" id="partnersSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle" id="partnersTitle">Top salons / partners</h3>
+          <p class="sectionNote" id="partnersNote">Платні партнери (показуються тільки якщо відповідають фільтрам).</p>
+        </div>
+      </div>
+      <div class="strip" id="partnerStrip"></div>
+    </section>
 
-  function closeSheet() {
-    document.getElementById('sheet').classList.remove('active');
-    document.getElementById('overlay').classList.remove('active');
-  }
+    <section class="section" id="recSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle" id="recTitle">Recommended</h3>
+          <p class="sectionNote" id="recNote">Підібрано під доступність, ціну та близькість.</p>
+        </div>
+      </div>
+      <div class="grid" id="recGrid"></div>
+    </section>
 
-  async function confirmOrder() {
-    if(!selectedTime) return alert("Оберіть час!");
-    const btn = document.getElementById('btnConfirm');
-    btn.innerText = "ВІДПРАВЛЯЄМО...";
-    btn.disabled = true;
+    <section class="section" id="allSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle" id="allTitle">All others</h3>
+          <p class="sectionNote" id="allNote">Усі інші варіанти в місті.</p>
+        </div>
+      </div>
+      <div class="grid" id="allGrid"></div>
 
-    const msg = {
-      salon: currentSalon.name,
-      date: selectedDate,
-      time: selectedTime,
-      service: currentSalon.services[0].ua,
-      client: "Клієнт Монреаль"
+      <div id="emptyBox" class="empty" style="display:none">
+        <h3 id="emptyTitle">Немає результатів</h3>
+        <p id="emptyText">Спробуй послабити фільтри — або ось популярні варіанти.</p>
+        <div class="row">
+          <button class="btn secondary" id="emptyReset">Скинути фільтри</button>
+          <button class="btn" id="emptyShowPopular">Показати популярні</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="margin-top:26px">
+      <div class="glass">
+        <div class="pad" style="display:flex; gap:14px; justify-content:space-between; flex-wrap:wrap; align-items:center">
+          <div>
+            <div class="kicker">How it works</div>
+            <div class="smallLine" style="margin-top:6px">
+              Обираєш послугу → бачиш доступні слоти → підтвердження в Telegram.
+              <span style="color:rgba(255,210,122,.9); font-weight:800">Без прихованих оплат.</span> Оплата зазвичай на місці.
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap">
+            <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank" rel="noopener">Open sample profile →</a>
+            <a class="pill" href="#" id="policiesBtn">Policies</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="floatbar">
+    <div class="inner">
+      <button class="floatCTA" id="floatQuick">⚡ Quick book</button>
+      <button class="topBtn" id="toTop" title="Back to top">↑</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Saved</div>
+
+  <!-- Booking modal -->
+  <div id="modal" class="overlay" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheetHead">
+        <h3 id="modalTitle">Booking</h3>
+        <button class="x" id="closeModal">✕</button>
+      </div><div id="bkWhere" style="margin:10px 0 14px; display:flex; gap:10px; align-items:center; justify-content:space-between;">
+  <div style="min-width:0">
+    <div id="bkWhereName" style="font-weight:700; font-size:14px; opacity:.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+    <div id="bkWhereAddr" style="font-size:12px; opacity:.7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+  </div>
+
+  <a id="bkWhereProfile" href="#"
+     style="flex:0 0 auto; padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); text-decoration:none; color:inherit;">
+     Profile
+  </a>
+</div>
+        <div class="sheetBody">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
+          <div class="tag partner" id="mPartner" style="display:none">Partner</div>
+          <div class="tag good" id="mVerified" style="display:none">Verified</div>
+          <div class="tag good" id="mSterile" style="display:none">Sterile</div>
+          <div class="tag today" id="mToday" style="display:none">Available today</div>
+          <div class="tag" id="mWhy" style="display:none"></div>
+        </div>
+
+        <div class="formGrid">
+          <div class="field">
+            <label>Імʼя</label>
+            <input id="fName" placeholder="Your name" />
+          </div>
+          <div class="field">
+            <label>Телефон</label>
+            <input id="fPhone" placeholder="+1 ..." />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input id="fEmail" placeholder="you@email.com" />
+          </div>
+
+          <div class="field">
+            <label>Послуга</label>
+            <div class="selectLike" id="svcPick">
+              <div>
+                <div class="val" id="svcVal">—</div>
+                <div class="hint" id="svcHint">tap to cycle</div>
+              </div>
+              <div style="opacity:.85">↻</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Дата</label>
+            <div class="selectLike" id="datePick">
+              <div>
+                <div class="val" id="dateVal">—</div>
+                <div class="hint" id="dateHint">calendar</div>
+              </div>
+              <div style="opacity:.85">📅</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Час</label>
+            <div class="selectLike timeGlow" id="timePick">
+              <div>
+                <div class="val" id="timeVal">Tap to choose</div>
+                <div class="hint" id="timeHint">custom picker</div>
+              </div>
+              <div style="opacity:.85">▾</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; color:var(--muted); font-size:12.5px">
+          Підтвердження: <b style="color:rgba(244,243,248,.92)">Telegram</b> · “без спаму” · можна скасувати/перенести.
+        </div>
+      </div>
+
+      <div class="sheetFoot">
+        <div class="note" id="priceLine">—</div>
+        <div class="note" id="holdLine" style="display:none">⏳ Held: <b id="holdTimer">1:59</b></div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+          <button class="btn secondary" id="saveDraftBtn">Save draft</button>
+          <button class="btn secondary" id="openProfileBtn">Profile</button>
+          <button class="btn" id="submitBooking">Confirm in Telegram</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time picker -->
+  <div id="timeOverlay" class="timeOverlay" aria-hidden="true">
+    <div class="miniSheet" role="dialog" aria-modal="true">
+      <div class="miniHead">
+        <h4 id="timeTitle">Choose time</h4>
+        <button class="x" id="closeTime">✕</button>
+      </div>
+      <div class="miniBody">
+        <div class="quickRow">
+          <div class="qchip" id="tfToday">Today</div>
+          <div class="qchip" id="tfAfter18">After 18</div>
+          <div class="qchip" id="tfEarliest">Earliest</div>
+          <div class="qchip" id="tfCheapest">Cheapest</div>
+        </div>
+        <div id="timeGrid" class="timeGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date calendar -->
+  <div id="dateOverlay" class="dateOverlay" aria-hidden="true">
+    <div class="miniSheet" role="dialog" aria-modal="true">
+      <div class="miniHead">
+        <h4 id="dateTitle">Choose date</h4>
+        <button class="x" id="closeDate">✕</button>
+      </div>
+      <div class="miniBody">
+        <div class="calTop">
+          <div class="calTitle" id="calTitle">—</div>
+          <div class="calNav">
+            <button class="calBtn" id="calPrev">←</button>
+            <button class="calBtn" id="calNext">→</button>
+          </div>
+        </div>
+        <div class="calGrid" id="calDow"></div>
+        <div class="calGrid" id="calGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drafts -->
+  <div id="draftsOverlay" class="draftsOverlay" aria-hidden="true">
+    <div class="miniSheet" role="dialog" aria-modal="true" style="width:min(640px,100%)">
+      <div class="miniHead">
+        <h4 id="draftsTitle">Saved drafts</h4>
+        <button class="x" id="closeDrafts">✕</button>
+      </div>
+      <div class="miniBody">
+        <div id="draftsList"></div>
+        <div class="note" style="margin-top:10px">Tip: збережи 1–3 варіанти й бронюй в 1 клік.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success (Add to calendar) -->
+  <div id="successOverlay" class="successOverlay" aria-hidden="true">
+    <div class="miniSheet" role="dialog" aria-modal="true" style="width:min(560px,100%)">
+      <div class="miniHead">
+        <h4 id="successTitle">Booked ✅</h4>
+        <button class="x" id="closeSuccess">✕</button>
+      </div>
+      <div class="miniBody">
+        <div class="empty" style="margin:0">
+          <h3 style="margin:0 0 6px" id="successLine">Sent to Telegram ✅</h3>
+          <p style="margin:0 0 12px" id="successSub">Add it to your calendar:</p>
+          <div class="row">
+            <button class="btn" id="addIcsBtn">📅 Add to Calendar</button>
+            <button class="btn secondary" id="copyDetailsBtn">Copy details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policies modal -->
+  <div id="polModal" class="overlay" aria-hidden="true" style="align-items:center">
+    <div class="sheet" style="max-width:820px">
+      <div class="sheetHead">
+        <h3>Policies</h3>
+        <button class="x" id="closePol">✕</button>
+      </div>
+      <div class="sheetBody" style="color:rgba(244,243,248,.86); line-height:1.55">
+        <p style="margin:0 0 10px; color:rgba(244,243,248,.9)">
+          <b>Без прихованих оплат:</b> ціна/тривалість підтверджуються в Telegram. Оплата зазвичай на місці.
+        </p>
+        <p style="margin:0 0 10px; color:rgba(244,243,248,.82)">
+          <b>Перенесення/скасування:</b> через Telegram повідомлення (проф-формат).
+        </p>
+        <p style="margin:0; color:rgba(244,243,248,.72)">
+          <b>Антиспам:</b> підозрілі заявки можуть вимагати депозит/no-show protection (коли ввімкнемо).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script>
+    // === CONFIG ===
+    const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
+
+    // === STATE ===
+    const LS = {
+      lang: "bb_lang",
+      favs: "bb_favs",
+      cart: "bb_cart",           // now used as drafts
+      filters: "bb_filters_v1",
+      theme: "bb_theme",
+      last: "bb_last_booking"
     };
 
-    try {
-      await fetch(window.WORKER_URL, { method: 'POST', body: JSON.stringify(msg) });
-      alert("Запис успішно надіслано в Telegram!");
-      closeSheet();
-    } catch(e) {
-      alert("Помилка з'єднання. Перевірте WORKER_URL.");
-    } finally {
-      btn.innerText = "ПІДТВЕРДИТИ ЗАПИС";
-      btn.disabled = false;
+    const state = {
+      lang: localStorage.getItem(LS.lang) || "uk",
+      q: "",
+      serviceId: null,
+      favOnly: false,
+      userLoc: null,
+      favs: new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]")),
+      drafts: JSON.parse(localStorage.getItem(LS.cart) || "[]"),
+      theme: localStorage.getItem(LS.theme) || "dark"
+    };
+
+    // Restore service filter
+    try{
+      const saved = JSON.parse(localStorage.getItem(LS.filters) || "{}");
+      if(saved && saved.serviceId) state.serviceId = saved.serviceId;
+    }catch(e){}
+
+    // === URL AUTO booking ===
+    const params = new URLSearchParams(location.search);
+    const AUTO = (params.get("book")==="1" && params.get("id"))
+      ? { id: params.get("id"), service: params.get("service") || null }
+      : null;
+
+    // === i18n minimal ===
+    const T = {
+      uk: {
+        marketplace: "Marketplace · Montréal",
+        searchPh: "Пошук салону, району, адреси…",
+        heroDesc: "Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.",
+        quick: "⚡ Quick booking",
+        reset: "Скинути фільтри",
+        nextNear: "Next available near you",
+        tapBook: "Tap to book instantly",
+        aiTitle: "AI concierge",
+        aiNote: "Напиши, що потрібно — підберу 3 варіанти.",
+        aiPh: "Напр: манікюр сьогодні після 18 до 60$ недалеко",
+        aiGo: "✨ Підібрати",
+        savedTitle: "Your saved",
+        savedNote: "Швидкий доступ до улюблених.",
+        partnersTitle: "Top salons / partners",
+        partnersNote: "Платні партнери (показуються тільки якщо відповідають фільтрам).",
+        recTitle: "Recommended",
+        recNote: "Підібрано під доступність, ціну та близькість.",
+        allTitle: "All others",
+        allNote: "Усі інші варіанти в місті.",
+        emptyTitle: "Немає результатів",
+        emptyText: "Спробуй послабити фільтри — або ось популярні варіанти.",
+        emptyReset: "Скинути фільтри",
+        emptyPopular: "Показати популярні",
+        booking: "Booking",
+        confirm: "Confirm in Telegram",
+        profile: "Profile",
+        chooseTime: "Choose time",
+        chooseDate: "Choose date",
+        only: "Only ❤️",
+        toastSaved: "Saved",
+        toastErr: "Error. Try again.",
+        toastSent: "Sent to Telegram ✅",
+        toastDraft: "Draft saved ✅",
+        toastCopied: "Copied ✅",
+        toastFilters: "Filters reset",
+        draftsTitle: "Saved drafts",
+        lastKicker: "Your last booking",
+        lastSub: "Tap to book again",
+        hold: "Held",
+        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
+      },
+      en: {
+        marketplace: "Marketplace · Montreal",
+        searchPh: "Search salon, area, address…",
+        heroDesc: "Verified salons & masters. sterile · fast · spam-free. Confirmation via Telegram.",
+        quick: "⚡ Quick booking",
+        reset: "Reset filters",
+        nextNear: "Next available near you",
+        tapBook: "Tap to book instantly",
+        aiTitle: "AI concierge",
+        aiNote: "Tell me what you need — I’ll pick 3 options.",
+        aiPh: "e.g. brows today after 6pm under $60 nearby",
+        aiGo: "✨ Suggest",
+        savedTitle: "Your saved",
+        savedNote: "Fast access to favorites.",
+        partnersTitle: "Top salons / partners",
+        partnersNote: "Paid partners (shown only if matching filters).",
+        recTitle: "Recommended",
+        recNote: "Ranked by availability, price, distance.",
+        allTitle: "All others",
+        allNote: "All other options in the city.",
+        emptyTitle: "No results",
+        emptyText: "Try loosening filters — or see popular picks.",
+        emptyReset: "Reset filters",
+        emptyPopular: "Show popular",
+        booking: "Booking",
+        confirm: "Confirm in Telegram",
+        profile: "Profile",
+        chooseTime: "Choose time",
+        chooseDate: "Choose date",
+        only: "Only ❤️",
+        toastSaved: "Saved",
+        toastErr: "Error. Try again.",
+        toastSent: "Sent to Telegram ✅",
+        toastDraft: "Draft saved ✅",
+        toastCopied: "Copied ✅",
+        toastFilters: "Filters reset",
+        draftsTitle: "Saved drafts",
+        lastKicker: "Your last booking",
+        lastSub: "Tap to book again",
+        hold: "Held",
+        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
+      }
+    };
+
+    const $ = (s, el=document) => el.querySelector(s);
+
+    function applyTheme(){
+      document.body.dataset.theme = state.theme === "light" ? "light" : "dark";
+      $("#themeBtn").textContent = (state.theme === "light") ? "☀️" : "🌙";
+      localStorage.setItem(LS.theme, state.theme);
     }
+
+    function toast(msg){
+      const t = $("#toast");
+      t.textContent = msg;
+      t.classList.add("on");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(()=>t.classList.remove("on"), 1600);
+    }
+
+    function saveFilters(){
+      localStorage.setItem(LS.filters, JSON.stringify({ serviceId: state.serviceId }));
+    }
+
+    function setLang(next){
+      state.lang = next;
+      localStorage.setItem(LS.lang, next);
+      renderTexts();
+      renderAll();
+      renderNextHeroRotating(true);
+      renderLastBookingCard();
+    }
+
+    function renderTexts(){
+      const t = T[state.lang];
+      $(".sub").textContent = t.marketplace;
+      $("#q").placeholder = t.searchPh;
+      $("#heroDesc").textContent = t.heroDesc;
+      $("#openQuick").childNodes[0].textContent = t.quick + " ";
+      $("#resetBtn").textContent = t.reset;
+      $("#nextKicker").textContent = t.nextNear;
+      $("#nextSub").textContent = t.tapBook;
+
+      $("#aiTitle").textContent = t.aiTitle;
+      $("#aiNote").textContent = t.aiNote;
+      $("#aiInput").placeholder = t.aiPh;
+      $("#aiGo").textContent = t.aiGo;
+
+      $("#savedTitle").textContent = t.savedTitle;
+      $("#savedNote").textContent = t.savedNote;
+
+      $("#partnersTitle").textContent = t.partnersTitle;
+      $("#partnersNote").textContent = t.partnersNote;
+
+      $("#recTitle").textContent = t.recTitle;
+      $("#recNote").textContent = t.recNote;
+
+      $("#allTitle").textContent = t.allTitle;
+      $("#allNote").textContent = t.allNote;
+
+      $("#emptyTitle").textContent = t.emptyTitle;
+      $("#emptyText").textContent = t.emptyText;
+      $("#emptyReset").textContent = t.emptyReset;
+      $("#emptyShowPopular").textContent = t.emptyPopular;
+
+      $("#modalTitle").textContent = t.booking;
+      $("#submitBooking").textContent = t.confirm;
+      $("#openProfileBtn").textContent = t.profile;
+      $("#timeTitle").textContent = t.chooseTime;
+      $("#dateTitle").textContent = t.chooseDate;
+      $("#favOnlyLabel").textContent = t.only;
+
+      $("#draftsTitle").textContent = t.draftsTitle;
+      $("#lastKicker").textContent = t.lastKicker;
+      $("#lastSub").textContent = t.lastSub;
+    }
+
+    function serviceLabel(serviceId){
+      const m = window.SERVICES.find(s=>s.id===serviceId);
+      if(!m) return "";
+      return state.lang === "uk" ? m.ua : m.en;
+    }
+
+    function formatDateShort(iso){
+      const [y,m,d] = iso.split("-").map(x=>parseInt(x,10));
+      const dt = new Date(y, m-1, d);
+      return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { weekday:"short", month:"short", day:"numeric" });
+    }
+
+    function matchesQuery(listing, q){
+      if(!q) return true;
+      const s = (listing.name+" "+listing.brand+" "+listing.address+" "+(listing.city||"")).toLowerCase();
+      return s.includes(q.toLowerCase());
+    }
+
+    function highlight(text, q){
+      if(!q) return escapeHtml(text);
+      const qq = q.trim().toLowerCase();
+      if(!qq) return escapeHtml(text);
+      const src = String(text || "");
+      const idx = src.toLowerCase().indexOf(qq);
+      if(idx < 0) return escapeHtml(src);
+      const a = src.slice(0, idx);
+      const b = src.slice(idx, idx + qq.length);
+      const c = src.slice(idx + qq.length);
+      return `${escapeHtml(a)}<mark>${escapeHtml(b)}</mark>${escapeHtml(c)}`;
+    }
+
+    function escapeHtml(s){
+      return String(s||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function matchesService(listing, serviceId){
+      if(!serviceId) return true;
+      return !!window.bb.util.listingService(listing, serviceId);
+    }function renderBookingWhere(listing){
+  const box = document.getElementById("bkWhere");
+  const name = document.getElementById("bkWhereName");
+  const addr = document.getElementById("bkWhereAddr");
+  const link = document.getElementById("bkWhereProfile");
+  if (!box || !name || !addr || !link) return;
+
+  if (!listing){
+    box.style.display = "none";
+    return;
   }
 
-  // Категорії
-  document.getElementById('catBar').addEventListener('click', (e) => {
-    if(!e.target.classList.contains('cat')) return;
-    document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-    e.target.classList.add('active');
-    renderFeed(e.target.dataset.id);
-  });
+  box.style.display = "flex";
+  name.textContent = listing.name || "";
+  addr.textContent = listing.address || "";
+  link.href = `./profile.html?id=${encodeURIComponent(listing.id)}`;
+  link.target = "_blank";
+}
 
-  window.onload = () => renderFeed();
-</script>
 
+    function filteredListings(){
+      const all = window.LISTINGS.slice();
+      let out = all.filter(l => matchesQuery(l, state.q) && matchesService(l, state.serviceId));
+      if(state.favOnly) out = out.filter(l => state.favs.has(l.id));
+      return out;
+    }
+
+    function groupListings(list){
+      const partners = list.filter(l => !!l.partner);
+      const rest = list.filter(l => !l.partner);
+      const ranked = window.bb.util.smartRecommend(rest, state.userLoc, state.serviceId);
+      const rec = ranked.filter(l => !!l.recommended).slice(0, 6);
+      const other = ranked.filter(l => !l.recommended);
+      return { partners, rec, other };
+    }
+
+    // === Cards renderers ===
+    function safeImg(url){
+      return url || "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1200&q=80";
+    }
+
+    function cardTags(listing){
+      const tags = [];
+      const slot = window.bb.util.nextAvailable(listing, state.serviceId);
+      if(listing.partner) tags.push({t:"Partner", cls:"partner"});
+      if(listing.verified) tags.push({t:"Verified", cls:"good"});
+      if(listing.sterile) tags.push({t:"Sterile", cls:"good"});
+      if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today"});
+      const from = window.bb.util.minPriceFor(listing, state.serviceId);
+      if(from != null) tags.push({t:`from $${from}`, cls:""});
+      return tags;
+    }
+
+    function buildCard(listing, big=false){
+      const slot = window.bb.util.nextAvailable(listing, state.serviceId);
+      const why = window.bb.util.computeWhy(listing, state.userLoc, state.serviceId);
+
+      const div = document.createElement("div");
+      div.className = big ? "stripCard" : "card";
+      div.dataset.id = listing.id;
+
+      const img = safeImg((listing.images||[])[0]);
+      const tagHtml = cardTags(listing).map(x=>`<span class="tag ${x.cls||""}">${x.t}</span>`).join("");
+      const whenLine = slot ? `${formatDateShort(slot.dateISO)} · ${slot.time}` : (state.lang==="uk" ? "Немає слотів" : "No slots");
+      const whyLine = `<div class="why"><span>Why:</span> ${escapeHtml(why)}</div>`;
+
+      const nm = (state.q ? highlight(listing.name, state.q) : escapeHtml(listing.name));
+      const ad = (state.q ? highlight(listing.address, state.q) : escapeHtml(listing.address));
+
+      if(big){
+        div.innerHTML = `
+          <div class="stripMedia">
+            <img src="${img}" alt="">
+            <div class="partnerBadge">💎 Partner</div>
+            <div class="microShimmer"></div>
+          </div>
+          <div class="meta">
+            <div class="row1">
+              <div>
+                <p class="name">${nm}</p>
+                <p class="addr">${ad}</p>
+              </div>
+            </div>
+            <div class="tags">${tagHtml}</div>
+            ${whyLine}
+            <div class="miniCTA" style="opacity:1; transform:none; pointer-events:auto; position:static; margin-top:10px">
+              <button class="miniBtn" data-action="book">⚡ ${whenLine}</button>
+              <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
+            </div>
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="media">
+            <img src="${img}" alt="">
+            <div class="shine"></div>
+          </div>
+          <div class="meta">
+            <div class="row1">
+              <div style="min-width:0">
+                <p class="name">${nm}</p>
+                <p class="addr">${ad}</p>
+              </div>
+            </div>
+            <div class="tags">${tagHtml}</div>
+            ${whyLine}
+          </div>
+          <div class="miniCTA">
+            <button class="miniBtn" data-action="book">⚡ ${whenLine}</button>
+            <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
+          </div>
+        `;
+      }
+
+      div.addEventListener("click", (e)=>{
+        const act = e.target?.dataset?.action;
+        if(act === "fav" || act === "book") return;
+        window.open(`./profile.html?id=${encodeURIComponent(listing.id)}`, "_blank", "noopener");
+      });
+
+      div.querySelectorAll('[data-action="fav"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          toggleFav(listing.id, btn);
+        });
+      });
+
+      div.querySelectorAll('[data-action="book"]').forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          openBooking(listing.id, state.serviceId, slot);
+        });
+      });
+
+      return div;
+    }
+
+    function toggleFav(id, el){
+      if(state.favs.has(id)) state.favs.delete(id);
+      else state.favs.add(id);
+
+      localStorage.setItem(LS.favs, JSON.stringify(Array.from(state.favs)));
+      el.classList.toggle("on", state.favs.has(id));
+      el.classList.add("favPop");
+      setTimeout(()=>el.classList.remove("favPop"), 260);
+
+      toast(T[state.lang].toastSaved);
+      renderSaved();
+      if(state.favOnly) renderAll();
+    }
+
+    function updateDraftBadge(){
+      const n = state.drafts.length;
+      const b = $("#cartBadge");
+      if(n>0){ b.style.display="grid"; b.textContent = String(n); }
+      else b.style.display="none";
+      localStorage.setItem(LS.cart, JSON.stringify(state.drafts));
+    }
+
+    // === Service chips ===
+    function renderServiceChips(){
+      const box = $("#serviceChips");
+      box.innerHTML = "";
+      window.SERVICES.forEach(s=>{
+        const chip = document.createElement("div");
+        chip.className = "chip" + (state.serviceId===s.id ? " on":"");
+        chip.innerHTML = `<span>${s.icon}</span><span style="font-weight:900">${state.lang==="uk"?s.ua:s.en}</span>`;
+        chip.addEventListener("click", ()=>{
+          state.serviceId = (state.serviceId===s.id) ? null : s.id;
+          saveFilters();
+          renderServiceChips();
+          renderAll();
+          refreshHeroCandidates(true);
+          const y = $("#partnersSection").getBoundingClientRect().top + window.scrollY - 72;
+          window.scrollTo({top:y, behavior:"smooth"});
+        });
+        box.appendChild(chip);
+      });
+    }
+
+    // === HERO rotation (partners first) ===
+    let heroRot = { idx: 0, list: [], timer: null };
+
+    function computeNextCandidates(){
+      const list = filteredListings().length ? filteredListings() : window.LISTINGS.slice();
+      const partners = list.filter(l => !!l.partner && matchesService(l, state.serviceId));
+      const pool = partners.length ? partners : list;
+
+      const ranked = window.bb.util.smartRecommend(pool, state.userLoc, state.serviceId)
+        .filter(l => !!window.bb.util.nextAvailable(l, state.serviceId));
+
+      return ranked.slice(0, 8);
+    }
+
+    function setHeroCardAnimated(lineTxt, subTxt){
+      const line = $("#nextLine");
+      const sub = $("#nextSub");
+      line.style.transition = "opacity .25s ease, transform .25s ease";
+      sub.style.transition  = "opacity .25s ease, transform .25s ease";
+      line.style.opacity = "0";
+      sub.style.opacity  = "0";
+      line.style.transform = "translateY(4px)";
+      sub.style.transform  = "translateY(4px)";
+
+      setTimeout(()=>{
+        line.textContent = lineTxt;
+        sub.textContent = subTxt;
+        line.style.opacity = "1";
+        sub.style.opacity = "1";
+        line.style.transform = "translateY(0)";
+        sub.style.transform  = "translateY(0)";
+      }, 180);
+    }
+
+    function refreshHeroCandidates(resetIdx=false){
+      const nextList = computeNextCandidates();
+      const prevIds = heroRot.list.map(x=>x.id).join("|");
+      const nextIds = nextList.map(x=>x.id).join("|");
+      heroRot.list = nextList;
+      if(resetIdx || prevIds !== nextIds) heroRot.idx = 0;
+    }
+
+    function renderNextHeroRotating(animate=false){
+      if(!heroRot.list.length) refreshHeroCandidates(true);
+
+      if(!heroRot.list.length){
+        $("#nextLine").textContent = state.lang==="uk" ? "Немає слотів поруч" : "No nearby slots";
+        $("#nextAvailCard").onclick = null;
+        return;
+      }
+
+      heroRot.idx = heroRot.idx % heroRot.list.length;
+      const listing = heroRot.list[heroRot.idx];
+      const slot = window.bb.util.nextAvailable(listing, state.serviceId);
+      if(!slot) return;
+
+      const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || ""));
+      const from = slot.fromPrice != null ? `$${slot.fromPrice}` : "";
+      const day = (slot.dateISO === new Date().toISOString().slice(0,10))
+        ? (state.lang==="uk"?"Сьогодні":"Today")
+        : formatDateShort(slot.dateISO);
+
+      const lineTxt = `${listing.name} · ${day} ${slot.time} · from ${from}`;
+      const subTxt  = state.lang==="uk" ? `Tap to book · ${svc || "service"}` : `Tap to book · ${svc || "service"}`;
+
+      if(animate) setHeroCardAnimated(lineTxt, subTxt);
+      else { $("#nextLine").textContent = lineTxt; $("#nextSub").textContent = subTxt; }
+
+      const card = $("#nextAvailCard");
+      card.onclick = ()=> openBooking(listing.id, state.serviceId, slot);
+      card.onkeydown = (e)=>{ if(e.key==="Enter") openBooking(listing.id, state.serviceId, slot); };
+    }
+
+    function startHeroRotationOnce(){
+      if(heroRot.timer) return;
+      heroRot.timer = setInterval(()=>{
+        if(!heroRot.list.length) refreshHeroCandidates(true);
+        if(!heroRot.list.length) return;
+        heroRot.idx = (heroRot.idx + 1) % heroRot.list.length;
+        renderNextHeroRotating(true);
+      }, 10000);
+    }
+
+    // === Saved section ===
+    function renderSaved(){
+      const sec = $("#savedSection");
+      const grid = $("#savedGrid");
+      const favList = window.LISTINGS.filter(l=>state.favs.has(l.id));
+      if(favList.length === 0){
+        sec.style.display = "none";
+        return;
+      }
+      sec.style.display = "block";
+      grid.innerHTML = "";
+      const ranked = window.bb.util.smartRecommend(favList, state.userLoc, state.serviceId);
+      ranked.slice(0,6).forEach(l => grid.appendChild(buildCard(l,false)));
+    }
+
+    // === Sections render ===
+    function renderAll(){
+      const list = filteredListings();
+      const { partners, rec, other } = groupListings(list);
+
+      $("#partnerStrip").innerHTML = "";
+      partners.forEach(l => $("#partnerStrip").appendChild(buildCard(l,true)));
+
+      $("#recGrid").innerHTML = "";
+      rec.forEach(l => $("#recGrid").appendChild(buildCard(l,false)));
+
+      $("#allGrid").innerHTML = "";
+      other.forEach(l => $("#allGrid").appendChild(buildCard(l,false)));
+
+      const empty = $("#emptyBox");
+      const noRes = list.length === 0;
+      empty.style.display = noRes ? "block" : "none";
+      if(noRes){
+        $("#partnerStrip").innerHTML = "";
+        $("#recGrid").innerHTML = "";
+        $("#allGrid").innerHTML = "";
+      }
+
+      renderSaved();
+      refreshHeroCandidates(false);
+      renderNextHeroRotating(false);
+    }
+
+    // === AI concierge ===
+    function toggleAI(open){
+      const sec = $("#aiSection");
+      sec.style.display = open ? "block" : "none";
+      if(open){
+        const y = sec.getBoundingClientRect().top + window.scrollY - 72;
+        window.scrollTo({top:y, behavior:"smooth"});
+        $("#aiInput").focus();
+      }
+    }
+
+    function renderAIPicks(result){
+      const grid = $("#aiPicks");
+      grid.innerHTML = "";
+      const picks = result?.picks || [];
+      if(picks.length === 0){
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3 style="margin:0 0 6px">No picks</h3><p style="margin:0; color:var(--muted)">Try another request.</p></div>`;
+        return;
+      }
+      picks.forEach(p=>{
+        const listing = window.LISTINGS.find(x=>x.id===p.id);
+        if(!listing) return;
+        grid.appendChild(buildCard(listing,false));
+      });
+    }
+
+    // === Booking modal ===
+    const booking = {
+      listingId: null,
+      serviceId: null,
+      dateISO: null,
+      time: null,
+      dates: [],
+      times: [],
+      holdUntil: null,
+      holdTimer: null,
+      timeFilter: null, // "today" | "after18" | "earliest" | "cheapest"
+      lastPayload: null
+    };
+
+    function setHold(on){
+      clearInterval(booking.holdTimer);
+      booking.holdTimer = null;
+
+      if(!on){
+        booking.holdUntil = null;
+        $("#holdLine").style.display = "none";
+        return;
+      }
+
+      booking.holdUntil = Date.now() + 2*60*1000;
+      $("#holdLine").style.display = "block";
+
+      const tick = ()=>{
+        const ms = booking.holdUntil - Date.now();
+        if(ms <= 0){
+          setHold(false);
+          toast(state.lang==="uk" ? "Hold expired" : "Hold expired");
+          return;
+        }
+        const s = Math.floor(ms/1000);
+        const mm = Math.floor(s/60);
+        const ss = String(s%60).padStart(2,"0");
+        $("#holdTimer").textContent = `${mm}:${ss}`;
+      };
+      tick();
+      booking.holdTimer = setInterval(tick, 250);
+    }
+
+    function openBooking(listingId, serviceId, presetSlot=null){
+      const listing = window.LISTINGS.find(l=>l.id===listingId);
+      if(!listing) return;
+
+      booking.listingId = listingId;
+
+      const svcList = listing.services || [];
+      let targetServiceId = serviceId && window.bb.util.listingService(listing, serviceId) ? serviceId : (svcList[0]?.serviceId || null);
+      booking.serviceId = targetServiceId;
+
+      const av = listing.availability || {};
+      booking.dates = Object.keys(av).sort().filter(d => (av[d]||[]).length>0);
+      booking.dateISO = presetSlot?.dateISO || booking.dates[0] || null;
+
+      booking.times = booking.dateISO ? (av[booking.dateISO] || []).slice().sort() : [];
+      booking.time = presetSlot?.time || booking.times[0] || null;
+
+      // reset time filter each open (safe)
+      booking.timeFilter = null;
+      setHold(false);
+
+      $("#mPartner").style.display = listing.partner ? "inline-flex" : "none";
+      $("#mVerified").style.display = listing.verified ? "inline-flex" : "none";
+      $("#mSterile").style.display = listing.sterile ? "inline-flex" : "none";
+
+      const slot = window.bb.util.nextAvailable(listing, booking.serviceId);
+      const isToday = slot && window.bb.util.isTodaySlot(slot);
+      $("#mToday").style.display = isToday ? "inline-flex" : "none";
+
+      $("#mWhy").style.display = "inline-flex";
+      $("#mWhy").textContent = window.bb.util.computeWhy(listing, state.userLoc, booking.serviceId);
+
+      const svcMeta = window.SERVICES.find(s=>s.id===booking.serviceId);
+      $("#svcVal").textContent = svcMeta ? (state.lang==="uk"?svcMeta.ua:svcMeta.en) : "—";
+      $("#dateVal").textContent = booking.dateISO ? formatDateShort(booking.dateISO) : "—";
+      $("#timeVal").textContent = booking.time ? booking.time : "Tap to choose";
+
+      const svcObj = window.bb.util.listingService(listing, booking.serviceId);
+      const label = serviceLabel(booking.serviceId);
+      $("#priceLine").textContent = svcObj ? T[state.lang].priceLine(label, svcObj.from, svcObj.to, svcObj.durationMin) : "—";
+
+      $("#openProfileBtn").onclick = ()=> window.open(`./profile.html?id=${encodeURIComponent(listingId)}`, "_blank", "noopener");
+
+      $("#svcPick").onclick = ()=>{
+        if(!svcList.length) return;
+        const idx = Math.max(0, svcList.findIndex(s=>s.serviceId===booking.serviceId));
+        const next = svcList[(idx+1) % svcList.length];
+        openBooking(listingId, next.serviceId, null);
+      };
+
+      $("#datePick").onclick = ()=> openDatePicker(listing);
+
+      $("#timePick").onclick = ()=> openTimePicker(listing);
+
+      $("#saveDraftBtn").onclick = ()=> saveDraftCurrent();
+
+      $("#modal").classList.add("on");
+      $("#modal").setAttribute("aria-hidden","false");
+    }
+
+    function closeBooking(){
+      $("#modal").classList.remove("on");
+      $("#modal").setAttribute("aria-hidden","true");
+      setHold(false);
+    }
+
+    function setTimeFilter(next){
+      booking.timeFilter = (booking.timeFilter === next) ? null : next;
+
+      const on = (id, v)=> $(id).classList.toggle("on", booking.timeFilter === v);
+      on("#tfToday","today");
+      on("#tfAfter18","after18");
+      on("#tfEarliest","earliest");
+      on("#tfCheapest","cheapest");
+    }
+
+    function pickTodayIfAvailable(listing){
+      const todayISO = new Date().toISOString().slice(0,10);
+      const times = (listing.availability?.[todayISO] || []).slice().sort();
+      if(times.length){
+        booking.dateISO = todayISO;
+        $("#dateVal").textContent = formatDateShort(todayISO);
+        booking.times = times;
+        booking.time = times[0] || null;
+        $("#timeVal").textContent = booking.time || "Tap to choose";
+        return true;
+      }
+      return false;
+    }
+
+    function openTimePicker(listing){
+      const overlay = $("#timeOverlay");
+      const grid = $("#timeGrid");
+
+      function renderTimes(){
+        grid.innerHTML = "";
+        let times = (listing.availability?.[booking.dateISO] || []).slice().sort();
+
+        // filter after 18
+        if(booking.timeFilter === "after18"){
+          times = times.filter(t => parseInt(t.split(":")[0]||"0",10) >= 18);
+        }
+
+        // choose earliest / cheapest just selects a recommended time
+        if(booking.timeFilter === "earliest" && times.length){
+          booking.time = times[0];
+          $("#timeVal").textContent = booking.time;
+          setHold(true);
+        }
+
+        if(booking.timeFilter === "cheapest"){
+          // cheapest is per service -> time doesn't change much; we treat as "earliest" but with a UX hint
+          if(times.length){
+            booking.time = times[0];
+            $("#timeVal").textContent = booking.time;
+            setHold(true);
+          }
+        }
+
+        if(!times.length){
+          grid.innerHTML = `<div class="empty" style="grid-column:1/-1; margin:0">
+            <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає слотів":"No slots"}</h3>
+            <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Спробуй інший день":"Try another date"}</p>
+          </div>`;
+          return;
+        }
+
+        times.forEach(t=>{
+          const b = document.createElement("button");
+          b.className = "timeBtn" + (booking.time===t ? " on":"");
+          b.textContent = t;
+          b.addEventListener("click", ()=>{
+            booking.time = t;
+            $("#timeVal").textContent = t;
+            setHold(true);
+            closeTimePicker();
+          });
+          grid.appendChild(b);
+        });
+      }
+
+      // quick chips events
+      $("#tfToday").onclick = ()=>{
+        setTimeFilter("today");
+        const ok = pickTodayIfAvailable(listing);
+        if(!ok) toast(state.lang==="uk" ? "Сьогодні слотів нема" : "No slots today");
+        renderTimes();
+      };
+      $("#tfAfter18").onclick = ()=>{ setTimeFilter("after18"); renderTimes(); };
+      $("#tfEarliest").onclick = ()=>{ setTimeFilter("earliest"); renderTimes(); };
+      $("#tfCheapest").onclick = ()=>{ setTimeFilter("cheapest"); renderTimes(); };
+
+      // reset chips UI
+      setTimeFilter(null);
+
+      renderTimes();
+      overlay.classList.add("on");
+      overlay.setAttribute("aria-hidden","false");
+    }
+
+    function closeTimePicker(){
+      const overlay = $("#timeOverlay");
+      overlay.classList.remove("on");
+      overlay.setAttribute("aria-hidden","true");
+    }
+
+    // === Date calendar (only available days clickable) ===
+    const cal = { ym: null }; // "YYYY-MM"
+
+    function isoParts(iso){
+      const [y,m,d] = iso.split("-").map(n=>parseInt(n,10));
+      return {y,m,d};
+    }
+
+    function ymKey(y,m){ return `${y}-${String(m).padStart(2,"0")}`; }
+
+    function openDatePicker(listing){
+      const overlay = $("#dateOverlay");
+      const av = listing.availability || {};
+      const available = new Set(Object.keys(av).filter(k => (av[k]||[]).length>0));
+
+      // start month = selected date or today
+      const base = booking.dateISO ? isoParts(booking.dateISO) : isoParts(new Date().toISOString().slice(0,10));
+      cal.ym = ymKey(base.y, base.m);
+
+      function renderDow(){
+        const dows = (state.lang==="uk")
+          ? ["ПН","ВТ","СР","ЧТ","ПТ","СБ","НД"]
+          : ["MO","TU","WE","TH","FR","SA","SU"];
+        const box = $("#calDow");
+        box.innerHTML = "";
+        dows.forEach(x=>{
+          const div = document.createElement("div");
+          div.className = "calDow";
+          div.textContent = x;
+          box.appendChild(div);
+        });
+      }
+
+      function renderCal(){
+        renderDow();
+        const grid = $("#calGrid");
+        grid.innerHTML = "";
+
+        const [yy, mm] = cal.ym.split("-").map(n=>parseInt(n,10));
+        const first = new Date(yy, mm-1, 1);
+        const last = new Date(yy, mm, 0);
+        const monthName = first.toLocaleDateString(state.lang==="uk"?"uk-UA":"en-CA", { month:"long", year:"numeric" });
+        $("#calTitle").textContent = monthName;
+
+        // Monday-based index
+        const dow = (first.getDay() + 6) % 7; // 0..6 where 0=Mon
+        for(let i=0;i<dow;i++){
+          const ph = document.createElement("div");
+          ph.className = "day off";
+          ph.textContent = "";
+          grid.appendChild(ph);
+        }
+
+        for(let d=1; d<=last.getDate(); d++){
+          const iso = `${yy}-${String(mm).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+          const btn = document.createElement("div");
+          const has = available.has(iso);
+          const isOn = (booking.dateISO === iso);
+          btn.className = "day" + (has ? " has":" off") + (isOn ? " on":"");
+          btn.textContent = String(d);
+
+          if(has){
+            btn.addEventListener("click", ()=>{
+              booking.dateISO = iso;
+              $("#dateVal").textContent = formatDateShort(iso);
+
+              booking.times = (listing.availability?.[booking.dateISO] || []).slice().sort();
+              booking.time = booking.times[0] || null;
+              $("#timeVal").textContent = booking.time ? booking.time : "Tap to choose";
+              setHold(false);
+              closeDatePicker();
+            });
+          }
+          grid.appendChild(btn);
+        }
+      }
+
+      $("#calPrev").onclick = ()=>{
+        const [yy, mm] = cal.ym.split("-").map(n=>parseInt(n,10));
+        const d = new Date(yy, mm-2, 1);
+        cal.ym = ymKey(d.getFullYear(), d.getMonth()+1);
+        renderCal();
+      };
+      $("#calNext").onclick = ()=>{
+        const [yy, mm] = cal.ym.split("-").map(n=>parseInt(n,10));
+        const d = new Date(yy, mm, 1);
+        cal.ym = ymKey(d.getFullYear(), d.getMonth()+1);
+        renderCal();
+      };
+
+      renderCal();
+      overlay.classList.add("on");
+      overlay.setAttribute("aria-hidden","false");
+    }
+
+    function closeDatePicker(){
+      const overlay = $("#dateOverlay");
+      overlay.classList.remove("on");
+      overlay.setAttribute("aria-hidden","true");
+    }
+
+    // === Drafts (saved selections) ===
+    function draftLabel(d){
+      const listing = window.LISTINGS.find(l=>l.id===d.listingId);
+      const name = listing ? listing.name : d.listingId;
+      const svc = d.serviceId ? serviceLabel(d.serviceId) : "";
+      const date = d.dateISO ? formatDateShort(d.dateISO) : "";
+      const time = d.time || "";
+      return `${name} · ${svc || "—"} · ${date} ${time}`.trim();
+    }
+
+    function saveDraftCurrent(){
+      if(!booking.listingId || !booking.serviceId) { toast(T[state.lang].toastErr); return; }
+
+      const item = {
+        id: "d_" + Math.random().toString(16).slice(2) + Date.now().toString(16),
+        listingId: booking.listingId,
+        serviceId: booking.serviceId,
+        dateISO: booking.dateISO,
+        time: booking.time,
+        savedAt: Date.now()
+      };
+
+      // keep max 6 drafts
+      state.drafts = [item, ...(state.drafts||[])].slice(0,6);
+      updateDraftBadge();
+      toast(T[state.lang].toastDraft);
+    }
+
+    function openDrafts(){
+      renderDrafts();
+      $("#draftsOverlay").classList.add("on");
+      $("#draftsOverlay").setAttribute("aria-hidden","false");
+    }
+    function closeDrafts(){
+      $("#draftsOverlay").classList.remove("on");
+      $("#draftsOverlay").setAttribute("aria-hidden","true");
+    }
+
+    function renderDrafts(){
+      const box = $("#draftsList");
+      box.innerHTML = "";
+
+      if(!state.drafts.length){
+        box.innerHTML = `<div class="empty" style="margin:0">
+          <h3 style="margin:0 0 6px">${state.lang==="uk"?"Немає чернеток":"No drafts"}</h3>
+          <p style="margin:0; color:var(--muted)">${state.lang==="uk"?"Збережи варіант у модалці бронювання":"Save a draft from booking modal"}</p>
+        </div>`;
+        return;
+      }
+
+      state.drafts.forEach(d=>{
+        const listing = window.LISTINGS.find(l=>l.id===d.listingId);
+        const div = document.createElement("div");
+        div.className = "draftItem";
+        div.innerHTML = `
+          <div style="min-width:0">
+            <b>${escapeHtml(listing?listing.name:d.listingId)}</b>
+            <div class="smallLine" style="margin-top:6px">${escapeHtml(draftLabel(d))}</div>
+          </div>
+          <div class="draftActions">
+            <button class="miniBtn2" data-act="open">Open</button>
+            <button class="miniBtn2 danger" data-act="del">Delete</button>
+          </div>
+        `;
+        div.querySelector('[data-act="open"]').onclick = ()=>{
+          closeDrafts();
+          if(listing){
+            openBooking(listing.id, d.serviceId, d.dateISO && d.time ? {dateISO:d.dateISO,time:d.time} : null);
+          } else {
+            toast(T[state.lang].toastErr);
+          }
+        };
+        div.querySelector('[data-act="del"]').onclick = ()=>{
+          state.drafts = state.drafts.filter(x=>x.id!==d.id);
+          updateDraftBadge();
+          renderDrafts();
+        };
+        box.appendChild(div);
+      });
+    }
+
+    // === Last booking / book again ===
+    function saveLastBooking(payload){
+      localStorage.setItem(LS.last, JSON.stringify(payload));
+      renderLastBookingCard();
+    }
+
+    function getLastBooking(){
+      try{ return JSON.parse(localStorage.getItem(LS.last) || "null"); }catch(e){ return null; }
+    }
+
+    function renderLastBookingCard(){
+      const last = getLastBooking();
+      const card = $("#lastCard");
+      if(!last || !last.listingId){
+        card.style.display = "none";
+        return;
+      }
+      const listing = window.LISTINGS.find(l=>l.id===last.listingId);
+      if(!listing){ card.style.display="none"; return; }
+
+      card.style.display = "block";
+      const svc = serviceLabel(last.serviceId) || "—";
+      const line = `${listing.name} · ${svc} · ${formatDateShort(last.dateISO)} ${last.time}`;
+      $("#lastLine").textContent = line;
+      card.onclick = ()=> openBooking(listing.id, last.serviceId, {dateISO:last.dateISO, time:last.time});
+      card.onkeydown = (e)=>{ if(e.key==="Enter") openBooking(listing.id, last.serviceId, {dateISO:last.dateISO, time:last.time}); };
+    }
+
+    // === Success overlay (ICS + copy) ===
+    let successData = null;
+
+    function openSuccess(payload){
+      successData = payload;
+      $("#successOverlay").classList.add("on");
+      $("#successOverlay").setAttribute("aria-hidden","false");
+    }
+    function closeSuccess(){
+      $("#successOverlay").classList.remove("on");
+      $("#successOverlay").setAttribute("aria-hidden","true");
+      successData = null;
+    }
+
+    function makeICS(payload){
+      // payload.datetime: "YYYY-MM-DD HH:MM"
+      const [dateISO, time] = payload.datetime.split(" ");
+      const {y,m,d} = isoParts(dateISO);
+      const [hh,mm] = time.split(":").map(n=>parseInt(n,10));
+      const start = new Date(y, m-1, d, hh, mm, 0);
+
+      // duration from payload if available
+      const durMin = payload.durationMin ? parseInt(payload.durationMin,10) : 60;
+      const end = new Date(start.getTime() + durMin*60000);
+
+      const pad = (n)=> String(n).padStart(2,"0");
+      const fmt = (dt)=> (
+        dt.getFullYear() +
+        pad(dt.getMonth()+1) +
+        pad(dt.getDate()) + "T" +
+        pad(dt.getHours()) +
+        pad(dt.getMinutes()) +
+        "00"
+      );
+
+      const uid = "bb_" + Math.random().toString(16).slice(2) + "@beautybooking";
+      const title = `${payload.serviceName || "Booking"} · ${payload.listingName || "Beauty Booking"}`;
+      const desc = [
+        `Service: ${payload.serviceName || payload.service || ""}`,
+        payload.priceText ? `Price: ${payload.priceText}` : "",
+        `Where: ${payload.address || ""}`,
+        payload.profileUrl ? `Profile: ${payload.profileUrl}` : "",
+      ].filter(Boolean).join("\\n");
+
+      const ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Beauty Booking//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        `UID:${uid}`,
+        `DTSTAMP:${fmt(new Date())}`,
+        `DTSTART:${fmt(start)}`,
+        `DTEND:${fmt(end)}`,
+        `SUMMARY:${title}`,
+        `DESCRIPTION:${desc}`,
+        payload.address ? `LOCATION:${payload.address}` : "",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].filter(Boolean).join("\r\n");
+
+      return ics;
+    }
+
+    // === Send booking ===
+    async function sendBooking(){
+      const listing = window.LISTINGS.find(l=>l.id===booking.listingId);
+      if(!listing) return;
+
+      const name = $("#fName").value.trim();
+      const phone = $("#fPhone").value.trim();
+      const email = $("#fEmail").value.trim();
+
+      if(!name || !phone || !email || !booking.serviceId || !booking.dateISO || !booking.time){
+        toast(T[state.lang].toastErr);
+        return;
+      }
+
+      const svc = window.bb.util.listingService(listing, booking.serviceId);
+      const svcLabel = serviceLabel(booking.serviceId);
+      const priceText = svc ? `$${svc.from}${svc.to?`–$${svc.to}`:""}` : "";
+      const priceTxtShort = svc ? `${svcLabel} (${svc.from}${svc.to?"/"+svc.to:""})` : svcLabel;
+
+      const payload = {
+        name,
+        email,
+        phone,
+        service: priceTxtShort,
+        serviceId: booking.serviceId,
+        serviceName: svcLabel,
+        priceText,
+        durationMin: svc ? svc.durationMin : null,
+
+        listingId: listing.id,
+        listingName: listing.name,
+        address: listing.address,
+        datetime: `${booking.dateISO} ${booking.time}`,
+        lang: state.lang,
+        source: "web",
+        profileUrl: `${location.origin}${location.pathname.replace(/index\.html$/,"")}profile.html?id=${encodeURIComponent(listing.id)}`,
+        mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address||"")}`
+      };
+
+      try{
+        const res = await fetch(`${WORKER_URL}/book`, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+        if(res.ok){
+          toast(T[state.lang].toastSent);
+          saveLastBooking({ listingId: listing.id, serviceId: booking.serviceId, dateISO: booking.dateISO, time: booking.time });
+          closeBooking();
+          openSuccess(payload);
+        }else{
+          toast(T[state.lang].toastErr);
+        }
+      }catch(e){
+        toast(T[state.lang].toastErr);
+      }
+    }
+
+    // === Reset filters rule: do NOT clear search or favOnly ===
+    function resetFiltersOnly(){
+      state.serviceId = null;
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(true);
+      toast(T[state.lang].toastFilters);
+    }
+
+    // === INIT / EVENTS ===
+    $("#q").addEventListener("input", (e)=>{
+      state.q = e.target.value;
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(true);
+    });
+
+    $("#favOnly").addEventListener("click", ()=>{
+      state.favOnly = !state.favOnly;
+      $("#favOnly").classList.toggle("on", state.favOnly);
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(true);
+    });
+
+    $("#aiBtn").addEventListener("click", ()=>{
+      toggleAI($("#aiSection").style.display !== "block");
+    });
+    $("#aiGo").addEventListener("click", ()=>{
+      const txt = $("#aiInput").value;
+      const res = window.bb.util.conciergeSuggest(window.LISTINGS, state.userLoc, txt);
+      renderAIPicks(res);
+    });
+
+    $("#openQuick").addEventListener("click", ()=>{
+      if(!heroRot.list.length) refreshHeroCandidates(true);
+      const listing = heroRot.list[heroRot.idx] || heroRot.list[0];
+      if(listing){
+        const slot = window.bb.util.nextAvailable(listing, state.serviceId);
+        if(slot) openBooking(listing.id, state.serviceId, slot);
+        else toast(state.lang==="uk" ? "Немає доступних слотів" : "No available slots");
+      } else {
+        toast(state.lang==="uk" ? "Немає доступних слотів" : "No available slots");
+      }
+    });
+
+    $("#floatQuick").addEventListener("click", ()=> $("#openQuick").click());
+    $("#toTop").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+
+    $("#resetBtn").addEventListener("click", resetFiltersOnly);
+    $("#emptyReset").addEventListener("click", resetFiltersOnly);
+    $("#emptyShowPopular").addEventListener("click", ()=>{
+      resetFiltersOnly();
+      state.q = "";
+      $("#q").value = "";
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(true);
+      const y = $("#partnersSection").getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({top:y, behavior:"smooth"});
+    });
+
+    $("#langBtn").addEventListener("click", ()=>{
+      setLang(state.lang==="uk" ? "en" : "uk");
+    });
+
+    $("#themeBtn").addEventListener("click", ()=>{
+      state.theme = (state.theme === "light") ? "dark" : "light";
+      applyTheme();
+    });
+
+    $("#closeModal").addEventListener("click", closeBooking);
+    $("#modal").addEventListener("click", (e)=>{ if(e.target.id==="modal") closeBooking(); });
+
+    $("#closeTime").addEventListener("click", closeTimePicker);
+    $("#timeOverlay").addEventListener("click", (e)=>{ if(e.target.id==="timeOverlay") closeTimePicker(); });
+
+    $("#closeDate").addEventListener("click", closeDatePicker);
+    $("#dateOverlay").addEventListener("click", (e)=>{ if(e.target.id==="dateOverlay") closeDatePicker(); });
+
+    $("#submitBooking").addEventListener("click", sendBooking);
+
+    $("#policiesBtn").addEventListener("click", (e)=>{
+      e.preventDefault();
+      $("#polModal").classList.add("on");
+      $("#polModal").setAttribute("aria-hidden","false");
+    });
+    $("#closePol").addEventListener("click", ()=>{
+      $("#polModal").classList.remove("on");
+      $("#polModal").setAttribute("aria-hidden","true");
+    });
+    $("#polModal").addEventListener("click", (e)=>{ if(e.target.id==="polModal"){ $("#closePol").click(); } });
+
+    // Drafts
+    $("#cartBtn").addEventListener("click", openDrafts);
+    $("#closeDrafts").addEventListener("click", closeDrafts);
+    $("#draftsOverlay").addEventListener("click", (e)=>{ if(e.target.id==="draftsOverlay") closeDrafts(); });
+
+    // Success
+    $("#closeSuccess").addEventListener("click", closeSuccess);
+    $("#successOverlay").addEventListener("click", (e)=>{ if(e.target.id==="successOverlay") closeSuccess(); });
+
+    $("#addIcsBtn").addEventListener("click", ()=>{
+      if(!successData) return;
+      const ics = makeICS(successData);
+      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "beauty-booking.ics";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    });
+
+    $("#copyDetailsBtn").addEventListener("click", async ()=>{
+      if(!successData) return;
+      const txt = [
+        `Beauty Booking`,
+        `Listing: ${successData.listingName}`,
+        `Service: ${successData.serviceName || successData.service}`,
+        `When: ${successData.datetime}`,
+        successData.priceText ? `Price: ${successData.priceText}` : "",
+        `Address: ${successData.address}`,
+        successData.mapsUrl ? `Maps: ${successData.mapsUrl}` : "",
+        successData.profileUrl ? `Profile: ${successData.profileUrl}` : "",
+      ].filter(Boolean).join("\n");
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast(T[state.lang].toastCopied);
+      }catch(e){
+        toast(T[state.lang].toastErr);
+      }
+    });
+
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>{
+          state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          renderAll();
+          refreshHeroCandidates(true);
+          renderNextHeroRotating(true);
+        },
+        ()=>{},
+        { enableHighAccuracy:false, timeout:2500, maximumAge: 1000*60*30 }
+      );
+    }
+
+    function init(){
+      applyTheme();
+      renderTexts();
+      renderServiceChips();
+      $("#favOnly").classList.toggle("on", state.favOnly);
+      updateDraftBadge();
+      renderAll();
+      refreshHeroCandidates(true);
+      renderNextHeroRotating(false);
+      startHeroRotationOnce();
+      renderLastBookingCard();
+
+      // Auto-open booking if coming from profile
+      if (AUTO) {
+        const listing = window.LISTINGS.find(l => l.id === AUTO.id);
+        if (listing) {
+          const svcOk =
+            (AUTO.service && window.bb.util.listingService(listing, AUTO.service))
+              ? AUTO.service
+              : null;
+
+          const slot = window.bb.util.nextAvailable(listing, svcOk || state.serviceId);
+          openBooking(listing.id, svcOk || state.serviceId, slot || null);
+
+          // clear URL so it won't open on refresh
+          history.replaceState({}, "", location.pathname);
+        }
+      }
+
+      // IMPORTANT: do not cache on localhost (avoid “злети”)
+      if("serviceWorker" in navigator && location.hostname !== "127.0.0.1" && location.hostname !== "localhost"){
+        navigator.serviceWorker.register("./worker.js").catch(()=>{});
+      }
+    }
+    init();
+  </script>
 </body>
 </html>
+
+
