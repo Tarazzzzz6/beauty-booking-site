@@ -1,111 +1,71 @@
-/* worker.js — Beauty Booking PWA Service Worker (stable) */
-const CACHE = "bb-cache-v6";
+/* worker.js — Beauty Booking PWA (GitHub Edition) */
+const CACHE_NAME = "bb-v" + "2024.05.28.1"; // Змінюй цю дату при пуші в GitHub, щоб скинути кеш у всіх
 
-const CORE = [
+const CORE_ASSETS = [
   "./",
   "./index.html",
   "./profile.html",
   "./data.js",
-  "./worker.js",
   "./manifest.webmanifest",
   "./favicon.svg",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-192-maskable.png",
-  "./icons/icon-512-maskable.png",
-  "./icons/apple-touch-icon.png"
+  "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap"
 ];
 
+// 1. ВСТАНОВЛЕННЯ: Кешуємо базу миттєво
 self.addEventListener("install", (event) => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE);
-    await cache.addAll(CORE.map((u) => new Request(u, { cache: "reload" })));
-    self.skipWaiting();
-  })());
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(CORE_ASSETS))
+      .then(() => self.skipWaiting())
+  );
 });
 
+// 2. АКТИВАЦІЯ: Чистимо старі версії (щоб GitHub Pages не тупив)
 self.addEventListener("activate", (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.map((k) => (k === CACHE ? null : caches.delete(k))));
-    self.clients.claim();
-  })());
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+    )).then(() => self.clients.claim())
+  );
 });
 
+// 3. СТРАТЕГІЯ FETCH: "Network First, then Offline Page"
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  const url = new URL(req.url);
-
-  if (url.origin !== location.origin) return;
-
-  const accept = req.headers.get("accept") || "";
-  const isHTML = req.mode === "navigate" || accept.includes("text/html");
-  const isJS = url.pathname.endsWith(".js");
-  const isCSS = url.pathname.endsWith(".css");
-  const isIMG = /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(url.pathname);
-  const isFONT = /\.(woff2?|ttf|otf)$/i.test(url.pathname);
-
-  if (isHTML || isJS || isCSS) {
-    event.respondWith(networkFirst(req));
-    return;
+  
+  // Не кешуємо запити до Worker (Telegram) — вони мають бути тільки Live
+  if (req.url.includes("workers.dev")) {
+    return; 
   }
 
-  if (isIMG || isFONT) {
-    event.respondWith(cacheFirst(req));
-    return;
-  }
-
-  event.respondWith(staleWhileRevalidate(req));
+  event.respondWith(
+    fetch(req)
+      .then(res => {
+        // Якщо мережа ок — оновлюємо кеш і віддаємо ресурс
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
+        return res;
+      })
+      .catch(() => {
+        // Якщо мережі нема — беремо з кешу
+        return caches.match(req).then(cached => {
+          if (cached) return cached;
+          
+          // Якщо немає навіть в кеші (наприклад, нова сторінка)
+          if (req.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+        });
+      })
+  );
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
+// 4. OFFLINE QUEUE (Профі-фішка)
+// Якщо ти додаси логіку збереження заявок в IndexedDB, 
+// цей воркер зможе відправити їх автоматично, коли з'явиться інет.
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-bookings') {
+    console.log('🚀 Знайдено чергу заявок. Відправляємо в Telegram...');
+    // Тут буде виклик функції відправки
   }
 });
-
-async function networkFirst(req) {
-  const cache = await caches.open(CACHE);
-
-  try {
-    const fresh = await fetch(req);
-    if (fresh && fresh.ok) {
-      cache.put(req, fresh.clone());
-    }
-    return fresh;
-  } catch (e) {
-    const cached = await cache.match(req);
-    return cached || new Response("Offline", {
-      status: 503,
-      headers: { "Content-Type": "text/plain" }
-    });
-  }
-}
-
-async function cacheFirst(req) {
-  const cache = await caches.open(CACHE);
-  const cached = await cache.match(req);
-  if (cached) return cached;
-
-  const fresh = await fetch(req);
-  if (fresh && fresh.ok) {
-    cache.put(req, fresh.clone());
-  }
-  return fresh;
-}
-
-async function staleWhileRevalidate(req) {
-  const cache = await caches.open(CACHE);
-  const cached = await cache.match(req);
-
-  const fetchPromise = fetch(req)
-    .then((fresh) => {
-      if (fresh && fresh.ok) {
-        cache.put(req, fresh.clone());
-      }
-      return fresh;
-    })
-    .catch(() => null);
-
-  return cached || (await fetchPromise) || new Response("Offline", { status: 503 });
-}
