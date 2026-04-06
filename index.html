@@ -1,233 +1,422 @@
 <!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>BookingClub PRO</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#07070b">
+    <title>BookingClub Ultra 2026</title>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700;800&display=swap">
 
-  <style>
-    :root {
-      --bg: #07070b; --bg2: #0d0d14;
-      --accent: #ff4fd8; --stroke: rgba(255, 255, 255, 0.08);
-      --text: #f4f3f8; --muted: rgba(244, 243, 248, 0.5);
-      --r: 24px;
-    }
+    <style>
+        /* --- CORE DESIGN SYSTEM 2.0 --- */
+        :root {
+            --bg: #07070b; --bg-sec: #0d0d14; --bg-card: #12121a;
+            --accent: #ff4fd8; --accent-dark: #cc3fad; --accent-glow: rgba(255,79,216,0.35);
+            --text: #f4f3f8; --text-muted: rgba(244,243,248,0.5);
+            --stroke: rgba(255,255,255,0.06); --stroke-bright: rgba(255,255,255,0.12);
+            --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
+            --r-xl: 32px; --r-lg: 24px; --r-md: 16px;
+            --font-main: 'Inter', sans-serif; --font-title: 'Playfair Display', serif;
+        }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-    body { 
-      margin: 0; background: var(--bg); color: var(--text); 
-      font-family: 'Inter', sans-serif; overflow-x: hidden;
-      -webkit-user-select: none; user-select: none;
-    }
+        /* --- RESET & SMOOTHING --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; outline: none; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: var(--bg); color: var(--text); font-family: var(--font-main);
+            overflow-x: hidden; scroll-behavior: smooth;
+        }
 
-    /* 1. FRESH HEADER (Glassmorphism) */
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(7, 7, 11, 0.8); backdrop-filter: blur(20px);
-      padding: calc(env(safe-area-inset-top) + 15px) 20px 15px;
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid var(--stroke);
-    }
+        /* --- PRELOADER SKELETONS --- */
+        .app-loader {
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, var(--bg-sec) 25%, var(--bg-card) 50%, var(--bg-sec) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-    /* 2. TOP SWAPPER (Hero) */
-    .hero-container {
-      margin: 15px; height: 260px; position: relative;
-      border-radius: var(--r); overflow: hidden;
-      border: 1px solid var(--stroke);
-    }
-    .hero-slide {
-      position: absolute; inset: 0; opacity: 0;
-      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s;
-      transform: scale(1.1); background-size: cover; background-position: center;
-      display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
-    }
-    .hero-slide.active { opacity: 1; transform: scale(1); z-index: 2; }
-    .hero-gradient { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,7,11,0.95), transparent); }
-    .hero-info { position: relative; z-index: 3; }
-    .hero-tag { font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
-    .hero-name { font-family: 'Playfair Display'; font-size: 28px; margin: 0; line-height: 1.1; }
+        /* --- MEGA HEADER --- */
+        header {
+            position: sticky; top: 0; z-index: 5000;
+            background: rgba(7,7,11,0.8); backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: calc(var(--safe-top) + 15px) 20px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--stroke); transition: all 0.3s;
+        }
+        header.scrolled { padding-top: calc(var(--safe-top) + 10px); padding-bottom: 10px; border-bottom-color: var(--stroke-bright); }
+        .logo { font-family: var(--font-title); font-size: 26px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* 3. CATEGORIES (Sticky & Dynamic) */
-    .pills {
-      display: flex; gap: 10px; overflow-x: auto; padding: 10px 20px;
-      scrollbar-width: none; position: sticky; top: 72px; z-index: 99;
-      background: var(--bg);
-    }
-    .pills::-webkit-scrollbar { display: none; }
-    .pill {
-      padding: 10px 22px; background: var(--bg2); border: 1px solid var(--stroke);
-      border-radius: 40px; font-size: 13px; white-space: nowrap; transition: 0.3s;
-      cursor: pointer;
-    }
-    .pill.active { background: var(--accent); color: #000; font-weight: 600; border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        /* --- SEARCH BOX 2026 --- */
+        .search-bar-container { padding: 10px 20px; position: sticky; top: 75px; z-index: 4999; background: var(--bg); }
+        .search-inner {
+            background: var(--bg-sec); border: 1px solid var(--stroke); border-radius: var(--r-md);
+            padding: 14px 18px; display: flex; align-items: center; gap: 12px; transition: 0.3s;
+        }
+        .search-inner:focus-within { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
+        .search-inner input { background: none; border: none; color: #fff; font-size: 16px; width: 100%; font-weight: 500; }
 
-    /* 4. SALON CARDS (Fresha Style) */
-    .feed { padding: 10px 15px 120px; }
-    .card {
-      background: var(--bg2); border-radius: var(--r); margin-bottom: 25px;
-      overflow: hidden; border: 1px solid var(--stroke);
-      transition: 0.3s;
-    }
-    .card:active { transform: scale(0.97); }
-    .card-img { position: relative; height: 210px; }
-    .card-img img { width: 100%; height: 100%; object-fit: cover; }
-    
-    /* Live Status Pulse */
-    .badge-live {
-      position: absolute; top: 15px; left: 15px;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
-      padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        /* --- HERO DYNAMIC ROLLER (Complex Swap) --- */
+        .hero-viewport { 
+            width: 100%; height: 380px; position: relative; overflow: hidden; 
+            margin: 10px 0 20px; cursor: grab;
+        }
+        .hero-track { 
+            display: flex; height: 100%; transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 0 15px; gap: 12px;
+        }
+        .hero-card {
+            min-width: 85vw; height: 100%; border-radius: var(--r-xl); position: relative;
+            overflow: hidden; flex-shrink: 0; border: 1px solid var(--stroke);
+            transition: transform 0.8s, opacity 0.8s; opacity: 0.5; transform: scale(0.92);
+        }
+        .hero-card.active { opacity: 1; transform: scale(1); }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; transition: 10s linear; }
+        .hero-card.active .hero-img { transform: scale(1.15); }
+        .hero-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,7,11,1) 10%, rgba(7,7,11,0.4) 40%, transparent 100%); }
+        .hero-meta { position: absolute; bottom: 35px; left: 25px; right: 25px; z-index: 10; }
+        .h-tag { display: inline-block; padding: 5px 12px; background: var(--accent); color: #000; border-radius: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
+        .h-name { font-family: var(--font-title); font-size: 36px; margin: 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
-    .card-body { padding: 20px; }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-    .card-header h3 { margin: 0; font-family: 'Playfair Display'; font-size: 22px; }
-    .rating { font-weight: 700; color: #ffd27a; font-size: 14px; }
+        /* --- CATEGORIES HORIZONTAL --- */
+        .cats-wrapper { padding: 10px 0 20px; overflow-x: auto; display: flex; gap: 10px; padding-left: 20px; scrollbar-width: none; }
+        .cats-wrapper::-webkit-scrollbar { display: none; }
+        .cat-chip {
+            padding: 12px 24px; background: var(--bg-sec); border: 1px solid var(--stroke); border-radius: 50px;
+            font-size: 14px; font-weight: 600; white-space: nowrap; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .cat-chip.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: var(--shadow-glow); }
 
-    /* Services List (Screen 1 style) */
-    .svc-list { border-top: 1px solid var(--stroke); padding-top: 15px; display: flex; flex-direction: column; gap: 8px; }
-    .svc-row { display: flex; justify-content: space-between; font-size: 14px; }
-    .svc-name { color: var(--muted); }
-    .svc-price { font-weight: 600; color: var(--accent); }
+        /* --- THE GRID (SALON CARDS) --- */
+        .feed-container { padding: 0 20px 140px; display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .s-card {
+            background: var(--bg-sec); border-radius: var(--r-xl); border: 1px solid var(--stroke);
+            overflow: hidden; position: relative; transition: 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+        .s-card:hover { transform: translateY(-8px); border-color: var(--stroke-bright); }
+        .s-media { position: relative; height: 260px; overflow: hidden; }
+        .s-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+        .s-card:hover .s-media img { transform: scale(1.05); }
+        
+        .live-pulse {
+            position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+            padding: 6px 14px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800;
+        }
+        .pulse-circle { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse-anim 1.5s infinite; }
+        @keyframes pulse-anim { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.7); } 70% { box-shadow: 0 0 0 10px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
 
-    .btn-main {
-      width: 100%; background: #fff; color: #000; border: none; padding: 16px;
-      border-radius: 18px; font-weight: 700; font-size: 15px; margin-top: 20px;
-      cursor: pointer;
-    }
+        .s-info { padding: 25px; }
+        .s-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .s-name { font-family: var(--font-title); font-size: 26px; margin: 0; letter-spacing: -0.5px; }
+        .s-rating { font-weight: 800; color: #ffd27a; font-size: 16px; background: rgba(255,210,122,0.1); padding: 4px 10px; border-radius: 10px; }
 
-    /* 5. NAVIGATION */
-    .nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: rgba(7,7,11,0.92);
-      backdrop-filter: blur(25px); border-top: 1px solid var(--stroke);
-      display: flex; justify-content: space-around; padding: 12px 10px calc(15px + env(safe-area-inset-bottom));
-      z-index: 1000;
-    }
-    .nav-btn { color: var(--muted); text-decoration: none; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .nav-btn.active { color: var(--accent); }
-    .nav-btn i { font-size: 22px; font-style: normal; }
-  </style>
+        /* Complex Service Rows */
+        .s-services { border-top: 1px solid var(--stroke); padding-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .svc-row { display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .svc-left { display: flex; flex-direction: column; }
+        .svc-n { font-size: 15px; font-weight: 500; color: #fff; }
+        .svc-d { font-size: 12px; color: var(--text-muted); }
+        .svc-p { font-weight: 800; color: var(--accent); font-size: 16px; }
+
+        .btn-book-now {
+            width: 100%; margin-top: 25px; background: #fff; color: #000; border: none;
+            padding: 18px; border-radius: 20px; font-weight: 800; font-size: 16px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .btn-book-now:active { transform: scale(0.96); opacity: 0.8; }
+
+        /* --- BOTTOM NAVIGATION 2026 --- */
+        .tab-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 6000;
+            background: rgba(7,7,11,0.85); backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border-top: 1px solid var(--stroke);
+            padding: 12px 25px calc(15px + var(--safe-bottom));
+            display: flex; justify-content: space-around; align-items: center;
+        }
+        .tab-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600;
+            transition: 0.3s;
+        }
+        .tab-btn.active { color: var(--accent); transform: translateY(-2px); }
+        .tab-btn i { font-size: 24px; font-style: normal; }
+
+        /* --- MODAL SYSTEM --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            z-index: 9000; display: none; opacity: 0; transition: 0.4s;
+        }
+        .modal-sheet {
+            position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-sec);
+            border-radius: var(--r-xl) var(--r-xl) 0 0; z-index: 9001; padding: 30px;
+            transform: translateY(100%); transition: 0.5s cubic-bezier(0.15, 1, 0.3, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-overlay.active { display: block; opacity: 1; }
+        .modal-sheet.active { transform: translateY(0); }
+
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .animate-up { animation: fadeUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-  <header>
-    <div style="font-family:'Playfair Display'; font-size:24px; font-weight:700;">BookingClub</div>
-    <div onclick="haptic()" style="background:var(--bg2); padding:8px 15px; border-radius:15px; font-size:13px; border:1px solid var(--stroke);">📍 Київ</div>
-  </header>
-
-  <div class="hero-container" id="heroHost">
+    <div id="appLoader" class="app-loader">
+        <div class="logo" style="font-size: 40px; margin-bottom: 20px;">BookingClub</div>
+        <div style="width: 50px; height: 3px; background: var(--accent); border-radius: 10px; overflow: hidden;">
+            <div id="loadProgress" style="width: 0%; height: 100%; background: #fff; transition: 0.3s;"></div>
+        </div>
     </div>
 
-  <div class="pills">
-    <div class="pill active" onclick="filterCat('all', this)">✨ Усі</div>
-    <div class="pill" onclick="filterCat('manicure', this)">💅 Манікюр</div>
-    <div class="pill" onclick="filterCat('brows', this)">👁️ Брови</div>
-    <div class="pill" onclick="filterCat('hair', this)">💇‍♀️ Волосся</div>
-  </div>
-
-  <main class="feed" id="listingGrid">
-    </main>
-
-  <nav class="nav">
-    <a href="#" class="nav-btn active"><i>🏠</i><span>Стрічка</span></a>
-    <a href="#" class="nav-btn"><i>🔍</i><span>Пошук</span></a>
-    <a href="#" class="nav-btn"><i>📅</i><span>Записи</span></a>
-    <a href="./profile.html" class="nav-btn"><i>👤</i><span>Профіль</span></a>
-  </nav>
-
-  <script src="./data.js"></script>
-
-  <script>
-    // ⚡️ ТИХА ВІБРАЦІЯ
-    const haptic = () => { if(navigator.vibrate) navigator.vibrate(10); };
-
-    // 1. АВТО-СВАП (ЛОГІКА 2026)
-    let heroIdx = 0;
-    function startHeroSwap() {
-      const tops = window.LISTINGS.slice(0, 4);
-      const host = document.getElementById('heroHost');
-      
-      host.innerHTML = tops.map((l, i) => `
-        <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image:url('${l.img}')">
-          <div class="hero-gradient"></div>
-          <div class="hero-info">
-            <div class="hero-tag">Найкращий вибір</div>
-            <h2 class="hero-name">${l.name}</h2>
-            <div style="font-size:13px; opacity:0.6; margin-top:5px;">📍 ${l.address}</div>
-          </div>
+    <header id="mainHeader">
+        <div class="logo">BookingClub</div>
+        <div class="user-loc" id="locTrigger" style="cursor:pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; background: var(--bg-sec); padding: 8px 16px; border-radius: 15px; border: 1px solid var(--stroke);">
+            <span>📍 Київ</span>
         </div>
-      `).join('');
+    </header>
 
-      setInterval(() => {
-        const slides = document.querySelectorAll('.hero-slide');
-        if(!slides.length) return;
-        slides[heroIdx].classList.remove('active');
-        heroIdx = (heroIdx + 1) % slides.length;
-        slides[heroIdx].classList.add('active');
-      }, 4000);
-    }
+    <div class="search-bar-container">
+        <div class="search-inner">
+            <span style="font-size: 18px; opacity: 0.5;">🔍</span>
+            <input type="text" id="globalSearch" placeholder="Шукайте майстрів або послуги..." autocomplete="off">
+        </div>
+    </div>
 
-    // 2. РЕНДЕР КАРТОК (FRESHA STYLE)
-    function renderCards(data = window.LISTINGS) {
-      const grid = document.getElementById('listingGrid');
-      grid.innerHTML = data.map(l => `
-        <div class="card" onclick="haptic(); location.href='./profile.html?id=${l.id}'">
-          <div class="card-img">
-            <img src="${l.img}" loading="lazy">
-            <div class="badge-live"><span class="dot"></span> Online</div>
-          </div>
-          <div class="card-body">
-            <div class="card-header">
-              <h3>${l.name}</h3>
-              <div class="rating">★ ${l.rating}</div>
+    <section class="hero-viewport" id="heroViewport">
+        <div class="hero-track" id="heroTrack">
             </div>
-            
-            <div class="svc-list">
-              ${(l.services || []).slice(0, 2).map(s => `
-                <div class="svc-row">
-                  <span class="svc-name">${s.ua || s.name}</span>
-                  <span class="svc-price">${s.price} ₴</span>
+    </section>
+
+    <nav class="cats-wrapper" id="catBar">
+        <div class="cat-chip active" data-id="all">✨ Усі послуги</div>
+        <div class="cat-chip" data-id="manicure">💅 Манікюр</div>
+        <div class="cat-chip" data-id="brows">🧿 Брови</div>
+        <div class="cat-chip" data-id="mens_haircut">✂️ Чоловічі стрижки</div>
+        <div class="cat-chip" data-id="womens_haircut">💇‍♀️ Жіночі образи</div>
+    </nav>
+
+    <main class="feed-container" id="feed">
+        </main>
+
+    <nav class="tab-bar">
+        <a href="#" class="tab-btn active"><i>🏠</i><span>Головна</span></a>
+        <a href="#" class="tab-btn"><i>🔍</i><span>Пошук</span></a>
+        <a href="#" class="tab-btn"><i>📅</i><span>Записи</span></a>
+        <a href="./profile.html" class="tab-btn"><i>👤</i><span>Профіль</span></a>
+    </nav>
+
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-sheet" id="bookingSheet">
+        <div style="width: 40px; height: 5px; background: var(--stroke-bright); border-radius: 10px; margin: -10px auto 25px;"></div>
+        <div id="bookingContent">
+            </div>
+    </div>
+
+    <script src="./data.js"></script>
+    <script>
+        /**
+         * BOOKINGCLUB ULTRA ENGINE 2026
+         * Повний функціонал: ротація, фільтрація, анімації, тактильна віддача.
+         */
+        
+        const STATE = {
+            activeFilter: 'all',
+            heroIndex: 0,
+            touchStartX: 0,
+            touchMoveX: 0,
+            isSwiping: false,
+            searchQuery: ''
+        };
+
+        const UI = {
+            loader: document.getElementById('appLoader'),
+            progress: document.getElementById('loadProgress'),
+            hero: document.getElementById('heroTrack'),
+            feed: document.getElementById('feed'),
+            header: document.getElementById('mainHeader'),
+            search: document.getElementById('globalSearch'),
+            catBar: document.getElementById('catBar')
+        };
+
+        // --- 1. TACTILE SYSTEM ---
+        const haptic = (type = 'light') => {
+            if (!navigator.vibrate) return;
+            if (type === 'light') navigator.vibrate(12);
+            if (type === 'medium') navigator.vibrate([15, 30, 15]);
+        };
+
+        // --- 2. HERO SLIDER ENGINE (Advanced Rotation) ---
+        function initHeroSlider() {
+            const tops = window.LISTINGS.slice(0, 5);
+            UI.hero.innerHTML = tops.map((l, i) => `
+                <div class="hero-card ${i === 0 ? 'active' : ''}" data-id="${l.id}">
+                    <img src="${l.img}" class="hero-img">
+                    <div class="hero-grad"></div>
+                    <div class="hero-meta">
+                        <span class="h-tag">Premium Salon</span>
+                        <h2 class="h-name">${l.name}</h2>
+                        <div style="font-size: 14px; opacity: 0.7; margin-top: 10px;">
+                            <span>📍 ${l.address}</span> • <span>★ ${l.rating}</span>
+                        </div>
+                    </div>
                 </div>
-              `).join('')}
-            </div>
+            `).join('');
 
-            <button class="btn-main" onclick="event.stopPropagation(); location.href='./profile.html?id=${l.id}&book=1'">
-              ЗАБРОНЮВАТИ
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
+            // Automatic Swap
+            setInterval(() => {
+                if (STATE.isSwiping) return;
+                STATE.heroIndex = (STATE.heroIndex + 1) % tops.length;
+                updateHeroUI();
+            }, 5000);
+        }
 
-    // 3. ФІЛЬТРАЦІЯ
-    function filterCat(id, el) {
-      haptic();
-      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-      el.classList.add('active');
-      
-      const filtered = id === 'all' 
-        ? window.LISTINGS 
-        : window.LISTINGS.filter(l => (l.services || []).some(s => s.serviceId === id));
-      
-      renderCards(filtered);
-    }
+        function updateHeroUI() {
+            const offset = STATE.heroIndex * -88.5; // vw calculation
+            UI.hero.style.transform = `translateX(${offset}vw)`;
+            
+            document.querySelectorAll('.hero-card').forEach((c, i) => {
+                c.classList.toggle('active', i === STATE.heroIndex);
+            });
+        }
 
-    window.onload = () => {
-      startHeroSwap();
-      renderCards();
-      
-      // Реєстрація воркера
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./worker.js');
-      }
-    };
-  </script>
+        // --- 3. FEED ENGINE (Dynamic Render) ---
+        function renderFeed() {
+            let list = window.LISTINGS;
+
+            // Apply Search
+            if (STATE.searchQuery) {
+                list = list.filter(l => 
+                    l.name.toLowerCase().includes(STATE.searchQuery.toLowerCase()) ||
+                    l.address.toLowerCase().includes(STATE.searchQuery.toLowerCase())
+                );
+            }
+
+            // Apply Categories
+            if (STATE.activeFilter !== 'all') {
+                list = list.filter(l => l.services.some(s => s.serviceId === STATE.activeFilter));
+            }
+
+            if (list.length === 0) {
+                UI.feed.innerHTML = `<div style="text-align:center; padding:100px 0; opacity:0.4;">Нічого не знайдено за вашим запитом...</div>`;
+                return;
+            }
+
+            UI.feed.innerHTML = list.map((l, i) => `
+                <article class="s-card animate-up" style="animation-delay: ${i * 0.1}s">
+                    <div class="s-media" onclick="location.href='./profile.html?id=${l.id}'">
+                        <img src="${l.img}" alt="${l.name}" loading="lazy">
+                        <div class="live-pulse"><span class="pulse-circle"></span> ЗАРАЗ ПРАЦЮЄ</div>
+                    </div>
+                    <div class="s-info">
+                        <div class="s-header">
+                            <div>
+                                <h3 class="s-name">${l.name}</h3>
+                                <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">${l.address}</div>
+                            </div>
+                            <div class="s-rating">★ ${l.rating}</div>
+                        </div>
+                        
+                        <div class="s-services">
+                            ${l.services.slice(0, 3).map(s => `
+                                <div class="svc-row">
+                                    <div class="svc-left">
+                                        <span class="svc-n">${s.ua || s.name}</span>
+                                        <span class="svc-d">~ 45 хв</span>
+                                    </div>
+                                    <span class="svc-p">${s.price} ₴</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <button class="btn-book-now" onclick="haptic('medium'); location.href='./profile.html?id=${l.id}&book=true'">
+                            ШВИДКИЙ ЗАПИС
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // --- 4. EVENT HANDLERS (The "Braine" of App) ---
+        function setupEventListeners() {
+            // Category Clicks
+            UI.catBar.addEventListener('click', (e) => {
+                const chip = e.target.closest('.cat-chip');
+                if (!chip) return;
+                haptic();
+                document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                STATE.activeFilter = chip.dataset.id;
+                renderFeed();
+                window.scrollTo({ top: 450, behavior: 'smooth' });
+            });
+
+            // Search Logic
+            UI.search.addEventListener('input', (e) => {
+                STATE.searchQuery = e.target.value;
+                renderFeed();
+            });
+
+            // Scroll Header Effect
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) UI.header.classList.add('scrolled');
+                else UI.header.classList.remove('scrolled');
+            });
+
+            // Touch Swapping for Hero
+            const viewport = document.getElementById('heroViewport');
+            viewport.addEventListener('touchstart', (e) => {
+                STATE.touchStartX = e.touches[0].clientX;
+                STATE.isSwiping = true;
+            });
+
+            viewport.addEventListener('touchend', (e) => {
+                STATE.touchMoveX = e.changedTouches[0].clientX;
+                const diff = STATE.touchStartX - STATE.touchMoveX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) STATE.heroIndex = Math.min(STATE.heroIndex + 1, 4);
+                    else STATE.heroIndex = Math.max(STATE.heroIndex - 1, 0);
+                    haptic();
+                    updateHeroUI();
+                }
+                STATE.isSwiping = false;
+            });
+        }
+
+        // --- 5. BOOTSTRAP APP ---
+        function initApp() {
+            // Progress bar simulation
+            let p = 0;
+            const interval = setInterval(() => {
+                p += Math.random() * 30;
+                UI.progress.style.width = `${Math.min(p, 100)}%`;
+                if (p >= 100) {
+                    clearInterval(interval);
+                    UI.loader.style.opacity = '0';
+                    setTimeout(() => UI.loader.classList.add('hidden'), 600);
+                }
+            }, 150);
+
+            initHeroSlider();
+            renderFeed();
+            setupEventListeners();
+        }
+
+        window.onload = initApp;
+
+        // Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./worker.js').catch(err => console.log(err));
+        }
+    </script>
 </body>
 </html>
