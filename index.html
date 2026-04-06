@@ -2,541 +2,233 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#0b0b0f" />
-  <title>Beauty Booking</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+  <title>Beauty Booking Pro</title>
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap">
 
-  <meta property="og:title" content="Beauty Booking">
-  <meta property="og:description" content="Book beauty services in seconds — verified salons & masters.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="[images.unsplash.com](https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80)">
-
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Beauty Booking">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="[fonts.googleapis.com](https://fonts.googleapis.com)">
-  <link rel="preconnect" href="[fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-  <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap)" rel="stylesheet">
-
-  <!-- ====================  CORE STYLE + THEME  ==================== -->
   <style>
-    :root{
-      --bg:#0a0a0e;--bg2:#121218;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.09);
-      --stroke:rgba(255,255,255,.1);--stroke2:rgba(255,255,255,.14);
-      --text:#f4f3f8;--muted:rgba(244,243,248,.65);
-      --pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;
-      --ok:#20e3a5;--warn:#ffd27a;--r:22px;--r2:28px;
-      --shadow:0 20px 70px rgba(0,0,0,.55);--shadow2:0 10px 30px rgba(0,0,0,.35);
-      --glow:0 0 0 1px rgba(255,79,216,.18),0 18px 60px rgba(255,79,216,.15);
-      --glow2:0 0 0 1px rgba(255,210,122,.15),0 18px 60px rgba(255,210,122,.10);
-      --max:1200px;--anim:.25s ease;--anim2:.45s cubic-bezier(.19,1,.22,1);
+    :root {
+      /* Колірна палітра "Luxury Dark" */
+      --bg: #07070b;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --accent: #ff4fd8;
+      --accent-glow: rgba(255, 79, 216, 0.3);
+      --glass: rgba(11, 11, 15, 0.85);
+      --stroke: rgba(255, 255, 255, 0.08);
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
     }
-    body[data-theme="light"]{
-      --bg:#fbfbff;--bg2:#f3f4ff;--card:rgba(10,10,18,.05);--card2:rgba(10,10,18,.09);
-      --stroke:rgba(10,10,18,.1);--stroke2:rgba(10,10,18,.14);
-      --text:#0b0b0f;--muted:rgba(11,11,15,.6);
-      --shadow:0 20px 70px rgba(10,10,18,.16);--shadow2:0 10px 30px rgba(10,10,18,.08);
-    }
-    *{box-sizing:border-box}html,body{height:100%;margin:0;padding:0;scroll-behavior:smooth}
-    body{
-      font-family:Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1000px 600px at 15% 0%,rgba(255,79,216,.14),transparent 55%),
-        radial-gradient(900px 700px at 80% 10%,rgba(139,92,246,.14),transparent 55%),
-        radial-gradient(900px 700px at 70% 90%,rgba(255,210,122,.09),transparent 60%),
-        linear-gradient(180deg,var(--bg),var(--bg2));
-      overflow-x:hidden;-webkit-font-smoothing:antialiased;
-    }
-    a{color:inherit;text-decoration:none}button,input{font:inherit}mark{background:rgba(255,210,122,.18);border-radius:.3em}
-    .wrap{max-width:var(--max);margin:0 auto;padding:20px 18px 120px}
-  </style>
 
-  <!-- ============ INTRO LOADING ============ -->
-  <style>
-    #introSplash{
-      position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      z-index:9999;background:radial-gradient(1000px 600px at 50% 40%,rgba(255,79,216,.12),transparent 70%),#0b0b0f;
-      color:#fff;animation:introFadeOut 1.5s ease 1.6s forwards;
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+    
+    body {
+      margin: 0; background: var(--bg); color: #fff;
+      font-family: 'Inter', sans-serif; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
-    #introLogo{
-      width:74px;height:74px;border-radius:24px;background:linear-gradient(135deg,rgba(255,79,216,.95),rgba(139,92,246,.95));
-      box-shadow:0 0 0 1px rgba(255,255,255,.2),0 14px 60px rgba(0,0,0,.5);
-      position:relative;overflow:hidden;opacity:0;
-      animation:introUp .8s var(--anim2) .3s forwards;
+
+    /* 1. ПРЕМІАЛЬНИЙ SPLASH SCREEN */
+    #splash {
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
     }
-    #introLogo::after{
-      content:"";position:absolute;inset:-40%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-      transform:translateX(-35%) rotate(20deg);
-      animation:introSweep 2.3s linear .6s infinite;
+    .splash-logo {
+      font-family: 'Playfair Display'; font-size: 32px; font-weight: 700;
+      background: linear-gradient(to bottom, #fff, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: logo-glow 2s ease-in-out infinite alternate;
     }
-    #introName{
-      margin:.6em 0 0;font-family:"Playfair Display",serif;font-size:36px;
-      background:linear-gradient(90deg,rgba(255,79,216,1),rgba(255,210,122,1));
-      -webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;
-      animation:introUp .9s var(--anim2) .5s forwards;
+    @keyframes logo-glow { from { opacity: 0.5; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+    /* 2. ГОЛОВНИЙ HEADER (Fresha Style) */
+    .top-header {
+      position: sticky; top: 0; z-index: 1000;
+      padding: calc(var(--safe-top) + 15px) 20px 15px;
+      background: var(--glass); backdrop-filter: blur(25px);
+      border-bottom: 1px solid var(--stroke);
+      display: flex; justify-content: space-between; align-items: center;
     }
-    @keyframes introUp{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
-    @keyframes introSweep{0%{transform:translateX(-35%)rotate(20deg)}100%{transform:translateX(35%)rotate(20deg)}}
-    @keyframes introFadeOut{100%{opacity:0;visibility:hidden}}
+
+    /* 3. HERO СЕКЦІЯ (Твоя анімована ротація) */
+    .hero-container {
+      margin: 20px; border-radius: 28px; height: 180px;
+      position: relative; overflow: hidden;
+      background: #111; border: 1px solid var(--stroke);
+    }
+    .hero-slide {
+      position: absolute; inset: 0; background-size: cover; background-position: center;
+      transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
+      display: flex; align-items: flex-end; padding: 20px;
+    }
+
+    /* 4. КАТЕГОРІЇ (Pill Buttons з анімацією) */
+    .pills-container {
+      display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px;
+      scrollbar-width: none;
+    }
+    .pills-container::-webkit-scrollbar { display: none; }
+    .pill {
+      padding: 10px 22px; background: var(--card-bg); border: 1px solid var(--stroke);
+      border-radius: 40px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.6);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      white-space: nowrap;
+    }
+    .pill.active {
+      background: var(--accent); color: #000; border-color: var(--accent);
+      box-shadow: 0 10px 20px var(--accent-glow);
+    }
+
+    /* 5. КАРТКИ САЛОНІВ (Super Smooth) */
+    .listing-grid { padding: 0 20px 120px; display: grid; gap: 20px; }
+    .salon-card {
+      background: var(--card-bg); border-radius: 32px; border: 1px solid var(--stroke);
+      overflow: hidden; opacity: 0; transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .salon-card.reveal { opacity: 1; transform: translateY(0); }
+    .salon-card:active { transform: scale(0.96); }
+
+    .card-img { width: 100%; height: 210px; object-fit: cover; }
+    .card-body { padding: 18px; }
+    .card-title { font-family: 'Playfair Display'; font-size: 20px; margin-bottom: 6px; }
+    .card-meta { display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,0.4); }
+
+    /* 6. BOTTOM TAB BAR (Magnetic Effect) */
+    .tab-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--glass); backdrop-filter: blur(30px);
+      padding: 12px 10px calc(15px + var(--safe-bottom));
+      display: flex; justify-content: space-around;
+      border-top: 1px solid var(--stroke); z-index: 2000;
+    }
+    .tab-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: rgba(255,255,255,0.3); font-size: 10px; text-decoration: none;
+      transition: 0.3s;
+    }
+    .tab-item.active { color: var(--accent); }
+    .tab-item i { font-size: 22px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .tab-item:active i { transform: scale(1.3); }
+
+    /* БОТТОМ-ШИТ (БРОНЮВАННЯ) */
+    .sheet-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      z-index: 3000; opacity: 0; pointer-events: none; transition: 0.4s;
+    }
+    .sheet-overlay.active { opacity: 1; pointer-events: auto; }
+    .sheet {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #0f0f14;
+      border-radius: 35px 35px 0 0; padding: 25px;
+      transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.3, 0.6, 0, 1);
+      z-index: 3001; max-height: 92vh; overflow-y: auto;
+    }
+    .sheet.active { transform: translateY(0); }
   </style>
 </head>
-
 <body>
-  <div id="introSplash">
-    <div id="introLogo"></div>
-    <div id="introName">Beauty Booking</div>
+
+  <div id="splash">
+    <div class="splash-logo">BeautyFlow</div>
   </div>
 
-  <!-- ====================  TOP BAR  ==================== -->
-  <header class="topbar">
-    <div class="inner">
-      <a class="brand" href="./index.html">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Beauty Booking</h1>
-          <div class="sub">Marketplace · Montréal</div>
-        </div>
-      </a>
-      <div class="grow"></div>
-
-      <div class="search" title="Search">
-        <span style="opacity:.7">⌕</span>
-        <input id="q" placeholder="Пошук салону чи району…" autocomplete="off">
-      </div>
-
-      <div class="top-actions">
-        <div id="favOnly" class="pill" title="Only favorites"><span>❤️</span><span id="favOnlyLabel">Only ❤️</span></div>
-        <button id="aiBtn" class="pill" title="AI help">✨ AI</button>
-        <button id="cartBtn" class="iconbtn" title="Saved drafts">🧾<span id="cartBadge" class="badge" style="display:none">0</span></button>
-        <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
-        <button id="langBtn" class="iconbtn" title="UA / EN">🌐</button>
-      </div>
+  <header class="top-header">
+    <div style="font-family:'Playfair Display'; font-size:22px;">BF.</div>
+    <div id="geoBtn" style="background:var(--card-bg); padding:8px 15px; border-radius:20px; font-size:12px; border:1px solid var(--stroke);">
+      📍 <span id="locLabel">Визначаємо...</span>
     </div>
   </header>
 
-  <style>
-    .topbar{position:sticky;top:0;z-index:80;backdrop-filter:blur(14px);
-      background:linear-gradient(180deg,rgba(7,7,11,.9),rgba(7,7,11,.55));
-      border-bottom:1px solid rgba(255,255,255,.06);animation:fadeIn .8s ease 1.8s both}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-    .inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:10px;padding:14px 16px}
-    .logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,rgba(255,79,216,.9),rgba(139,92,246,.9));
-      box-shadow:0 0 0 1px rgba(255,255,255,.14),0 10px 36px rgba(0,0,0,.45)}
-    .brand h1{font-family:"Playfair Display",serif;font-size:18px;margin:0}
-    .brand .sub{font-size:12px;color:var(--muted)}
-    .search{flex:1;display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--stroke);
-      border-radius:999px;background:var(--card)}
-    .search input{flex:1;background:transparent;border:0;color:var(--text);outline:none}
-    .pill,.iconbtn{border:1px solid var(--stroke);background:var(--card);border-radius:999px;
-      display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;
-      transition:transform var(--anim),background var(--anim);color:var(--text);cursor:pointer}
-    .pill:hover,.iconbtn:hover{transform:translateY(-1px);background:var(--card2)}
-    .badge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 6px;
-      border-radius:999px;background:linear-gradient(135deg,rgba(255,79,216,.95),rgba(139,92,246,.95));
-      color:#0b0b0f;font-weight:700;font-size:11px;display:grid;place-items:center}
-  </style>
-
-  <!-- ====================  HERO  ==================== -->
-  <main class="wrap">
-    <section class="hero">
-      <div class="heroCard">
-        <div class="heroInner">
-          <div>
-            <h2 class="heroTitle">Book beauty in <span>seconds</span>.</h2>
-            <p class="heroDesc" id="heroDesc">Verified salons & masters. Стерильно · швидко · без спаму. Підтвердження — в Telegram.</p>
-            <div class="chips" id="serviceChips"></div>
-            <div class="ctaRow">
-              <button class="btn" id="openQuick">⚡ Quick booking <span style="font-weight:800;opacity:.9">today</span></button>
-              <button class="btn secondary" id="resetBtn">Скинути фільтри</button>
-            </div>
-            <div style="margin-top:14px;color:rgba(244,243,248,.7);font-size:12.5px">
-              <b style="color:var(--gold)">Tip:</b> обери послугу — ми одразу покажемо доступні слоти.
-            </div>
-          </div>
-          <div class="heroSide">
-            <div class="glass" id="nextAvailCard">
-              <div class="pad">
-                <div class="kicker" id="nextKicker">Next available near you</div>
-                <div class="bigLine" id="nextLine">—</div>
-                <div class="smallLine" id="nextSub">Tap to book instantly</div>
-              </div>
-            </div>
-            <div class="glass" id="lastCard" style="display:none">
-              <div class="pad">
-                <div class="kicker" id="lastKicker">Your last booking</div>
-                <div class="bigLine" id="lastLine">—</div>
-                <div class="smallLine" id="lastSub">Tap to book again</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- ==================== AI Assistant Section ==================== -->
-    <section class="section" id="aiSection" style="display:none">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle">AI concierge</h3>
-          <p class="sectionNote">Напиши, що потрібно — підберу 3 варіанти.</p>
-        </div>
-      </div>
-      <div class="glass fadeInUp">
-        <div class="pad">
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <input id="aiInput"
-                   placeholder="Напр: манікюр сьогодні після 18 до 60$ недалеко"
-                   style="flex:1;min-width:220px;padding:12px;border-radius:16px;
-                          border:1px solid var(--stroke2);
-                          background:var(--card);
-                          color:var(--text);
-                          outline:none">
-            <button class="btn" id="aiGo">✨ Підібрати</button>
-          </div>
-          <div id="aiPicks" class="grid" style="margin-top:14px"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== Partners ==================== -->
-    <section class="section" id="partnersSection">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle">Top salons / partners</h3>
-          <p class="sectionNote">Платні партнери, які відповідають фільтрам.</p>
-        </div>
-      </div>
-      <div class="strip" id="partnerStrip"></div>
-    </section>
-
-    <!-- ==================== Recommended / All others ==================== -->
-    <section class="section" id="recSection">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle">Recommended</h3>
-          <p class="sectionNote">Підібрано під доступність, ціну та близькість.</p>
-        </div>
-      </div>
-      <div class="grid" id="recGrid"></div>
-    </section>
-
-    <section class="section" id="allSection">
-      <div class="sectionHead">
-        <div>
-          <h3 class="sectionTitle">All others</h3>
-          <p class="sectionNote">Усі інші варіанти в місті.</p>
-        </div>
-      </div>
-      <div class="grid" id="allGrid"></div>
-      <div id="emptyBox" class="empty" style="display:none">
-        <h3>Немає результатів</h3>
-        <p>Спробуй послабити фільтри або переглянь популярні.</p>
-        <div class="row">
-          <button class="btn secondary" id="emptyReset">Скинути фільтри</button>
-          <button class="btn" id="emptyShowPopular">Показати популярні</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== Bottom / How it works ==================== -->
-    <section class="section" id="howItWorks">
-      <div class="glass">
-        <div class="pad" style="display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between;align-items:center">
-          <div>
-            <div class="kicker">How it works</div>
-            <div class="smallLine" style="margin-top:6px">
-              Обери послугу → бачиш доступні слоти → підтверджуєш у Telegram.
-              <span style="color:var(--gold);font-weight:800">Без прихованих оплат.</span>
-              Оплата здебільшого на місці.
-            </div>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank">Open sample profile →</a>
-            <a class="pill" href="#" id="policiesBtn">Policies</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ==================== Floating Bar / Back-to-top ==================== -->
-  <div class="floatbar">
-    <div class="inner">
-      <button class="floatCTA" id="floatQuick">⚡ Quick book</button>
-      <button class="topBtn" id="toTop">↑</button>
+  <div class="hero-container" id="heroHost">
     </div>
+
+  <div class="pills-container" id="catList">
+    <div class="pill active">Усі</div>
+    <div class="pill">💅 Манікюр</div>
+    <div class="pill">✨ Брови</div>
+    <div class="pill">💇‍♀️ Волосся</div>
   </div>
 
-  <!-- ==================== Animation helpers ==================== -->
-  <style>
-    .fadeInUp{opacity:0;transform:translateY(20px);animation:fadeInUp .8s var(--anim2) 2s forwards}
-    @keyframes fadeInUp{to{opacity:1;transform:none}}
-    .card,.stripCard{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
-    .card.vis,.stripCard.vis{opacity:1;transform:none}
-  </style>
-  <script>
-    document.addEventListener("DOMContentLoaded",()=>{
-      const els=document.querySelectorAll(".card,.stripCard");
-      const io=new IntersectionObserver(e=>e.forEach(x=>{
-        if(x.isIntersecting){x.target.classList.add("vis");io.unobserve(x.target);}
-      }),{threshold:.2});
-      els.forEach(el=>io.observe(el));
-    });
-  </script>
-  <!-- ==================== Booking Modal ==================== -->
-  <div id="modal" class="overlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true">
-      <div class="sheetHead">
-        <h3 id="modalTitle">Booking</h3>
-        <button class="x" id="closeModal">✕</button>
-      </div>
+  <main class="listing-grid" id="listingGrid">
+    </main>
 
-      <div class="sheetBody">
-        <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="min-width:0;overflow:hidden">
-            <div id="bkWhereName" style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-            <div id="bkWhereAddr" style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-          </div>
-          <a id="bkWhereProfile" class="pill" href="#" target="_blank" rel="noopener">Profile</a>
-        </div>
+  <nav class="tab-bar">
+    <a href="#" class="tab-item active"><i>🏠</i><span>Головна</span></a>
+    <a href="#" class="tab-item" id="openBookings"><i>📅</i><span>Записи</span></a>
+    <a href="./profile.html" class="tab-item"><i>👤</i><span>Профіль</span></a>
+  </nav>
 
-        <div class="formGrid">
-          <div class="field"><label>Імʼя</label><input id="fName" placeholder="Ваше імʼя"></div>
-          <div class="field"><label>Телефон</label><input id="fPhone" placeholder="+1 ..."></div>
-          <div class="field"><label>Email</label><input id="fEmail" placeholder="you@email.com"></div>
-
-          <div class="field"><label>Послуга</label>
-            <div class="selectLike" id="svcPick"><div><div class="val" id="svcVal">—</div><div class="hint">tap to cycle</div></div><div>↻</div></div>
-          </div>
-          <div class="field"><label>Дата</label>
-            <div class="selectLike" id="datePick"><div><div class="val" id="dateVal">—</div><div class="hint">calendar</div></div><div>📅</div></div>
-          </div>
-          <div class="field"><label>Час</label>
-            <div class="selectLike" id="timePick"><div><div class="val" id="timeVal">Tap to choose</div><div class="hint">custom picker</div></div><div>▾</div></div>
-          </div>
-        </div>
-
-        <div class="note" style="margin-top:12px">Підтвердження через <b>Telegram</b> — без акаунтів, без спаму.</div>
-      </div>
-
-      <div class="sheetFoot">
-        <div class="note" id="priceLine">—</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn secondary" id="saveDraftBtn">Save draft</button>
-          <button class="btn secondary" id="openProfileBtn">Profile</button>
-          <button class="btn" id="submitBooking">Confirm in Telegram</button>
-        </div>
-      </div>
-    </div>
+  <div class="sheet-overlay" id="sheetOverlay"></div>
+  <div class="sheet" id="bookingSheet">
+    <div style="width:40px; height:5px; background:var(--stroke); border-radius:10px; margin:-10px auto 20px;"></div>
+    <div id="bookingContent"></div>
   </div>
 
-  <!-- Toast -->
-  <div id="toast" class="toast">Saved</div>
-
-  <!-- ==================== Styles for Modal ==================== -->
-  <style>
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);
-      display:none;align-items:flex-end;justify-content:center;z-index:100;padding:18px}
-    .overlay.on{display:flex}
-    .sheet{width:min(740px,100%);border-radius:26px;border:1px solid var(--stroke2);
-      background:var(--bg2);box-shadow:var(--shadow);animation:fadeInUp .26s ease both}
-    .sheetHead,.sheetFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:14px;border-bottom:1px solid var(--stroke)}
-    .sheetFoot{border-top:1px solid var(--stroke);border-bottom:0}
-    .sheetBody{padding:14px 12px;max-height:70vh;overflow:auto}
-    .formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    @media(max-width:640px){.formGrid{grid-template-columns:1fr}}
-    .field{border-radius:18px;border:1px solid var(--stroke);background:var(--card);padding:10px}
-    .field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
-    .field input{margin-top:6px;width:100%;border:0;outline:none;background:transparent;color:var(--text)}
-    .selectLike{display:flex;align-items:center;justify-content:space-between;border-radius:16px;
-      border:1px solid var(--stroke2);background:var(--card);padding:10px;cursor:pointer}
-    .btn.secondary{background:var(--card2);border:1px solid var(--stroke)}
-    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;
-      background:rgba(0,0,0,.6);backdrop-filter:blur(12px);
-      border:1px solid var(--stroke2);border-radius:999px;padding:10px 14px;
-      color:var(--text);font-weight:700;display:none;z-index:120}
-    .toast.on{display:block;animation:fadeInUp .25s ease}
-  </style>
-
-  <!-- ==================== JS: Lang / Theme / AI / ServiceWorker ==================== -->
-  <script src="./data.js"></script>
+  <script src="./data.js"></script>
   <script>
-    const LS={lang:"bb_lang",theme:"bb_theme"};
-    const state={lang:localStorage.getItem(LS.lang)||"uk",theme:localStorage.getItem(LS.theme)||"dark"};
-    function applyTheme(){document.body.dataset.theme=state.theme;
-      document.querySelector("#themeBtn").textContent=state.theme==="light"?"☀️":"🌙";
-      localStorage.setItem(LS.theme,state.theme);}
-    function applyLang(){document.querySelector("#q").placeholder=state.lang==="uk"
-        ?"Пошук салону, району…":"Search salon or area…";
-      document.querySelector("#openQuick").childNodes[0].textContent=state.lang==="uk"?"⚡ Бронювати ":"⚡ Book ";}
-    document.addEventListener("DOMContentLoaded",()=>{
-      document.getElementById("themeBtn").addEventListener("click",()=>{
-        state.theme=state.theme==="light"?"dark":"light";applyTheme();
-      });
-      document.getElementById("langBtn").addEventListener("click",()=>{
-        state.lang=state.lang==="uk"?"en":"uk";localStorage.setItem(LS.lang,state.lang);applyLang();
-      });
-      applyTheme();applyLang();
-
-      // AI input
-      document.getElementById("aiGo").addEventListener("click",()=>{
-        const txt=document.getElementById("aiInput").value;
-        const res=window.bb.util.conciergeSuggest(window.LISTINGS,null,txt);
-        const box=document.getElementById("aiPicks");
-        box.innerHTML="";
-        res.picks.forEach(p=>{
-          const l=window.LISTINGS.find(x=>x.id===p.id);
-          if(!l)return;
-          const card=document.createElement("div");
-          card.className="card fadeSlide";
-          card.innerHTML=`<div class='meta'><p class='name'>${l.name}</p><p class='addr'
-            >${l.address}</p><button class='miniBtn' onclick="openProfile('${l.id}')">
-            Перейти</button></div>`;
-          box.appendChild(card);
-        });
-      });
-      document.getElementById("floatQuick").addEventListener("click",()=>toast("Quick book coming soon ⚡"));
+    // 1. ПРИБИРАЄМО SPLASH (після завантаження)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('splash').style.opacity = '0';
+        setTimeout(() => document.getElementById('splash').remove(), 800);
+        renderProfessionalGrid();
+      }, 1500);
     });
 
-    function toast(msg){
-      const t=document.getElementById("toast");t.textContent=msg;
-      t.classList.add("on");clearTimeout(toast._t);
-      toast._t=setTimeout(()=>t.classList.remove("on"),1800);
+    // 2. HAPTIC FEEDBACK (Топ-фішка)
+    function haptic() {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(10);
+      }
     }
-    function openProfile(id){location.href=`./profile.html?id=${encodeURIComponent(id)}`;}
 
-    // Register Service‑worker
-    if("serviceWorker" in navigator){
-      navigator.serviceWorker.register("./worker.js").catch(()=>{});
+    // 3. ПРОФЕСІЙНИЙ РЕНДЕР (Staggered Animation)
+    function renderProfessionalGrid() {
+      const grid = document.getElementById('listingGrid');
+      const items = window.LISTINGS || [];
+      
+      grid.innerHTML = items.map((l, i) => `
+        <div class="salon-card" onclick="haptic(); openProBooking('${l.id}')">
+          <img src="${l.img}" class="card-img" loading="lazy">
+          <div class="card-body">
+            <div class="card-title">${l.name}</div>
+            <div class="card-meta">
+              <span>${l.address}</span>
+              <span style="color:#ffd27a">★ ${l.rating || '5.0'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Запускаємо анімацію появи по черзі
+      const cards = document.querySelectorAll('.salon-card');
+      cards.forEach((card, idx) => {
+        setTimeout(() => card.classList.add('reveal'), idx * 80);
+      });
     }
-  </script>
-  <!-- ==================== TIME PICKER ==================== -->
-  <div id="timeOverlay" class="overlay" aria-hidden="true">
-    <div class="miniSheet" role="dialog" aria-modal="true">
-      <div class="miniHead">
-        <h4>Choose time</h4>
-        <button class="x" onclick="document.getElementById('timeOverlay').classList.remove('on')">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="quickRow">
-          <button class="qchip">Today</button>
-          <button class="qchip">After 18</button>
-          <button class="qchip">Earliest</button>
-          <button class="qchip">Cheapest</button>
-        </div>
-        <div id="timeGrid" class="timeGrid">
-          <button class="timeBtn">10:00</button>
-          <button class="timeBtn on">12:00</button>
-          <button class="timeBtn">16:00</button>
-          <button class="timeBtn">18:30</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ==================== DATE PICKER ==================== -->
-  <div id="dateOverlay" class="overlay" aria-hidden="true">
-    <div class="miniSheet" role="dialog" aria-modal="true">
-      <div class="miniHead">
-        <h4>Choose date</h4>
-        <button class="x" onclick="document.getElementById('dateOverlay').classList.remove('on')">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="calTop">
-          <div class="calTitle">Березень 2024</div>
-          <div class="calNav">
-            <button class="calBtn">←</button>
-            <button class="calBtn">→</button>
+    // 4. ВІДКРИТТЯ БРОНЮВАННЯ (Bottom Sheet)
+    function openProBooking(id) {
+      const overlay = document.getElementById('sheetOverlay');
+      const sheet = document.getElementById('bookingSheet');
+      
+      overlay.classList.add('active');
+      sheet.classList.add('active');
+      
+      // Твоя логіка з індексу (вибір послуг) йде сюди
+      document.getElementById('bookingContent').innerHTML = `
+        <h2 style="font-family:'Playfair Display'">Виберіть послугу</h2>
+        <div style="padding-bottom:100px;">
           </div>
-        </div>
-        <div class="calGrid">
-          <!-- simplified calendar example -->
-          <div class="day off"> </div><div class="day off"> </div>
-          <div class="day">1</div><div class="day">2</div><div class="day has">3</div>
-          <div class="day has on">4</div><div class="day has">5</div>
-        </div>
-      </div>
-    </div>
-  </div>
+      `;
+    }
 
-  <!-- ==================== DRAFTS / SAVED ==================== -->
-  <div id="draftsOverlay" class="overlay" aria-hidden="true">
-    <div class="miniSheet" style="width:min(640px,100%)">
-      <div class="miniHead">
-        <h4>Saved drafts</h4>
-        <button class="x" onclick="document.getElementById('draftsOverlay').classList.remove('on')">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="draftItem"><b>Romanukova Nails</b><span class="smallLine">манікюр · 16 березня 10:00</span></div>
-        <div class="draftItem"><b>Maison Atelier</b><span class="smallLine">брови · 17 березня 13:00</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== SUCCESS MODAL ==================== -->
-  <div id="successOverlay" class="overlay" aria-hidden="true">
-    <div class="miniSheet" style="width:min(560px,100%)">
-      <div class="miniHead">
-        <h4>Booked ✅</h4>
-        <button class="x" onclick="document.getElementById('successOverlay').classList.remove('on')">✕</button>
-      </div>
-      <div class="miniBody">
-        <div class="empty">
-          <h3>Sent to Telegram ✅</h3>
-          <p>Додайте до календаря:</p>
-          <div class="row">
-            <button class="btn">📅 Add to Calendar</button>
-            <button class="btn secondary">Copy details</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== POLICIES MODAL ==================== -->
-  <div id="polModal" class="overlay" aria-hidden="true" style="align-items:center">
-    <div class="sheet" style="max-width:820px">
-      <div class="sheetHead">
-        <h3>Policies</h3>
-        <button class="x" onclick="document.getElementById('polModal').classList.remove('on')">✕</button>
-      </div>
-      <div class="sheetBody" style="line-height:1.6;font-size:14px;color:var(--text)">
-        <p><b>Без прихованих оплат:</b> ціни та тривалість підтверджуються в Telegram.</p>
-        <p><b>Перенесення/скасування:</b> через повідомлення у Telegram проф‑форматі.</p>
-        <p><b>Антиспам:</b> можливий депозит для захисту від no‑show.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== Final Mini styles ==================== -->
-  <style>
-    .miniSheet{border-radius:22px;border:1px solid var(--stroke2);background:var(--bg2);box-shadow:var(--shadow);}
-    .miniHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border-bottom:1px solid var(--stroke);}
-    .miniBody{padding:12px}
-    .timeGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .timeBtn{border:1px solid var(--stroke2);border-radius:16px;background:var(--card);
-      color:var(--text);padding:10px;font-weight:700;cursor:pointer;transition:transform .18s;}
-    .timeBtn.on{background:rgba(255,210,122,.12);border-color:rgba(255,210,122,.3);}
-    .qchip{border:1px solid var(--stroke);background:var(--card);
-      border-radius:999px;padding:8px 10px;font-size:12px;cursor:pointer}
-    .day{border:1px solid var(--stroke);border-radius:14px;text-align:center;padding:8px 0;cursor:pointer}
-    .day.on{border-color:rgba(255,210,122,.34);background:rgba(255,210,122,.12);color:var(--gold)}
-    .draftItem{border:1px solid var(--stroke);background:var(--card);border-radius:14px;padding:10px;margin-bottom:8px}
-  </style>
-
-  <!-- ==================== End / Init ==================== -->
-  <script>
-    // simple boot message
-    document.addEventListener("DOMContentLoaded",()=>{
-      console.log("%cBeauty Booking ✓","color:#ff4fd8;font-weight:bold;font-size:14px");
-    });
+    // Закриття по кліку на фон
+    document.getElementById('sheetOverlay').onclick = () => {
+      document.getElementById('sheetOverlay').classList.remove('active');
+      document.getElementById('bookingSheet').classList.remove('active');
+    }
   </script>
 </body>
 </html>
