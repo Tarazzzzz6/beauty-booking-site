@@ -3,192 +3,174 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Beauty Booking Pro</title>
-
+  
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap">
 
   <style>
     :root {
-      --bg: #07070b; --bg2: #0b0b11;
-      --accent: #ff4fd8; --accent-glow: rgba(255, 79, 216, 0.3);
-      --text: #f4f3f8; --muted: rgba(244, 243, 248, 0.6);
-      --stroke: rgba(255, 255, 255, 0.08);
-      --r: 22px; --r-lg: 32px;
+      --bg: #07070b; --bg2: #0d0d14;
+      --accent: #ff4fd8; --stroke: rgba(255, 255, 255, 0.08);
+      --text: #f4f3f8; --muted: rgba(244, 243, 248, 0.5);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { 
       margin: 0; background: var(--bg); color: var(--text); 
-      font-family: 'Inter', sans-serif; padding-bottom: 100px;
+      font-family: 'Inter', sans-serif; overflow-x: hidden;
     }
 
-    /* HEADER & SEARCH (З першого скріна) */
-    .top-section {
-      background: var(--bg2);
-      padding: calc(env(safe-area-inset-top) + 15px) 20px 20px;
-      border-bottom: 1px solid var(--stroke);
+    /* 1. DYNAMIC HERO SLIDER (Той самий "свап") */
+    .hero-wrapper {
+      margin: 15px; height: 240px; position: relative;
+      border-radius: 28px; overflow: hidden;
+      border: 1px solid var(--stroke);
     }
-    .search-wrapper {
-      position: relative; margin-top: 15px;
+    .hero-slide {
+      position: absolute; inset: 0; opacity: 0;
+      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s;
+      transform: scale(1.1); background-size: cover; background-position: center;
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
     }
-    .search-input {
-      width: 100%; background: #16161d; border: 1px solid var(--stroke);
-      padding: 14px 15px 14px 45px; border-radius: 16px; color: #fff; font-size: 15px;
-    }
-    .search-icon { position: absolute; left: 15px; top: 14px; opacity: 0.4; }
-
-    /* КАТЕГОРІЇ (Horizontal Scroll) */
-    .cat-scroll {
-      display: flex; gap: 10px; overflow-x: auto; padding: 15px 20px;
-      scrollbar-width: none;
-    }
-    .cat-scroll::-webkit-scrollbar { display: none; }
-    .cat-pill {
-      padding: 10px 18px; background: #16161d; border: 1px solid var(--stroke);
-      border-radius: 14px; font-size: 13px; white-space: nowrap; transition: 0.3s;
-    }
-    .cat-pill.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
-
-    /* КАРТКИ (Твій стиль із першого скріна) */
-    .main-feed { padding: 0 15px; }
-    .item-card {
-      background: var(--bg2); border-radius: var(--r); border: 1px solid var(--stroke);
-      margin-bottom: 20px; overflow: hidden; position: relative;
-      animation: fadeInUp 0.6s both;
-    }
-    .img-box { position: relative; width: 100%; height: 220px; }
-    .img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-slide.active { opacity: 1; transform: scale(1); z-index: 2; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,7,11,0.9), transparent); }
     
-    .status-tag {
-      position: absolute; top: 12px; right: 12px;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-      padding: 5px 12px; border-radius: 10px; font-size: 11px; font-weight: 600;
+    .hero-content { position: relative; z-index: 3; }
+    .hero-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 5px; }
+    .hero-title { font-family: 'Playfair Display'; font-size: 26px; margin: 0; line-height: 1.2; }
+
+    /* 2. CATEGORIES (Horizontal Scroll) */
+    .pills { display: flex; gap: 10px; overflow-x: auto; padding: 15px 20px; scrollbar-width: none; }
+    .pills::-webkit-scrollbar { display: none; }
+    .pill { 
+      padding: 10px 20px; background: var(--bg2); border: 1px solid var(--stroke); 
+      border-radius: 40px; font-size: 13px; white-space: nowrap; transition: 0.3s;
+    }
+    .pill.active { background: var(--accent); color: #000; font-weight: 600; border-color: var(--accent); }
+
+    /* 3. FEED CARDS (Як на першому скріні) */
+    .feed { padding: 0 15px 120px; }
+    .salon-card {
+      background: var(--bg2); border-radius: 24px; margin-bottom: 20px;
+      overflow: hidden; border: 1px solid var(--stroke);
+      animation: slideUp 0.6s ease forwards;
+    }
+    .card-thumb { position: relative; height: 180px; width: 100%; }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .card-rating {
+      position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;
     }
 
-    .content-box { padding: 18px; }
-    .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .title-row h3 { margin: 0; font-family: 'Playfair Display'; font-size: 20px; }
+    .card-info { padding: 18px; }
+    .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+    .card-header h3 { margin: 0; font-family: 'Playfair Display'; font-size: 20px; }
     
-    /* СЕКЦІЯ ПОСЛУГ (Те, що було на першому скріні) */
-    .services-mini {
-      display: flex; flex-direction: column; gap: 8px;
-      border-top: 1px solid var(--stroke); padding-top: 15px; margin-top: 15px;
-    }
-    .svc-row {
-      display: flex; justify-content: space-between; font-size: 13px;
-    }
-    .svc-row .name { color: var(--muted); }
-    .svc-row .price { font-weight: 600; color: var(--accent); }
+    .mini-services { border-top: 1px solid var(--stroke); padding-top: 12px; }
+    .svc-item { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+    .svc-item .price { color: var(--accent); font-weight: 600; }
 
-    /* КНОПКА ЗАПИСУ */
-    .book-btn {
-      width: 100%; background: var(--accent); color: #000; border: none;
-      padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px;
-      margin-top: 15px; transition: 0.2s;
+    .quick-book {
+      width: 100%; background: #fff; color: #000; border: none; padding: 14px;
+      border-radius: 16px; font-weight: 700; font-size: 14px; margin-top: 15px;
     }
-    .book-btn:active { transform: scale(0.97); }
 
-    /* БОТТОМ МЕНЮ */
-    .tab-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(11,11,15,0.9); backdrop-filter: blur(20px);
-      padding: 12px 20px calc(15px + env(safe-area-inset-bottom));
-      display: flex; justify-content: space-around; border-top: 1px solid var(--stroke);
-    }
-    .tab-item { text-align: center; color: var(--muted); font-size: 10px; text-decoration: none; }
-    .tab-item.active { color: var(--accent); }
-    .tab-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* NAVIGATION */
+    .nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: rgba(7,7,11,0.9);
+      backdrop-filter: blur(20px); border-top: 1px solid var(--stroke);
+      display: flex; justify-content: space-around; padding: 12px 10px calc(15px + env(safe-area-inset-bottom));
+      z-index: 100;
     }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .nav-link.active { color: var(--accent); }
   </style>
 </head>
 <body>
 
-  <section class="top-section">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-family:'Playfair Display'; font-size:22px; font-weight:700;">BeautyFlow</span>
-      <div id="locBtn" style="font-size:12px; background:var(--stroke); padding:6px 12px; border-radius:20px;">
-        📍 Київ
-      </div>
+  <div class="hero-wrapper" id="heroHost">
     </div>
-    
-    <div class="search-wrapper">
-      <span class="search-icon">🔍</span>
-      <input type="text" class="search-input" id="mainSearch" placeholder="Манікюр, брови, салони..." oninput="handleSearch()">
-    </div>
-  </section>
 
-  <nav class="cat-scroll" id="catList">
-    <div class="cat-pill active">Усі</div>
-    <div class="cat-pill">💅 Манікюр</div>
-    <div class="cat-pill">✨ Брови</div>
-    <div class="cat-pill">💇‍♀️ Волосся</div>
-    <div class="cat-pill">💄 Мейкап</div>
-  </nav>
+  <div class="pills">
+    <div class="pill active">Усі</div>
+    <div class="pill">💅 Манікюр</div>
+    <div class="pill">✨ Брови</div>
+    <div class="pill">✂️ Стрижки</div>
+  </div>
 
-  <main class="main-feed" id="listingGrid">
+  <main class="feed" id="listingGrid">
     </main>
 
-  <nav class="tab-bar">
-    <a href="#" class="tab-item active"><i>🏠</i>Головна</a>
-    <a href="#" class="tab-item"><i>🔍</i>Пошук</a>
-    <a href="#" class="tab-item"><i>📅</i>Записи</a>
-    <a href="./profile.html" class="tab-item"><i>👤</i>Профіль</a>
+  <nav class="nav">
+    <a href="#" class="nav-link active"><i>🏠</i><span>Головна</span></a>
+    <a href="#" class="nav-link"><i>📅</i><span>Записи</span></a>
+    <a href="./profile.html" class="nav-link"><i>👤</i><span>Профіль</span></a>
   </nav>
 
   <script src="./data.js"></script>
   <script>
-    // Повертаємо твою логіку рендеру, але з новими стилями
-    function renderMainFeed(items = window.LISTINGS) {
-      const grid = document.getElementById('listingGrid');
-      grid.innerHTML = items.map((l, idx) => `
-        <div class="item-card" style="animation-delay: ${idx * 0.1}s">
-          <div class="img-box" onclick="location.href='./profile.html?id=${l.id}'">
-            <img src="${l.img || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800'}" loading="lazy">
-            <div class="status-tag">★ ${l.rating || '5.0'}</div>
+    // 1. АВТОМАТИЧНА РОТАЦІЯ (Swap Logic)
+    let currentHeroIndex = 0;
+    function initHeroRotation() {
+      const host = document.getElementById('heroHost');
+      const tops = window.LISTINGS.slice(0, 5); // Беремо перші 5 для свапу
+
+      host.innerHTML = tops.map((l, i) => `
+        <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${l.img}')">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <div class="hero-label">Рекомендовано</div>
+            <h2 class="hero-title">${l.name}</h2>
+            <div style="font-size:12px; opacity:0.7; margin-top:5px;">${l.address}</div>
           </div>
-          
-          <div class="content-box">
-            <div class="title-row">
+        </div>
+      `).join('');
+
+      setInterval(() => {
+        const slides = document.querySelectorAll('.hero-slide');
+        slides[currentHeroIndex].classList.remove('active');
+        currentHeroIndex = (currentHeroIndex + 1) % slides.length;
+        slides[currentHeroIndex].classList.add('active');
+      }, 4000); // 4 секунди на свап
+    }
+
+    // 2. РЕНДЕР КАРТОК (Твій стиль)
+    function renderFeed() {
+      const grid = document.getElementById('listingGrid');
+      grid.innerHTML = window.LISTINGS.map(l => `
+        <div class="salon-card">
+          <div class="card-thumb" onclick="location.href='./profile.html?id=${l.id}'">
+            <img src="${l.img}" loading="lazy">
+            <div class="card-rating">★ ${l.rating || '5.0'}</div>
+          </div>
+          <div class="card-info">
+            <div class="card-header">
               <h3>${l.name}</h3>
               <div style="font-size:12px; color:var(--muted)">${l.address}</div>
             </div>
             
-            <div class="services-mini">
+            <div class="mini-services">
               ${(l.services || []).slice(0, 2).map(s => `
-                <div class="svc-row">
-                  <span class="name">${s.ua || s.name}</span>
+                <div class="svc-item">
+                  <span>${s.ua || s.name}</span>
                   <span class="price">${s.price} ₴</span>
                 </div>
               `).join('')}
             </div>
 
-            <button class="book-btn" onclick="openBookingFlow('${l.id}')">ШВИДКИЙ ЗАПИС</button>
+            <button class="quick-book" onclick="location.href='./profile.html?id=${l.id}&book=1'">
+              ЗАПИСАТИСЬ
+            </button>
           </div>
         </div>
       `).join('');
     }
 
-    function handleSearch() {
-      const q = document.getElementById('mainSearch').value.toLowerCase();
-      const filtered = window.LISTINGS.filter(l => 
-        l.name.toLowerCase().includes(q) || l.address.toLowerCase().includes(q)
-      );
-      renderMainFeed(filtered);
-    }
-
-    function openBookingFlow(id) {
-      if(navigator.vibrate) navigator.vibrate(15);
-      location.href = `./profile.html?id=${id}&autoBook=true`;
-    }
-
     window.onload = () => {
-      renderMainFeed();
+      initHeroRotation();
+      renderFeed();
     };
   </script>
 </body>
