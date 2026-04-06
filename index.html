@@ -1,260 +1,294 @@
 <!doctype html>
 <html lang="uk">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>BookingClub Montreal</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
-    <style>
-        :root {
-            --bg: #000000; --bg-sec: #0a0a0f; --bg-card: #121217;
-            --accent: #ff4fd8; --text: #f4f3f8; --muted: rgba(244,243,248,0.5);
-            --stroke: rgba(255,255,255,0.08); --r: 14px;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        body { margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; font-size: 14px; }
-        
-        /* HEADER - COMPACT */
-        header { 
-            position: sticky; top: 0; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
-            padding: calc(env(safe-area-inset-top) + 8px) 15px 8px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--stroke);
-        }
-        .logo { font-family: 'Playfair Display'; font-size: 18px; font-weight: 700; background: linear-gradient(to right, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* SEARCH & CATS */
-        .search-container { padding: 10px 15px; }
-        .search-box { background: var(--bg-sec); border: 1px solid var(--stroke); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
-        .search-box input { background: none; border: none; color: #fff; width: 100%; font-size: 13px; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BookingClub Montreal</title>
 
-        .cats { display: flex; gap: 8px; overflow-x: auto; padding: 5px 15px 15px; scrollbar-width: none; }
-        .cats::-webkit-scrollbar { display: none; }
-        .cat { padding: 7px 14px; background: var(--bg-sec); border: 1px solid var(--stroke); border-radius: 20px; font-size: 12px; white-space: nowrap; transition: 0.2s; }
-        .cat.active { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-        /* FEED - COMPACT CARDS */
-        .feed { padding: 0 15px 120px; display: grid; gap: 15px; }
-        .card { background: var(--bg-sec); border-radius: var(--r); overflow: hidden; border: 1px solid var(--stroke); transition: 0.3s; }
-        .card-img { height: 160px; position: relative; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; }
-        .card-body { padding: 12px; }
-        .card-title { font-size: 16px; font-weight: 700; margin: 0; display: flex; justify-content: space-between; align-items: center; }
-        .card-addr { font-size: 11px; color: var(--muted); margin: 4px 0 10px; display: flex; align-items: center; gap: 4px; }
-        
-        /* MAP LINK */
-        .map-link { color: #5dade2; text-decoration: none; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; }
+  <style>
+    :root {
+      --bg: #07070a; --bg-sec: #111116; --bg-card: #18181f;
+      --accent: #ff4fd8; --text: #f4f3f8; --muted: rgba(244,243,248,0.5);
+      --stroke: rgba(255,255,255,0.08); --r: 14px;
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+    }
 
-        /* REVIEWS PREVIEW */
-        .reviews-box { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 8px; margin-top: 10px; }
-        .review-item { font-size: 11px; font-style: italic; color: var(--muted); margin-bottom: 4px; }
-        .review-item b { color: var(--accent); font-style: normal; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { 
+      margin: 0; background: var(--bg); color: var(--text); 
+      font-family: 'Inter', sans-serif; overflow-x: hidden; font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        /* BOOKING PANEL */
-        .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: none; opacity: 0; transition: 0.3s; }
-        .sheet { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: #0e0e12; 
-            border-radius: 20px 20px 0 0; z-index: 2001; padding: 20px; 
-            transform: translateY(100%); transition: 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
-            max-height: 90vh; overflow-y: auto;
-        }
-        .sheet.active { transform: translateY(0); }
-        .sheet-overlay.active { display: block; opacity: 1; }
+    /* Анімації появи */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
-        .time-btn { padding: 8px; background: var(--bg-sec); border: 1px solid var(--stroke); border-radius: 8px; color: #fff; font-size: 12px; text-align: center; }
-        .time-btn.active { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
-        .time-btn.busy { opacity: 0.2; pointer-events: none; text-decoration: line-through; }
+    /* HEADER - Компактний */
+    header {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(7, 7, 10, 0.85); backdrop-filter: blur(15px);
+      padding: calc(var(--safe-top) + 10px) 15px 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .brand { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .loc-tag { 
+      font-size: 10px; background: var(--bg-sec); border: 1px solid var(--stroke);
+      padding: 4px 10px; border-radius: 20px; font-weight: 700;
+    }
 
-        .btn-confirm { width: 100%; padding: 14px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 800; margin-top: 20px; font-size: 14px; }
+    /* КАТЕГОРІЇ - Маленькі */
+    .cats { display: flex; gap: 8px; overflow-x: auto; padding: 12px 15px; scrollbar-width: none; }
+    .cats::-webkit-scrollbar { display: none; }
+    .cat { 
+      padding: 6px 14px; background: var(--bg-sec); border: 1px solid var(--stroke);
+      border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cat.active { background: var(--accent); color: #000; border-color: var(--accent); transform: scale(1.05); }
 
-        /* NAV */
-        nav.bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--stroke); z-index: 1000; }
-        .nav-item { color: var(--muted); text-decoration: none; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 18px; font-style: normal; }
-    </style>
+    /* ФІД КАРТОК */
+    .feed { padding: 0 15px 120px; display: grid; gap: 15px; }
+    .card { 
+      background: var(--bg-sec); border-radius: var(--r); border: 1px solid var(--stroke);
+      overflow: hidden; animation: fadeInUp 0.5s ease backwards; transition: transform 0.2s;
+    }
+    .card:active { transform: scale(0.98); }
+    
+    .card-img { height: 160px; position: relative; }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+    .rating-badge {
+      position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px); padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 800;
+    }
+
+    .card-body { padding: 12px; }
+    .card-h { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .card-title { font-size: 16px; font-weight: 700; margin: 0; }
+    .card-price { color: var(--accent); font-weight: 800; }
+    
+    .card-addr { font-size: 11px; color: var(--muted); margin: 4px 0 10px; display: flex; align-items: center; gap: 4px; }
+    .map-btn { color: #5dade2; text-decoration: none; font-weight: 700; font-size: 10px; text-transform: uppercase; }
+
+    /* ВІДГУКИ - Компактні */
+    .reviews-mini { 
+      background: rgba(255,255,255,0.03); border-radius: 8px; padding: 8px; 
+      margin-bottom: 12px; border-left: 2px solid var(--accent);
+    }
+    .rev-text { font-size: 10px; font-style: italic; color: #ccc; line-height: 1.3; }
+
+    .btn-main {
+      width: 100%; padding: 12px; background: #fff; color: #000; border: none;
+      border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer;
+    }
+
+    /* ПАНЕЛЬ БРОНЮВАННЯ (Sheet) */
+    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; opacity: 0; transition: 0.3s; }
+    .sheet { 
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card);
+      border-radius: 20px 20px 0 0; z-index: 2001; padding: 15px 15px calc(15px + var(--safe-bottom));
+      transform: translateY(100%); transition: 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+    .sheet.active { transform: translateY(0); }
+    .sheet-overlay.active { display: block; opacity: 1; }
+
+    .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+    .time-item { 
+      padding: 8px; background: var(--bg-sec); border: 1px solid var(--stroke);
+      border-radius: 8px; text-align: center; font-size: 11px; 
+    }
+    .time-item.active { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
+    .time-item.busy { opacity: 0.2; pointer-events: none; text-decoration: line-through; }
+
+    /* NAV */
+    nav {
+      position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(20px); border-top: 1px solid var(--stroke);
+      display: flex; justify-content: space-around; padding: 8px 0 calc(8px + var(--safe-bottom));
+      z-index: 1000;
+    }
+    .nav-link { color: var(--muted); text-decoration: none; font-size: 9px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
+    .nav-link.active { color: var(--accent); }
+    .nav-link i { font-size: 18px; font-style: normal; }
+
+  </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">BookingClub</div>
-        <div style="font-size: 10px; font-weight: 700; background: var(--bg-sec); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--stroke);">
-            🇨🇦 MONTREAL
+<header>
+  <div class="brand">BookingClub</div>
+  <div class="loc-tag">🇨🇦 MONTREAL</div>
+</header>
+
+<div class="cats" id="catBar">
+  <div class="cat active" data-id="all">✨ ВСІ</div>
+  <div class="cat" data-id="manicure">💅 МАНІКЮР</div>
+  <div class="cat" data-id="brows">✨ БРОВИ</div>
+  <div class="cat" data-id="mens_haircut">✂️ БАРБЕР</div>
+</div>
+
+<main class="feed" id="mainFeed"></main>
+
+<nav>
+  <a href="#" class="nav-link active"><i>🏠</i><b>Головна</b></a>
+  <a href="#" class="nav-link"><i>📅</i><b>Записи</b></a>
+  <a href="./profile.html" class="nav-link"><i>👤</i><b>Профіль</b></a>
+</nav>
+
+<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div style="width: 35px; height: 4px; background: var(--stroke); border-radius: 10px; margin: 0 auto 15px;"></div>
+  <h3 id="sh-name" style="margin:0; font-size: 17px;"></h3>
+  <p id="sh-addr" style="font-size: 11px; color: var(--muted); margin: 4px 0 15px;"></p>
+
+  <div style="font-size: 10px; font-weight: 800; opacity: 0.5; text-transform: uppercase;">1. Оберіть день</div>
+  <div id="day-picker" style="display:flex; gap:8px; overflow-x:auto; padding:10px 0; scrollbar-width:none;"></div>
+
+  <div style="font-size: 10px; font-weight: 800; opacity: 0.5; text-transform: uppercase; margin-top: 10px;">2. Вільний час</div>
+  <div class="time-grid" id="time-picker"></div>
+
+  <button class="btn-main" id="btnConfirm" onclick="confirmOrder()" style="background:var(--accent); margin-top:20px;">ПІДТВЕРДИТИ ЗАПИС</button>
+</div>
+
+<script src="./data.js"></script>
+<script>
+  const DUMMY_REVIEWS = [
+    "Найкращий манікюр у Монреалі! Дуже задоволена. 😍",
+    "Професійно, швидко та дуже затишно. Рекомендую!",
+    "Барбер знає свою справу. Тепер тільки сюди. ✂️",
+    "Чудове обслуговування, приємні ціни."
+  ];
+
+  let currentSalon = null, selectedDate = null, selectedTime = null;
+
+  function renderFeed(filter = 'all') {
+    const feed = document.getElementById('mainFeed');
+    let data = window.LISTINGS || [];
+    if(filter !== 'all') data = data.filter(l => l.services.some(s => s.serviceId === filter));
+
+    feed.innerHTML = data.map((l, index) => `
+      <div class="card" style="animation-delay: ${index * 0.1}s">
+        <div class="card-img" onclick="location.href='./profile.html?id=${l.id}'">
+          <img src="${l.img || 'https://via.placeholder.com/400x200'}" loading="lazy">
+          <div class="rating-badge">⭐ ${l.rating}</div>
         </div>
-    </header>
+        <div class="card-body">
+          <div class="card-h">
+            <h3 class="card-title">${l.name}</h3>
+            <span class="card-price">$${l.services[0].price}+</span>
+          </div>
+          <div class="card-addr">
+            📍 ${l.address} • 
+            <a href="https://www.google.com/maps/search/${encodeURIComponent(l.address + ' Montreal')}" target="_blank" class="map-btn">Мапа</a>
+          </div>
+          
+          <div class="reviews-mini">
+            <div class="rev-text">"${DUMMY_REVIEWS[Math.floor(Math.random()*DUMMY_REVIEWS.length)]}"</div>
+          </div>
 
-    <div class="search-container">
-        <div class="search-box">
-            <span>🔍</span>
-            <input type="text" id="searchInput" placeholder="Search salon or service...">
+          <button class="btn-main" onclick="openSheet('${l.id}')">ЗАБРОНЮВАТИ</button>
         </div>
-    </div>
+      </div>
+    `).join('');
+  }
 
-    <div class="cats" id="catBar">
-        <div class="cat active" data-id="all">✨ All</div>
-        <div class="cat" data-id="manicure">💅 Nails</div>
-        <div class="cat" data-id="brows">✨ Brows</div>
-        <div class="cat" data-id="mens_haircut">✂️ Barber</div>
-    </div>
+  function openSheet(id) {
+    currentSalon = window.LISTINGS.find(l => l.id === id);
+    document.getElementById('sh-name').innerText = currentSalon.name;
+    document.getElementById('sh-addr').innerText = currentSalon.address;
 
-    <main class="feed" id="mainFeed"></main>
+    const dp = document.getElementById('day-picker');
+    dp.innerHTML = '';
+    for(let i=0; i<7; i++) {
+      const d = new Date(); d.setDate(d.getDate() + i);
+      const iso = d.toISOString().split('T')[0];
+      if(i===0) selectedDate = iso;
+      dp.innerHTML += `
+        <div onclick="setDay(this, '${iso}')" style="min-width:55px; padding:10px; background:var(--bg-sec); border:1px solid ${i===0?'var(--accent)':'var(--stroke)'}; border-radius:12px; text-align:center;">
+          <div style="font-size:9px; opacity:0.5;">${d.toLocaleDateString('uk',{weekday:'short'})}</div>
+          <b style="font-size:14px;">${d.getDate()}</b>
+        </div>
+      `;
+    }
+    renderSlots();
+    document.getElementById('sheet').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+  }
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><i>🏠</i><b>Home</b></a>
-        <a href="#" class="nav-item"><i>📅</i><b>My Bookings</b></a>
-        <a href="./profile.html" class="nav-item"><i>👤</i><b>Profile</b></a>
-    </nav>
+  function renderSlots() {
+    const tp = document.getElementById('time-picker');
+    const slots = ["09:00", "11:00", "13:30", "15:00", "16:30", "18:00", "19:30"];
+    tp.innerHTML = slots.map(s => {
+      const busy = Math.random() < 0.2;
+      return `<div class="time-item ${busy?'busy':''}" onclick="setTime(this, '${s}')">${s}</div>`;
+    }).join('');
+  }
 
-    <div class="sheet-overlay" id="overlay" onclick="closeBooking()"></div>
-    <div class="sheet" id="sheet">
-        <div style="width: 30px; height: 3px; background: var(--stroke); border-radius: 10px; margin: -5px auto 15px;"></div>
-        <h2 id="sh-name" style="margin: 0; font-size: 18px;"></h2>
-        <p id="sh-addr" style="font-size: 11px; color: var(--muted); margin: 4px 0 15px;"></p>
+  function setDay(el, d) {
+    document.querySelectorAll('#day-picker > div').forEach(i => i.style.borderColor = 'var(--stroke)');
+    el.style.borderColor = 'var(--accent)';
+    selectedDate = d;
+    renderSlots();
+  }
 
-        <div style="font-size: 11px; font-weight: 700; opacity: 0.5; text-transform: uppercase;">1. Choose Date</div>
-        <div id="day-picker" style="display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none;"></div>
+  function setTime(el, t) {
+    document.querySelectorAll('.time-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    selectedTime = t;
+  }
 
-        <div style="font-size: 11px; font-weight: 700; opacity: 0.5; text-transform: uppercase; margin-top: 10px;">2. Available Slots</div>
-        <div class="time-grid" id="time-picker"></div>
+  function closeSheet() {
+    document.getElementById('sheet').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+  }
 
-        <button class="btn-confirm" id="btnConfirm" onclick="confirmBooking()">CONFIRM & SEND TO TG</button>
-    </div>
+  async function confirmOrder() {
+    if(!selectedTime) return alert("Оберіть час!");
+    const btn = document.getElementById('btnConfirm');
+    btn.innerText = "ВІДПРАВЛЯЄМО...";
+    btn.disabled = true;
 
-    <script src="./data.js"></script>
-    <script>
-        const REVIEWS = [
-            "Best manicure in Montreal! 💅",
-            "Very professional staff, highly recommend. ⭐",
-            "Perfect fade, definitely coming back! ✂️",
-            "Great atmosphere and prices. ✨"
-        ];
+    const msg = {
+      salon: currentSalon.name,
+      date: selectedDate,
+      time: selectedTime,
+      service: currentSalon.services[0].ua,
+      client: "Клієнт Монреаль"
+    };
 
-        let selSalon = null;
-        let selDate = null;
-        let selTime = null;
+    try {
+      await fetch(window.WORKER_URL, { method: 'POST', body: JSON.stringify(msg) });
+      alert("Запис успішно надіслано в Telegram!");
+      closeSheet();
+    } catch(e) {
+      alert("Помилка з'єднання. Перевірте WORKER_URL.");
+    } finally {
+      btn.innerText = "ПІДТВЕРДИТИ ЗАПИС";
+      btn.disabled = false;
+    }
+  }
 
-        function renderFeed(filter = 'all') {
-            const feed = document.getElementById('mainFeed');
-            let list = window.LISTINGS;
-            if(filter !== 'all') list = list.filter(l => l.services.some(s => s.serviceId === filter));
+  // Категорії
+  document.getElementById('catBar').addEventListener('click', (e) => {
+    if(!e.target.classList.contains('cat')) return;
+    document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    renderFeed(e.target.dataset.id);
+  });
 
-            feed.innerHTML = list.map(l => `
-                <div class="card">
-                    <div class="card-img" onclick="location.href='./profile.html?id=${l.id}'">
-                        <img src="${l.img || 'https://via.placeholder.com/400x200'}">
-                        <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:800;">⭐ ${l.rating}</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title">
-                            ${l.name}
-                            <span style="font-size:13px; color:var(--accent);">$${l.services[0].price}+</span>
-                        </div>
-                        <div class="card-addr">
-                            📍 ${l.address} 
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.address + ' Montreal')}" target="_blank" class="map-link">View Map</a>
-                        </div>
-                        
-                        <div class="reviews-box">
-                            <div class="review-item">"<b>${REVIEWS[Math.floor(Math.random()*REVIEWS.length)]}</b>"</div>
-                        </div>
+  window.onload = () => renderFeed();
+</script>
 
-                        <button onclick="openBooking('${l.id}')" style="width:100%; margin-top:12px; padding:10px; border-radius:10px; border:1px solid var(--accent); background:none; color:var(--accent); font-weight:700; font-size:12px;">
-                            BOOK APPOINTMENT
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openBooking(id) {
-            selSalon = window.LISTINGS.find(l => l.id === id);
-            document.getElementById('sh-name').innerText = selSalon.name;
-            document.getElementById('sh-addr').innerText = selSalon.address;
-
-            // Render Days
-            const dp = document.getElementById('day-picker');
-            dp.innerHTML = '';
-            for(let i=0; i<7; i++) {
-                const d = new Date(); d.setDate(d.getDate() + i);
-                const iso = d.toISOString().split('T')[0];
-                if(i===0) selDate = iso;
-                dp.innerHTML += `
-                    <div onclick="selectDay(this, '${iso}')" style="min-width:50px; padding:8px; background:var(--bg-sec); border:1px solid var(--stroke); border-radius:10px; text-align:center; ${i===0?'border-color:var(--accent);':''}">
-                        <div style="font-size:9px; opacity:0.5;">${d.toLocaleDateString('en',{weekday:'short'})}</div>
-                        <b style="font-size:14px;">${d.getDate()}</b>
-                    </div>
-                `;
-            }
-
-            renderSlots();
-            document.getElementById('sheet').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        }
-
-        function renderSlots() {
-            const tp = document.getElementById('time-picker');
-            const slots = ["09:00", "10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00"];
-            tp.innerHTML = slots.map(s => {
-                const isBusy = Math.random() < 0.3;
-                return `<div class="time-btn ${isBusy?'busy':''}" onclick="selectTime(this, '${s}')">${s}</div>`;
-            }).join('');
-        }
-
-        function selectDay(el, d) {
-            document.querySelectorAll('#day-picker div').forEach(i => i.style.borderColor = 'var(--stroke)');
-            el.style.borderColor = 'var(--accent)';
-            selDate = d;
-            renderSlots();
-        }
-
-        function selectTime(el, t) {
-            document.querySelectorAll('.time-btn').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            selTime = t;
-        }
-
-        function closeBooking() {
-            document.getElementById('sheet').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        async function confirmBooking() {
-            if(!selTime) return alert("Please select time!");
-            const btn = document.getElementById('btnConfirm');
-            btn.innerText = "SENDING...";
-            btn.disabled = true;
-
-            const msg = {
-                salon: selSalon.name,
-                service: selSalon.services[0].ua,
-                date: selDate,
-                time: selTime,
-                client: "Montreal Guest"
-            };
-
-            try {
-                await fetch(window.WORKER_URL, { method: 'POST', body: JSON.stringify(msg) });
-                alert("Booking Sent! Check Telegram.");
-                closeBooking();
-            } catch(e) {
-                alert("Worker Error. Check window.WORKER_URL");
-            } finally {
-                btn.innerText = "CONFIRM & SEND TO TG";
-                btn.disabled = false;
-            }
-        }
-
-        // Cat Logic
-        document.getElementById('catBar').addEventListener('click', (e) => {
-            if(!e.target.classList.contains('cat')) return;
-            document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-            e.target.classList.add('active');
-            renderFeed(e.target.dataset.id);
-        });
-
-        window.onload = () => renderFeed();
-    </script>
 </body>
 </html>
