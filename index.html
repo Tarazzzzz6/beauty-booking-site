@@ -3,161 +3,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Beauty Booking Pro</title>
-  
+
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap">
 
   <style>
     :root {
-      /* Колірна палітра "Luxury Dark" */
-      --bg: #07070b;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --accent: #ff4fd8;
-      --accent-glow: rgba(255, 79, 216, 0.3);
-      --glass: rgba(11, 11, 15, 0.85);
-      --stroke: rgba(255, 255, 255, 0.08);
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
+      --bg: #07070b; --bg-card: rgba(255,255,255,0.04);
+      --accent: #ff4fd8; --accent-glow: rgba(255,79,216,0.3);
+      --text: #f4f3f8; --stroke: rgba(255,255,255,0.08);
+      --glass: rgba(11,11,15,0.85);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-    
-    body {
-      margin: 0; background: var(--bg); color: #fff;
+    /* 1. SKELETON ANIMATION */
+    @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }
+    .skeleton { background: var(--bg-card); animation: shimmer 1.5s infinite; border-radius: 18px; }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { 
+      margin: 0; background: var(--bg); color: var(--text); 
       font-family: 'Inter', sans-serif; overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
+      transition: background 0.5s ease; /* Пункт 19: Плавна тема */
     }
 
-    /* 1. ПРЕМІАЛЬНИЙ SPLASH SCREEN */
-    #splash {
-      position: fixed; inset: 0; background: #000; z-index: 9999;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    /* 2. DYNAMIC GLASS HEADER (Пункт 6) */
+    .header {
+      position: sticky; top: 0; z-index: 1000; padding: calc(env(safe-area-inset-top) + 15px) 20px 15px;
+      background: transparent; transition: 0.3s;
     }
-    .splash-logo {
-      font-family: 'Playfair Display'; font-size: 32px; font-weight: 700;
-      background: linear-gradient(to bottom, #fff, var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: logo-glow 2s ease-in-out infinite alternate;
-    }
-    @keyframes logo-glow { from { opacity: 0.5; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    .header.scrolled { background: var(--glass); backdrop-filter: blur(25px); border-bottom: 1px solid var(--stroke); }
 
-    /* 2. ГОЛОВНИЙ HEADER (Fresha Style) */
-    .top-header {
-      position: sticky; top: 0; z-index: 1000;
-      padding: calc(var(--safe-top) + 15px) 20px 15px;
-      background: var(--glass); backdrop-filter: blur(25px);
-      border-bottom: 1px solid var(--stroke);
-      display: flex; justify-content: space-between; align-items: center;
+    /* 3. HERO SLIDER (Пункт 8) */
+    .hero {
+      margin: 10px 20px 25px; height: 180px; border-radius: 28px;
+      overflow: hidden; position: relative; border: 1px solid var(--stroke);
     }
+    .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
 
-    /* 3. HERO СЕКЦІЯ (Твоя анімована ротація) */
-    .hero-container {
-      margin: 20px; border-radius: 28px; height: 180px;
-      position: relative; overflow: hidden;
-      background: #111; border: 1px solid var(--stroke);
+    /* 4. SMART SEARCH (Пункт 16) */
+    .search-box {
+      margin: 0 20px 20px; position: relative;
     }
-    .hero-slide {
-      position: absolute; inset: 0; background-size: cover; background-position: center;
-      transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
-      display: flex; align-items: flex-end; padding: 20px;
+    .search-input {
+      width: 100%; background: var(--bg-card); border: 1px solid var(--stroke);
+      padding: 16px 16px 16px 45px; border-radius: 20px; color: #fff;
+      font-size: 15px; transition: 0.3s;
     }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
-    /* 4. КАТЕГОРІЇ (Pill Buttons з анімацією) */
-    .pills-container {
-      display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px;
-      scrollbar-width: none;
-    }
-    .pills-container::-webkit-scrollbar { display: none; }
-    .pill {
-      padding: 10px 22px; background: var(--card-bg); border: 1px solid var(--stroke);
-      border-radius: 40px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.6);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      white-space: nowrap;
-    }
-    .pill.active {
-      background: var(--accent); color: #000; border-color: var(--accent);
-      box-shadow: 0 10px 20px var(--accent-glow);
-    }
-
-    /* 5. КАРТКИ САЛОНІВ (Super Smooth) */
-    .listing-grid { padding: 0 20px 120px; display: grid; gap: 20px; }
-    .salon-card {
-      background: var(--card-bg); border-radius: 32px; border: 1px solid var(--stroke);
+    /* 5. STAGGERED GRID (Пункт 7) */
+    .grid { padding: 0 20px 120px; display: grid; gap: 20px; }
+    .card {
+      background: var(--bg-card); border-radius: 32px; border: 1px solid var(--stroke);
       overflow: hidden; opacity: 0; transform: translateY(30px);
       transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .salon-card.reveal { opacity: 1; transform: translateY(0); }
-    .salon-card:active { transform: scale(0.96); }
+    .card.visible { opacity: 1; transform: translateY(0); }
+    .card:active { transform: scale(0.96); } /* Пункт 10: Micro-interaction */
 
-    .card-img { width: 100%; height: 210px; object-fit: cover; }
-    .card-body { padding: 18px; }
-    .card-title { font-family: 'Playfair Display'; font-size: 20px; margin-bottom: 6px; }
-    .card-meta { display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,0.4); }
-
-    /* 6. BOTTOM TAB BAR (Magnetic Effect) */
-    .tab-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--glass); backdrop-filter: blur(30px);
-      padding: 12px 10px calc(15px + var(--safe-bottom));
-      display: flex; justify-content: space-around;
-      border-top: 1px solid var(--stroke); z-index: 2000;
+    /* 6. BADGES (Пункт 13) */
+    .badge {
+      position: absolute; top: 15px; left: 15px; padding: 4px 10px;
+      border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+      background: var(--accent); color: #000;
     }
-    .tab-item {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      color: rgba(255,255,255,0.3); font-size: 10px; text-decoration: none;
-      transition: 0.3s;
-    }
-    .tab-item.active { color: var(--accent); }
-    .tab-item i { font-size: 22px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .tab-item:active i { transform: scale(1.3); }
 
-    /* БОТТОМ-ШИТ (БРОНЮВАННЯ) */
+    /* 7. BOTTOM SHEET (UX King) */
     .sheet-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-      z-index: 3000; opacity: 0; pointer-events: none; transition: 0.4s;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+      z-index: 2000; display: none; opacity: 0; transition: 0.3s;
     }
-    .sheet-overlay.active { opacity: 1; pointer-events: auto; }
     .sheet {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #0f0f14;
-      border-radius: 35px 35px 0 0; padding: 25px;
-      transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.3, 0.6, 0, 1);
-      z-index: 3001; max-height: 92vh; overflow-y: auto;
+      position: fixed; bottom: 0; left: 0; right: 0; background: #0f0f15;
+      border-radius: 35px 35px 0 0; padding: 25px; z-index: 2001;
+      transform: translateY(100%); transition: 0.5s cubic-bezier(0.3, 0.6, 0, 1);
     }
     .sheet.active { transform: translateY(0); }
+    .sheet-overlay.active { display: block; opacity: 1; }
+
+    /* 8. PWA INSTALL PROMPT (Пункт 18) */
+    #pwaPrompt {
+      position: fixed; bottom: 100px; left: 20px; right: 20px;
+      background: var(--accent); color: #000; padding: 15px;
+      border-radius: 20px; display: none; font-weight: 600; text-align: center;
+      z-index: 1500; animation: fadeInUp 0.5s both;
+    }
   </style>
 </head>
 <body>
 
-  <div id="splash">
-    <div class="splash-logo">BeautyFlow</div>
+  <div id="appLoader" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <div class="skeleton" style="width:60px; height:60px; border-radius:50%;"></div>
   </div>
 
-  <header class="top-header">
-    <div style="font-family:'Playfair Display'; font-size:22px;">BF.</div>
-    <div id="geoBtn" style="background:var(--card-bg); padding:8px 15px; border-radius:20px; font-size:12px; border:1px solid var(--stroke);">
-      📍 <span id="locLabel">Визначаємо...</span>
+  <header class="header" id="mainHeader">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h1 style="font-family:'Playfair Display'; margin:0; font-size:24px;">BeautyPro</h1>
+      <div id="themeToggle" onclick="toggleTheme()" style="cursor:pointer; font-size:20px;">🌙</div>
     </div>
   </header>
 
-  <div class="hero-container" id="heroHost">
+  <div class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="https://player.vimeo.com/external/371433846.sd.mp4?s=231ed099f6916568853b925b3997e324f92ed49e&profile_id=139&oauth2_token_id=57447761" type="video/mp4">
+    </video>
+    <div style="position:relative; padding:25px; height:100%; display:flex; flex-direction:column; justify-content:center;">
+      <h2 style="margin:0; font-family:'Playfair Display'; font-size:28px;">Твій ідеальний образ</h2>
+      <p style="font-size:14px; opacity:0.8;">Бронюй за 30 секунд</p>
     </div>
-
-  <div class="pills-container" id="catList">
-    <div class="pill active">Усі</div>
-    <div class="pill">💅 Манікюр</div>
-    <div class="pill">✨ Брови</div>
-    <div class="pill">💇‍♀️ Волосся</div>
   </div>
 
-  <main class="listing-grid" id="listingGrid">
-    </main>
+  <div class="search-box">
+    <span style="position:absolute; left:18px; top:16px; opacity:0.4;">🔍</span>
+    <input type="text" class="search-input" id="smartSearch" placeholder="Манікюр, стрижка або салон..." oninput="handleSearch()">
+  </div>
 
-  <nav class="tab-bar">
-    <a href="#" class="tab-item active"><i>🏠</i><span>Головна</span></a>
-    <a href="#" class="tab-item" id="openBookings"><i>📅</i><span>Записи</span></a>
-    <a href="./profile.html" class="tab-item"><i>👤</i><span>Профіль</span></a>
-  </nav>
+  <div id="recentSection" style="display:none; padding:0 20px 20px;">
+    <p style="font-size:12px; opacity:0.5; margin-bottom:10px;">ВИ НЕДАВНО ДИВИЛИСЬ</p>
+    <div id="recentList" style="display:flex; gap:10px; overflow-x:auto;"></div>
+  </div>
+
+  <main class="grid" id="listingGrid">
+    <div class="skeleton" style="height:280px;"></div>
+    <div class="skeleton" style="height:280px;"></div>
+  </main>
+
+  <div id="pwaPrompt" onclick="installPWA()">Додати BeautyPro на головний екран ✨</div>
 
   <div class="sheet-overlay" id="sheetOverlay"></div>
   <div class="sheet" id="bookingSheet">
@@ -167,67 +140,107 @@
 
   <script src="./data.js"></script>
   <script>
-    // 1. ПРИБИРАЄМО SPLASH (після завантаження)
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('splash').style.opacity = '0';
-        setTimeout(() => document.getElementById('splash').remove(), 800);
-        renderProfessionalGrid();
-      }, 1500);
-    });
+    // --- ГЛОБАЛЬНИЙ СТАН ---
+    const state = {
+      theme: localStorage.getItem('theme') || 'dark',
+      history: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
+      recent: JSON.parse(localStorage.getItem('recentList') || '[]')
+    };
 
-    // 2. HAPTIC FEEDBACK (Топ-фішка)
-    function haptic() {
-      if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(10);
-      }
+    // 1. HAPTIC FEEDBACK (Пункт 3)
+    const haptic = () => { if(navigator.vibrate) navigator.vibrate(12); };
+
+    // 2. ТЕМА (Пункт 19)
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', state.theme);
+      applyTheme();
+      haptic();
+    }
+    function applyTheme() {
+      document.body.setAttribute('data-theme', state.theme);
+      document.getElementById('themeToggle').textContent = state.theme === 'dark' ? '🌙' : '☀️';
     }
 
-    // 3. ПРОФЕСІЙНИЙ РЕНДЕР (Staggered Animation)
-    function renderProfessionalGrid() {
+    // 3. RENDER З АНІМАЦІЄЮ (Пункт 7, 13)
+    function renderApp(items = window.LISTINGS) {
       const grid = document.getElementById('listingGrid');
-      const items = window.LISTINGS || [];
-      
+      if(!items.length) {
+        grid.innerHTML = `<div style="text-align:center; padding:50px; opacity:0.5;">Нічого не знайдено 🔍</div>`;
+        return;
+      }
+
       grid.innerHTML = items.map((l, i) => `
-        <div class="salon-card" onclick="haptic(); openProBooking('${l.id}')">
-          <img src="${l.img}" class="card-img" loading="lazy">
-          <div class="card-body">
-            <div class="card-title">${l.name}</div>
-            <div class="card-meta">
-              <span>${l.address}</span>
-              <span style="color:#ffd27a">★ ${l.rating || '5.0'}</span>
+        <div class="card" onclick="openBooking('${l.id}')">
+          <div style="position:relative">
+            <img src="${l.img}" style="width:100%; height:200px; object-fit:cover;">
+            ${l.rating > 4.8 ? '<div class="badge">Top Rated</div>' : ''}
+          </div>
+          <div style="padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <h3 style="margin:0; font-family:'Playfair Display';">${l.name}</h3>
+              <span style="color:var(--accent); font-weight:700;">★ ${l.rating}</span>
             </div>
+            <p style="font-size:13px; opacity:0.6; margin:5px 0 0;">📍 ${l.address}</p>
           </div>
         </div>
       `).join('');
 
-      // Запускаємо анімацію появи по черзі
-      const cards = document.querySelectorAll('.salon-card');
-      cards.forEach((card, idx) => {
-        setTimeout(() => card.classList.add('reveal'), idx * 80);
-      });
+      // Поступова поява (Staggered)
+      setTimeout(() => {
+        document.querySelectorAll('.card').forEach((c, i) => {
+          setTimeout(() => c.classList.add('visible'), i * 100);
+        });
+      }, 50);
     }
 
-    // 4. ВІДКРИТТЯ БРОНЮВАННЯ (Bottom Sheet)
-    function openProBooking(id) {
-      const overlay = document.getElementById('sheetOverlay');
-      const sheet = document.getElementById('bookingSheet');
-      
-      overlay.classList.add('active');
-      sheet.classList.add('active');
-      
-      // Твоя логіка з індексу (вибір послуг) йде сюди
-      document.getElementById('bookingContent').innerHTML = `
-        <h2 style="font-family:'Playfair Display'">Виберіть послугу</h2>
-        <div style="padding-bottom:100px;">
-          </div>
-      `;
+    // 4. SMART SEARCH (Пункт 16)
+    function handleSearch() {
+      const val = document.getElementById('smartSearch').value;
+      const filtered = window.LISTINGS.filter(l => 
+        l.name.toLowerCase().includes(val.toLowerCase()) || 
+        l.address.toLowerCase().includes(val.toLowerCase())
+      );
+      renderApp(filtered);
     }
 
-    // Закриття по кліку на фон
-    document.getElementById('sheetOverlay').onclick = () => {
-      document.getElementById('sheetOverlay').classList.remove('active');
-      document.getElementById('bookingSheet').classList.remove('active');
+    // 5. OFFLINE QUEUE (Пункт 17)
+    window.addEventListener('online', () => {
+      const pending = JSON.parse(localStorage.getItem('pendingBookings') || '[]');
+      if(pending.length) {
+        console.log("Відправка відкладених записів...");
+        // Тут логіка відправки
+      }
+    });
+
+    // SCRROLL EFFECT (Пункт 6)
+    window.onscroll = () => {
+      const h = document.getElementById('mainHeader');
+      window.scrollY > 30 ? h.classList.add('scrolled') : h.classList.remove('scrolled');
+    };
+
+    // INITIALIZE
+    window.onload = () => {
+      applyTheme();
+      setTimeout(() => {
+        document.getElementById('appLoader').style.opacity = '0';
+        setTimeout(() => document.getElementById('appLoader').remove(), 500);
+        renderApp();
+      }, 1000);
+    };
+
+    // PWA Prompt logic
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('pwaPrompt').style.display = 'block';
+    });
+
+    function installPWA() {
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      document.getElementById('pwaPrompt').style.display = 'none';
     }
   </script>
 </body>
