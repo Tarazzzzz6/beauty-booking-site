@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Кабінет салону — Booking Club</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;--ok:#20e3a5;--r:20px;--max:980px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(255,79,216,.14), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:20px 18px 80px}
+    .back{display:inline-flex;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    h1{font-family:"Playfair Display",serif;font-size:32px;margin:22px 0 6px}
+    .muted{color:var(--muted)}
+    .card{border:1px solid var(--stroke);background:var(--card);border-radius:24px;padding:18px;margin-top:16px}
+    .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    select,input{padding:12px;border-radius:14px;border:1px solid var(--stroke);background:rgba(20,20,28,.95);color:var(--text);font:inherit}
+    .btn{border:0;color:#0b0b0f;background:linear-gradient(135deg,var(--pink),var(--violet));border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;font:inherit}
+    .btn.gold{background:linear-gradient(135deg,var(--gold),var(--pink))}
+    .btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--stroke)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .stat{border:1px solid var(--stroke);border-radius:18px;padding:14px;background:rgba(0,0,0,.18)}
+    .stat b{font-size:22px;display:block}
+    .stat span{color:var(--muted);font-size:12px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{text-align:left;padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px}
+    td input{width:90px;padding:8px 10px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .ok{color:var(--ok);font-weight:700}
+    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← bookingclub.beauty</a>
+    <h1>Кабінет салону 💎</h1>
+    <p class="muted" style="margin:0">Керуй цінами, послугами і дивись свої відгуки. Демо-версія: вхід за вибором салону + будь-який PIN з 4 цифр. У проді підключимо справжню авторизацію і збереження на сервері.</p>
+
+    <div class="card" id="loginCard">
+      <div class="kicker">Вхід</div>
+      <div class="row" style="margin-top:12px">
+        <select id="salonSel" style="flex:1;min-width:220px"></select>
+        <input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="PIN ····" style="width:130px">
+        <button class="btn gold" id="loginBtn">Увійти</button>
+      </div>
+      <div id="loginMsg" style="margin-top:10px"></div>
+    </div>
+
+    <div id="panel" style="display:none">
+      <div class="card">
+        <div class="kicker">Твій салон</div>
+        <h2 id="salonName" style="margin:8px 0 2px;font-family:'Playfair Display',serif"></h2>
+        <div class="muted" id="salonAddr"></div>
+        <div class="stats" style="margin-top:14px">
+          <div class="stat"><b id="stRating">—</b><span>рейтинг ★</span></div>
+          <div class="stat"><b id="stReviews">—</b><span>відгуків</span></div>
+          <div class="stat"><b id="stServices">—</b><span>послуг</span></div>
+          <div class="stat"><b id="stPartner">—</b><span>тариф</span></div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <a class="btn ghost" id="openProfile" href="#" target="_blank" rel="noopener">Мій публічний профіль →</a>
+          <a class="btn ghost" href="./business.html">Підвищити тариф 💎</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="kicker">Ціни і послуги</div>
+        <table>
+          <thead><tr><th>Послуга</th><th>Від, $</th><th>До, $</th><th>Хв</th></tr></thead>
+          <tbody id="svcBody"></tbody>
+        </table>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" id="saveBtn">Зберегти зміни</button>
+          <span id="saveMsg"></span>
+        </div>
+        <p class="muted" style="font-size:12.5px">Демо: зміни зберігаються на цьому пристрої. Наступний крок — збереження у Cloudflare, щоб ціни мінялись на сайті для всіх клієнтів.</p>
+      </div>
+
+      <div class="card">
+        <div class="kicker">Останні відгуки</div>
+        <div id="revList" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script>
+    const sel = document.getElementById("salonSel");
+    (window.LISTINGS||[]).forEach(l=>{
+      const o = document.createElement("option"); o.value = l.id; o.textContent = l.name; sel.appendChild(o);
+    });
+    const svcName = id => { const s = (window.SERVICES||[]).find(x=>x.id===id); return s ? s.ua : id; };
+    let cur = null;
+    try{ const saved = localStorage.getItem("bb_admin_salon"); if(saved) sel.value = saved; }catch(e){}
+
+    document.getElementById("loginBtn").addEventListener("click", ()=>{
+      const pin = document.getElementById("pin").value.trim();
+      const msg = document.getElementById("loginMsg");
+      if(!/^\d{4}$/.test(pin)){ msg.innerHTML = '<span style="color:#ffd27a;font-weight:700">Введи PIN з 4 цифр (демо: будь-який)</span>'; return; }
+      cur = (window.LISTINGS||[]).find(l=>l.id===sel.value);
+      try{ localStorage.setItem("bb_admin_salon", cur.id); }catch(e){}
+      msg.innerHTML = '<span class="ok">Вхід виконано ✓</span>';
+      renderPanel();
+    });
+
+    function renderPanel(){
+      if(!cur) return;
+      document.getElementById("panel").style.display = "block";
+      document.getElementById("salonName").textContent = cur.name;
+      document.getElementById("salonAddr").textContent = cur.address || "";
+      document.getElementById("stRating").textContent = cur.rating ? "★ " + cur.rating : "—";
+      document.getElementById("stReviews").textContent = cur.reviews || 0;
+      document.getElementById("stServices").textContent = (cur.services||[]).length;
+      document.getElementById("stPartner").textContent = cur.partner ? "Partner 💎" : "Start";
+      document.getElementById("openProfile").href = "./profile.html?id=" + encodeURIComponent(cur.id);
+      let edits = {};
+      try{ edits = JSON.parse(localStorage.getItem("bb_admin_" + cur.id) || "{}"); }catch(e){}
+      const body = document.getElementById("svcBody");
+      body.innerHTML = "";
+      (cur.services||[]).forEach(s=>{
+        const e = edits[s.serviceId] || {};
+        const tr = document.createElement("tr");
+        tr.innerHTML = '<td><b>' + svcName(s.serviceId) + '</b></td>' +
+          '<td><input type="number" min="0" data-k="from" data-svc="' + s.serviceId + '" value="' + (e.from ?? s.from) + '"></td>' +
+          '<td><input type="number" min="0" data-k="to" data-svc="' + s.serviceId + '" value="' + (e.to ?? s.to ?? "") + '"></td>' +
+          '<td><input type="number" min="5" step="5" data-k="durationMin" data-svc="' + s.serviceId + '" value="' + (e.durationMin ?? s.durationMin) + '"></td>';
+        body.appendChild(tr);
+      });
+      const revs = (window.REVIEWS && window.REVIEWS[cur.id]) || [];
+      document.getElementById("revList").innerHTML = revs.length
+        ? revs.map(r=>'<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)"><b>' + r.name + '</b> <span style="color:#ffd27a">' + "★".repeat(r.stars||5) + '</span><div class="muted" style="margin-top:3px">' + r.text + '</div></div>').join("")
+        : '<div class="muted">Поки немає відгуків.</div>';
+      document.getElementById("panel").scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", ()=>{
+      if(!cur) return;
+      const edits = {};
+      document.querySelectorAll("#svcBody input").forEach(inp=>{
+        const svc = inp.dataset.svc, k = inp.dataset.k;
+        edits[svc] = edits[svc] || {};
+        edits[svc][k] = inp.value === "" ? null : Number(inp.value);
+      });
+      try{ localStorage.setItem("bb_admin_" + cur.id, JSON.stringify(edits)); }catch(e){}
+      document.getElementById("saveMsg").innerHTML = '<span class="ok">Збережено ✓ (демо — на цьому пристрої)</span>';
+    });
+  </script>
+</body>
+</html>

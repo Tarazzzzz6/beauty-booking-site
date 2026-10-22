@@ -1104,7 +1104,47 @@
       .lux-reveal{opacity:1 !important; transform:none !important}
       #luxPre{display:none}
     }
+  
+    /* === Stories / Reels / Price map === */
+    .storiesStrip{display:flex; gap:16px; overflow:auto; padding:6px 2px 10px}
+    .storiesStrip::-webkit-scrollbar{height:8px}
+    .storyItem{flex:0 0 auto; width:78px; text-align:center; cursor:pointer}
+    .storyRing{width:72px; height:72px; border-radius:50%; padding:3px; background:conic-gradient(from 210deg, var(--pink), var(--gold), var(--violet), var(--pink)); transition:transform .25s ease}
+    .storyItem:hover .storyRing{transform:scale(1.06) rotate(4deg)}
+    .storyRing img{width:100%; height:100%; object-fit:cover; border-radius:50%; border:3px solid var(--bg)}
+    .storyName{font-size:11px; margin-top:7px; color:var(--muted); line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+    .reelsStrip{display:flex; gap:14px; overflow:auto; padding-bottom:8px; scroll-snap-type:x mandatory}
+    .reelCard{flex:0 0 auto; width:190px; height:320px; border-radius:24px; overflow:hidden; position:relative; cursor:pointer; scroll-snap-align:start; border:1px solid var(--stroke)}
+    .reelCard img{width:100%; height:100%; object-fit:cover; animation:luxKenBurns 9s ease-in-out infinite alternate}
+    .reelCard:after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0) 35%, rgba(0,0,0,.75))}
+    .reelPlay{position:absolute; top:12px; right:12px; z-index:2; width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.35); display:grid; place-items:center; font-size:13px; backdrop-filter:blur(6px)}
+    .reelMeta{position:absolute; left:12px; right:12px; bottom:12px; z-index:2}
+    .reelMeta b{display:block; font-size:13.5px}
+    .reelMeta span{font-size:11.5px; color:rgba(244,243,248,.78)}
+    .pricePin{background:linear-gradient(135deg, var(--gold), var(--pink)); color:#0b0b0f; font-weight:900; font-size:12px; padding:6px 10px; border-radius:999px; border:2px solid rgba(255,255,255,.85); box-shadow:0 8px 22px rgba(0,0,0,.45); white-space:nowrap; text-align:center}
+    .leaflet-popup-content-wrapper{background:#14141c; color:#f4f3f8; border-radius:14px}
+    .leaflet-popup-tip{background:#14141c}
+    .leaflet-popup-content{font-family:Inter,system-ui,Arial; font-size:13px; line-height:1.45}
+    .leaflet-popup-content a{color:var(--gold); font-weight:800}
+    #bbMap{background:#0b0b11}
+  
+    /* === Happy hours + Loyalty === */
+    .happyCard{min-width:270px; max-width:270px; scroll-snap-align:start; border-radius:var(--r2); border:1px solid rgba(32,227,165,.35); background:linear-gradient(180deg, rgba(32,227,165,.10), var(--card)); padding:16px; cursor:pointer; transition:transform .22s ease}
+    .happyCard:hover{transform:translateY(-3px)}
+    .happyBadge{display:inline-block; font-weight:900; font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(32,227,165,.16); border:1px solid rgba(32,227,165,.4); color:var(--ok)}
+    .happyPrice{font-size:22px; font-weight:900; margin-top:8px}
+    .happyPrice s{color:var(--muted); font-size:15px; font-weight:600; margin-right:8px}
+    .loyalBar{height:10px; border-radius:99px; background:rgba(255,255,255,.10); overflow:hidden; margin-top:10px}
+    .loyalBar i{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, var(--pink), var(--gold)); transition:width .8s cubic-bezier(.16,1,.3,1)}
+  
+    /* === AI by photo === */
+    .inspireStrip{display:flex; gap:10px; overflow:auto; margin-top:14px; padding-bottom:4px}
+    .inspireItem{flex:0 0 auto; width:118px; cursor:pointer; text-align:left}
+    .inspireItem img{width:118px; height:118px; object-fit:cover; border-radius:18px; border:1px solid var(--stroke); transition:transform .25s ease, border-color .25s ease}
+    .inspireItem:hover img{transform:scale(1.04); border-color:rgba(255,210,122,.45)}
+    .inspireItem span{display:block; font-size:11.5px; color:var(--muted); margin-top:6px; line-height:1.3}
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 
 <body>
@@ -1215,6 +1255,18 @@
       </div>
     </section>
 
+    <section class="section" id="loyaltySection" style="margin-top:16px">
+      <div class="glass"><div class="pad" style="display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+        <div style="flex:1; min-width:240px">
+          <div class="kicker">🎁 Booking Club · Лояльність</div>
+          <div class="bigLine" id="loyalLine">Твої візити рахуються автоматично</div>
+          <div class="smallLine" id="loyalSub">Кожен 6-й візит — зі знижкою 50% на послугу до $60.</div>
+          <div class="loyalBar"><i id="loyalFill" style="width:0%"></i></div>
+        </div>
+        <a class="btn secondary" href="./gift.html" style="text-decoration:none">🎁 Подарункові сертифікати</a>
+      </div></div>
+    </section>
+
     <div class="lux-marquee" aria-hidden="true"><div class="lux-marquee-track"><span>Manicure <b>✦</b> Pedicure <b>✦</b> Brows <b>✦</b> Lashes <b>✦</b> Hair <b>✦</b> Montréal <b>✦</b> Booking Club <b>✦</b>&nbsp;</span><span>Manicure <b>✦</b> Pedicure <b>✦</b> Brows <b>✦</b> Lashes <b>✦</b> Hair <b>✦</b> Montréal <b>✦</b> Booking Club <b>✦</b>&nbsp;</span></div></div>
 
     <section class="section" id="aiSection" style="display:none">
@@ -1240,6 +1292,16 @@
             "/>
             <button class="btn" id="aiGo">✨ Підібрати</button>
           </div>
+          <div style="margin-top:14px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)">📸 Або обери фото — AI знайде, хто так вміє</div>
+          <div class="inspireStrip" id="inspireStrip">
+            <div class="inspireItem" data-q="манікюр"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=400&q=80" alt=""><span>Chrome / нюд манікюр</span></div>
+            <div class="inspireItem" data-q="стрижка жіноча"><img src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=400&q=80" alt=""><span>Боб / укладка</span></div>
+            <div class="inspireItem" data-q="брови"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80" alt=""><span>Ламінування брів</span></div>
+            <div class="inspireItem" data-q="педикюр"><img src="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=400&q=80" alt=""><span>SPA педикюр</span></div>
+            <div class="inspireItem" data-q="вії"><img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=400&q=80" alt=""><span>Вії / обʼєм</span></div>
+            <div class="inspireItem" data-q="фарбування"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80" alt=""><span>Балаяж / фарбування</span></div>
+          </div>
+          <div class="note" style="margin-top:8px">Далі: завантаження свого фото — AI визначить послугу і ціну автоматично.</div>
           <div id="aiPicks" class="grid" style="margin-top:12px"></div>
         </div>
       </div>
@@ -1296,6 +1358,16 @@
     </section>
 
 
+    <section class="section" id="storiesSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle">Сьогодні у майстрів ⚡</h3>
+          <p class="sectionNote">Живі сторіс салонів Монреаля — натисни, щоб відкрити профіль.</p>
+        </div>
+      </div>
+      <div class="storiesStrip" id="storiesStrip"></div>
+    </section>
+
     <section class="section" id="trendsSection">
       <div class="sectionHead">
         <div>
@@ -1312,6 +1384,26 @@
       </div>
     </section>
 
+    <section class="section" id="happySection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle">Щасливі години · сьогодні −20% ⏰</h3>
+          <p class="sectionNote">Салони заповнюють вільні слоти дня — ти економиш. Ціни вже зі знижкою.</p>
+        </div>
+      </div>
+      <div class="strip" id="happyStrip"></div>
+    </section>
+
+    <section class="section" id="reelsSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle">Reels · роботи майстрів 🎬</h3>
+          <p class="sectionNote">Гортай як TikTok — натисни, щоб забронювати у цього майстра.</p>
+        </div>
+      </div>
+      <div class="reelsStrip" id="reelsStrip"></div>
+    </section>
+
     <section class="section" id="mapSection">
       <div class="sectionHead">
         <div>
@@ -1321,8 +1413,9 @@
         <a class="pill" href="https://www.google.com/maps/search/beauty+salon+Montreal" target="_blank" rel="noopener">Відкрити в Google Maps →</a>
       </div>
       <div class="mapFrame">
-        <iframe title="Beauty salons map — Montréal" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=beauty%20salons%20Montr%C3%A9al&output=embed"></iframe>
+        <div id="bbMap" style="height:380px; width:100%"></div>
       </div>
+      <p class="sectionNote" style="margin-top:8px">Піни — ціни «від» за послуги. Натисни на пін, щоб відкрити салон.</p>
     </section>
 
     <section class="section" style="margin-top:26px">
@@ -1338,6 +1431,8 @@
           <div style="display:flex; gap:10px; flex-wrap:wrap">
             <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank" rel="noopener">Open sample profile →</a>
             <a class="pill" href="./business.html">💎 Для салонів — тарифи</a>
+            <a class="pill" href="./admin.html">🔐 Кабінет салону</a>
+            <a class="pill" href="./gift.html">🎁 Сертифікат у подарунок</a>
             <a class="pill" href="#" id="policiesBtn">Policies</a>
           </div>
         </div>
@@ -1434,6 +1529,11 @@
           </div>
         </div>
 
+        <label style="display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:12px; border:1px solid rgba(255,210,122,.30); background:rgba(255,210,122,.07); border-radius:16px; cursor:pointer">
+          <input type="checkbox" id="depToggle" style="width:20px; height:20px; margin-top:1px; accent-color:#ffd27a">
+          <span style="font-size:13px; line-height:1.45"><b>🛡️ Депозит проти no-show — $10</b><br>
+          <span style="color:var(--muted)">Apple Pay / карта. Повертається під час візиту або зараховується в ціну послуги. Салон бачить, що ти серйозно — і тримає слот тільки для тебе.</span></span>
+        </label>
         <div style="margin-top:12px; color:var(--muted); font-size:12.5px">
           Підтвердження: <b style="color:rgba(244,243,248,.92)">Telegram</b> · без спаму · можна скасувати/перенести.
         </div>
@@ -2976,6 +3076,7 @@ END:VCALENDAR`;
         dateISO,
         time,
         priceFrom: priceFrom ?? null,
+        deposit: (document.getElementById("depToggle") && document.getElementById("depToggle").checked) ? 10 : 0,
         duration: dur ?? null,
         profileUrl,
         mapsUrl,
@@ -3520,6 +3621,133 @@ Email: ${email}`;
         });
       }
     }
+  })();
+  </script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  /* Features: Stories, Reels, Price map */
+  (function(){
+    function go(id){ location.href = "./profile.html?id=" + encodeURIComponent(id); }
+    var L0 = window.LISTINGS || [];
+    // Stories
+    var ss = document.getElementById("storiesStrip");
+    if(ss){
+      ss.innerHTML = "";
+      L0.slice().sort(function(a,b){ return (b.partner-a.partner) || ((b.rating||0)-(a.rating||0)); }).forEach(function(l){
+        var d = document.createElement("div"); d.className = "storyItem";
+        d.innerHTML = '<div class="storyRing"><img src="' + ((l.images||[])[0]||"") + '" alt=""></div><div class="storyName">' + l.name + '</div>';
+        d.addEventListener("click", function(){ go(l.id); });
+        ss.appendChild(d);
+      });
+    }
+    // Reels
+    var rs = document.getElementById("reelsStrip");
+    if(rs){
+      var picks = L0.filter(function(l){ return (l.images||[]).length; }).slice(0,8);
+      rs.innerHTML = "";
+      picks.forEach(function(l, i){
+        var svc = (window.SERVICES||[]).find(function(s){ return l.services && l.services[0] && s.id === l.services[0].serviceId; });
+        var d = document.createElement("div"); d.className = "reelCard";
+        d.innerHTML = '<img src="' + l.images[0] + '" alt=""><div class="reelPlay">▶</div><div class="reelMeta"><b>' + l.name + '</b><span>' + (svc ? svc.ua : "Beauty") + ' · ★ ' + (l.rating||"—") + ' · 0:' + (18 + i*3) + '</span></div>';
+        d.addEventListener("click", function(){ go(l.id); });
+        rs.appendChild(d);
+      });
+    }
+    // Price map (Leaflet)
+    function initMap(){
+      if(!window.L || !document.getElementById("bbMap")) return;
+      var map = L.map("bbMap", {scrollWheelZoom:false}).setView([45.53, -73.62], 11);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, attribution:"© OpenStreetMap"}).addTo(map);
+      map.on("focus", function(){ map.scrollWheelZoom.enable(); });
+      map.on("blur", function(){ map.scrollWheelZoom.disable(); });
+      L0.forEach(function(l){
+        if(!l.lat || !l.lng) return;
+        var from = null;
+        (l.services||[]).forEach(function(s){ if(from===null || s.from<from) from = s.from; });
+        var icon = L.divIcon({className:"", html:'<div class="pricePin">$' + (from ?? "—") + '</div>', iconSize:null, iconAnchor:[24,16]});
+        var pop = '<b>' + l.name + '</b><br>★ ' + (l.rating||"—") + ' (' + (l.reviews||0) + ') · від $' + (from ?? "—") + '<br><span style="opacity:.75">' + (l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
+        L.marker([l.lat, l.lng], {icon:icon}).addTo(map).bindPopup(pop);
+      });
+    }
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMap); else initMap();
+  })();
+  </script>
+
+  <script>
+  /* Features 2: Happy hours + Loyalty counter */
+  (function(){
+    // Happy hours
+    var strip = document.getElementById("happyStrip");
+    if(strip && window.bb && window.bb.util){
+      var items = [];
+      (window.LISTINGS||[]).forEach(function(l){
+        var slot = null; try{ slot = window.bb.util.nextAvailable(l, null); }catch(e){}
+        if(slot && window.bb.util.isTodaySlot(slot)){
+          var from = window.bb.util.minPriceFor(l, null);
+          if(from) items.push({l:l, slot:slot, from:from, disc: Math.round(from*0.8)});
+        }
+      });
+      if(!items.length){
+        strip.innerHTML = '<div class="empty" style="min-width:280px"><h3>Сьогодні вже все розібрали 🔥</h3><p>Зазирни завтра зранку — щасливі години зʼявляються щодня.</p></div>';
+      } else {
+        items.slice(0,8).forEach(function(it){
+          var d = document.createElement("div"); d.className = "happyCard";
+          d.innerHTML = '<span class="happyBadge">−20% · сьогодні ' + it.slot.time + '</span>' +
+            '<div style="font-weight:900; margin-top:10px; font-size:15px">' + it.l.name + '</div>' +
+            '<div style="color:var(--muted); font-size:12.5px; margin-top:3px">' + (it.l.address||"") + '</div>' +
+            '<div class="happyPrice"><s>$' + it.from + '</s>$' + it.disc + '</div>' +
+            '<div style="color:var(--ok); font-size:12px; font-weight:800; margin-top:4px">⚡ Забронювати зі знижкою →</div>';
+          d.addEventListener("click", function(){
+            var svc = it.l.services && it.l.services[0] ? it.l.services[0].serviceId : "";
+            location.href = "./index.html?book=1&id=" + encodeURIComponent(it.l.id) + (svc ? "&service=" + encodeURIComponent(svc) : "");
+          });
+          strip.appendChild(d);
+        });
+      }
+    }
+    // Loyalty
+    function loyaltyCount(){ try{ return parseInt(localStorage.getItem("bb_loyalty_count")||"0",10)||0; }catch(e){ return 0; } }
+    function renderLoyalty(){
+      var n = loyaltyCount();
+      var line = document.getElementById("loyalLine"); var sub = document.getElementById("loyalSub"); var fill = document.getElementById("loyalFill");
+      if(!line) return;
+      var inCycle = n % 6;
+      line.textContent = n === 0 ? "Твої візити рахуються автоматично" : ("У тебе вже " + n + " візит(и) з Booking Club 🎉");
+      sub.textContent = inCycle === 0 && n > 0 ? "Наступний візит — зі знижкою 50%! 🎁" : ("До знижки 50% на 6-й візит залишилось: " + (6 - inCycle) + ".");
+      if(fill) fill.style.width = Math.round((inCycle === 0 && n > 0 ? 6 : inCycle) / 6 * 100) + "%";
+    }
+    renderLoyalty();
+    var so = document.getElementById("successOverlay");
+    if(so && "MutationObserver" in window){
+      var counted = false;
+      new MutationObserver(function(){
+        if(so.classList.contains("on") && !counted){
+          counted = true;
+          try{ localStorage.setItem("bb_loyalty_count", String(loyaltyCount() + 1)); }catch(e){}
+          renderLoyalty();
+        }
+        if(!so.classList.contains("on")) counted = false;
+      }).observe(so, {attributes:true, attributeFilter:["class"]});
+    }
+  })();
+  </script>
+
+  <script>
+  /* AI by photo: inspiration picker */
+  (function(){
+    var strip = document.getElementById("inspireStrip");
+    if(!strip) return;
+    strip.addEventListener("click", function(e){
+      var item = e.target.closest(".inspireItem");
+      if(!item) return;
+      var input = document.getElementById("aiInput");
+      var go = document.getElementById("aiGo");
+      if(input) input.value = item.dataset.q || "";
+      if(go) go.click();
+      var sec = document.getElementById("aiSection");
+      if(sec) sec.scrollIntoView({behavior:"smooth", block:"start"});
+    });
   })();
   </script>
 </body>

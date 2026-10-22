@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Подарунковий сертифікат — Booking Club · Montréal</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;--max:900px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(800px 600px at 85% 15%, rgba(255,210,122,.10), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:20px 18px 80px}
+    .back{display:inline-flex;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    h1{font-family:"Playfair Display",serif;font-size:36px;margin:24px 0 8px;line-height:1.1}
+    h1 span{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .muted{color:var(--muted)}
+    .amounts{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .amt{padding:14px 20px;border-radius:16px;border:1px solid var(--stroke);background:var(--card);font-weight:900;font-size:18px;cursor:pointer;transition:all .2s}
+    .amt:hover{transform:translateY(-2px)}
+    .amt.on{border-color:rgba(255,210,122,.5);background:rgba(255,210,122,.12);color:var(--gold)}
+    .cert{border-radius:26px;padding:28px;position:relative;overflow:hidden;border:1px solid rgba(255,210,122,.4);background:radial-gradient(600px 300px at 15% 0%, rgba(255,79,216,.25), transparent 60%),radial-gradient(600px 300px at 85% 100%, rgba(255,210,122,.18), transparent 60%),#101019;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+    .cert .brand{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+    .cert .sum{font-family:"Playfair Display",serif;font-size:64px;margin:14px 0 4px}
+    .cert .code{font-family:ui-monospace,Menlo,monospace;letter-spacing:.2em;font-size:15px;padding:9px 13px;border:1px dashed rgba(255,255,255,.35);border-radius:12px;display:inline-block;margin-top:14px}
+    input{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:var(--text);font:inherit;margin-top:10px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:620px){.row{grid-template-columns:1fr} .cert .sum{font-size:48px} h1{font-size:29px}}
+    .btn{display:inline-flex;align-items:center;gap:10px;border:0;color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));border-radius:14px;padding:14px 18px;font-weight:800;cursor:pointer;font:inherit;margin-top:16px}
+    .btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--stroke)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← bookingclub.beauty</a>
+    <h1>Подаруй красу 🎁<br><span>Сертифікат Booking Club</span></h1>
+    <p class="muted" style="max-width:58ch;line-height:1.55">Працює у всіх салонах-партнерах Монреаля на сайті. Обираєш суму — отримуєш красивий сертифікат з кодом, який можна надіслати подрузі, мамі чи коханій у Telegram за хвилину.</p>
+
+    <div class="amounts" id="amounts">
+      <div class="amt" data-v="25">$25</div>
+      <div class="amt on" data-v="50">$50</div>
+      <div class="amt" data-v="75">$75</div>
+      <div class="amt" data-v="100">$100</div>
+      <div class="amt" data-v="150">$150</div>
+    </div>
+
+    <div class="row">
+      <input id="toName" placeholder="Кому? Імʼя отримувачки">
+      <input id="fromName" placeholder="Від кого? Твоє імʼя">
+    </div>
+
+    <div class="cert" style="margin-top:20px">
+      <div class="brand">Booking Club · Montréal</div>
+      <div class="sum" id="certSum">$50</div>
+      <div class="muted">на будь-які б'юті-послуги партнерів · діє 12 місяців</div>
+      <div style="margin-top:16px;font-size:16px">Для: <b id="certTo">—</b> · Від: <b id="certFrom">—</b></div>
+      <div class="code" id="certCode">BB-······</div>
+    </div>
+
+    <div>
+      <button class="btn" id="buyBtn">🎁 Оформити сертифікат</button>
+      <button class="btn ghost" id="shareBtn">Надіслати в Telegram</button>
+      <button class="btn ghost" id="copyBtn">Копіювати код</button>
+    </div>
+    <p class="muted" id="giftMsg" style="margin-top:12px;font-size:13.5px">Демо-режим: сертифікат генерується одразу, оплата підключається разом із депозитами (Stripe / Apple Pay). Код зберігається на цьому пристрої.</p>
+  </div>
+
+  <script>
+    let amount = 50, code = null;
+    const $ = id => document.getElementById(id);
+    function newCode(){
+      const abc = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+      let s = ""; for(let i=0;i<6;i++) s += abc[Math.floor(Math.random()*abc.length)];
+      return "BB-" + s;
+    }
+    function render(){
+      $("certSum").textContent = "$" + amount;
+      $("certTo").textContent = $("toName").value.trim() || "—";
+      $("certFrom").textContent = $("fromName").value.trim() || "—";
+      $("certCode").textContent = code || "BB-······";
+    }
+    document.querySelectorAll(".amt").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        document.querySelectorAll(".amt").forEach(x=>x.classList.remove("on"));
+        el.classList.add("on"); amount = parseInt(el.dataset.v,10); code = null; render();
+      });
+    });
+    ["toName","fromName"].forEach(id=> $(id).addEventListener("input", render));
+    $("buyBtn").addEventListener("click", ()=>{
+      if(!code) code = newCode();
+      const gift = {code, amount, to: $("toName").value.trim(), from: $("fromName").value.trim(), ts: Date.now()};
+      try{
+        const all = JSON.parse(localStorage.getItem("bb_gifts")||"[]"); all.push(gift);
+        localStorage.setItem("bb_gifts", JSON.stringify(all));
+      }catch(e){}
+      render();
+      $("giftMsg").innerHTML = "✅ Сертифікат <b>" + code + "</b> на $" + amount + " оформлено! Надішли його кнопкою Telegram або просто скопіюй код.";
+    });
+    $("shareBtn").addEventListener("click", ()=>{
+      if(!code) $("buyBtn").click();
+      const text = "🎁 Подарунковий сертифікат Booking Club на $" + amount + " — код " + code + ". Обери салон і забронюй тут:";
+      window.open("https://t.me/share/url?url=" + encodeURIComponent("https://bookingclub.beauty") + "&text=" + encodeURIComponent(text), "_blank");
+    });
+    $("copyBtn").addEventListener("click", async ()=>{
+      if(!code) $("buyBtn").click();
+      try{ await navigator.clipboard.writeText(code); $("giftMsg").textContent = "Код " + code + " скопійовано ✅"; }catch(e){}
+    });
+    render();
+  </script>
+</body>
+</html>

@@ -415,6 +415,25 @@
             </div>
           </div>
         </div>
+
+        <div class="glass" style="margin-top:14px">
+          <div class="pad">
+            <div class="kicker">⭐ Відгуки клієнтів</div>
+            <div id="reviewsList" style="margin-top:12px"></div>
+            <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,.08); padding-top:14px">
+              <div class="kicker">Була тут? Залиш відгук</div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
+                <input id="revName" placeholder="Твоє імʼя" style="flex:1; min-width:140px; padding:11px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:inherit">
+                <select id="revStars" style="padding:11px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(20,20,28,.95); color:#f4f3f8">
+                  <option value="5">★★★★★ 5</option><option value="4">★★★★ 4</option><option value="3">★★★ 3</option><option value="2">★★ 2</option><option value="1">★ 1</option>
+                </select>
+              </div>
+              <textarea id="revText" placeholder="Як пройшов візит?" rows="2" style="width:100%; margin-top:10px; padding:11px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:inherit; font-family:inherit"></textarea>
+              <button class="btn" id="revSend" type="button" style="margin-top:10px">Надіслати відгук</button>
+              <div class="muted" style="font-size:12px; margin-top:8px">Відгуки з цього пристрою зберігаються одразу. Далі підключимо авто-запит відгуку після кожного візиту.</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1224,6 +1243,44 @@ bookBtn.addEventListener("click", () => {
     }
     scan();
     if("MutationObserver" in window){ var t; new MutationObserver(function(){ clearTimeout(t); t = setTimeout(scan, 150); }).observe(document.body, {childList:true, subtree:true}); }
+  })();
+  </script>
+
+  <script>
+  /* Reviews: render + add (local) */
+  (function(){
+    function esc(s){ return String(s||"").replace(/[&<>"']/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]; }); }
+    function stars(n){ return "★★★★★".slice(0,n) + "☆☆☆☆☆".slice(0,5-n); }
+    function render(){
+      var id = new URLSearchParams(location.search).get("id");
+      var box = document.getElementById("reviewsList");
+      if(!box || !id || !window.REVIEWS) return false;
+      var mine = [];
+      try{ mine = JSON.parse(localStorage.getItem("bb_reviews_" + id) || "[]"); }catch(e){}
+      var all = mine.concat(window.REVIEWS[id] || []);
+      if(!all.length){ box.innerHTML = '<div class="muted">Ще немає відгуків — стань першою!</div>'; return true; }
+      box.innerHTML = all.map(function(r){
+        return '<div style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,.07)"><div style="display:flex; justify-content:space-between; gap:10px"><b>' + esc(r.name) + '</b><span style="color:#ffd27a">' + stars(r.stars||5) + '</span></div><div class="muted" style="margin-top:4px; line-height:1.5">' + esc(r.text) + '</div></div>';
+      }).join("");
+      return true;
+    }
+    var tries = 0;
+    var iv = setInterval(function(){ if(render() || ++tries > 20) clearInterval(iv); }, 300);
+    document.addEventListener("click", function(e){
+      if(e.target && e.target.id === "revSend"){
+        var id = new URLSearchParams(location.search).get("id");
+        var name = document.getElementById("revName").value.trim();
+        var text = document.getElementById("revText").value.trim();
+        var st = parseInt(document.getElementById("revStars").value, 10) || 5;
+        if(!name || !text){ e.target.animate([{transform:"translateX(0)"},{transform:"translateX(-5px)"},{transform:"translateX(5px)"},{transform:"translateX(0)"}], {duration:250}); return; }
+        var mine = [];
+        try{ mine = JSON.parse(localStorage.getItem("bb_reviews_" + id) || "[]"); }catch(err){}
+        mine.unshift({name:name, stars:st, text:text});
+        try{ localStorage.setItem("bb_reviews_" + id, JSON.stringify(mine)); }catch(err){}
+        document.getElementById("revText").value = "";
+        render();
+      }
+    });
   })();
   </script>
 </body>

@@ -587,6 +587,38 @@
     };
   }
 
+
+  // ===== REVIEWS (демо-відгуки; нові збираються автоматично після візитів) =====
+  window.REVIEWS = {
+    "romanukova-nails": [
+      { name:"Олена", stars:5, text:"Найкращий манікюр у Монреалі, тримається 4 тижні без сколів!" },
+      { name:"Marie", stars:5, text:"Super clean and very professional. My go-to nail studio." }
+    ],
+    "iryna-stovban-home": [
+      { name:"Катя", stars:5, text:"Дуже делікатно і стерильно. Рекомендую!" }
+    ],
+    "maison-atelier": [
+      { name:"Sophie", stars:5, text:"Best haircut in Montreal, period." }
+    ],
+    "kalyna-beauty": [
+      { name:"Ірина", stars:5, text:"Вії — просто вау, саме як я хотіла 💛" },
+      { name:"Anna", stars:5, text:"Делала брови — очень аккуратно и совсем не больно." }
+    ],
+    "mira-beauty-lab": [
+      { name:"Ольга", stars:5, text:"Косметолог супер, кожа после чистки сияет." }
+    ],
+    "kozak-barbershop": [
+      { name:"Дмитро", stars:5, text:"Фейд ідеальний. Тепер тільки сюди." },
+      { name:"Alex", stars:4, text:"Great barbers. Book ahead — busy on weekends." }
+    ],
+    "atelier-color-lab": [
+      { name:"Emma", stars:5, text:"Balayage came out exactly like my reference photo." }
+    ],
+    "gentlemen-atelier": [
+      { name:"Максим", stars:5, text:"Лучший барбер в центре, запись за день." }
+    ]
+  };
+
   window.bb = window.bb || {};
   window.bb.util = {
     haversineKm,
