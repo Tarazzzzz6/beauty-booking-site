@@ -104,6 +104,33 @@
         </table>
       </div>
 
+      <!-- ВИРУЧКА -->
+      <div class="card" id="revenueCard" style="display:none">
+        <div class="kicker">Виручка · за візитами «клієнт прийшов» ✅</div>
+        <div class="stats" style="margin-top:12px">
+          <div class="stat"><b id="revWeek">—</b><span>за 7 днів</span></div>
+          <div class="stat"><b id="revMonth">—</b><span>за 30 днів</span></div>
+          <div class="stat"><b id="revTotal">—</b><span>усього</span></div>
+          <div class="stat"><b id="revCounts" style="font-size:17px">—</b><span>записів · ✅ · 🚫 · 🔜</span></div>
+        </div>
+        <p class="muted" style="font-size:12.5px;margin:10px 0 0">Сума цін візитів, які салон відмітив як «прийшов». Ціна береться із запису бронювання, ваших цін нижче або картки салону.</p>
+      </div>
+
+      <!-- КЛІЄНТИ САЛОНУ -->
+      <div class="card" id="clientsCard" style="display:none">
+        <div class="kicker">Клієнти салону</div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Клієнт</th><th>Телефон</th><th>Візитів</th><th>✅</th><th>🚫</th><th>Останній візит</th><th>Витрачено</th></tr></thead>
+            <tbody id="clientsBody"></tbody>
+          </table>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn ghost" id="csvClientsBtn" type="button">⬇️ CSV клієнтів</button>
+          <button class="btn ghost" id="csvBookingsBtn" type="button">⬇️ CSV записів</button>
+        </div>
+      </div>
+
       <div class="tabs">
         <button class="tab on" data-tab="bookings" type="button">📖 Бронювання</button>
         <button class="tab" data-tab="schedule" type="button">🗓 Графік</button>
@@ -264,7 +291,7 @@
       const bookings = cab.bookings || [];
       bl.innerHTML = bookings.length ? bookings.map(b =>
         '<div class="bk"><div class="t">📅 ' + esc(b.dateISO) + ' о ' + esc(b.time) + ' — ' + esc(b.serviceName || "Послуга") + '</div>' +
-        '<div class="muted" style="margin-top:3px">👤 ' + esc(b.name) + (b.phone ? ' · ' + esc(b.phone) : '') + ' · 🆔 ' + esc(b.id) + '</div>' +
+        '<div class="muted" style="margin-top:3px">👤 ' + esc(b.name) + (b.phone ? ' · ' + esc(b.phone) : '') + ' · 🆔 ' + esc(b.id) + (b.price ? ' · 💵 $' + b.price : '') + '</div>' +
         '<div style="margin-top:6px">' +
           (b.status === 'attended' ? '<span class="badge dep">✅ клієнт прийшов</span> ' : b.status === 'noshow' ? '<span class="badge" style="border-color:rgba(255,122,122,.5);color:#ff7a7a">🚫 no-show</span> ' : '') +
           (b.depositPaid ? '<span class="badge dep">💰 депозит оплачено</span> ' : (b.depositRequested ? '<span class="badge">🛡️ депозит: на місці</span> ' : '')) +
@@ -298,6 +325,29 @@
         } else {
           pCard.style.display = "none";
         }
+      }
+
+      // --- Виручка ---
+      const rc = $("revenueCard");
+      if(rc && cab.revenue){
+        rc.style.display = "";
+        $("revWeek").textContent = "$" + (cab.revenue.week || 0);
+        $("revMonth").textContent = "$" + (cab.revenue.month || 0);
+        $("revTotal").textContent = "$" + (cab.revenue.total || 0);
+        const cn = cab.counts || {};
+        $("revCounts").textContent = (cn.booked || 0) + " · " + (cn.attended || 0) + " · " + (cn.noshow || 0) + " · " + (cn.upcoming || 0);
+      }
+
+      // --- Клієнти салону ---
+      const cc = $("clientsCard");
+      if(cc){
+        const cls = Array.isArray(cab.clients) ? cab.clients : [];
+        cc.style.display = "";
+        $("clientsBody").innerHTML = cls.length ? cls.map(c =>
+          '<tr><td><b>' + esc(c.name || "—") + '</b>' + (c.chatId ? ' <span class="badge tg">📲 TG</span>' : '') + '</td>' +
+          '<td>' + esc(c.phone || "—") + '</td><td>' + (c.visits || 0) + '</td><td>' + (c.attended || 0) + '</td><td>' + (c.noshow || 0) + '</td>' +
+          '<td>' + esc(c.lastVisit || "—") + '</td><td>$' + (c.spent || 0) + '</td></tr>'
+        ).join("") : '<tr><td colspan="7" class="muted">Поки немає клієнтів у базі записів.</td></tr>';
       }
 
       // --- Ціни ---
@@ -374,6 +424,29 @@
       $("saveBtn").disabled = false;
       if(ok){ $("saveMsg").innerHTML = '<span class="ok">Ціни збережено ✓ Вони вже діють на сайті.</span>'; if(cab && j) cab.overrides = j.prices || prices; }
       else $("saveMsg").innerHTML = '<span class="err">' + (j && j.error === "listing_not_linked" ? "Салон ще не привʼязано до каталогу." : "Не вдалося зберегти.") + '</span>';
+    });
+
+    // ===== CSV-експорт (клієнти і записи — з уже завантажених даних кабінету) =====
+    function downloadCsv(filename, rows){
+      const q = v => { const s = String(v ?? ""); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+      const text = rows.map(r => r.map(q).join(";")).join("\r\n");
+      const blob = new Blob(["\uFEFF" + text], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ try{ URL.revokeObjectURL(a.href); a.remove(); }catch(e){} }, 400);
+    }
+    $("csvClientsBtn").addEventListener("click", ()=>{
+      const rows = [["Ім'я", "Телефон", "Telegram ID", "Візитів", "Прийшов", "No-show", "Останній візит", "Витрачено $"]];
+      ((cab && cab.clients) || []).forEach(c => rows.push([c.name || "", c.phone || "", c.chatId || "", c.visits || 0, c.attended || 0, c.noshow || 0, c.lastVisit || "", c.spent || 0]));
+      downloadCsv("booking-club-clients.csv", rows);
+    });
+    $("csvBookingsBtn").addEventListener("click", ()=>{
+      const rows = [["Код", "Дата", "Час", "Послуга", "Клієнт", "Телефон", "Статус", "Ціна $", "Депозит оплачено"]];
+      ((cab && cab.bookings) || []).forEach(b => rows.push([b.id, b.dateISO, b.time, b.serviceName || "", b.name || "", b.phone || "", b.status || "booked", (b.price == null ? "" : b.price), b.depositPaid ? "так" : ""]));
+      downloadCsv("booking-club-bookings.csv", rows);
     });
 
     // ===== Автовхід за збереженою сесією =====

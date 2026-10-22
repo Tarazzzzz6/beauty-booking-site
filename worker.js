@@ -1,5 +1,19 @@
 // ============================================================
-// Booking Club — Cloudflare Worker v5
+// Booking Club — Cloudflare Worker v6
+// ------------------------------------------------------------
+// Нове у v6:
+// 10) Кабінет — глибина: /cabinet/data тепер повертає revenue
+//     {week,month,total} (сума цін візитів attended; ціна — priceFrom
+//     із запису, далі оверрайди цін салону, далі картка динамічного
+//     лістинга), counts {booked,attended,noshow,upcoming} і clients[]
+//     (агрегація клієнтів салону: візити, attended/noshow, останній
+//     візит, витрачено). У запис бронювання тепер зберігаються
+//     serviceId і priceFrom із payload сайту.
+// 11) Telegram Mini App: GET /setup-menu реєструє кнопку-меню бота
+//     (web_app → bookingclub.beauty); звичайний /start без параметрів
+//     додатково шле інлайн-кнопку «📱 Відкрити каталог» (web_app).
+// 12) Автопости в канал: якщо задано env CHANNEL_ID, публікація
+//     нового лістинга (✅ у флоу заявок) постить анонс у канал.
 // ------------------------------------------------------------
 // Нове у v5:
 // 8) Самопідключення салонів: бот-майстер /join (або /start join) —
@@ -47,6 +61,8 @@
 // - TG_BOT_TOKEN (або BOT_TOKEN), TG_CHAT_ID (або CHAT_ID) — власник платформи
 // - KV binding BC_KV, webhook на цей воркер
 // - Опційно: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET; Cron Trigger (hourly)
+// - Опційно: CHANNEL_ID (автопости нових салонів у Telegram-канал),
+//   SETUP_KEY (захист GET /setup-menu; без нього — ?owner=<chatId власника>)
 // ============================================================
 
 const BK_PREFIX = "bk|";
@@ -163,7 +179,7 @@ export default {
       try { peek = await request.clone().json(); } catch { /* not json */ }
       if (peek && typeof peek.update_id === "number") {
         if (!BOT_TOKEN) return new Response("ok", { headers: corsHeaders });
-        const wctx = { KV, token: BOT_TOKEN, ownerChat: OWNER_CHAT };
+        const wctx = { KV, token: BOT_TOKEN, ownerChat: OWNER_CHAT, channelId: (env && env.CHANNEL_ID) || "" };
         // Інлайн-кнопки: майстер (wiz:), публікація (pub:/rej:), відвідуваність (att:)
         if (peek.callback_query) {
           try { await handleCallbackQuery(peek.callback_query, wctx); } catch { /* ignore */ }
@@ -195,6 +211,14 @@ export default {
           if (msg.text) {
             const reply = await handleBotCommand(textIn, chatId, KV, tgSend, OWNER_CHAT);
             if (reply) await tgSend(chatId, reply);
+            // Mini App: звичайний /start без параметрів — інлайн-кнопка каталогу (web_app)
+            if (wCmd === "/start" && !wArg) {
+              try {
+                await tgSendKb(BOT_TOKEN, chatId, "📱 Каталог салонів Монреаля — прямо тут, у Telegram:", [[
+                  { text: "📱 Відкрити каталог", web_app: { url: "https://bookingclub.beauty" } },
+                ]]);
+              } catch { /* ignore */ }
+            }
           }
         }
         return new Response("ok", { headers: corsHeaders });
@@ -456,6 +480,69 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       const chatId = sess.chatId;
       const listingId = await salonListingId(KV, chatId);
       const mine = await salonBookings(KV, chatId);
+      // --- v6: виручка / лічильники / клієнти по ВСІХ записах салону ---
+      // Ціна візиту: priceFrom із запису → оверрайди цін (ovr:) → картка
+      // динамічного лістинга (lst:). Для записів без жодного джерела ціни
+      // price = null — у виручку вони не потрапляють.
+      let cabOverrides = {};
+      if (listingId) {
+        try {
+          const rawO = await KV.get("ovr:" + sanitizeListingKey(listingId));
+          if (rawO) cabOverrides = JSON.parse(rawO) || {};
+        } catch { /* ignore */ }
+      }
+      const dynSvc = {};
+      if (listingId) {
+        try {
+          const lrec = await readBookingRec(KV, LST_PREFIX + listingId);
+          for (const s of (lrec && lrec.services) || []) {
+            if (s && s.serviceId && Number(s.from) > 0) dynSvc[s.serviceId] = Number(s.from);
+          }
+        } catch { /* ignore */ }
+      }
+      const priceById = {};
+      const counts = { booked: 0, attended: 0, noshow: 0, upcoming: 0 };
+      const revenue = { week: 0, month: 0, total: 0 };
+      const todayISO = torontoTodayISO();
+      const weekFrom = addDaysISO(todayISO, -6);    // останні 7 днів включно з сьогодні
+      const monthFrom = addDaysISO(todayISO, -29); // останні 30 днів
+      const nowMs = Date.now();
+      const clientMap = new Map();
+      for (const b of mine) {
+        const price = visitPrice(b, cabOverrides, dynSvc);
+        priceById[b.id] = price;
+        const st = b.status || "booked";
+        counts.booked += 1;
+        if (st === "attended") counts.attended += 1;
+        else if (st === "noshow") counts.noshow += 1;
+        else {
+          const v = torontoVisitMs(b.dateISO, b.time);
+          if (v !== null && v >= nowMs) counts.upcoming += 1;
+        }
+        if (st === "attended" && price !== null) {
+          revenue.total += price;
+          if (b.dateISO >= monthFrom) revenue.month += price;
+          if (b.dateISO >= weekFrom) revenue.week += price;
+        }
+        const phoneKey = String(b.phone || "").replace(/\D/g, "");
+        const ckey = phoneKey || (b.clientChatId ? "tg:" + b.clientChatId : (b.name ? "n:" + String(b.name).trim().toLowerCase() : ""));
+        if (ckey) {
+          let c = clientMap.get(ckey);
+          if (!c) { c = { name: "", phone: "", chatId: "", visits: 0, attended: 0, noshow: 0, lastVisit: "", spent: 0, _w: "" }; clientMap.set(ckey, c); }
+          c.visits += 1;
+          if (st === "attended") { c.attended += 1; if (price !== null) c.spent += price; }
+          else if (st === "noshow") c.noshow += 1;
+          const when = (b.dateISO || "") + " " + (b.time || "");
+          if (!c._w || when > c._w) { c._w = when; c.lastVisit = b.dateISO || ""; if (b.name) c.name = b.name; }
+          if (b.phone && !c.phone) c.phone = b.phone;
+          if (b.name && !c.name) c.name = b.name;
+          if (b.clientChatId) c.chatId = String(b.clientChatId);
+        }
+      }
+      const clients = Array.from(clientMap.values())
+        .map(c => ({ name: c.name, phone: c.phone, chatId: c.chatId, visits: c.visits, attended: c.attended, noshow: c.noshow, lastVisit: c.lastVisit, spent: c.spent }))
+        .sort((a, b) => (b.visits - a.visits) || (b.spent - a.spent))
+        .slice(0, 200);
       const fromISO = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
       const bookings = mine
         .filter(b => b.dateISO >= fromISO)
@@ -468,6 +555,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           clientLinked: !!b.clientChatId, depositPaid: !!b.depositPaid,
           depositRequested: !!b.depositRequested,
         }));
+      for (const b of bookings) b.price = (priceById[b.id] !== undefined ? priceById[b.id] : null);
       let closed = [];
       try {
         const raw = await KV.get("sched:" + chatId);
@@ -485,7 +573,24 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       if (chatId === OWNER_CHAT) {
         try { platform = { listings: await platformStats(KV) }; } catch { platform = { listings: [] }; }
       }
-      return jsonResp({ ok: true, chatId, listingId: listingId || "", bookings, closed, overrides, platform });
+      return jsonResp({ ok: true, chatId, listingId: listingId || "", bookings, closed, overrides, platform, revenue, counts, clients });
+    }
+
+    // ---------- Mini App: реєстрація кнопки-меню бота (web_app) ----------
+    // Одноразова дія власника: GET /setup-menu?owner=<chatId власника>
+    // або ?key=<SETUP_KEY>, якщо секрет SETUP_KEY заданий. Кнопка «Записатись»
+    // з'явиться у бота біля поля вводу і відкриватиме сайт усередині Telegram.
+    if (request.method === "GET" && url.pathname === "/setup-menu") {
+      const setupKey = (env && env.SETUP_KEY) || "";
+      const allowed = setupKey
+        ? url.searchParams.get("key") === setupKey
+        : url.searchParams.get("owner") === OWNER_CHAT;
+      if (!allowed) return jsonResp({ error: "forbidden" }, 403);
+      if (!BOT_TOKEN) return jsonResp({ error: "bot_token_missing" }, 503);
+      const res = await tgApi(BOT_TOKEN, "setChatMenuButton", {
+        menu_button: { type: "web_app", text: "Записатись", web_app: { url: "https://bookingclub.beauty" } },
+      });
+      return jsonResp({ ok: !!res, result: res === undefined ? null : res });
     }
 
     // ---------- Нагадування + відвідуваність: ручний запуск scan (ідемпотентний) ----------
@@ -595,7 +700,10 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           chatId: salonChatEarly,
           dateISO: bk.dateISO,
           time: bk.time,
+          serviceId: String(data?.serviceId || ""),
           serviceName: bk.serviceName,
+          priceFrom: (data?.priceFrom != null && Number.isFinite(Number(data.priceFrom)) && Number(data.priceFrom) > 0)
+            ? Number(data.priceFrom) : null,
           name, phone,
           status: "booked",
           depositRequested: !!(data?.deposit && Number(data.deposit) > 0),
@@ -880,6 +988,48 @@ async function salonListingId(KV, chatId) {
     if (raw) return (JSON.parse(raw) || {})[chatId] || "";
   } catch { /* ignore */ }
   return "";
+}
+
+// ---------- Кабінет: ціна візиту, дати (America/Toronto) ----------
+// serviceId запису: прямо з payload (нові записи) або за назвою послуги
+// (старі записи без serviceId — назви у сайті = українські лейбли каталогу).
+function recServiceId(rec) {
+  if (rec && rec.serviceId) return String(rec.serviceId);
+  const name = String((rec && rec.serviceName) || "").trim().toLowerCase();
+  if (!name) return "";
+  const m = SVC_CATALOG.find(s => s.ua.toLowerCase() === name);
+  return m ? m.id : "";
+}
+
+// Ціна візиту для виручки: 1) priceFrom із запису; 2) оверрайд ціни салону;
+// 3) ціна з картки динамічного лістинга. Немає жодного джерела → null.
+function visitPrice(rec, overrides, dynSvc) {
+  const pf = Number(rec && rec.priceFrom);
+  if (Number.isFinite(pf) && pf > 0) return pf;
+  const sid = recServiceId(rec || {});
+  if (sid) {
+    const o = overrides && overrides[sid];
+    if (o && Number(o.from) > 0) return Number(o.from);
+    if (dynSvc && Number(dynSvc[sid]) > 0) return Number(dynSvc[sid]);
+  }
+  return null;
+}
+
+function torontoTodayISO() {
+  try {
+    const s = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Toronto", year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date());
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  } catch { /* ignore */ }
+  return new Date().toISOString().slice(0, 10);
+}
+
+function addDaysISO(iso, days) {
+  const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return iso;
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]) + days * 86400000);
+  return d.toISOString().slice(0, 10);
 }
 
 // ---------- Кабінет салону ----------
@@ -1519,6 +1669,25 @@ async function handleCallbackQuery(cq, ctx) {
           "/cancel BK-XXXXXX — скасувати запис\n" +
           "/close 2026-11-03 — закрити день · /open — відкрити\n" +
           "Кабінет (графік і ціни): bookingclub.beauty/admin", null);
+      }
+      // Автопост у Telegram-канал платформи (тільки якщо задано CHANNEL_ID)
+      if (ctx.channelId) {
+        try {
+          const placeLine = listing.type === "home"
+            ? (listing.district || listing.address || "")
+            : (listing.address || "");
+          const svcLines = (listing.services || [])
+            .map(s => "• " + svcLabel(s.serviceId) + " — $" + (s.from != null ? s.from : "—"))
+            .join("\n");
+          await tgSendKb(token, ctx.channelId,
+            "🆕 Новий салон на Booking Club!\n\n" +
+            "🏠 " + (listing.name || "Салон") +
+            (placeLine ? "\n📍 " + placeLine + ", Montréal" : "") +
+            (svcLines ? "\n\n💅 Послуги:\n" + svcLines : "") +
+            "\n\nЗапис онлайн — за посиланням 👇", [[
+              { text: "📅 Записатись", url: "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(listing.id) },
+            ]]);
+        } catch { /* канал — додаткова вітрина, публікацію не блокуємо */ }
       }
     } else {
       await tgAnswerCb(token, cq.id, "Відхилено");

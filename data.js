@@ -3,6 +3,33 @@
   // ===== Worker endpoint (fallback used by profile booking) =====
   window.WORKER_URL = window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
+  // ===== Telegram Mini App =====
+  // Якщо сайт відкрито всередині Telegram (кнопка-меню бота або кнопка
+  // «Відкрити каталог») — підвантажуємо telegram-web-app.js і кажемо
+  // Telegram, що застосунок готовий і його можна розгорнути на весь екран.
+  // У звичайному браузері жодного зайвого запиту і жодних змін поведінки.
+  (function(){
+    try{
+      var inTg = !!(window.Telegram && window.Telegram.WebApp) ||
+        !!window.TelegramWebviewProxy ||
+        /tgWebAppData=/.test((window.location && window.location.hash) || "") ||
+        /Telegram/i.test((window.navigator && window.navigator.userAgent) || "");
+      if(!inTg) return;
+      var boot = function(){
+        try{
+          var wa = window.Telegram && window.Telegram.WebApp;
+          if(wa){ wa.ready(); wa.expand(); }
+        }catch(e){}
+      };
+      if(window.Telegram && window.Telegram.WebApp){ boot(); return; }
+      var s = document.createElement("script");
+      s.src = "https://telegram.org/js/telegram-web-app.js";
+      s.async = true;
+      s.onload = boot;
+      (document.head || document.documentElement).appendChild(s);
+    }catch(e){}
+  })();
+
   // ---- SERVICES ----
   window.SERVICES = [
     { id:"manicure", ua:"Манікюр", en:"Manicure", ru:"Маникюр", icon:"💅" },
