@@ -654,3 +654,44 @@
     conciergeSuggest
   };
 })();
+
+/* ===== Календар бронювань (KV на воркері) =====
+   fetchTimes(listingId, dateISO) — Promise<["HH:MM", ...]> зайнятих часів.
+   Кеш у межах сесії сторінки; при помилці мережі повертає [] (слоти показуються як раніше).
+   cachedTimes(...) — синхронний доступ до вже завантажених даних (null = ще не завантажено). */
+(function(){
+  var cache = {}; // "listingId|dateISO" -> { at, times:null|[], promise }
+  function fetchTimes(listingId, dateISO, force){
+    if(!listingId || !/^\d{4}-\d{2}-\d{2}$/.test(dateISO || "")) return Promise.resolve([]);
+    var k = listingId + "|" + dateISO;
+    var hit = cache[k];
+    if(hit && !force) return hit.promise;
+    if(hit && force && (Date.now() - hit.at) < 15000) return hit.promise;
+    var entry = { at: Date.now(), times: null, promise: null };
+    var url = (window.WORKER_URL || "") + "/booked?listing=" + encodeURIComponent(listingId) + "&date=" + encodeURIComponent(dateISO);
+    entry.promise = fetch(url)
+      .then(function(r){ return r.ok ? r.json() : { times: [] }; })
+      .then(function(j){
+        entry.times = (j && Array.isArray(j.times)) ? j.times.slice() : [];
+        return entry.times;
+      })
+      .catch(function(){ entry.times = []; return entry.times; });
+    cache[k] = entry;
+    return entry.promise;
+  }
+  function cachedTimes(listingId, dateISO){
+    var e = cache[listingId + "|" + dateISO];
+    return e ? e.times : null;
+  }
+  function markBooked(listingId, dateISO, time){
+    if(!listingId || !dateISO || !time) return;
+    var k = listingId + "|" + dateISO;
+    var e = cache[k];
+    if(!e){
+      cache[k] = { at: Date.now(), times: [time], promise: Promise.resolve([time]) };
+      return;
+    }
+    if(e.times && e.times.indexOf(time) === -1){ e.times.push(time); e.times.sort(); }
+  }
+  window.bbBooked = { fetchTimes: fetchTimes, cachedTimes: cachedTimes, markBooked: markBooked };
+})();

@@ -810,15 +810,56 @@
       document.getElementById("bbChosenServiceId").value = String(st.serviceId);
     }
 
+    // KV-календар: підтягнути зайняті часи для видимих днів і перебудувати доступність
+    let bookedRefreshRunning = false;
+    function maybeRefreshBooked(){
+      if (bookedRefreshRunning || !window.bbBooked || !st.listing) return;
+      const lid = st.listing.id;
+      const missing = [...st.dayMap.keys()].filter(d => window.bbBooked.cachedTimes(lid, d) === null);
+      if (!missing.length) return;
+      bookedRefreshRunning = true;
+      Promise.all(missing.map(d => window.bbBooked.fetchTimes(lid, d))).then(()=>{
+        bookedRefreshRunning = false;
+        if (!st.listing || st.listing.id !== lid) return;
+        const keepDay = st.dayISO, keepSlot = st.slotISO;
+        buildAvailability();
+        if (keepDay && st.enabledDays.has(keepDay)) st.dayISO = keepDay;
+        if (keepSlot && st.dayISO && (st.dayMap.get(st.dayISO)||[]).includes(keepSlot)){
+          st.slotISO = keepSlot;
+          document.getElementById("bbChosenISO").value = keepSlot;
+        } else if (keepSlot){
+          st.slotISO = null;
+          document.getElementById("bbChosenISO").value = "";
+          stopHold();
+        }
+        renderCalendar();
+        renderTimes();
+        renderReceipt();
+      }).catch(()=>{ bookedRefreshRunning = false; });
+    }
+
     function buildAvailability(){
       const l = st.listing;
       const slots = getSlotsForService(l, st.serviceId);
 
       st.dayMap = splitByDay(slots);
+
+      // прибрати слоти, уже заброньовані іншими клієнтами (KV-календар)
+      if (window.bbBooked && l){
+        for (const [dISO, arr] of [...st.dayMap.entries()]){
+          const bt = window.bbBooked.cachedTimes(l.id, dISO);
+          if (bt && bt.length){
+            const f = arr.filter(iso => !bt.includes(iso.slice(11,16)));
+            if (f.length) st.dayMap.set(dISO, f); else st.dayMap.delete(dISO);
+          }
+        }
+      }
       st.enabledDays = new Set(st.dayMap.keys());
 
       const hint = document.getElementById("bbNoSlotsHint");
       hint.style.display = (slots.length ? "none" : "block");
+
+      maybeRefreshBooked();
     }
 
     function renderCalendar(){
@@ -1081,6 +1122,8 @@
           priceFrom: svc?.from ?? null,
           priceTo: svc?.to ?? null,
           datetimeISO: st.slotISO,
+          dateISO: String(st.slotISO || "").slice(0,10),
+          time: String(st.slotISO || "").slice(11,16),
           listingId: st.listing.id,
           listingName: st.listing.name,
           chatId: st.listing.telegramChatId || "",
@@ -1111,6 +1154,7 @@
           });
           if (!res.ok) throw new Error("Booking failed");
 
+          if (window.bbBooked) window.bbBooked.markBooked(st.listing.id, payload.dateISO, payload.time);
           stopHold();
           document.getElementById("bbSub").textContent = "You're all set. We'll see you soon ✨";
           btn.textContent = "Booked ✓";

@@ -2763,18 +2763,22 @@ function haptic(ms=12){
       // 3) legacy slots format: listing.slots = [{serviceId,dateISO,time}, ...]
       const sid = serviceId || (listing?.services?.[0]?.serviceId || null);
 
+      // зайняті часи з KV-календаря (якщо вже завантажені для цієї дати)
+      const bookedTimes = (window.bbBooked && listing && listing.id) ? window.bbBooked.cachedTimes(listing.id, dateISO) : null;
+      const minusBooked = (arr)=> (bookedTimes && bookedTimes.length) ? arr.filter(t => !bookedTimes.includes(t)) : arr;
+
       // (1) ISO slots by service
       if(listing?.availabilityByService && sid && Array.isArray(listing.availabilityByService[sid])){
         const arr = listing.availabilityByService[sid]
           .filter(s => typeof s === "string" && s.startsWith(dateISO+"T"))
           .map(s => s.slice(11,16))
           .filter(Boolean);
-        if(arr.length) return arr;
+        if(arr.length) return minusBooked(arr);
       }
 
       // (2) date -> times map
       if(listing?.availability && Array.isArray(listing.availability[dateISO]) && listing.availability[dateISO].length){
-        return listing.availability[dateISO].slice().filter(Boolean);
+        return minusBooked(listing.availability[dateISO].slice().filter(Boolean));
       }
 
       // (3) legacy object slots
@@ -2785,7 +2789,7 @@ function haptic(ms=12){
         .map(x => x.time)
         .filter(Boolean)
         .sort();
-      if(legacy.length) return legacy;
+      if(legacy.length) return minusBooked(legacy);
 
       // (4) Demo fallback: always give a few random times so UX never looks broken
       const pad = (n)=> String(n).padStart(2,"0");
@@ -2814,7 +2818,7 @@ function haptic(ms=12){
           listing.availabilityByService[sid].push(`${dateISO}T${t}:00`);
         }
       }
-      return times;
+      return minusBooked(times);
     }
 
     function renderTimeGrid(){
@@ -2849,6 +2853,21 @@ function haptic(ms=12){
       }
       renderTimeGrid();
       openOverlay("timeOverlay");
+
+      // підтягнути зайняті слоти з KV-календаря і оновити сітку
+      if(window.bbBooked && booking.listing && booking.dateISO){
+        const lid = booking.listing.id, dISO = booking.dateISO;
+        window.bbBooked.fetchTimes(lid, dISO, true).then(function(){
+          if(!booking.listing || booking.listing.id !== lid || booking.dateISO !== dISO) return;
+          booking.times = listAvailableTimes(booking.listing, booking.serviceId, dISO);
+          if(booking.time && booking.times.indexOf(booking.time) === -1){
+            booking.time = null;
+            $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
+            validateBooking();
+          }
+          renderTimeGrid();
+        }).catch(function(){});
+      }
     }
 
     function buildMonthGrid(cursor){
@@ -2911,6 +2930,7 @@ function haptic(ms=12){
           if(isPast) return;
           haptic(10);
           booking.dateISO = iso;
+          if(window.bbBooked && booking.listing) window.bbBooked.fetchTimes(booking.listing.id, iso);
           $("#dateVal").textContent = formatDateShort(iso);
           booking.time = null;
           $("#timeVal").textContent = (state.lang==="uk" ? "Tap to choose" : "Tap to choose");
@@ -3282,6 +3302,7 @@ END:VCALENDAR`;
           throw new Error("Worker error: " + res.status);
         }
 
+        if(window.bbBooked) window.bbBooked.markBooked(listing.id, dateISO, time);
         toast(T[state.lang].toastSent);
         closeModal();
 
