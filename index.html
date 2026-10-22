@@ -1430,6 +1430,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap">
             <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank" rel="noopener">Open sample profile →</a>
+            <a class="pill" href="./join.html">➕ Додати свій салон</a>
             <a class="pill" href="./business.html">💎 Для салонів — тарифи</a>
             <a class="pill" href="./admin.html">🔐 Кабінет салону</a>
             <a class="pill" href="./gift.html">🎁 Сертифікат у подарунок</a>
@@ -3080,7 +3081,18 @@ END:VCALENDAR`;
         duration: dur ?? null,
         profileUrl,
         mapsUrl,
-        lang: state.lang
+        lang: state.lang,
+        message:
+          "✨ Нове бронювання — " + listing.name + "\n" +
+          "💅 Послуга: " + svcName + "\n" +
+          "📅 " + dateISO + " о " + time + (dur ? " · " + dur + " хв" : "") + "\n" +
+          "💵 Ціна від: $" + (priceFrom ?? "—") + "\n" +
+          (((document.getElementById("depToggle") && document.getElementById("depToggle").checked)) ? "🛡️ Депозит проти no-show: $10 (клієнт погодився)\n" : "") +
+          "👤 Клієнт: " + name + "\n" +
+          "📞 " + phone + (email ? "\n✉️ " + email : "") + "\n" +
+          "📍 " + listing.address + "\n" +
+          "🔗 Профіль: " + profileUrl + "\n" +
+          "🗺 Карта: " + mapsUrl
       };
 
       const btn = $("#submitBooking");

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Додати салон — Booking Club · Montréal</title>
+  <meta name="description" content="Підключи свій салон або себе як майстра до Booking Club у Монреалі. Перший місяць — безкоштовно." />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;--ok:#20e3a5;--max:880px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(800px 600px at 85% 15%, rgba(255,210,122,.10), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:20px 18px 80px}
+    .back{display:inline-flex;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    h1{font-family:"Playfair Display",serif;font-size:36px;margin:24px 0 8px;line-height:1.12}
+    h1 span{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .muted{color:var(--muted)}
+    .free{display:inline-block;margin-top:10px;padding:9px 14px;border-radius:999px;background:rgba(32,227,165,.13);border:1px solid rgba(32,227,165,.4);color:var(--ok);font-weight:800;font-size:13.5px}
+    .card{border:1px solid var(--stroke);background:var(--card);border-radius:24px;padding:20px;margin-top:18px}
+    .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    label.f{display:block;font-size:13px;color:var(--muted);margin-top:14px}
+    input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;margin-top:6px;padding:13px 14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(20,20,28,.9);color:var(--text);font:inherit}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:640px){.row{grid-template-columns:1fr} h1{font-size:29px}}
+    .checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .chk{display:inline-flex;gap:8px;align-items:center;padding:9px 13px;border-radius:999px;border:1px solid var(--stroke);background:rgba(255,255,255,.04);cursor:pointer;font-size:13.5px;font-weight:600}
+    .chk input{accent-color:#ffd27a;width:17px;height:17px}
+    .plans{display:grid;gap:10px;margin-top:8px}
+    .plan{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:18px;border:1px solid var(--stroke);background:rgba(255,255,255,.04);cursor:pointer}
+    .plan input{margin-top:3px;accent-color:#ffd27a;width:18px;height:18px}
+    .plan b{font-size:15px}
+    .plan .p{color:var(--muted);font-size:13px;line-height:1.45}
+    .plan .price{margin-left:auto;font-weight:900;white-space:nowrap}
+    .plan .price s{color:var(--muted);font-weight:600;font-size:12px;display:block;text-align:right}
+    .btn{border:0;color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));border-radius:16px;padding:16px 22px;font-weight:900;cursor:pointer;font:inherit;font-size:16px;width:100%;margin-top:20px}
+    .btn[disabled]{opacity:.55;cursor:wait}
+    .err{color:#ff8a8a;font-weight:700;margin-top:10px;min-height:20px}
+    .success{display:none;border:1px solid rgba(32,227,165,.4);background:rgba(32,227,165,.08);border-radius:24px;padding:24px;margin-top:18px}
+    .success h2{margin:0 0 8px;font-family:"Playfair Display",serif}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← bookingclub.beauty</a>
+    <h1>Додай свій салон<br><span>і отримуй клієнтів з Монреаля</span></h1>
+    <p class="muted" style="max-width:60ch;line-height:1.55;margin:0">Заповни форму — заявка одразу летить нашій команді в Telegram. Додамо твій профіль на сайт протягом 24 годин і надішлемо посилання на твій кабінет. Без дзвінків і бюрократії.</p>
+    <span class="free">🎉 Акція запуску: перший місяць — $0 на будь-якому тарифі</span>
+
+    <form class="card" id="joinForm" novalidate>
+      <div class="kicker">Твій бізнес</div>
+      <label class="f">Назва салону / студії або твоє імʼя як майстра *
+        <input type="text" id="salonName" placeholder="Напр: Kalyna Beauty Studio" required>
+      </label>
+      <div class="row">
+        <label class="f">Адреса у Монреалі
+          <input type="text" id="address" placeholder="Вулиця, номер, індекс">
+        </label>
+        <label class="f">Район
+          <select id="district">
+            <option>Le Plateau-Mont-Royal</option><option>Rosemont</option><option>Côte-des-Neiges</option>
+            <option>Downtown / Centre-ville</option><option>Westmount</option><option>Verdun</option>
+            <option>Hochelaga-Maisonneuve</option><option>Saint-Henri</option><option>Griffintown</option>
+            <option>Laval</option><option>Longueuil / Rive-Sud</option><option>Інший</option>
+          </select>
+        </label>
+      </div>
+      <label class="f">Instagram (посилання)
+        <input type="text" id="instagram" placeholder="https://instagram.com/...">
+      </label>
+
+      <div class="kicker" style="margin-top:22px">Послуги</div>
+      <div class="checks" id="svcChecks"></div>
+
+      <div class="kicker" style="margin-top:22px">Мови обслуговування</div>
+      <div class="checks" id="langChecks">
+        <label class="chk"><input type="checkbox" value="Українська" checked> Українська</label>
+        <label class="chk"><input type="checkbox" value="Російська"> Російська</label>
+        <label class="chk"><input type="checkbox" value="English"> English</label>
+        <label class="chk"><input type="checkbox" value="Français"> Français</label>
+      </div>
+
+      <div class="kicker" style="margin-top:22px">Контакт для звʼязку</div>
+      <div class="row">
+        <label class="f">Твоє імʼя *
+          <input type="text" id="ownerName" placeholder="Імʼя" required>
+        </label>
+        <label class="f">Телефон *
+          <input type="tel" id="phone" placeholder="+1 (___) ___-____" required>
+        </label>
+      </div>
+      <label class="f">Email
+        <input type="email" id="email" placeholder="you@salon.ca">
+      </label>
+      <label class="f">Коментар (ціни, особливості, вільні години…)
+        <textarea id="comment" rows="2" placeholder="Все, що варто знати клієнтам"></textarea>
+      </label>
+
+      <div class="kicker" style="margin-top:22px">Тариф</div>
+      <div class="plans">
+        <label class="plan"><input type="radio" name="plan" value="Start $0" checked>
+          <span><b>Start</b><div class="p">Профіль у каталозі, онлайн-бронювання в Telegram, відгуки. Назавжди безкоштовно.</div></span>
+          <span class="price">$0</span></label>
+        <label class="plan"><input type="radio" name="plan" value="Partner — 1-й міс $0, далі $10/міс">
+          <span><b>Partner 💎</b><div class="p">Пріоритет у видачі й сторіс, значок партнера, щасливі години −20%, захист депозитом від no-show.</div></span>
+          <span class="price"><s>$49</s>$0 → $10/міс</span></label>
+        <label class="plan"><input type="radio" name="plan" value="Premium Top — 1-й міс $0, далі $25/міс">
+          <span><b>Premium Top 👑</b><div class="p">Усе з Partner + перше місце у своєму районі (тільки 1 салон на район), Reels і промо у соцмережах Booking Club.</div></span>
+          <span class="price"><s>$99</s>$0 → $25/міс</span></label>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:10px">Ціни запуску для перших салонів фіксуються назавжди. Оплата — тільки з другого місяця і тільки якщо захочеш залишитись на платному тарифі; Start лишається безкоштовним.</p>
+
+      <input type="text" id="hp" style="display:none" tabindex="-1" autocomplete="off">
+      <button class="btn" id="sendBtn" type="submit">Надіслати заявку →</button>
+      <div class="err" id="formErr"></div>
+    </form>
+
+    <div class="success" id="successBox">
+      <h2>Заявку надіслано ✅</h2>
+      <p class="muted" style="line-height:1.6;margin:0">Дякуємо! Ми додамо твій салон на <b style="color:var(--text)">bookingclub.beauty</b> протягом 24 годин і зателефонуємо або напишемо у відповідь. Поки чекаєш — глянь, як виглядатиме твій кабінет:</p>
+      <p style="margin:14px 0 0"><a href="./admin.html" style="font-weight:900;color:var(--gold)">🔐 Відкрити демо-кабінет салону →</a> · <a href="./business.html" style="font-weight:900;color:var(--gold)">Тарифи й умови →</a></p>
+    </div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script>
+    const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
+    const svcBox = document.getElementById("svcChecks");
+    (window.SERVICES||[]).forEach(s=>{
+      const l = document.createElement("label"); l.className = "chk";
+      l.innerHTML = '<input type="checkbox" value="' + s.ua + '"> ' + s.ua;
+      svcBox.appendChild(l);
+    });
+    const $ = id => document.getElementById(id);
+    const checked = root => Array.from(root.querySelectorAll("input:checked")).map(i=>i.value);
+
+    document.getElementById("joinForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const err = $("formErr");
+      const salonName = $("salonName").value.trim();
+      const name = $("ownerName").value.trim();
+      const phone = $("phone").value.trim();
+      const services = checked(svcBox);
+      if(!salonName || !name || !phone){ err.textContent = "Заповни обовʼязкові поля: назва, твоє імʼя і телефон."; return; }
+      if(!services.length){ err.textContent = "Обери хоча б одну послугу."; return; }
+      err.textContent = "";
+      const plan = document.querySelector("input[name=plan]:checked").value;
+      const languages = checked(document.getElementById("langChecks"));
+      const address = $("address").value.trim();
+      const district = $("district").value;
+      const payload = {
+        type: "salon_join",
+        salonName, name, phone,
+        email: $("email").value.trim(),
+        address, district,
+        services, languages, plan,
+        instagram: $("instagram").value.trim(),
+        comment: $("comment").value.trim(),
+        hp: $("hp").value
+      };
+      payload.message =
+        "🆕 ЗАЯВКА САЛОНУ на Booking Club\n\n" +
+        "Салон: " + salonName + "\n" +
+        "Контакт: " + name + "\n" +
+        "Телефон: " + phone + "\n" +
+        (payload.email ? "Email: " + payload.email + "\n" : "") +
+        (address ? "Адреса: " + address + " (" + district + ")\n" : "Район: " + district + "\n") +
+        "Послуги: " + services.join(", ") + "\n" +
+        "Мови: " + languages.join(", ") + "\n" +
+        "Тариф: " + plan + "\n" +
+        (payload.instagram ? "Instagram: " + payload.instagram + "\n" : "") +
+        (payload.comment ? "Коментар: " + payload.comment + "\n" : "") +
+        "\n#salon_join";
+      const btn = $("sendBtn");
+      btn.disabled = true; btn.textContent = "Надсилаю…";
+      try{
+        const res = await fetch(WORKER_URL + "/join", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
+        if(!res.ok) throw new Error("worker " + res.status);
+        try{ localStorage.setItem("bb_my_salon", JSON.stringify(payload)); }catch(_){}
+        document.getElementById("joinForm").style.display = "none";
+        const sb = document.getElementById("successBox"); sb.style.display = "block";
+        sb.scrollIntoView({behavior:"smooth", block:"center"});
+      }catch(ex){
+        btn.disabled = false; btn.textContent = "Надіслати заявку →";
+        err.innerHTML = "Не вдалось надіслати автоматично. Напиши нам напряму: <a href='mailto:hello@bookingclub.beauty' style='color:var(--gold);font-weight:800'>hello@bookingclub.beauty</a> — і ми додамо тебе вручну.";
+      }
+    });
+  </script>
+</body>
+</html>

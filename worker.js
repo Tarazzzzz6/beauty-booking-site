@@ -13,10 +13,14 @@ export default {
     }
 
     // =========================
-    // ✅ ТВОЇ ДАНІ TELEGRAM (HARDCODE)
-    // (env має пріоритет, але якщо env пустий — візьме ці)
+    // 🔐 TELEGRAM — ТІЛЬКИ З СЕКРЕТІВ CLOUDFLARE (без токенів у коді!)
+    // Перед деплоєм цього воркера:
+    // 1) BotFather → /mybots → твій бот → API Token → Revoke (старий токен був у публічному коді)
+    // 2) Cloudflare → Workers → snowy-shadow → Settings → Variables and Secrets:
+    //    BOT_TOKEN = новий токен (тип Secret), CHAT_ID = твій chat id
+    // ⚠️ НЕ деплой воркер, поки секрет не додано — інакше бронювання отримають 500.
     // =========================
-    const BOT_TOKEN = (env && env.BOT_TOKEN) || "8372355612:AAE7a1Z95LdgFc-h-G1VNlfg5WzW9x0I6VA";
+    const BOT_TOKEN = (env && env.BOT_TOKEN) || "";
     const CHAT_ID  = (env && env.CHAT_ID)  || "7384123064";
 
     // --- OG preview для шарингу: /p?site=...&id=...
@@ -188,26 +192,45 @@ function rateLimit(ip, now){
 }
 
 function buildTextFallback(d){
-  const lines = [];
-  const pType = d?.providerType === "salon" ? "Салон" : "Майстер";
-  const when = `${d?.date || "—"} ${d?.time || "—"}`.trim();
+  // Заявка салону на підключення (join.html)
+  if (d?.type === "salon_join"){
+    const lines = [];
+    lines.push("🆕 ЗАЯВКА САЛОНУ на Booking Club");
+    lines.push("");
+    lines.push(`Салон: ${d?.salonName || "—"}`);
+    lines.push(`Контакт: ${d?.name || ""}`);
+    lines.push(`Телефон: ${d?.phone || ""}`);
+    if (d?.email) lines.push(`Email: ${d.email}`);
+    if (d?.address) lines.push(`Адреса: ${d.address}`);
+    if (d?.district) lines.push(`Район: ${d.district}`);
+    if (Array.isArray(d?.services) && d.services.length) lines.push(`Послуги: ${d.services.join(", ")}`);
+    if (Array.isArray(d?.languages) && d.languages.length) lines.push(`Мови: ${d.languages.join(", ")}`);
+    if (d?.plan) lines.push(`Тариф: ${d.plan}`);
+    if (d?.instagram) lines.push(`Instagram: ${d.instagram}`);
+    if (d?.comment) { lines.push(""); lines.push(`Коментар: ${d.comment}`); }
+    lines.push("");
+    lines.push("#salon_join");
+    return lines.join("\n");
+  }
 
+  // Бронювання (актуальний формат сайту)
+  const lines = [];
   lines.push("Нове бронювання ✨");
   lines.push("");
+  if (d?.listingName) lines.push(`Салон: ${d.listingName}`);
+  if (d?.serviceName) lines.push(`Послуга: ${d.serviceName}`);
+  const when = `${d?.dateISO || d?.date || "—"} ${d?.time || ""}`.trim();
+  lines.push(`Час: ${when}`);
+  if (d?.priceFrom != null) lines.push(`Ціна від: $${d.priceFrom}`);
+  if (d?.deposit) lines.push(`🛡️ Депозит проти no-show: $${d.deposit} (клієнт погодився)`);
   lines.push(`Імʼя: ${d?.name || ""}`.trim());
   lines.push(`Телефон: ${d?.phone || ""}`.trim());
   if (d?.email) lines.push(`Email: ${d.email}`);
-  if (d?.serviceNameUA || d?.serviceNameEN){
-    const svc = d?.serviceNameUA || d?.serviceNameEN;
-    const price = d?.servicePrice != null ? ` (${d.servicePrice}$)` : "";
-    lines.push(`Послуга: ${svc}${price}`);
-  }
-  if (d?.providerName) lines.push(`${pType}: ${d.providerName}`);
   if (d?.address) lines.push(`Адреса: ${d.address}`);
-  lines.push(`Час: ${when}`);
+  if (d?.profileUrl) lines.push(`Профіль: ${d.profileUrl}`);
+  if (d?.mapsUrl) lines.push(`Карта: ${d.mapsUrl}`);
   if (d?.comment) { lines.push(""); lines.push(`Коментар: ${d.comment}`); }
   lines.push("");
   lines.push("#beautybooking");
-
   return lines.join("\n");
 }
