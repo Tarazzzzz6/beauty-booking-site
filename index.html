@@ -23,7 +23,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -1145,6 +1145,127 @@
     .inspireItem span{display:block; font-size:11.5px; color:var(--muted); margin-top:6px; line-height:1.3}
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+  /* ===== BOOKING CLUB — ÉDITORIAL NOIR (premium redesign) ===== */
+  :root{
+    --bc-ivory:#F4EFE6; --bc-ink:#0A0A0C; --bc-gold:#C6A15B; --bc-gold2:#E5C97E;
+    --bc-line:rgba(244,239,230,.14); --bc-panel:#101013;
+  }
+  body{
+    background:
+      radial-gradient(1100px 500px at 50% -80px, rgba(198,161,91,.10), transparent 60%),
+      linear-gradient(180deg, #08080A, #0A0A0C 40%, #08080A) !important;
+    color:var(--bc-ivory);
+  }
+  ::selection{background:var(--bc-gold); color:#0A0A0C}
+  .brand .logo, .brandName{font-family:"Playfair Display",serif !important; letter-spacing:.14em; text-transform:uppercase}
+  .heroCard{
+    background:transparent !important; border:0 !important; box-shadow:none !important;
+    border-bottom:1px solid var(--bc-line) !important; border-radius:0 !important;
+  }
+  .heroInner{padding:64px 8px 44px !important}
+  .heroTitle{
+    font-family:"Playfair Display",serif !important; font-weight:600 !important;
+    font-size:clamp(46px, 7.2vw, 88px) !important; line-height:1.02 !important; letter-spacing:-.01em;
+    color:var(--bc-ivory) !important; max-width:12ch;
+  }
+  .heroTitle span{
+    font-style:italic; font-weight:500;
+    background:linear-gradient(92deg, var(--bc-gold2), var(--bc-gold)) !important;
+    -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important;
+  }
+  .heroDesc{font-size:17px !important; line-height:1.65 !important; color:rgba(244,239,230,.72) !important; max-width:52ch}
+  .kicker{color:var(--bc-gold) !important; letter-spacing:.22em !important; font-size:11px !important; font-weight:700 !important}
+  .btn{
+    background:var(--bc-ivory) !important; color:#0A0A0C !important;
+    border:1px solid var(--bc-ivory) !important; border-radius:999px !important;
+    font-weight:800 !important; letter-spacing:.01em;
+    box-shadow:0 10px 30px rgba(0,0,0,.35) !important;
+  }
+  .btn:hover{transform:translateY(-1px); box-shadow:0 16px 38px rgba(0,0,0,.45) !important}
+  .btn:after{display:none !important}
+  .btn.secondary, .btn.ghost{
+    background:transparent !important; color:var(--bc-ivory) !important;
+    border:1px solid var(--bc-line) !important; box-shadow:none !important;
+  }
+  .btn.gold{background:linear-gradient(135deg, var(--bc-gold2), var(--bc-gold)) !important; border-color:transparent !important; color:#0A0A0C !important}
+  .pill, .chip{
+    border:1px solid var(--bc-line) !important; background:rgba(244,239,230,.03) !important;
+    color:rgba(244,239,230,.85) !important; border-radius:999px !important; font-weight:600;
+  }
+  .pill:hover, .chip:hover{border-color:rgba(198,161,91,.55) !important; color:var(--bc-ivory) !important}
+  .chip.on, .chip[aria-pressed="true"], .pill.on{background:var(--bc-ivory) !important; color:#0A0A0C !important; border-color:var(--bc-ivory) !important}
+  .glass{
+    background:rgba(244,239,230,.028) !important; border:1px solid var(--bc-line) !important;
+    border-radius:18px !important; box-shadow:none !important; backdrop-filter:blur(10px);
+  }
+  .bigLine{font-family:"Playfair Display",serif; font-size:21px !important}
+  .section{margin-top:72px !important}
+  .sectionTitle{
+    font-family:"Playfair Display",serif !important; font-weight:600 !important;
+    font-size:clamp(28px, 3.6vw, 40px) !important; color:var(--bc-ivory) !important; letter-spacing:0 !important;
+  }
+  .sectionTitle:after{background:linear-gradient(90deg, var(--bc-gold), transparent) !important; height:1px !important}
+  .sectionNote{color:rgba(244,239,230,.6) !important; font-size:14.5px !important}
+  .card, .stripCard{
+    background:var(--bc-panel) !important; border:1px solid var(--bc-line) !important;
+    border-radius:18px !important; overflow:hidden; box-shadow:0 18px 44px rgba(0,0,0,.35) !important;
+  }
+  .card:hover, .stripCard:hover{border-color:rgba(198,161,91,.45) !important; transform:translateY(-4px)}
+  .card .media, .stripCard .stripMedia{aspect-ratio:4/3; overflow:hidden}
+  .card .media img, .stripCard .stripMedia img{width:100%; height:100%; object-fit:cover; transition:transform 1.2s cubic-bezier(.16,1,.3,1); filter:saturate(.92)}
+  .card:hover .media img, .stripCard:hover .stripMedia img{transform:scale(1.05)}
+  .card .shine, .microShimmer{display:none !important}
+  .card .name, .stripCard .name{font-family:"Playfair Display",serif !important; font-size:20px !important; font-weight:600 !important; color:var(--bc-ivory) !important}
+  .card .addr, .stripCard .addr{color:rgba(244,239,230,.55) !important; font-size:12.5px !important}
+  .tag{
+    border:1px solid var(--bc-line) !important; background:rgba(244,239,230,.04) !important;
+    color:rgba(244,239,230,.8) !important; border-radius:999px !important; font-size:11px !important; font-weight:600;
+  }
+  .why{color:rgba(244,239,230,.55) !important} .why span{color:var(--bc-gold) !important}
+  .miniBtn{
+    background:var(--bc-ivory) !important; color:#0A0A0C !important; border-radius:999px !important;
+    font-weight:800 !important; border:0 !important;
+  }
+  .fav{filter:grayscale(1); opacity:.55} .fav.on{filter:none; opacity:1}
+  .partnerBadge{
+    background:rgba(10,10,12,.72) !important; color:var(--bc-gold2) !important;
+    border:1px solid rgba(198,161,91,.55) !important; backdrop-filter:blur(6px); border-radius:999px !important;
+    font-size:11px !important; letter-spacing:.08em; text-transform:uppercase;
+  }
+  .lux-marquee{border-top:1px solid var(--bc-line) !important; border-bottom:1px solid var(--bc-line) !important; background:transparent !important}
+  .lux-marquee-track{animation-duration:46s !important}
+  .lux-marquee-track span{color:rgba(198,161,91,.75) !important; font-style:italic; text-transform:none !important; letter-spacing:.12em !important; font-size:16px !important}
+  .storyRing{background:conic-gradient(from 210deg, var(--bc-gold), #5c4c26, var(--bc-gold2), var(--bc-gold)) !important; padding:2px !important}
+  .storyRing img{border-color:#0A0A0C !important}
+  .reelCard, .trendCard{border-radius:18px !important; border-color:var(--bc-line) !important}
+  .trendTag{background:rgba(10,10,12,.7) !important; color:var(--bc-gold2) !important; border:1px solid rgba(198,161,91,.5) !important}
+  .trendName{font-family:"Playfair Display",serif !important}
+  .happyCard{border-color:rgba(198,161,91,.4) !important; background:linear-gradient(180deg, rgba(198,161,91,.09), rgba(244,239,230,.02)) !important; border-radius:18px !important}
+  .happyBadge{background:rgba(198,161,91,.14) !important; border-color:rgba(198,161,91,.45) !important; color:var(--bc-gold2) !important}
+  .loyalBar i{background:linear-gradient(90deg, var(--bc-gold), var(--bc-gold2)) !important}
+  .pricePin{background:var(--bc-ivory) !important; color:#0A0A0C !important; border:2px solid #0A0A0C !important; box-shadow:0 10px 24px rgba(0,0,0,.5) !important}
+  .sheet{background:#101013 !important; border:1px solid var(--bc-line) !important}
+  #luxPre{background:#08080A !important}
+  #luxPre .luxPreLogo{
+    font-family:"Playfair Display",serif !important; letter-spacing:.3em !important;
+    background:linear-gradient(92deg, var(--bc-gold2), var(--bc-gold)) !important;
+    -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important;
+  }
+  .bc-heroArt{display:grid; grid-template-columns:1.5fr 1fr 1.5fr; gap:12px; margin-top:34px}
+  .bc-heroArt figure{margin:0; border-radius:18px; overflow:hidden; border:1px solid var(--bc-line); position:relative}
+  .bc-heroArt img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(.92)}
+  .bc-heroArt .tall{height:340px} .bc-heroArt .short{height:164px}
+  .bc-heroArt .stack{display:grid; gap:12px}
+  .bc-heroArt figcaption{position:absolute; left:14px; bottom:12px; font-family:"Playfair Display",serif; font-style:italic; font-size:15px; color:#fff; text-shadow:0 2px 14px rgba(0,0,0,.6)}
+  .bc-stats{display:flex; gap:0; flex-wrap:wrap; border-top:1px solid var(--bc-line); margin-top:26px}
+  .bc-stats div{flex:1; min-width:150px; padding:18px 14px 4px; border-right:1px solid var(--bc-line)}
+  .bc-stats div:last-child{border-right:0}
+  .bc-stats b{display:block; font-family:"Playfair Display",serif; font-size:30px; font-weight:600; color:var(--bc-ivory)}
+  .bc-stats span{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,239,230,.5)}
+  @media(max-width:760px){ .bc-heroArt{grid-template-columns:1fr 1fr} .bc-heroArt .tall{height:230px} .bc-heroArt .short{height:109px} .heroInner{padding:40px 4px 30px !important} }
+  </style>
 </head>
 
 <body>
@@ -1255,6 +1376,21 @@
       </div>
     </section>
 
+    <div class="bc-heroArt" aria-hidden="true">
+      <figure class="tall"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80" alt=""><figcaption>Atelier Color Lab — Westmount</figcaption></figure>
+      <div class="stack">
+        <figure class="short"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80" alt=""></figure>
+        <figure class="short"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80" alt=""></figure>
+      </div>
+      <figure class="tall"><img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1200&q=80" alt=""><figcaption>Kalyna Beauty Studio</figcaption></figure>
+    </div>
+    <div class="bc-stats">
+      <div><b>12</b><span>салонів і майстрів</span></div>
+      <div><b>12</b><span>категорій послуг</span></div>
+      <div><b>4.9</b><span>середній рейтинг</span></div>
+      <div><b>0%</b><span>комісії з бронювань</span></div>
+    </div>
+
     <section class="section" id="loyaltySection" style="margin-top:16px">
       <div class="glass"><div class="pad" style="display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:space-between">
         <div style="flex:1; min-width:240px">
@@ -1361,7 +1497,7 @@
     <section class="section" id="storiesSection">
       <div class="sectionHead">
         <div>
-          <h3 class="sectionTitle">Сьогодні у майстрів ⚡</h3>
+          <h3 class="sectionTitle">Сьогодні у майстрів</h3>
           <p class="sectionNote">Живі сторіс салонів Монреаля — натисни, щоб відкрити профіль.</p>
         </div>
       </div>
@@ -1387,7 +1523,7 @@
     <section class="section" id="happySection">
       <div class="sectionHead">
         <div>
-          <h3 class="sectionTitle">Щасливі години · сьогодні −20% ⏰</h3>
+          <h3 class="sectionTitle">Щасливі години — сьогодні −20%</h3>
           <p class="sectionNote">Салони заповнюють вільні слоти дня — ти економиш. Ціни вже зі знижкою.</p>
         </div>
       </div>
@@ -1397,7 +1533,7 @@
     <section class="section" id="reelsSection">
       <div class="sectionHead">
         <div>
-          <h3 class="sectionTitle">Reels · роботи майстрів 🎬</h3>
+          <h3 class="sectionTitle">Роботи майстрів — Reels</h3>
           <p class="sectionNote">Гортай як TikTok — натисни, щоб забронювати у цього майстра.</p>
         </div>
       </div>
@@ -1648,6 +1784,42 @@
   </div>
 
   <script src="./data.js"></script>
+  <script>
+  /* Графік салонів: локальні правки кабінету + закриті дні з Telegram-бота (KV) */
+  (function(){
+    function applyClosed(l, dates){
+      if(!l || !dates || !dates.length) return;
+      dates.forEach(function(dstr){
+        if(l.availability) delete l.availability[dstr];
+        if(l.availabilityByService){
+          Object.keys(l.availabilityByService).forEach(function(k){
+            l.availabilityByService[k] = l.availabilityByService[k].filter(function(iso){ return iso.slice(0,10) !== dstr; });
+          });
+        }
+        if(Array.isArray(l.slots)) l.slots = l.slots.filter(function(iso){ return iso.slice(0,10) !== dstr; });
+      });
+    }
+    (window.LISTINGS||[]).forEach(function(l){
+      // правки цін із кабінету (цей пристрій)
+      try{
+        var edits = JSON.parse(localStorage.getItem("bb_admin_" + l.id) || "{}");
+        (l.services||[]).forEach(function(s){
+          var e = edits[s.serviceId];
+          if(e){ if(e.from != null) s.from = e.from; if(e.to != null) s.to = e.to; if(e.durationMin != null) s.durationMin = e.durationMin; }
+        });
+        var sched = JSON.parse(localStorage.getItem("bb_admin_sched_" + l.id) || "{}");
+        if(Array.isArray(sched.closed)) applyClosed(l, sched.closed);
+      }catch(e){}
+      // закриті дні з бота (після підключення KV власником)
+      if(l.telegramChatId && window.WORKER_URL){
+        fetch(window.WORKER_URL + "/schedule?chat=" + encodeURIComponent(l.telegramChatId))
+          .then(function(r){ return r.json(); })
+          .then(function(j){ if(j && Array.isArray(j.closed) && j.closed.length){ applyClosed(l, j.closed); } })
+          .catch(function(){});
+      }
+    });
+  })();
+  </script>
   <script>
     // === CONFIG ===
     const WORKER_URL = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
@@ -3078,6 +3250,7 @@ END:VCALENDAR`;
         time,
         priceFrom: priceFrom ?? null,
         deposit: (document.getElementById("depToggle") && document.getElementById("depToggle").checked) ? 10 : 0,
+        chatId: listing.telegramChatId || "",
         duration: dur ?? null,
         profileUrl,
         mapsUrl,

@@ -361,48 +361,71 @@
     }
   ];
 
-  // ===== LIVE Availability generator (30 days, realistic density) =====
+  // ===== SCHEDULE-BASED Availability (30 days) =====
+  // Графік салону: робочі години за днями тижня (0 = неділя). Салон керує графіком
+  // у кабінеті та через Telegram-бота командами /close та /open (див. worker.js v2).
+  // Слоти стабільні між візитами (детермінований генератор за id салону + датою):
+  // частина слотів "зайнята" — як у реальному розкладі.
+  function seededRand(seedStr){
+    let h = 2166136261;
+    for(let i=0;i<seedStr.length;i++){ h ^= seedStr.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return function(){
+      h += 0x6D2B79F5;
+      let x = h;
+      x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const DEFAULT_WEEK = { 0:[11,18], 1:[10,20], 2:[10,20], 3:[10,20], 4:[10,20], 5:[10,20], 6:[10,19] };
+  const WEEK_OVERRIDES = {
+    "kozak-barbershop": { 1:null },                 // понеділок — вихідний
+    "kalyna-beauty": { 0:null },                     // неділя — вихідний
+    "iryna-stovban-home": { 1:null, 3:null, 0:null } // домашній майстер: вт/чт/сб/нд
+  };
+
   (function generateLiveAvailability(){
     const base = new Date();
     const days = 30;
 
     for(const l of (window.LISTINGS||[])){
-      l.availability = l.availability || {};
+      if (l.telegramChatId === undefined) l.telegramChatId = "";
+      const week = Object.assign({}, DEFAULT_WEEK, WEEK_OVERRIDES[l.id] || {}, l.schedule || {});
+      l.schedule = week;
+      l.availability = {};
 
       for(let i=0;i<days;i++){
         const d = new Date(base.getTime() + i*DAY);
         const key = isoDate(d);
+        if (Array.isArray(l.closedDates) && l.closedDates.includes(key)) continue;
+        const hours = week[new Date(key + "T12:00:00Z").getUTCDay()]; // weekday за ISO-датою (без зсуву часових поясів)
+        if (!hours) continue;
 
-        // density rules: partners more likely to have slots
-        const p = l.partner ? 0.82 : 0.65;
-        if (!l.availability[key]){
-          if (chance(p)){
-            let times = makeTimesForDay();
-
-            // If today: remove times in the past (so it feels real)
-            const now = new Date();
-            if (isoDate(now) === key){
-              const cur = now.getHours()*60 + now.getMinutes();
-              times = times.filter(t=>{
-                const hh = parseInt(t.slice(0,2),10);
-                const mm = parseInt(t.slice(3),10);
-                return (hh*60 + mm) > (cur + 20); // leave 20 min buffer
-              });
-            }
-
-            if (times.length) l.availability[key] = times;
-          }
+        // слоти кожні 30 хв у робочі години (останній прийом за годину до закриття)
+        const all = [];
+        for(let mins = hours[0]*60; mins <= hours[1]*60 - 60; mins += 30){
+          all.push(pad(Math.floor(mins/60)) + ":" + pad(mins % 60));
         }
+        // детерміновано прибираємо "зайняті" слоти
+        const rnd = seededRand(l.id + "|" + key);
+        const keepP = l.partner ? 0.55 : 0.45;
+        let times = all.filter(()=> rnd() < keepP + 0.25);
+        if (times.length < 2) times = all.filter((_,idx)=> idx % 3 === 0).slice(0,3);
+
+        // сьогодні: прибираємо минулий час (+20 хв буфер)
+        if (isoDate(new Date()) === key){
+          const now = new Date();
+          const cur = now.getHours()*60 + now.getMinutes();
+          times = times.filter(tt=>{
+            const hh = parseInt(tt.slice(0,2),10), mm = parseInt(tt.slice(3,5),10);
+            return (hh*60 + mm) > (cur + 20);
+          });
+        }
+        if (times.length) l.availability[key] = times;
       }
 
-      // Keep it clean: drop empty days if any
-      for(const k of Object.keys(l.availability)){
-        if (!l.availability[k] || !l.availability[k].length) delete l.availability[k];
-      }
-
-      // NEW: for profile calendar (service-filtered)
-      l.availabilityByService = buildAvailabilityByService(l); // {serviceId:[ISO...]}
-      l.slots = expandAvailabilityToIso(l.availability);        // union slots fallback
+      l.availabilityByService = buildAvailabilityByService(l);
+      l.slots = expandAvailabilityToIso(l.availability);
     }
   })();
 

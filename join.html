@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;--ok:#20e3a5;--max:880px}
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#C6A15B;--gold:#ffd27a;--violet:#8a6d35;--ok:#20e3a5;--max:880px}
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(800px 600px at 85% 15%, rgba(255,210,122,.10), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
     a{color:inherit;text-decoration:none}
@@ -95,6 +95,10 @@
       <label class="f">Email
         <input type="email" id="email" placeholder="you@salon.ca">
       </label>
+      <label class="f">Telegram ID салону — куди надсилати бронювання
+        <input type="text" id="telegramChatId" inputmode="numeric" placeholder="Напр: 7384123064">
+      </label>
+      <p class="muted" style="font-size:12.5px;line-height:1.5;margin-top:6px">Як дізнатись ID: відкрий у Telegram бота <b style="color:var(--text)">@userinfobot</b> — він одразу покаже твій ID. Або напиши нашому боту Booking Club команду /myid. Саме на цей ID приходитимуть бронювання, а командами /close та /open у боті ти керуватимеш вихідними днями.</p>
       <label class="f">Коментар (ціни, особливості, вільні години…)
         <textarea id="comment" rows="2" placeholder="Все, що варто знати клієнтам"></textarea>
       </label>
@@ -157,6 +161,7 @@
         email: $("email").value.trim(),
         address, district,
         services, languages, plan,
+        telegramChatId: $("telegramChatId").value.trim(),
         instagram: $("instagram").value.trim(),
         comment: $("comment").value.trim(),
         hp: $("hp").value
@@ -171,6 +176,7 @@
         "Послуги: " + services.join(", ") + "\n" +
         "Мови: " + languages.join(", ") + "\n" +
         "Тариф: " + plan + "\n" +
+        (payload.telegramChatId ? "Telegram ID салону: " + payload.telegramChatId + "\n" : "") +
         (payload.instagram ? "Instagram: " + payload.instagram + "\n" : "") +
         (payload.comment ? "Коментар: " + payload.comment + "\n" : "") +
         "\n#salon_join";

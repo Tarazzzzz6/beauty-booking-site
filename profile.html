@@ -22,7 +22,7 @@
     :root{
       --bg:#07070b; --bg2:#0b0b11;
       --text:#f4f3f8; --muted:rgba(244,243,248,.68);
-      --pink:#ff4fd8; --gold:#ffd27a; --violet:#8b5cf6;
+      --pink:#C6A15B; --gold:#ffd27a; --violet:#8a6d35;
       --r:22px; --r2:28px;
       --shadow: 0 22px 70px rgba(0,0,0,.55);
       --shadow2: 0 10px 30px rgba(0,0,0,.35);
@@ -1083,6 +1083,16 @@
           datetimeISO: st.slotISO,
           listingId: st.listing.id,
           listingName: st.listing.name,
+          chatId: st.listing.telegramChatId || "",
+          message:
+            "✨ Нове бронювання — " + st.listing.name + "\n" +
+            "💅 Послуга: " + svcName + "\n" +
+            "📅 " + String(st.slotISO || "").replace("T", " ") + "\n" +
+            "💵 Ціна від: $" + (svc?.from ?? "—") + "\n" +
+            "👤 Клієнт: " + name + "\n" +
+            "📞 " + phone + (email ? "\n✉️ " + email : "") + "\n" +
+            "📍 " + st.listing.address + "\n" +
+            "🔗 Профіль: " + location.href,
           address: st.listing.address,
           profileUrl: location.href
         };

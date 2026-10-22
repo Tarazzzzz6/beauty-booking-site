@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;--ok:#20e3a5;--r:20px;--max:980px}
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#C6A15B;--gold:#ffd27a;--violet:#8a6d35;--ok:#20e3a5;--r:20px;--max:980px}
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(255,79,216,.14), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
     a{color:inherit;text-decoration:none}
@@ -82,6 +82,18 @@
       </div>
 
       <div class="card">
+        <div class="kicker">Графік роботи</div>
+        <div id="weekView" style="margin-top:10px"></div>
+        <div class="kicker" style="margin-top:20px">Вихідні та закриті дні</div>
+        <p class="muted" style="font-size:13px;line-height:1.5">У закриті дні сайт не показує слоти. Те саме можна робити прямо в Telegram-боті командами <b style="color:var(--text)">/close 2026-11-03</b> та <b style="color:var(--text)">/open 2026-11-03</b> — коли власник платформи підключить сховище бота, зміни підтягнуться автоматично.</p>
+        <div class="row" style="margin-top:10px">
+          <input type="date" id="closeDate" style="max-width:220px">
+          <button class="btn gold" id="addCloseBtn" type="button">Закрити день</button>
+        </div>
+        <div id="closedList" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
         <div class="kicker">Останні відгуки</div>
         <div id="revList" style="margin-top:8px"></div>
       </div>
@@ -131,12 +143,48 @@
           '<td><input type="number" min="5" step="5" data-k="durationMin" data-svc="' + s.serviceId + '" value="' + (e.durationMin ?? s.durationMin) + '"></td>';
         body.appendChild(tr);
       });
+      // Графік: тиждень + закриті дні
+      const dayNames = ["Неділя","Понеділок","Вівторок","Середа","Четвер","Пʼятниця","Субота"];
+      const wk = cur.schedule || {};
+      document.getElementById("weekView").innerHTML = [1,2,3,4,5,6,0].map(function(dn){
+        const hh = wk[dn];
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)"><span>' + dayNames[dn] + '</span><b>' + (hh ? (String(hh[0]).padStart(2,"0") + ":00 – " + String(hh[1]).padStart(2,"0") + ":00") : '<span style="color:#ffd27a">вихідний</span>') + '</b></div>';
+      }).join("");
+      renderClosed();
       const revs = (window.REVIEWS && window.REVIEWS[cur.id]) || [];
       document.getElementById("revList").innerHTML = revs.length
         ? revs.map(r=>'<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)"><b>' + r.name + '</b> <span style="color:#ffd27a">' + "★".repeat(r.stars||5) + '</span><div class="muted" style="margin-top:3px">' + r.text + '</div></div>').join("")
         : '<div class="muted">Поки немає відгуків.</div>';
       document.getElementById("panel").scrollIntoView({behavior:"smooth", block:"start"});
     }
+
+
+    function closedDates(){
+      if(!cur) return [];
+      try{ const s = JSON.parse(localStorage.getItem("bb_admin_sched_" + cur.id) || "{}"); return Array.isArray(s.closed) ? s.closed : []; }catch(e){ return []; }
+    }
+    function saveClosed(list){
+      try{ localStorage.setItem("bb_admin_sched_" + cur.id, JSON.stringify({ closed: list })); }catch(e){}
+    }
+    function renderClosed(){
+      const box = document.getElementById("closedList");
+      if(!box || !cur) return;
+      const list = closedDates().slice().sort();
+      box.innerHTML = list.length
+        ? list.map(d=>'<span style="display:inline-flex;gap:8px;align-items:center;margin:0 8px 8px 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,210,122,.4);background:rgba(255,210,122,.08);font-weight:700">🔒 ' + d + ' <button type="button" data-open="' + d + '" style="border:0;background:transparent;color:#ffd27a;cursor:pointer;font-weight:900">✕ відкрити</button></span>').join("")
+        : '<div class="muted">Закритих днів немає.</div>';
+      box.querySelectorAll("button[data-open]").forEach(b=>{
+        b.addEventListener("click", ()=>{ saveClosed(closedDates().filter(d=>d!==b.dataset.open)); renderClosed(); });
+      });
+    }
+    document.getElementById("addCloseBtn").addEventListener("click", ()=>{
+      if(!cur) return;
+      const v = document.getElementById("closeDate").value;
+      if(!v) return;
+      const list = closedDates();
+      if(!list.includes(v)) list.push(v);
+      saveClosed(list); renderClosed();
+    });
 
     document.getElementById("saveBtn").addEventListener("click", ()=>{
       if(!cur) return;
