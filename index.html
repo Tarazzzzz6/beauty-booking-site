@@ -1049,6 +1049,21 @@
       .btn{width:100%; justify-content:center;}
       .mbr{display:inline;}
     }
+  
+    /* === 2026: Map + Trends === */
+    .mapFrame{border-radius:var(--r2); overflow:hidden; border:1px solid var(--stroke); box-shadow:var(--shadow2)}
+    .mapFrame iframe{width:100%; height:340px; border:0; display:block}
+    .trendStrip{display:flex; gap:14px; overflow:auto; padding-bottom:8px; scroll-snap-type:x mandatory}
+    .trendStrip::-webkit-scrollbar{height:10px}
+    .trendStrip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.10); border-radius:999px}
+    .trendCard{min-width:230px; max-width:230px; scroll-snap-align:start; border-radius:var(--r2); overflow:hidden; position:relative; cursor:pointer; border:1px solid var(--stroke); transition:transform .22s ease, border-color .22s ease}
+    .trendCard:hover{transform:translateY(-3px); border-color:var(--stroke2)}
+    .trendCard img{width:100%; height:290px; object-fit:cover; display:block}
+    .trendCard:after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.78));}
+    .trendMeta{position:absolute; left:14px; right:14px; bottom:12px; z-index:2}
+    .trendTag{display:inline-block; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; padding:6px 9px; border-radius:999px; background:rgba(255,79,216,.18); border:1px solid rgba(255,79,216,.35); margin-bottom:8px}
+    .trendName{font-family:"Playfair Display",serif; font-size:19px; line-height:1.15; margin:0}
+    .trendSub{font-size:12px; color:rgba(244,243,248,.75); margin-top:4px}
   </style>
 </head>
 
@@ -1086,7 +1101,7 @@
         </button>
 
         <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
-        <button id="langBtn" class="iconbtn" title="UA / EN">🌐</button>
+        <button id="langBtn" class="iconbtn" title="UA / RU / EN">🌐</button>
       </div>
     </div>
   </div>
@@ -1236,6 +1251,36 @@
       </div>
     </section>
 
+
+    <section class="section" id="trendsSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle">Тренди 2026 ✨</h3>
+          <p class="sectionNote">Натисни на тренд — одразу покажемо майстрів, які це роблять у Монреалі.</p>
+        </div>
+      </div>
+      <div class="trendStrip" id="trendStrip">
+        <div class="trendCard" data-service="manicure"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80" alt="Chrome Glaze nails"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Chrome Glaze</p><div class="trendSub">Дзеркальний манікюр сезону</div></div></div>
+        <div class="trendCard" data-service="womens_haircut"><img src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=800&q=80" alt="Old Money Bob"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Old Money Bob</p><div class="trendSub">Тиха розкіш у стрижках</div></div></div>
+        <div class="trendCard" data-service="brows"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80" alt="Laminated brows"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Laminated Brows</p><div class="trendSub">Брови як після салону — щодня</div></div></div>
+        <div class="trendCard" data-service="pedicure"><img src="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=800&q=80" alt="SPA pedicure"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">SPA Ritual</p><div class="trendSub">Педикюр як ритуал догляду</div></div></div>
+        <div class="trendCard" data-service="mens_haircut"><img src="https://images.unsplash.com/photo-1521498542256-5aeb47ba2d16?auto=format&fit=crop&w=800&q=80" alt="Classic fade"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Classic Fade</p><div class="trendSub">Чоловічі стрижки без компромісів</div></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="mapSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle">Салони на карті · Montréal 🗺️</h3>
+          <p class="sectionNote">Українські та російськомовні б'юті-заклади поруч із тобою.</p>
+        </div>
+        <a class="pill" href="https://www.google.com/maps/search/beauty+salon+Montreal" target="_blank" rel="noopener">Відкрити в Google Maps →</a>
+      </div>
+      <div class="mapFrame">
+        <iframe title="Beauty salons map — Montréal" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=beauty%20salons%20Montr%C3%A9al&output=embed"></iframe>
+      </div>
+    </section>
+
     <section class="section" style="margin-top:26px">
       <div class="glass">
         <div class="pad" style="display:flex; gap:14px; justify-content:space-between; flex-wrap:wrap; align-items:center">
@@ -1248,6 +1293,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap">
             <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank" rel="noopener">Open sample profile →</a>
+            <a class="pill" href="./business.html">💎 Для салонів — тарифи</a>
             <a class="pill" href="#" id="policiesBtn">Policies</a>
           </div>
         </div>
@@ -1636,6 +1682,51 @@ function haptic(ms=12){
         stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
         install: "Install"
+      },
+      ru: {
+        searchPh: "Поиск салона, района, адреса…",
+        heroDesc: "Проверенные салоны и мастера. Стерильно · быстро · без спама. Подтверждение — в Telegram.",
+        quick: "⚡ Быстрое бронирование",
+        reset: "Сбросить фильтры",
+        nextNear: "Ближайшее свободное время рядом",
+        tapBook: "Нажми, чтобы забронировать сразу",
+        aiTitle: "AI-консьерж",
+        aiNote: "Напиши, что нужно — подберу 3 варианта.",
+        aiPh: "Напр: маникюр сегодня после 18 до $60 недалеко",
+        aiGo: "✨ Подобрать",
+        savedTitle: "Твоё сохранённое",
+        savedNote: "Быстрый доступ к любимым.",
+        partnersTitle: "Топ салоны / партнёры",
+        partnersNote: "Платные партнёры (показываются только если соответствуют фильтрам).",
+        recTitle: "Рекомендовано",
+        recNote: "Подобрано по доступности, цене и близости.",
+        allTitle: "Все остальные",
+        allNote: "Все остальные варианты в городе.",
+        emptyTitle: "Нет результатов",
+        emptyText: "Попробуй ослабить фильтры — или вот быстрые варианты.",
+        emptyReset: "Сбросить фильтры",
+        emptyPartners: "Показать партнёров",
+        emptyNearest: "Показать ближайшие",
+        booking: "Бронирование",
+        confirm: "Подтвердить в Telegram",
+        profile: "Профиль",
+        chooseTime: "Выбери время",
+        chooseDate: "Выбери дату",
+        only: "Только ❤️",
+        toastSaved: "Сохранено",
+        toastErr: "Проверь поля и время",
+        toastSent: "Отправлено в Telegram ✅",
+        toastDraft: "Черновик сохранён ✅",
+        toastCopied: "Скопировано ✅",
+        toastFilters: "Фильтры сброшены",
+        toastA2HS: "Совет: добавь на главный экран для режима приложения",
+        draftsTitle: "Сохранённые черновики",
+        lastKicker: "Твоё последнее бронирование",
+        lastSub: "Нажми, чтобы повторить",
+        stickyQuick: "Быстро",
+        stickyReset: "Сброс",
+        priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
+        install: "Установить"
       }
     };
 
@@ -1753,7 +1844,7 @@ function haptic(ms=12){
     function formatDateShort(iso){
       const [y,m,d] = iso.split("-").map(x=>parseInt(x,10));
       const dt = new Date(y, m-1, d);
-      return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : "en-CA", { weekday:"short", month:"short", day:"numeric" });
+      return dt.toLocaleDateString(state.lang==="uk" ? "uk-UA" : state.lang==="ru" ? "ru-RU" : "en-CA", { weekday:"short", month:"short", day:"numeric" });
     }
 
     function matchesQuery(listing, q){
@@ -1774,7 +1865,7 @@ function haptic(ms=12){
     function serviceLabel(serviceId){
       const m = (window.SERVICES||[]).find(s=>s.id===serviceId);
       if(!m) return "";
-      return state.lang === "uk" ? m.ua : m.en;
+      return state.lang === "uk" ? m.ua : state.lang === "ru" ? (m.ru || m.en) : m.en;
     }
 
     function filteredListings(){
@@ -1804,6 +1895,7 @@ function haptic(ms=12){
       if(listing.partner) tags.push({t:"Partner", cls:"partner", title:"Paid partner (higher priority)"});
       if(listing.verified) tags.push({t:"Verified", cls:"good", title:"Verified salon/master"});
       if(listing.sterile) tags.push({t:"Sterile", cls:"good", title:"Sterile tools policy"});
+      if(listing.rating) tags.push({t:`★ ${listing.rating} (${listing.reviews||0})`, cls:"good", title:"Rating & reviews"});
       try{
         if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today", title:"Has slots today"});
       }catch(e){}
@@ -1950,7 +2042,7 @@ function haptic(ms=12){
         targets.forEach((box)=>{
           const chip = document.createElement("div");
           chip.className = "chip" + (state.serviceId===s.id ? " on":"");
-          chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:s.en}</span>`;
+          chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:state.lang==="ru"?(s.ru||s.en):s.en}</span>`;
           chip.title = "Filter by service";
           chip.addEventListener("click", ()=>{
             haptic(10);
@@ -2462,10 +2554,10 @@ function haptic(ms=12){
       const grid = $("#calGrid");
       if(!grid || !dow) return;
 
-      const loc = state.lang==="uk" ? "uk-UA" : "en-CA";
+      const loc = state.lang==="uk" ? "uk-UA" : state.lang==="ru" ? "ru-RU" : "en-CA";
       if(calTitle) calTitle.textContent = booking.monthCursor.toLocaleDateString(loc, { month:"long", year:"numeric" });
 
-      const dows = state.lang==="uk"
+      const dows = (state.lang==="uk" || state.lang==="ru")
         ? ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"]
         : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
       dow.innerHTML = dows.map(x=>`<div class="calDow">${x}</div>`).join("");
@@ -2648,7 +2740,7 @@ function haptic(ms=12){
         return;
       }
 
-      const loc = state.lang==="uk" ? "uk-UA" : "en-CA";
+      const loc = state.lang==="uk" ? "uk-UA" : state.lang==="ru" ? "ru-RU" : "en-CA";
 
       box.innerHTML = "";
       state.drafts.slice(0,20).forEach((d, idx)=>{
@@ -3092,7 +3184,7 @@ Email: ${email}`;
 
       $("#langBtn")?.addEventListener("click", ()=>{
         haptic(10);
-        setLang(state.lang === "uk" ? "en" : "uk");
+        setLang(state.lang === "uk" ? "ru" : state.lang === "ru" ? "en" : "uk");
       });
 
       $("#favOnly")?.addEventListener("click", ()=>{
@@ -3337,6 +3429,16 @@ Email: ${email}`;
     }
 
     init();
+  </script>
+
+  <script>
+    document.querySelectorAll("#trendStrip .trendCard").forEach(function(card){
+      card.addEventListener("click", function(){
+        try{ localStorage.setItem("bb_filters_v2", JSON.stringify({serviceId: card.dataset.service, q:"", favOnly:false})); }catch(e){}
+        location.href = "./index.html#partnersSection";
+        location.reload();
+      });
+    });
   </script>
 </body>
 </html>

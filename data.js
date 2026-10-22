@@ -5,11 +5,18 @@
 
   // ---- SERVICES ----
   window.SERVICES = [
-    { id:"manicure", ua:"Манікюр", en:"Manicure", icon:"💅" },
-    { id:"pedicure", ua:"Педикюр", en:"Pedicure", icon:"🦶" },
-    { id:"brows", ua:"Брови", en:"Brows", icon:"✨" },
-    { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", icon:"✂️" },
-    { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", icon:"💇‍♀️" },
+    { id:"manicure", ua:"Манікюр", en:"Manicure", ru:"Маникюр", icon:"💅" },
+    { id:"pedicure", ua:"Педикюр", en:"Pedicure", ru:"Педикюр", icon:"🦶" },
+    { id:"brows", ua:"Брови", en:"Brows", ru:"Брови", icon:"✨" },
+    { id:"lashes", ua:"Вії", en:"Lashes", ru:"Ресницы", icon:"👁️" },
+    { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", ru:"Стрижка мужская", icon:"✂️" },
+    { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", ru:"Стрижка женская", icon:"💇‍♀️" },
+    { id:"coloring", ua:"Фарбування", en:"Hair coloring", ru:"Окрашивание", icon:"🎨" },
+    { id:"barber", ua:"Барбер", en:"Barber", ru:"Барбер", icon:"💈" },
+    { id:"makeup", ua:"Макіяж", en:"Makeup", ru:"Макияж", icon:"💄" },
+    { id:"massage", ua:"Масаж", en:"Massage", ru:"Массаж", icon:"💆‍♀️" },
+    { id:"cosmetology", ua:"Косметолог", en:"Cosmetology", ru:"Косметолог", icon:"🌿" },
+    { id:"depilation", ua:"Депіляція", en:"Depilation", ru:"Депиляция", icon:"🕯️" },
   ];
 
   // ===== Helpers =====
@@ -67,6 +74,7 @@
   window.LISTINGS = [
     {
       id:"romanukova-nails",
+      rating:4.9, reviews:214,
       name:"Romanukova Nail Studio",
       brand:"Romanukova",
       city:"Montréal",
@@ -90,6 +98,7 @@
 
     {
       id:"iryna-stovban-home",
+      rating:5.0, reviews:37,
       name:"Iryna Stovban · Home master",
       brand:"Iryna Stovban",
       city:"Montréal",
@@ -124,6 +133,7 @@
 
     {
       id:"maison-atelier",
+      rating:4.8, reviews:168,
       name:"Maison Atelier",
       brand:"Maison Atelier",
       city:"Montréal",
@@ -145,6 +155,7 @@
 
     {
       id:"golden-hour-brows",
+      rating:4.9, reviews:122,
       name:"Golden Hour Brows",
       brand:"Golden Hour",
       city:"Montréal",
@@ -166,6 +177,7 @@
 
     {
       id:"atelier-nail-bar",
+      rating:4.7, reviews:98,
       name:"Atelier Nail Bar",
       brand:"Atelier",
       city:"Montréal",
@@ -187,6 +199,7 @@
 
     {
       id:"gentlemen-atelier",
+      rating:4.8, reviews:186,
       name:"Gentlemen Atelier",
       brand:"Gentlemen Atelier",
       city:"Montréal",
@@ -208,6 +221,7 @@
 
     {
       id:"rose-quartz-studio",
+      rating:4.6, reviews:74,
       name:"Rose Quartz Studio",
       brand:"Rose Quartz",
       city:"Montréal",
@@ -229,6 +243,7 @@
 
     {
       id:"violet-room",
+      rating:4.7, reviews:89,
       name:"The Violet Room",
       brand:"Violet Room",
       city:"Montréal",
@@ -392,6 +407,7 @@
 
     if(listing.partner) parts.push("Partner priority");
     if(listing.sterile) parts.push("Sterile");
+    if(listing.rating) parts.push(`★ ${listing.rating} (${listing.reviews||0})`);
 
     const p = minPriceFor(listing, serviceId);
     if(p!=null){
@@ -414,33 +430,30 @@
   function parseConcierge(text){
     const t = (text||"").toLowerCase();
     let serviceId = null;
-
-    const hasMen = /(чолов(іча|іч|і|ік)|men)/i.test(t);
-    const hasWomen = /(жін(оча|іча|к|ка)|women|female)/i.test(t);
-    if(hasMen) serviceId = "mens_haircut";
-    else if(hasWomen) serviceId = "womens_haircut";
-    else{
-      const rules = [
-        { id:"brows", re: /(бров|brow)/i },
-        { id:"manicure", re: /(манік|manic)/i },
-        { id:"pedicure", re: /(педик|pedic)/i },
-        { id:"mens_haircut", re: /(men('|s)?\s*hair|mens?\s*hair)/i },
-        { id:"womens_haircut", re: /(women('|s)?\s*hair|female\s*hair)/i },
-        { id:"womens_haircut", re: /(стрижк|haircut|hair\s*cut)/i },
-      ];
-      for(const r of rules){
-        if(r.re.test(t)){ serviceId = r.id; break; }
-      }
+    const rules = [
+      { id:"lashes", re: /(ві[їй]|ресниц|нарощ|наращив|ламінуван|lash)/i },
+      { id:"coloring", re: /(фарбув|окраш|колор|балаяж|а[їи]ртач|color)/i },
+      { id:"barber", re: /(барбер|бород|barber|beard)/i },
+      { id:"brows", re: /(бров|brow)/i },
+      { id:"manicure", re: /(манік|маник|нігт|ногт|manic)/i },
+      { id:"pedicure", re: /(педик|pedic)/i },
+      { id:"makeup", re: /(макіяж|макияж|мейк|makeup)/i },
+      { id:"massage", re: /(масаж|массаж|massage)/i },
+      { id:"cosmetology", re: /(космет|чистк|п[іи]л[іи]нг|обличч|лица)/i },
+      { id:"depilation", re: /(депіляц|депиляц|шугаринг|шугар|епіляц|эпиляц)/i },
+    ];
+    for(const r of rules){ if(r.re.test(t)){ serviceId = r.id; break; } }
+    if(!serviceId){
+      if(/(чолов|муж|men)/i.test(t)) serviceId = "mens_haircut";
+      else if(/(жін|женщ|женск|women|female)/i.test(t)) serviceId = "womens_haircut";
+      else if(/(стрижк|haircut)/i.test(t)) serviceId = "womens_haircut";
     }
-
     let maxPrice = null;
-    const m = t.match(/(?:\$|\bдо\b|\bunder\b|\bmax\b)?\s*([0-9]{2,3})\s*\$?/i);
-    if(m) maxPrice = parseInt(m[1],10);
-
+    const mp = t.match(/(?:^|\s)(?:до|under|max)\s*\$?\s*([0-9]{2,3})/i) || t.match(/\$\s*([0-9]{2,3})/i) || t.match(/([0-9]{2,3})\s*\$/i);
+    if(mp) maxPrice = parseInt(mp[1]||mp[2],10);
     let afterHour = null;
-    const mh = t.match(/(?:after|після)\s*([0-9]{1,2})/i);
+    const mh = t.match(/(?:after|після|после)\s*([0-9]{1,2})/i);
     if(mh) afterHour = parseInt(mh[1],10);
-
     return { serviceId, maxPrice, afterHour };
   }
 
@@ -461,10 +474,8 @@
 
     if(q.afterHour != null){
       pool = pool.filter(l=>{
-        const slot = nextAvailable(l, q.serviceId);
-        if(!slot) return false;
-        const hh = parseInt(slot.time.split(":")[0]||"0",10);
-        return hh >= q.afterHour;
+        const slots = (l.availabilityByService && q.serviceId && l.availabilityByService[q.serviceId]) || l.slots || [];
+        return slots.some(iso=> parseInt(String(iso).slice(11,13)||"0",10) >= q.afterHour);
       });
     }
 

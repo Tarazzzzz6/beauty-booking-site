@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Booking Club для бізнесу — партнерам | Montréal</title>
+  <meta name="description" content="Booking Club приводить клієнтів українським і російськомовним салонам та майстрам у Монреалі. Тарифи Partner і Premium Top." />
+  <meta property="og:title" content="Booking Club для бізнесу" />
+  <meta property="og:url" content="https://bookingclub.beauty/business.html" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.09);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#ff4fd8;--gold:#ffd27a;--violet:#8b5cf6;--ok:#20e3a5;--r:22px;--r2:28px;--shadow:0 22px 70px rgba(0,0,0,.55);--max:1100px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 90px}
+    .back{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    h1{font-family:"Playfair Display",serif;font-size:42px;line-height:1.05;letter-spacing:-.5px;margin:26px 0 12px}
+    h1 span{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{color:var(--muted);font-size:17px;max-width:62ch;line-height:1.55}
+    .btn{display:inline-flex;align-items:center;gap:10px;border:0;color:#0b0b0f;background:linear-gradient(135deg,var(--pink),var(--violet));border-radius:14px;padding:14px 18px;font-weight:800;cursor:pointer;font-size:16px}
+    .btn.gold{background:linear-gradient(135deg,var(--gold),var(--pink))}
+    .btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--stroke)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
+    .stat{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:18px}
+    .stat b{font-size:26px;display:block}
+    .stat span{color:var(--muted);font-size:13px}
+    h2{font-family:"Playfair Display",serif;font-size:28px;margin:38px 0 8px}
+    .note{color:var(--muted);margin:0 0 16px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .tier{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r2);padding:22px;position:relative;display:flex;flex-direction:column}
+    .tier.hot{border-color:rgba(255,79,216,.4);background:linear-gradient(180deg, rgba(255,79,216,.10), var(--card));box-shadow:0 18px 60px rgba(255,79,216,.12)}
+    .badge{position:absolute;top:14px;right:14px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:rgba(255,210,122,.14);border:1px solid rgba(255,210,122,.35);color:var(--gold)}
+    .tier h3{margin:0 0 4px;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
+    .price{font-size:36px;font-weight:800;margin:8px 0 2px}
+    .price small{font-size:14px;color:var(--muted);font-weight:600}
+    ul{list-style:none;padding:0;margin:14px 0 20px;line-height:1.5}
+    li{padding:6px 0;color:rgba(244,243,248,.88)} li::before{content:"✓ ";color:var(--ok);font-weight:900}
+    li.no{color:var(--muted)} li.no::before{content:"— ";color:var(--muted)}
+    .tier .btn{margin-top:auto;justify-content:center}
+    .faq{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:10px}
+    .faq b{display:block;margin-bottom:6px}
+    .faq p{margin:0;color:var(--muted);line-height:1.55}
+    .cta{margin-top:38px;border-radius:var(--r2);border:1px solid rgba(255,210,122,.3);background:linear-gradient(135deg, rgba(255,210,122,.10), rgba(255,79,216,.10));padding:26px;text-align:center}
+    @media(max-width:860px){.grid,.stats{grid-template-columns:1fr} h1{font-size:32px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← bookingclub.beauty</a>
+
+    <h1>Клієнти для твого салону — <span>без комісії з бронювань</span></h1>
+    <p class="lead">Booking Club — каталог українських і російськомовних б'юті-закладів Монреаля. Клієнт бронює за 20 секунд, підтвердження приходить тобі в Telegram. Ти платиш тільки за видимість — фіксовану підписку, а не відсоток з кожного клієнта, як Booksy чи Fresha.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+      <a class="btn gold" href="#tariffs">Дивитись тарифи</a>
+      <a class="btn ghost" href="mailto:hello@bookingclub.beauty?subject=Partner%20—%20хочу%20в%20Booking%20Club">Написати нам</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>20 сек</b><span>середній час бронювання клієнтом</span></div>
+      <div class="stat"><b>3 мови</b><span>UA · RU · EN — вся діаспора Монреаля</span></div>
+      <div class="stat"><b>0% комісії</b><span>з бронювань — тільки фіксована підписка</span></div>
+    </div>
+
+    <h2 id="tariffs">Тарифи</h2>
+    <p class="note">Ціни в CAD. Скасування підписки — у будь-який момент, одним повідомленням.</p>
+    <div class="grid">
+      <div class="tier">
+        <h3>Start</h3>
+        <div class="price">$0 <small>/ назавжди</small></div>
+        <ul>
+          <li>Профіль салону/майстра в каталозі</li>
+          <li>Послуги, ціни, фото, карта</li>
+          <li>Бронювання з підтвердженням у Telegram</li>
+          <li class="no">Без бейджа Partner</li>
+          <li class="no">Звичайна позиція у видачі</li>
+        </ul>
+        <a class="btn ghost" href="mailto:hello@bookingclub.beauty?subject=Start%20—%20додати%20салон">Додатись безкоштовно</a>
+      </div>
+
+      <div class="tier hot">
+        <span class="badge">Популярний</span>
+        <h3>Partner 💎</h3>
+        <div class="price">$49 <small>CAD / міс</small></div>
+        <ul>
+          <li>Все з тарифу Start</li>
+          <li>Бейдж 💎 Partner і пріоритет у видачі</li>
+          <li>Стрічка «Top salons / partners» на головній</li>
+          <li>Рейтинг ★ і відгуки на картці</li>
+          <li>AI-консьєрж рекомендує тебе першим</li>
+        </ul>
+        <a class="btn" href="mailto:hello@bookingclub.beauty?subject=Partner%20%2449%20—%20хочу%20підключити">Стати Partner</a>
+      </div>
+
+      <div class="tier">
+        <span class="badge">Топ</span>
+        <h3>Premium Top 👑</h3>
+        <div class="price">$99 <small>CAD / міс</small></div>
+        <ul>
+          <li>Все з тарифу Partner</li>
+          <li>Перші позиції у своєму районі</li>
+          <li>Місце в «Тренди 2026» і промо в соцмережах</li>
+          <li>Статистика: перегляди, кліки, бронювання</li>
+          <li>Персональний менеджер</li>
+        </ul>
+        <a class="btn gold" href="mailto:hello@bookingclub.beauty?subject=Premium%20Top%20%2499%20—%20хочу%20підключити">Стати Premium</a>
+      </div>
+    </div>
+
+    <h2>Питання салонів</h2>
+    <div class="faq"><b>Чим ви кращі за Booksy / Fresha?</b><p>Вони беруть комісію і не знають українсько/російськомовну аудиторію Монреаля. Ми — нішеві: клієнти бачать майстрів, які говорять їхньою мовою, а ти платиш фіксовану суму і точно знаєш витрати на місяць.</p></div>
+    <div class="faq"><b>Як клієнт бронює?</b><p>Обирає послугу і час на сайті — заявка миттєво приходить тобі в Telegram. Без застосунків і реєстрацій для клієнта.</p></div>
+    <div class="faq"><b>Що треба, щоб додатись?</b><p>Назва, адреса, послуги з цінами, 2–3 фото і Telegram для заявок. Напиши на hello@bookingclub.beauty — додамо за один день.</p></div>
+    <div class="faq"><b>А якщо клієнт не прийшов (no-show)?</b><p>Працюємо над опцією передоплати-депозиту для партнерів Premium — вона зменшує no-show у кілька разів.</p></div>
+
+    <div class="cta">
+      <h2 style="margin-top:0">Твій район ще вільний?</h2>
+      <p class="note">Premium Top продається тільки одному салону на район і категорію. Займи своє місце першим.</p>
+      <a class="btn gold" href="mailto:hello@bookingclub.beauty?subject=Premium%20Top%20—%20перевірити%20мій%20район">Перевірити мій район</a>
+    </div>
+  </div>
+</body>
+</html>
