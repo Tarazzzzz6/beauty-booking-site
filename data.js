@@ -110,7 +110,7 @@
       instagram:"https://share.google/eQ0wgWkzDtTdM8v4Y0",
       images:[
         "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1556228724-4b3c5c0ea90c?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=1400&q=80"
       ],
       bio_ua:
 `Привіт 🌸
@@ -210,7 +210,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1521498542256-5aeb47ba2d16?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80"
       ],
       services:[
         { serviceId:"mens_haircut", from:40, to:70, durationMin:45 },
@@ -254,11 +254,108 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1527799820374-dcf8a3ff9c40?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?auto=format&fit=crop&w=1400&q=80"
       ],
       services:[
         { serviceId:"pedicure", from:55, to:95, durationMin:80 },
         { serviceId:"brows", from:35, to:60, durationMin:45 },
+      ],
+      availability:{}
+    },
+    {
+      id:"kalyna-beauty",
+      rating:4.9, reviews:167,
+      name:"Kalyna Beauty Studio · UA",
+      brand:"Kalyna",
+      city:"Montréal",
+      address:"5425 Rue Saint-Hubert, Montréal, QC H2T 2X6",
+      lat:45.5320, lng:-73.6025,
+      partner:true, recommended:true,
+      verified:true, sterile:true,
+      phone:"+1 (514) 000-1001",
+      instagram:"https://instagram.com/",
+      images:[
+        "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1400&q=80",
+        "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1400&q=80"
+      ],
+      bio_ua:"Українська студія краси в Роземонті 💛💙 Вії, брови, макіяж і манікюр. Говоримо українською, російською, англійською і французькою.",
+      services:[
+        { serviceId:"lashes", from:60, to:120, durationMin:120 },
+        { serviceId:"brows", from:30, to:55, durationMin:45 },
+        { serviceId:"makeup", from:65, to:130, durationMin:60 },
+        { serviceId:"manicure", from:40, to:70, durationMin:60 }
+      ],
+      availability:{}
+    },
+    {
+      id:"mira-beauty-lab",
+      rating:4.8, reviews:203,
+      name:"Mira Beauty Lab · RU",
+      brand:"Mira",
+      city:"Montréal",
+      address:"6789 Chemin de la Côte-des-Neiges, Montréal, QC H3S 2B2",
+      lat:45.4920, lng:-73.6280,
+      partner:false, recommended:true,
+      verified:true, sterile:true,
+      phone:"+1 (514) 000-1002",
+      instagram:"https://instagram.com/",
+      images:[
+        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1400&q=80",
+        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?auto=format&fit=crop&w=1400&q=80"
+      ],
+      bio_ua:"Косметологія, масаж і депіляція. Русскоязычный персонал, стерильно, запис онлайн.",
+      services:[
+        { serviceId:"cosmetology", from:70, to:160, durationMin:60 },
+        { serviceId:"massage", from:60, to:120, durationMin:60 },
+        { serviceId:"depilation", from:20, to:80, durationMin:35 },
+        { serviceId:"brows", from:30, to:50, durationMin:40 }
+      ],
+      availability:{}
+    },
+    {
+      id:"kozak-barbershop",
+      rating:4.9, reviews:311,
+      name:"Kozak Barbershop · UA",
+      brand:"Kozak",
+      city:"Montréal",
+      address:"1215 Boulevard Saint-Laurent, Montréal, QC H2X 2S6",
+      lat:45.5105, lng:-73.5622,
+      partner:true, recommended:true,
+      verified:true, sterile:true,
+      phone:"+1 (514) 000-1003",
+      instagram:"https://instagram.com/",
+      images:[
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80",
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80"
+      ],
+      bio_ua:"Український барбершоп на Плато. Фейди, бороди, класика. Перша стрижка новим клієнтам — мінус 10%.",
+      services:[
+        { serviceId:"barber", from:35, to:65, durationMin:50 },
+        { serviceId:"mens_haircut", from:30, to:55, durationMin:45 }
+      ],
+      availability:{}
+    },
+    {
+      id:"atelier-color-lab",
+      rating:4.8, reviews:142,
+      name:"Atelier Color Lab · Westmount",
+      brand:"Color Lab",
+      city:"Montréal",
+      address:"4845 Rue Sherbrooke O, Westmount, QC H3Y 1V5",
+      lat:45.4868, lng:-73.6012,
+      partner:false, recommended:true,
+      verified:true, sterile:false,
+      phone:"+1 (514) 000-1004",
+      instagram:"https://instagram.com/",
+      images:[
+        "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1400&q=80",
+        "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1400&q=80"
+      ],
+      bio_ua:"Premium hair color studio in Westmount. Balayage, airtouch, blond experts. EN/FR.",
+      services:[
+        { serviceId:"coloring", from:120, to:320, durationMin:150 },
+        { serviceId:"womens_haircut", from:75, to:130, durationMin:75 },
+        { serviceId:"makeup", from:70, to:140, durationMin:60 }
       ],
       availability:{}
     }
