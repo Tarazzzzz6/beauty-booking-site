@@ -35,8 +35,10 @@ export default {
       return new Response("ok", { headers: corsHeaders });
     }
 
-    const BOT_TOKEN = (env && env.BOT_TOKEN) || "";
-    const OWNER_CHAT = (env && env.CHAT_ID) || "7384123064";
+    // У цьому воркері секрети історично названі TG_BOT_TOKEN / TG_CHAT_ID —
+    // підтримуємо обидва варіанти імен.
+    const BOT_TOKEN = (env && (env.TG_BOT_TOKEN || env.BOT_TOKEN)) || "";
+    const OWNER_CHAT = (env && (env.TG_CHAT_ID || env.CHAT_ID)) || "7384123064";
     const KV = (env && env.BC_KV) || null;
 
     async function tgSend(chatId, text) {
@@ -133,7 +135,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       return new Response("rate_limited", { status: 429, headers: { ...corsHeaders } });
     }
     if (!BOT_TOKEN) {
-      return new Response("BOT_TOKEN missing", { status: 500, headers: { ...corsHeaders } });
+      return new Response("TG_BOT_TOKEN/BOT_TOKEN missing", { status: 500, headers: { ...corsHeaders } });
     }
 
     const text = (data?.message && String(data.message).trim())
