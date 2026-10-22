@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0b0f" />
   <title>Booking Club для бізнесу — партнерам | Montréal</title>
-  <meta name="description" content="Booking Club приводить клієнтів українським і російськомовним салонам та майстрам у Монреалі. Тарифи Partner і Premium Top." />
+  <meta name="description" content="Booking Club приводить клієнтів українським і російськомовним салонам та майстрам у Монреалі. Partner $30 CAD/міс, перший місяць $0, 0% комісії." />
   <meta property="og:title" content="Booking Club для бізнесу" />
   <meta property="og:url" content="https://bookingclub.beauty/business.html" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
@@ -18,7 +18,11 @@
     body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
     a{color:inherit;text-decoration:none}
     .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 90px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
     .back{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    .langs{display:flex;gap:6px}
+    .langs button{border:1px solid var(--stroke);background:var(--card);color:var(--muted);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer;font:inherit;font-size:13px}
+    .langs button.on{color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));border-color:transparent}
     h1{font-family:"Playfair Display",serif;font-size:42px;line-height:1.05;letter-spacing:-.5px;margin:26px 0 12px}
     h1 span{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
     .lead{color:var(--muted);font-size:17px;max-width:62ch;line-height:1.55}
@@ -29,25 +33,52 @@
     .stat{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:18px}
     .stat b{font-size:26px;display:block}
     .stat span{color:var(--muted);font-size:13px}
-    h2{font-family:"Playfair Display",serif;font-size:28px;margin:38px 0 8px}
-    .note{color:var(--muted);margin:0 0 16px}
+    h2{font-family:"Playfair Display",serif;font-size:28px;margin:42px 0 8px}
+    .note{color:var(--muted);margin:0 0 16px;line-height:1.55}
+    .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .step{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:18px}
+    .step .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));margin-bottom:12px}
+    .step b{display:block;margin-bottom:6px;font-size:15px}
+    .step p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55}
+    .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .feat{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:18px}
+    .feat .ic{font-size:24px;margin-bottom:8px}
+    .feat b{display:block;margin-bottom:5px;font-size:15px}
+    .feat p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55}
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     .tier{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r2);padding:22px;position:relative;display:flex;flex-direction:column}
-    .tier.hot{border-color:rgba(255,79,216,.4);background:linear-gradient(180deg, rgba(255,79,216,.10), var(--card));box-shadow:0 18px 60px rgba(255,79,216,.12)}
+    .tier.hot{border-color:rgba(255,210,122,.45);background:linear-gradient(180deg, rgba(255,210,122,.10), var(--card));box-shadow:0 18px 60px rgba(255,210,122,.10)}
     .badge{position:absolute;top:14px;right:14px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:rgba(255,210,122,.14);border:1px solid rgba(255,210,122,.35);color:var(--gold)}
     .tier h3{margin:0 0 4px;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
     .price{font-size:36px;font-weight:800;margin:8px 0 2px}
     .price small{font-size:14px;color:var(--muted);font-weight:600}
-    ul{list-style:none;padding:0;margin:14px 0 20px;line-height:1.5}
-    li{padding:6px 0;color:rgba(244,243,248,.88)} li::before{content:"✓ ";color:var(--ok);font-weight:900}
-    li.no{color:var(--muted)} li.no::before{content:"— ";color:var(--muted)}
+    .price s{color:var(--muted);font-size:19px;font-weight:600}
+    .per{color:var(--muted);font-size:13px;line-height:1.5}
+    ul.tick{list-style:none;padding:0;margin:14px 0 20px;line-height:1.5}
+    ul.tick li{padding:6px 0;color:rgba(244,243,248,.88)} ul.tick li::before{content:"✓ ";color:var(--ok);font-weight:900}
+    ul.tick li.no{color:var(--muted)} ul.tick li.no::before{content:"— ";color:var(--muted)}
     .tier .btn{margin-top:auto;justify-content:center}
-    .faq{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:10px}
-    .faq b{display:block;margin-bottom:6px}
-    .faq p{margin:0;color:var(--muted);line-height:1.55}
+    table.cmp{width:100%;border-collapse:collapse;border:1px solid var(--stroke);border-radius:var(--r);overflow:hidden;background:var(--card);font-size:14.5px}
+    table.cmp th,table.cmp td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--stroke);line-height:1.5;vertical-align:top}
+    table.cmp th{background:rgba(255,255,255,.05);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+    table.cmp tr:last-child td{border-bottom:0}
+    table.cmp td.us{color:var(--gold);font-weight:700}
+    .faq{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+    .faq summary{cursor:pointer;padding:17px 18px;font-weight:800;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::after{content:"+";color:var(--gold);font-size:20px;font-weight:900}
+    .faq[open ] summary::after{content:"−"}
+    .faq .a{padding:0 18px 17px;color:var(--muted);line-height:1.6}
+    .rules{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r2);padding:24px}
+    .rules ol{margin:0;padding-left:20px;line-height:1.65;color:rgba(244,243,248,.9)}
+    .rules li{padding:5px 0}
+    .rules li b{color:var(--text)}
     .cta{margin-top:38px;border-radius:var(--r2);border:1px solid rgba(255,210,122,.3);background:linear-gradient(135deg, rgba(255,210,122,.10), rgba(255,79,216,.10));padding:26px;text-align:center}
-    @media(max-width:860px){.grid,.stats{grid-template-columns:1fr} h1{font-size:32px}}
-  
+    footer{margin-top:44px;border-top:1px solid var(--stroke);padding-top:22px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;color:var(--muted);font-size:13.5px;line-height:1.7}
+    footer nav{display:flex;gap:16px;flex-wrap:wrap}
+    footer a{font-weight:700;color:rgba(244,243,248,.85)}
+    @media(max-width:960px){.steps{grid-template-columns:repeat(2,1fr)}.feats{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:860px){.grid,.stats{grid-template-columns:1fr} h1{font-size:32px} .steps,.feats{grid-template-columns:1fr} table.cmp{font-size:13px}}
     html{scroll-behavior:smooth}
     body{animation:luxPageIn .7s cubic-bezier(.16,1,.3,1) both}
     @keyframes luxPageIn{from{opacity:0} to{opacity:1}}
@@ -55,9 +86,8 @@
     @keyframes luxHeroIn{from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none}}
     .lux-reveal{opacity:0; transform:translateY(26px); transition:opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1)}
     .lux-reveal.lux-in{opacity:1; transform:none}
-    .tier{transition:transform .3s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s}
-    .tier:hover{transform:translateY(-5px); border-color:rgba(255,210,122,.4); box-shadow:0 24px 60px rgba(0,0,0,.45)}
-    .stat{transition:transform .3s ease} .stat:hover{transform:translateY(-3px)}
+    .tier,.step,.feat{transition:transform .3s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s}
+    .tier:hover,.step:hover,.feat:hover{transform:translateY(-4px); border-color:rgba(255,210,122,.4)}
     .btn{position:relative; overflow:hidden}
     .btn::after{content:""; position:absolute; inset:-40%; background:linear-gradient(100deg, transparent 40%, rgba(255,255,255,.35) 50%, transparent 60%); transform:translateX(-70%); transition:transform .8s ease; pointer-events:none}
     .btn:hover::after{transform:translateX(70%)}
@@ -69,89 +99,409 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="back" href="./index.html">← bookingclub.beauty</a>
+    <div class="topbar">
+      <a class="back" href="./index.html">← bookingclub.beauty</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="uk">UA</button>
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </div>
 
-    <h1>Клієнти для твого салону — <span>без комісії з бронювань</span></h1>
-    <p class="lead">Booking Club — каталог українських і російськомовних б'юті-закладів Монреаля. Клієнт бронює за 20 секунд, підтвердження приходить тобі в Telegram. Ти платиш тільки за видимість — фіксовану підписку, а не відсоток з кожного клієнта, як Booksy чи Fresha.</p>
+    <!-- HERO -->
+    <h1 data-t="hero_h"></h1>
+    <p class="lead" data-t="hero_lead"></p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-      <a class="btn gold" href="#tariffs">Дивитись тарифи</a>
-      <a class="btn ghost" href="mailto:hello@bookingclub.beauty?subject=Partner%20—%20хочу%20в%20Booking%20Club">Написати нам</a>
+      <a class="btn gold" href="./join.html" data-t="cta_join"></a>
+      <a class="btn ghost" href="https://t.me/pershe1012_bot?start=join" target="_blank" rel="noopener" data-t="cta_bot"></a>
+      <a class="btn ghost" href="#tariffs" data-t="cta_tariffs"></a>
     </div>
 
     <div class="stats">
-      <div class="stat"><b>20 сек</b><span>середній час бронювання клієнтом</span></div>
-      <div class="stat"><b>3 мови</b><span>UA · RU · EN — вся діаспора Монреаля</span></div>
-      <div class="stat"><b>0% комісії</b><span>з бронювань — тільки фіксована підписка</span></div>
+      <div class="stat"><b data-t="st1b"></b><span data-t="st1s"></span></div>
+      <div class="stat"><b data-t="st2b"></b><span data-t="st2s"></span></div>
+      <div class="stat"><b data-t="st3b"></b><span data-t="st3s"></span></div>
     </div>
 
-    <h2 id="tariffs">Тарифи</h2>
-    <p class="note">Ціни в CAD. Скасування підписки — у будь-який момент, одним повідомленням.</p>
-    <p style="text-align:center;margin:0 0 16px"><span style="display:inline-block;padding:9px 14px;border-radius:999px;background:rgba(32,227,165,.13);border:1px solid rgba(32,227,165,.4);color:#20e3a5;font-weight:800;font-size:13.5px">🎉 Акція запуску: перший місяць — $0, ціни запуску фіксуються назавжди для перших салонів</span></p>
+    <!-- HOW IT WORKS -->
+    <h2 data-t="how_h"></h2>
+    <p class="note" data-t="how_note"></p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><b data-t="s1t"></b><p data-t="s1p"></p></div>
+      <div class="step"><div class="n">2</div><b data-t="s2t"></b><p data-t="s2p"></p></div>
+      <div class="step"><div class="n">3</div><b data-t="s3t"></b><p data-t="s3p"></p></div>
+      <div class="step"><div class="n">4</div><b data-t="s4t"></b><p data-t="s4p"></p></div>
+      <div class="step"><div class="n">5</div><b data-t="s5t"></b><p data-t="s5p"></p></div>
+    </div>
+
+    <!-- FEATURES -->
+    <h2 data-t="feat_h"></h2>
+    <p class="note" data-t="feat_note"></p>
+    <div class="feats">
+      <div class="feat"><div class="ic">🗓️</div><b data-t="f1t"></b><p data-t="f1p"></p></div>
+      <div class="feat"><div class="ic">✈️</div><b data-t="f2t"></b><p data-t="f2p"></p></div>
+      <div class="feat"><div class="ic">🔐</div><b data-t="f3t"></b><p data-t="f3p"></p></div>
+      <div class="feat"><div class="ic">📊</div><b data-t="f4t"></b><p data-t="f4p"></p></div>
+      <div class="feat"><div class="ic">★</div><b data-t="f5t"></b><p data-t="f5p"></p></div>
+      <div class="feat"><div class="ic">🎁</div><b data-t="f6t"></b><p data-t="f6p"></p></div>
+      <div class="feat"><div class="ic">0%</div><b data-t="f7t"></b><p data-t="f7p"></p></div>
+      <div class="feat"><div class="ic">🛡️</div><b data-t="f8t"></b><p data-t="f8p"></p></div>
+      <div class="feat"><div class="ic">🌐</div><b data-t="f9t"></b><p data-t="f9p"></p></div>
+      <div class="feat"><div class="ic">🗺️</div><b data-t="f10t"></b><p data-t="f10p"></p></div>
+    </div>
+
+    <!-- TARIFFS -->
+    <h2 id="tariffs" data-t="tar_h"></h2>
+    <p class="note" data-t="tar_note"></p>
+    <p style="text-align:center;margin:0 0 16px"><span style="display:inline-block;padding:9px 14px;border-radius:999px;background:rgba(32,227,165,.13);border:1px solid rgba(32,227,165,.4);color:#20e3a5;font-weight:800;font-size:13.5px" data-t="tar_promo"></span></p>
     <div class="grid">
       <div class="tier">
         <h3>Start</h3>
-        <div class="price">$0 <small>/ назавжди</small></div>
-        <ul>
-          <li>Профіль салону/майстра в каталозі</li>
-          <li>Послуги, ціни, фото, карта</li>
-          <li>Бронювання з підтвердженням у Telegram</li>
-          <li class="no">Без бейджа Partner</li>
-          <li class="no">Звичайна позиція у видачі</li>
+        <div class="price">$0 <small data-t="forever"></small></div>
+        <p class="per" data-t="t0per"></p>
+        <ul class="tick">
+          <li data-t="t0a"></li><li data-t="t0b"></li><li data-t="t0c"></li><li data-t="t0d"></li>
+          <li class="no" data-t="t0e"></li><li class="no" data-t="t0f"></li>
         </ul>
-        <a class="btn ghost" href="./join.html">Додатись безкоштовно</a>
+        <a class="btn ghost" href="./join.html" data-t="t0btn"></a>
       </div>
-
       <div class="tier hot">
-        <span class="badge">Популярний</span>
+        <span class="badge" data-t="pop"></span>
         <h3>Partner 💎</h3>
-        <div class="price"><s style="color:var(--muted);font-size:17px">$49</s> $0 <small>1-й місяць · далі $10 CAD/міс — ціна запуску</small></div>
-        <ul>
-          <li>Все з тарифу Start</li>
-          <li>Бейдж 💎 Partner і пріоритет у видачі</li>
-          <li>Стрічка «Top salons / partners» на головній</li>
-          <li>Рейтинг ★ і відгуки на картці</li>
-          <li>AI-консьєрж рекомендує тебе першим</li>
+        <div class="price"><s>$49</s> $30 <small>CAD / <span data-t="mo"></span></small></div>
+        <p class="per" data-t="t1per"></p>
+        <ul class="tick">
+          <li data-t="t1a"></li><li data-t="t1b"></li><li data-t="t1c"></li><li data-t="t1d"></li><li data-t="t1e"></li><li data-t="t1f"></li>
         </ul>
-        <a class="btn" href="./join.html">Стати Partner</a>
+        <a class="btn" href="./join.html" data-t="t1btn"></a>
       </div>
-
       <div class="tier">
-        <span class="badge">Топ</span>
+        <span class="badge" data-t="top"></span>
         <h3>Premium Top 👑</h3>
-        <div class="price"><s style="color:var(--muted);font-size:17px">$99</s> $0 <small>1-й місяць · далі $25 CAD/міс — ціна запуску</small></div>
-        <ul>
-          <li>Все з тарифу Partner</li>
-          <li>Перші позиції у своєму районі</li>
-          <li>Місце в «Тренди 2026» і промо в соцмережах</li>
-          <li>Статистика: перегляди, кліки, бронювання</li>
-          <li>Персональний менеджер</li>
+        <div class="price">$60 <small>CAD / <span data-t="mo"></span></small></div>
+        <p class="per" data-t="t2per"></p>
+        <ul class="tick">
+          <li data-t="t2a"></li><li data-t="t2b"></li><li data-t="t2c"></li><li data-t="t2d"></li><li data-t="t2e"></li>
         </ul>
-        <a class="btn gold" href="./join.html">Стати Premium</a>
+        <a class="btn gold" href="./join.html" data-t="t2btn"></a>
       </div>
     </div>
 
-    <h2>Питання салонів</h2>
-    <div class="faq"><b>Чим ви кращі за Booksy / Fresha?</b><p>Вони беруть комісію і не знають українсько/російськомовну аудиторію Монреаля. Ми — нішеві: клієнти бачать майстрів, які говорять їхньою мовою, а ти платиш фіксовану суму і точно знаєш витрати на місяць.</p></div>
-    <div class="faq"><b>Як клієнт бронює?</b><p>Обирає послугу і час на сайті — заявка миттєво приходить тобі в Telegram. Без застосунків і реєстрацій для клієнта.</p></div>
-    <div class="faq"><b>Що треба, щоб додатись?</b><p>Назва, адреса, послуги з цінами, 2–3 фото і Telegram для заявок. Напиши на hello@bookingclub.beauty — додамо за один день.</p></div>
-    <div class="faq"><b>А якщо клієнт не прийшов (no-show)?</b><p>Працюємо над опцією передоплати-депозиту для партнерів Premium — вона зменшує no-show у кілька разів.</p></div>
-
-    <div class="cta">
-      <h2 style="margin-top:0">Твій район ще вільний?</h2>
-      <p class="note">Premium Top продається тільки одному салону на район і категорію. Займи своє місце першим.</p>
-      <a class="btn gold" href="./join.html">Перевірити мій район</a>
+    <!-- COMPARISON -->
+    <h2 data-t="cmp_h"></h2>
+    <p class="note" data-t="cmp_note"></p>
+    <div style="overflow-x:auto">
+    <table class="cmp">
+      <thead><tr><th data-t="cmp_c0"></th><th>Fresha</th><th>Booking Club</th></tr></thead>
+      <tbody>
+        <tr><td data-t="cmp_r1a"></td><td data-t="cmp_r1b"></td><td class="us" data-t="cmp_r1c"></td></tr>
+        <tr><td data-t="cmp_r2a"></td><td data-t="cmp_r2b"></td><td class="us" data-t="cmp_r2c"></td></tr>
+        <tr><td data-t="cmp_r3a"></td><td data-t="cmp_r3b"></td><td class="us" data-t="cmp_r3c"></td></tr>
+        <tr><td data-t="cmp_r4a"></td><td data-t="cmp_r4b"></td><td class="us" data-t="cmp_r4c"></td></tr>
+        <tr><td data-t="cmp_r5a"></td><td data-t="cmp_r5b"></td><td class="us" data-t="cmp_r5c"></td></tr>
+        <tr><td data-t="cmp_r6a"></td><td data-t="cmp_r6b"></td><td class="us" data-t="cmp_r6c"></td></tr>
+      </tbody>
+    </table>
     </div>
+    <p class="note" style="margin-top:10px;font-size:12.5px" data-t="cmp_src"></p>
+
+    <!-- FAQ -->
+    <h2 data-t="faq_h"></h2>
+    <div id="faqList"></div>
+
+    <!-- RULES -->
+    <h2 data-t="rules_h"></h2>
+    <p class="note" data-t="rules_note"></p>
+    <div class="rules"><ol>
+      <li data-t="r1"></li><li data-t="r2"></li><li data-t="r3"></li>
+      <li data-t="r4"></li><li data-t="r5"></li><li data-t="r6"></li>
+    </ol></div>
+
+    <!-- FINAL CTA -->
+    <div class="cta">
+      <h2 style="margin-top:0" data-t="cta_h"></h2>
+      <p class="note" data-t="cta_p"></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <a class="btn gold" href="./join.html" data-t="cta_join"></a>
+        <a class="btn ghost" href="https://t.me/pershe1012_bot?start=join" target="_blank" rel="noopener" data-t="cta_bot"></a>
+      </div>
+      <p class="note" style="margin:16px 0 0">hello@bookingclub.beauty · <a href="https://t.me/pershe1012_bot" target="_blank" rel="noopener" style="color:var(--gold);font-weight:800">@pershe1012_bot</a></p>
+    </div>
+
+    <footer>
+      <div>© Booking Club · Montréal<br>hello@bookingclub.beauty</div>
+      <nav>
+        <a href="./index.html" data-t="ft_home"></a>
+        <a href="./business.html" data-t="ft_biz"></a>
+        <a href="./join.html" data-t="ft_join"></a>
+        <a href="./faq.html" data-t="ft_faq"></a>
+        <a href="./terms.html" data-t="ft_terms"></a>
+        <a href="./admin.html" data-t="ft_cab"></a>
+      </nav>
+    </footer>
   </div>
 
   <script>
+  var T = {
+  uk: {
+    hero_h: "Клієнти для твого салону — <span>без комісії з бронювань</span>",
+    hero_lead: "Booking Club — каталог і онлайн-запис саме для українських та російськомовних салонів і майстрів Монреаля. Клієнти з діаспори знаходять тебе на сайті й на карті, записуються за хвилину, а всі заявки, підтвердження й нагадування живуть у твоєму Telegram. Без застосунків, таблиць і відсотків з кожного клієнта.",
+    cta_join: "Підключити салон →", cta_bot: "🤖 Заповнити через бота", cta_tariffs: "Дивитись тарифи",
+    st1b: "10 хв", st1s: "на підключення — форма або бот, фото з телефона",
+    st2b: "$30 / міс", st2s: "Partner після безкоштовного першого місяця — долар на день",
+    st3b: "0% комісії", st3s: "з бронювань — назавжди, і для нових, і для твоїх клієнтів",
+    how_h: "Як це працює", how_note: "Від заявки до першого клієнта — пʼять кроків. Більшість салонів проходить їх за один вечір.",
+    s1t: "Заявка за 10 хвилин", s1p: "Через бота @pershe1012_bot (команда /join) або форму на сайті: назва, послуги й ціни, години, мови, 1–6 фото прямо з телефона. Для майстрів на дому публічно показуємо тільки район, не адресу.",
+    s2t: "Модерація", s2p: "Кожну заявку особисто перевіряє власник платформи — і публікує однією кнопкою. Так у каталозі немає випадкових і фейкових салонів, а клієнти довіряють записам.",
+    s3t: "Клієнти записуються на сайті", s3p: "Клієнт обирає послугу, день і час — заявка миттєво приходить у твій Telegram із кодом запису. Клієнт отримує підтвердження в Telegram і нагадування за 24 години та за 2 години до візиту.",
+    s4t: "Ти керуєш графіком", s4p: "Вихідні й закриті дні — командами бота (/close, /open) і в кабінеті на сайті; там само міняєш ціни. Зайняті слоти автоматично зникають із сайту — подвійних записів не буває.",
+    s5t: "Оплата підписки", s5p: "Перший місяць — $0 на будь-якому платному тарифі. Далі — фікс за тарифом, без комісії зверху. Онлайн-оплата підписки — скоро; зараз рахунок узгоджуємо особисто, без сюрпризів.",
+    feat_h: "Можливості", feat_note: "Усе, що треба салону для записів, — уже всередині. Нічого докуповувати не треба.",
+    f1t: "Календар без подвійних записів", f1p: "Зайнятий час одразу ховається з сайту. Один слот — один клієнт, система стежить за цим автоматично.",
+    f2t: "Сповіщення в Telegram", f2p: "Нові записи, скасування й зміни — миттєво тобі; підтвердження та нагадування за 24 год і 2 год — клієнту.",
+    f3t: "Кабінет із реальними даними", f3p: "Твої записи, графік і ціни — у кабінеті на сайті. Вхід — кодом, який бот надсилає саме тобі в Telegram.",
+    f4t: "Облік відвідуваності", f4p: "Після візиту бот питає: клієнт прийшов чи no-show. Ти бачиш статистику, платформа — надійність клієнтів.",
+    f5t: "Відгуки й рейтинг", f5p: "Клієнти залишають відгуки на твоїй сторінці, рейтинг ★ видно в каталозі й на карті — це продає краще за рекламу.",
+    f6t: "Подарункові сертифікати", f6p: "Сертифікати Booking Club можна витратити й у тебе — нові клієнти приходять уже з оплаченим подарунком.",
+    f7t: "0% комісії", f7p: "Ні з нових клієнтів, ні з твоїх постійних, ні з повторних візитів. Платиш тільки фіксовану підписку — або нічого на Start.",
+    f8t: "Депозит проти no-show — салону", f8p: "Депозит $10 іде салону, а не платформі: це компенсація майстру за втрачений слот. Зараз депозит фіксується у заявці клієнта; онлайн-оплата депозиту — скоро.",
+    f9t: "Три мови для клієнтів", f9p: "Сайт говорить українською, російською та англійською — уся діаспора Монреаля бачить тебе своєю мовою.",
+    f10t: "Карта Монреаля", f10p: "Твій салон — піном із ціною «від» на карті міста. Клієнти поруч знаходять тебе за хвилину.",
+    tar_h: "Тарифи", tar_note: "Ціни в CAD. Жодної комісії з бронювань на жодному тарифі. Скасування платного тарифу — у будь-який момент, без штрафів (див. правила нижче).",
+    tar_promo: "🎉 Запуск: перший місяць — $0 · ціна $30 зафіксована для перших салонів",
+    forever: "/ назавжди", mo: "міс",
+    t0per: "Для старту й майстрів на дому. Безкоштовно без обмежень у часі.",
+    t0a: "Профіль салону/майстра в каталозі й на карті", t0b: "Послуги, ціни, фото, мови", t0c: "Онлайн-записи з підтвердженням у Telegram", t0d: "Керування графіком через бота й кабінет",
+    t0e: "Без бейджа Partner і пріоритету у видачі", t0f: "Звичайна позиція в каталозі",
+    t0btn: "Додатись безкоштовно",
+    pop: "Популярний",
+    t1per: "1-й місяць — $0, далі $30 CAD/міс. Ціна запуску зафіксована для перших салонів назавжди; звичайна ціна далі — $49.",
+    t1a: "Все з тарифу Start", t1b: "Бейдж 💎 Partner і пріоритет у видачі", t1c: "Стрічка «Top salons / partners» на головній", t1d: "Рейтинг ★ і відгуки на картці", t1e: "AI-консьєрж рекомендує тебе першим", t1f: "«Щасливі години» −20% на вільні слоти",
+    t1btn: "Стати Partner",
+    top: "Топ",
+    t2per: "1-й місяць — $0, далі $60 CAD/міс. Тільки один салон на район і категорію — місце закріплюється за тобою.",
+    t2a: "Все з тарифу Partner", t2b: "Перші позиції в каталозі у своєму районі", t2c: "Топ каталогу й місце в «Тренди 2026»", t2d: "Промо в соцмережах Booking Club", t2e: "Розширена статистика й персональна підтримка",
+    t2btn: "Стати Premium",
+    cmp_h: "Booking Club і Fresha — чесно", cmp_note: "Ми не «краща копія» — ми нішеві й простіші за грошима. Ось факти:",
+    cmp_c0: "Що порівнюємо",
+    cmp_r1a: "Підписка", cmp_r1b: "Є (у США — від $19.95/міс)", cmp_r1c: "$0 / $30 / $60 на місяць — і все",
+    cmp_r2a: "Новий клієнт із маркетплейсу", cmp_r2b: "Комісія 20% з першого візиту, мінімум $6", cmp_r2c: "0% — новий клієнт коштує тобі $0 зверху",
+    cmp_r3a: "Твої власні й повторні клієнти", cmp_r3b: "Без комісії маркетплейсу", cmp_r3c: "0% — так само без комісії",
+    cmp_r4a: "Обробка платежів", cmp_r4b: "2.29% + $0.20 офлайн · 2.79% + $0.20 онлайн", cmp_r4c: "0% зверху фіксу: оплата послуги — у салоні, як звично",
+    cmp_r5a: "Депозит проти no-show", cmp_r5b: "Гроші залишаються салону", cmp_r5c: "Так само: депозит $10 іде салону, не платформі",
+    cmp_r6a: "Фокус", cmp_r6b: "Глобальна платформа для всіх", cmp_r6c: "UA/RU-салони Монреаля + записи через Telegram",
+    cmp_src: "Дані про Fresha — з відкритих джерел, 2026. Booking Club не є афілійованим із Fresha; назва згадана лише для фактичного порівняння.",
+    faq_h: "Питання салонів",
+    faq: [
+      ["Як підключитись?","Найшвидше — через бота @pershe1012_bot: команда /join, 10 хвилин, фото з телефона. Або форма на сторінці «Додати салон». Заявку перевіряє власник платформи й публікує її — зазвичай того ж дня."],
+      ["Скільки коштує і коли платити?","Start — $0 назавжди. Partner — перший місяць $0, далі $30 CAD/міс (ціна зафіксована для перших салонів; звичайна буде $49). Premium Top — перший місяць $0, далі $60 CAD/міс. Платиш тільки з другого місяця і тільки якщо лишаєшся на платному тарифі."],
+      ["Чи є комісія з бронювань?","Ні. 0% — з нових клієнтів, з твоїх власних і з повторних візитів. Це наша головна відмінність від великих платформ."],
+      ["Мої існуючі клієнти запишуться через сайт — я за них плачу?","Ні. Комісії немає взагалі, тому неважливо, звідки прийшов клієнт. Підписка — єдина плата, і вона не залежить від кількості записів."],
+      ["Як працює депозит і кому він іде?","Клієнт може підтвердити запис депозитом $10. Депозит іде салону: під час візиту він зараховується в ціну послуги, а якщо клієнт не прийшов — лишається салону як компенсація за слот. Зараз депозит фіксується у заявці; онлайн-оплата депозиту карткою — скоро."],
+      ["Клієнт не прийшов (no-show) — що відбувається?","Після часу візиту бот запитає тебе, чи прийшов клієнт. Познач no-show однією кнопкою — це видно в статистиці, а депозит (якщо був) лишається тобі. Клієнти з повторними no-show отримують обмеження на платформі."],
+      ["Як закрити вихідний або змінити графік?","У боті: /close 2026-12-25 закриває день, /open повертає його. Те саме — у кабінеті на сайті, де видно весь тижневий графік. Закриті дні й зайняті слоти одразу зникають із сайту."],
+      ["Чи можна піти будь-коли?","Так. Без штрафів і прихованих умов: просто попереди власника платформи за 7 днів — і підписку зупинимо, а профіль знімемо з каталогу, коли попросиш. Start узагалі безкоштовний."],
+      ["Чи треба встановлювати застосунок?","Ні. Салону потрібні тільки Telegram і браузер: записи й керування — у боті та в кабінеті на сайті. Клієнтам застосунок теж не потрібен."],
+      ["Як клієнти мене знайдуть?","Через каталог і карту bookingclub.beauty (три мови), пошук за послугами й районом, AI-консьєржа на головній і спільноту діаспори в Telegram. Partner і Premium додатково потрапляють у топ-стрічки й добірки."],
+      ["Мої дані й фото — чиї вони?","Твої. Фото, описи й ціни належать салону; платформа лише показує їх у каталозі. Попросиш видалити — видалимо профіль і матеріали. Деталі — на сторінці умов."],
+      ["Як змінити ціни або послуги?","У кабінеті на сайті — ціни оновлюються на сторінці салону одразу. Послуги й опис — через власника платформи одним повідомленням, або новою заявкою боту. Жодних дзвінків і очікування тижнями."]
+    ],
+    rules_h: "Правила платформи", rules_note: "Коротко й по-людськи. Повна версія — на сторінці умов; тут — те, що реально важливо щодня.",
+    r1: "<b>Чесні ціни.</b> Ціна на сайті = ціна в салоні. Якщо ціна змінилась — онови її в кабінеті до того, як клієнт запишеться.",
+    r2: "<b>Не ігноруй записи.</b> Підтверджуй або відхиляй заявки вчасно; зайняті слоти тримай закритими, щоб не було подвійних записів і розчарованих клієнтів.",
+    r3: "<b>Попереджай про зміни.</b> Якщо мусиш скасувати або перенести запис — повідом клієнта якомога раніше через Telegram.",
+    r4: "<b>Повага без дискримінації.</b> Обслуговуємо всіх клієнтів платформи однаково ввічливо, незалежно від мови, походження чи інших ознак.",
+    r5: "<b>Хто надає послугу.</b> Booking Club — посередник записів: послугу надає салон, і саме салон відповідає за її якість, безпеку та розрахунок із клієнтом.",
+    r6: "<b>Порушення правил.</b> Повторні порушення — спочатку попередження, далі зняття з каталогу. Без раптових банів за дрібниці: спочатку розмова.",
+    cta_h: "Твій район ще вільний?", cta_p: "Premium Top — тільки один салон на район і категорію, а ціна Partner $30 фіксується для перших. Підключайся зараз — перший місяць усе одно $0.",
+    ft_home: "Каталог", ft_biz: "Для салонів", ft_join: "Додати салон", ft_faq: "FAQ", ft_terms: "Умови", ft_cab: "Кабінет"
+  },
+  ru: {
+    hero_h: "Клиенты для твоего салона — <span>без комиссии с бронирований</span>",
+    hero_lead: "Booking Club — каталог и онлайн-запись именно для украино- и русскоязычных салонов и мастеров Монреаля. Клиенты из диаспоры находят тебя на сайте и на карте, записываются за минуту, а все заявки, подтверждения и напоминания живут в твоём Telegram. Без приложений, таблиц и процентов с каждого клиента.",
+    cta_join: "Подключить салон →", cta_bot: "🤖 Заполнить через бота", cta_tariffs: "Смотреть тарифы",
+    st1b: "10 мин", st1s: "на подключение — форма или бот, фото с телефона",
+    st2b: "$30 / мес", st2s: "Partner после бесплатного первого месяца — доллар в день",
+    st3b: "0% комиссии", st3s: "с бронирований — навсегда, и для новых, и для твоих клиентов",
+    how_h: "Как это работает", how_note: "От заявки до первого клиента — пять шагов. Большинство салонов проходит их за один вечер.",
+    s1t: "Заявка за 10 минут", s1p: "Через бота @pershe1012_bot (команда /join) или форму на сайте: название, услуги и цены, часы, языки, 1–6 фото прямо с телефона. Для мастеров на дому публично показываем только район, не адрес.",
+    s2t: "Модерация", s2p: "Каждую заявку лично проверяет владелец платформы — и публикует одной кнопкой. Так в каталоге нет случайных и фейковых салонов, а клиенты доверяют записям.",
+    s3t: "Клиенты записываются на сайте", s3p: "Клиент выбирает услугу, день и время — заявка мгновенно приходит в твой Telegram с кодом записи. Клиент получает подтверждение в Telegram и напоминания за 24 часа и за 2 часа до визита.",
+    s4t: "Ты управляешь графиком", s4p: "Выходные и закрытые дни — командами бота (/close, /open) и в кабинете на сайте; там же меняешь цены. Занятые слоты автоматически исчезают с сайта — двойных записей не бывает.",
+    s5t: "Оплата подписки", s5p: "Первый месяц — $0 на любом платном тарифе. Дальше — фикс по тарифу, без комиссии сверху. Онлайн-оплата подписки — скоро; сейчас счёт согласовываем лично, без сюрпризов.",
+    feat_h: "Возможности", feat_note: "Всё, что нужно салону для записей, — уже внутри. Ничего докупать не надо.",
+    f1t: "Календарь без двойных записей", f1p: "Занятое время сразу скрывается с сайта. Один слот — один клиент, система следит за этим автоматически.",
+    f2t: "Уведомления в Telegram", f2p: "Новые записи, отмены и изменения — мгновенно тебе; подтверждение и напоминания за 24 ч и 2 ч — клиенту.",
+    f3t: "Кабинет с реальными данными", f3p: "Твои записи, график и цены — в кабинете на сайте. Вход — кодом, который бот присылает именно тебе в Telegram.",
+    f4t: "Учёт посещаемости", f4p: "После визита бот спросит: клиент пришёл или no-show. Ты видишь статистику, платформа — надёжность клиентов.",
+    f5t: "Отзывы и рейтинг", f5p: "Клиенты оставляют отзывы на твоей странице, рейтинг ★ виден в каталоге и на карте — это продаёт лучше рекламы.",
+    f6t: "Подарочные сертификаты", f6p: "Сертификаты Booking Club можно потратить и у тебя — новые клиенты приходят уже с оплаченным подарком.",
+    f7t: "0% комиссии", f7p: "Ни с новых клиентов, ни с твоих постоянных, ни с повторных визитов. Платишь только фиксированную подписку — или ничего на Start.",
+    f8t: "Депозит против no-show — салону", f8p: "Депозит $10 идёт салону, а не платформе: это компенсация мастеру за потерянный слот. Сейчас депозит фиксируется в заявке клиента; онлайн-оплата депозита — скоро.",
+    f9t: "Три языка для клиентов", f9p: "Сайт говорит на украинском, русском и английском — вся диаспора Монреаля видит тебя на своём языке.",
+    f10t: "Карта Монреаля", f10p: "Твой салон — пином с ценой «от» на карте города. Клиенты рядом находят тебя за минуту.",
+    tar_h: "Тарифы", tar_note: "Цены в CAD. Никакой комиссии с бронирований ни на одном тарифе. Отмена платного тарифа — в любой момент, без штрафов (см. правила ниже).",
+    tar_promo: "🎉 Запуск: первый месяц — $0 · цена $30 зафиксирована для первых салонов",
+    forever: "/ навсегда", mo: "мес",
+    t0per: "Для старта и мастеров на дому. Бесплатно без ограничений по времени.",
+    t0a: "Профиль салона/мастера в каталоге и на карте", t0b: "Услуги, цены, фото, языки", t0c: "Онлайн-записи с подтверждением в Telegram", t0d: "Управление графиком через бота и кабинет",
+    t0e: "Без значка Partner и приоритета в выдаче", t0f: "Обычная позиция в каталоге",
+    t0btn: "Добавить бесплатно",
+    pop: "Популярный",
+    t1per: "1-й месяц — $0, дальше $30 CAD/мес. Цена запуска зафиксирована для первых салонов навсегда; обычная цена дальше — $49.",
+    t1a: "Всё из тарифа Start", t1b: "Значок 💎 Partner и приоритет в выдаче", t1c: "Лента «Top salons / partners» на главной", t1d: "Рейтинг ★ и отзывы на карточке", t1e: "AI-консьерж рекомендует тебя первым", t1f: "«Счастливые часы» −20% на свободные слоты",
+    t1btn: "Стать Partner",
+    top: "Топ",
+    t2per: "1-й месяц — $0, дальше $60 CAD/мес. Только один салон на район и категорию — место закрепляется за тобой.",
+    t2a: "Всё из тарифа Partner", t2b: "Первые позиции в каталоге в своём районе", t2c: "Топ каталога и место в «Тренды 2026»", t2d: "Промо в соцсетях Booking Club", t2e: "Расширенная статистика и персональная поддержка",
+    t2btn: "Стать Premium",
+    cmp_h: "Booking Club и Fresha — честно", cmp_note: "Мы не «лучшая копия» — мы нишевые и проще по деньгам. Вот факты:",
+    cmp_c0: "Что сравниваем",
+    cmp_r1a: "Подписка", cmp_r1b: "Есть (в США — от $19.95/мес)", cmp_r1c: "$0 / $30 / $60 в месяц — и всё",
+    cmp_r2a: "Новый клиент с маркетплейса", cmp_r2b: "Комиссия 20% с первого визита, минимум $6", cmp_r2c: "0% — новый клиент стоит тебе $0 сверху",
+    cmp_r3a: "Твои собственные и повторные клиенты", cmp_r3b: "Без комиссии маркетплейса", cmp_r3c: "0% — так же без комиссии",
+    cmp_r4a: "Обработка платежей", cmp_r4b: "2.29% + $0.20 офлайн · 2.79% + $0.20 онлайн", cmp_r4c: "0% сверху фикса: оплата услуги — в салоне, как обычно",
+    cmp_r5a: "Депозит против no-show", cmp_r5b: "Деньги остаются салону", cmp_r5c: "Так же: депозит $10 идёт салону, не платформе",
+    cmp_r6a: "Фокус", cmp_r6b: "Глобальная платформа для всех", cmp_r6c: "UA/RU-салоны Монреаля + записи через Telegram",
+    cmp_src: "Данные о Fresha — из открытых источников, 2026. Booking Club не аффилирован с Fresha; название упомянуто только для фактического сравнения.",
+    faq_h: "Вопросы салонов",
+    faq: [
+      ["Как подключиться?","Быстрее всего — через бота @pershe1012_bot: команда /join, 10 минут, фото с телефона. Или форма на странице «Добавить салон». Заявку проверяет владелец платформы и публикует её — обычно в тот же день."],
+      ["Сколько стоит и когда платить?","Start — $0 навсегда. Partner — первый месяц $0, дальше $30 CAD/мес (цена зафиксирована для первых салонов; обычная будет $49). Premium Top — первый месяц $0, дальше $60 CAD/мес. Платишь только со второго месяца и только если остаёшься на платном тарифе."],
+      ["Есть ли комиссия с бронирований?","Нет. 0% — с новых клиентов, с твоих собственных и с повторных визитов. Это наше главное отличие от крупных платформ."],
+      ["Мои существующие клиенты запишутся через сайт — я за них плачу?","Нет. Комиссии нет вообще, поэтому неважно, откуда пришёл клиент. Подписка — единственная плата, и она не зависит от количества записей."],
+      ["Как работает депозит и кому он идёт?","Клиент может подтвердить запись депозитом $10. Депозит идёт салону: при визите засчитывается в цену услуги, а если клиент не пришёл — остаётся салону как компенсация за слот. Сейчас депозит фиксируется в заявке; онлайн-оплата депозита картой — скоро."],
+      ["Клиент не пришёл (no-show) — что происходит?","После времени визита бот спросит тебя, пришёл ли клиент. Отметь no-show одной кнопкой — это видно в статистике, а депозит (если был) остаётся тебе. Клиенты с повторными no-show получают ограничения на платформе."],
+      ["Как закрыть выходной или изменить график?","В боте: /close 2026-12-25 закрывает день, /open возвращает его. То же — в кабинете на сайте, где виден весь недельный график. Закрытые дни и занятые слоты сразу исчезают с сайта."],
+      ["Можно ли уйти в любой момент?","Да. Без штрафов и скрытых условий: просто предупреди владельца платформы за 7 дней — и подписку остановим, а профиль снимем с каталога, когда попросишь. Start вообще бесплатный."],
+      ["Нужно ли устанавливать приложение?","Нет. Салону нужны только Telegram и браузер: записи и управление — в боте и в кабинете на сайте. Клиентам приложение тоже не нужно."],
+      ["Как клиенты меня найдут?","Через каталог и карту bookingclub.beauty (три языка), поиск по услугам и району, AI-консьержа на главной и сообщество диаспоры в Telegram. Partner и Premium дополнительно попадают в топ-ленты и подборки."],
+      ["Мои данные и фото — чьи они?","Твои. Фото, описания и цены принадлежат салону; платформа лишь показывает их в каталоге. Попросишь удалить — удалим профиль и материалы. Детали — на странице условий."],
+      ["Как изменить цены или услуги?","В кабинете на сайте — цены обновляются на странице салона сразу. Услуги и описание — через владельца платформы одним сообщением, или новой заявкой боту. Никаких звонков и ожидания неделями."]
+    ],
+    rules_h: "Правила платформы", rules_note: "Коротко и по-человечески. Полная версия — на странице условий; здесь — то, что реально важно каждый день.",
+    r1: "<b>Честные цены.</b> Цена на сайте = цена в салоне. Если цена изменилась — обнови её в кабинете до того, как клиент запишется.",
+    r2: "<b>Не игнорируй записи.</b> Подтверждай или отклоняй заявки вовремя; занятые слоты держи закрытыми, чтобы не было двойных записей и разочарованных клиентов.",
+    r3: "<b>Предупреждай об изменениях.</b> Если нужно отменить или перенести запись — сообщи клиенту как можно раньше через Telegram.",
+    r4: "<b>Уважение без дискриминации.</b> Обслуживаем всех клиентов платформы одинаково вежливо, независимо от языка, происхождения и других признаков.",
+    r5: "<b>Кто оказывает услугу.</b> Booking Club — посредник записей: услугу оказывает салон, и именно салон отвечает за её качество, безопасность и расчёт с клиентом.",
+    r6: "<b>Нарушения правил.</b> Повторные нарушения — сначала предупреждение, дальше снятие с каталога. Без внезапных банов за мелочи: сначала разговор.",
+    cta_h: "Твой район ещё свободен?", cta_p: "Premium Top — только один салон на район и категорию, а цена Partner $30 фиксируется для первых. Подключайся сейчас — первый месяц всё равно $0.",
+    ft_home: "Каталог", ft_biz: "Для салонов", ft_join: "Добавить салон", ft_faq: "FAQ", ft_terms: "Условия", ft_cab: "Кабинет"
+  },
+  en: {
+    hero_h: "Clients for your salon — <span>with zero booking commission</span>",
+    hero_lead: "Booking Club is a directory and online booking platform built specifically for Ukrainian- and Russian-speaking salons and beauty professionals in Montréal. Diaspora clients find you on the site and the map, book in a minute, and every booking, confirmation and reminder lives in your Telegram. No apps, no spreadsheets, no percentage from every client.",
+    cta_join: "Connect my salon →", cta_bot: "🤖 Apply via the bot", cta_tariffs: "See pricing",
+    st1b: "10 min", st1s: "to get connected — form or bot, photos from your phone",
+    st2b: "$30 / mo", st2s: "Partner after a free first month — a dollar a day",
+    st3b: "0% commission", st3s: "on bookings — forever, for new and existing clients alike",
+    how_h: "How it works", how_note: "From application to your first client — five steps. Most salons finish them in one evening.",
+    s1t: "Apply in 10 minutes", s1p: "Via the @pershe1012_bot bot (/join command) or the site form: name, services and prices, hours, languages, 1–6 photos straight from your phone. For home-based professionals we publicly show only the district, never the address.",
+    s2t: "Moderation", s2p: "Every application is personally reviewed by the platform owner and published with one tap. That keeps random and fake listings out of the directory — and clients trust the bookings.",
+    s3t: "Clients book on the site", s3p: "The client picks a service, day and time — the booking lands in your Telegram instantly, with a booking code. The client gets a Telegram confirmation plus reminders 24 hours and 2 hours before the visit.",
+    s4t: "You control the schedule", s4p: "Days off and closed days — via bot commands (/close, /open) and in your dashboard on the site, where you also change prices. Booked slots disappear from the site automatically — no double bookings, ever.",
+    s5t: "Paying the subscription", s5p: "The first month is $0 on any paid plan. After that — a flat plan fee, with no commission on top. Online subscription payment is coming soon; for now we arrange the invoice personally, with no surprises.",
+    feat_h: "Features", feat_note: "Everything a salon needs for bookings is already inside. Nothing extra to buy.",
+    f1t: "Calendar with no double bookings", f1p: "Booked time is hidden from the site immediately. One slot — one client, enforced automatically.",
+    f2t: "Telegram notifications", f2p: "New bookings, cancellations and changes — instantly to you; confirmation and 24h / 2h reminders — to the client.",
+    f3t: "Dashboard with real data", f3p: "Your bookings, schedule and prices live in your dashboard on the site. Sign-in uses a code the bot sends only to you in Telegram.",
+    f4t: "Attendance tracking", f4p: "After the visit the bot asks: did the client show up, or was it a no-show? You see the stats; the platform sees client reliability.",
+    f5t: "Reviews and rating", f5p: "Clients leave reviews on your page; your ★ rating shows in the directory and on the map — it sells better than ads.",
+    f6t: "Gift certificates", f6p: "Booking Club gift certificates can be spent at your salon too — new clients arrive with a prepaid gift.",
+    f7t: "0% commission", f7p: "Not on new clients, not on your regulars, not on repeat visits. You pay only a flat subscription — or nothing on Start.",
+    f8t: "No-show deposit goes to the salon", f8p: "The $10 deposit goes to the salon, not the platform: it compensates the professional for a lost slot. Today the deposit is recorded in the booking request; online deposit payment is coming soon.",
+    f9t: "Three languages for clients", f9p: "The site speaks Ukrainian, Russian and English — the whole Montréal diaspora sees you in their language.",
+    f10t: "Montréal map", f10p: "Your salon is a price pin (“from $…”) on the city map. Nearby clients find you in a minute.",
+    tar_h: "Pricing", tar_note: "Prices in CAD. Zero booking commission on every plan. Cancel a paid plan at any time, with no penalties (see the rules below).",
+    tar_promo: "🎉 Launch: first month $0 · the $30 price is locked for the first salons",
+    forever: "/ forever", mo: "mo",
+    t0per: "For getting started and home-based professionals. Free with no time limit.",
+    t0a: "Salon/pro profile in the directory and on the map", t0b: "Services, prices, photos, languages", t0c: "Online bookings with Telegram confirmation", t0d: "Schedule control via the bot and dashboard",
+    t0e: "No Partner badge or search priority", t0f: "Standard position in the directory",
+    t0btn: "Join for free",
+    pop: "Popular",
+    t1per: "Month 1 — $0, then $30 CAD/mo. The launch price is locked forever for the first salons; the regular price later is $49.",
+    t1a: "Everything in Start", t1b: "💎 Partner badge and search priority", t1c: "“Top salons / partners” strip on the homepage", t1d: "★ rating and reviews on your card", t1e: "The AI concierge recommends you first", t1f: "“Happy hours” −20% on free slots",
+    t1btn: "Become a Partner",
+    top: "Top",
+    t2per: "Month 1 — $0, then $60 CAD/mo. Only one salon per district and category — the spot is reserved for you.",
+    t2a: "Everything in Partner", t2b: "Top positions in the directory in your district", t2c: "Top of the catalog and a spot in “Trends 2026”", t2d: "Promo in Booking Club social media", t2e: "Extended stats and personal support",
+    t2btn: "Become Premium",
+    cmp_h: "Booking Club vs Fresha — honestly", cmp_note: "We are not a “better copy” — we are niche, and simpler on money. Here are the facts:",
+    cmp_c0: "What we compare",
+    cmp_r1a: "Subscription", cmp_r1b: "Yes (in the US — from $19.95/mo)", cmp_r1c: "$0 / $30 / $60 per month — that is it",
+    cmp_r2a: "New client from the marketplace", cmp_r2b: "20% commission on the first visit, minimum $6", cmp_r2c: "0% — a new client costs you $0 extra",
+    cmp_r3a: "Your own and repeat clients", cmp_r3b: "No marketplace commission", cmp_r3c: "0% — no commission either",
+    cmp_r4a: "Payment processing", cmp_r4b: "2.29% + $0.20 in person · 2.79% + $0.20 online", cmp_r4c: "0% on top of the flat fee: services are paid at the salon, as usual",
+    cmp_r5a: "No-show deposit", cmp_r5b: "The money stays with the salon", cmp_r5c: "Same here: the $10 deposit goes to the salon, not the platform",
+    cmp_r6a: "Focus", cmp_r6b: "Global platform for everyone", cmp_r6c: "UA/RU salons of Montréal + bookings via Telegram",
+    cmp_src: "Fresha data — from public sources, 2026. Booking Club is not affiliated with Fresha; the name is mentioned for factual comparison only.",
+    faq_h: "Salon FAQ",
+    faq: [
+      ["How do I get connected?","Fastest — via the @pershe1012_bot bot: the /join command, 10 minutes, photos from your phone. Or the form on the “Add your salon” page. The platform owner reviews and publishes your application — usually the same day."],
+      ["How much does it cost, and when do I pay?","Start — $0 forever. Partner — first month $0, then $30 CAD/mo (locked for the first salons; the regular price will be $49). Premium Top — first month $0, then $60 CAD/mo. You pay only from the second month, and only if you stay on a paid plan."],
+      ["Is there a commission on bookings?","No. 0% — on new clients, on your own clients, and on repeat visits. That is our main difference from the big platforms."],
+      ["My existing clients book through the site — do I pay for them?","No. There is no commission at all, so it does not matter where the client came from. The subscription is the only fee, and it does not depend on booking volume."],
+      ["How does the deposit work, and who gets it?","A client can confirm a booking with a $10 deposit. The deposit goes to the salon: at the visit it counts toward the service price, and if the client does not show up, it stays with the salon as compensation for the slot. Today the deposit is recorded in the booking request; online card payment for deposits is coming soon."],
+      ["A client did not show up (no-show) — what happens?","After the appointment time, the bot asks you whether the client came. Mark a no-show with one tap — it shows in your stats, and the deposit (if any) stays with you. Clients with repeated no-shows get restricted on the platform."],
+      ["How do I close a day off or change the schedule?","In the bot: /close 2026-12-25 closes a day, /open reopens it. The same works in your dashboard on the site, where you see the whole weekly schedule. Closed days and booked slots disappear from the site immediately."],
+      ["Can I leave at any time?","Yes. No penalties and no hidden terms: just give the platform owner 7 days’ notice — we stop the subscription and remove your profile from the directory when you ask. Start is free anyway."],
+      ["Do I need to install an app?","No. A salon needs only Telegram and a browser: bookings and management live in the bot and the site dashboard. Clients do not need an app either."],
+      ["How will clients find me?","Through the bookingclub.beauty directory and map (three languages), search by service and district, the AI concierge on the homepage, and the diaspora Telegram community. Partner and Premium additionally appear in top strips and curated picks."],
+      ["Who owns my data and photos?","You do. Photos, descriptions and prices belong to the salon; the platform only displays them in the directory. Ask us to delete them — we remove your profile and materials. Details are on the Terms page."],
+      ["How do I change prices or services?","In your dashboard on the site — prices update on your salon page immediately. Services and descriptions — via the platform owner with one message, or a new bot application. No calls, no waiting for weeks."]
+    ],
+    rules_h: "Platform rules", rules_note: "Short and human. The full version is on the Terms page; this is what actually matters day to day.",
+    r1: "<b>Honest prices.</b> The price on the site = the price at the salon. If a price changes, update it in your dashboard before a client books.",
+    r2: "<b>Do not ignore bookings.</b> Confirm or decline requests on time; keep booked slots closed so there are no double bookings or disappointed clients.",
+    r3: "<b>Warn about changes.</b> If you must cancel or move a booking, message the client as early as possible via Telegram.",
+    r4: "<b>Respect, no discrimination.</b> We serve all platform clients equally politely, regardless of language, origin or any other characteristic.",
+    r5: "<b>Who provides the service.</b> Booking Club is a booking intermediary: the salon provides the service, and the salon is responsible for its quality, safety and payment with the client.",
+    r6: "<b>Breaking the rules.</b> Repeated violations — first a warning, then removal from the directory. No sudden bans over small things: we talk first.",
+    cta_h: "Is your district still free?", cta_p: "Premium Top is one salon per district and category, and the $30 Partner price is locked for the first salons. Connect now — the first month is $0 anyway.",
+    ft_home: "Directory", ft_biz: "For salons", ft_join: "Add a salon", ft_faq: "FAQ", ft_terms: "Terms", ft_cab: "Dashboard"
+  }
+  };
+
+  function renderFaq(lang){
+    var box = document.getElementById("faqList");
+    box.innerHTML = "";
+    (T[lang].faq || []).forEach(function(qa){
+      var d = document.createElement("details"); d.className = "faq";
+      var s = document.createElement("summary"); s.textContent = qa[0];
+      var a = document.createElement("div"); a.className = "a"; a.textContent = qa[1];
+      d.appendChild(s); d.appendChild(a); box.appendChild(d);
+    });
+  }
+  function applyLang(lang){
+    if(!T[lang]) lang = "uk";
+    document.documentElement.lang = lang === "uk" ? "uk" : lang;
+    try{ localStorage.setItem("bb_lang", lang); }catch(e){}
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      var k = el.getAttribute("data-t"); var v = T[lang][k];
+      if(typeof v === "string") el.innerHTML = v;
+    });
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.classList.toggle("on", b.getAttribute("data-lang") === lang);
+    });
+    renderFaq(lang);
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ applyLang(b.getAttribute("data-lang")); });
+  });
+  var startLang = "uk";
+  try{ startLang = localStorage.getItem("bb_lang") || "uk"; }catch(e){}
+  applyLang(startLang);
+
   /* LUXE 2026: reveal-on-scroll */
   (function(){
     var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var io = ("IntersectionObserver" in window && !reduce) ? new IntersectionObserver(function(es){
       es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("lux-in"); io.unobserve(e.target); } });
     }, {threshold:.12}) : null;
-    document.querySelectorAll(".stat, .tier, .faq, .cta, .lead").forEach(function(el, i){
-      el.classList.add("lux-reveal"); el.style.transitionDelay = Math.min(i * 70, 420) + "ms";
+    document.querySelectorAll(".stat, .tier, .step, .feat, .faq, .cta, .lead, .rules").forEach(function(el, i){
+      el.classList.add("lux-reveal"); el.style.transitionDelay = Math.min(i * 40, 300) + "ms";
       if(io) io.observe(el); else el.classList.add("lux-in");
     });
   })();

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>FAQ — Booking Club · Montréal</title>
+  <meta name="description" content="Відповіді для клієнтів і салонів Booking Club: як записатись, депозит, скасування, мови, оплата." />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#C6A15B;--gold:#ffd27a;--r:22px;--r2:28px;--max:880px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 90px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .back{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    .langs{display:flex;gap:6px}
+    .langs button{border:1px solid var(--stroke);background:var(--card);color:var(--muted);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer;font:inherit;font-size:13px}
+    .langs button.on{color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));border-color:transparent}
+    h1{font-family:"Playfair Display",serif;font-size:38px;line-height:1.08;margin:26px 0 10px}
+    h1 span{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+    h2{font-family:"Playfair Display",serif;font-size:27px;margin:38px 0 10px}
+    .lead{color:var(--muted);font-size:16.5px;line-height:1.6;max-width:62ch}
+    .faq{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+    .faq summary{cursor:pointer;padding:17px 18px;font-weight:800;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::after{content:"+";color:var(--gold);font-size:20px;font-weight:900}
+    .faq[open ] summary::after{content:"−"}
+    .faq .a{padding:0 18px 17px;color:var(--muted);line-height:1.65}
+    .faq .a a{color:var(--gold);font-weight:800}
+    .card{border:1px solid rgba(255,210,122,.35);background:linear-gradient(135deg, rgba(255,210,122,.10), rgba(255,79,216,.08));border-radius:var(--r2);padding:24px;margin-top:14px}
+    .btn{display:inline-flex;align-items:center;gap:10px;border:0;color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));border-radius:14px;padding:14px 18px;font-weight:800;font-size:15.5px;margin-top:14px}
+    footer{margin-top:44px;border-top:1px solid var(--stroke);padding-top:22px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;color:var(--muted);font-size:13.5px;line-height:1.7}
+    footer nav{display:flex;gap:16px;flex-wrap:wrap}
+    footer a{font-weight:700;color:rgba(244,243,248,.85)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back" href="./index.html">← bookingclub.beauty</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="uk">UA</button>
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+
+    <h1 data-t="h"></h1>
+    <p class="lead" data-t="lead"></p>
+
+    <h2 data-t="clients_h"></h2>
+    <div id="clientFaq"></div>
+
+    <h2 data-t="salons_h"></h2>
+    <div id="salonFaq"></div>
+    <div class="card">
+      <b style="font-size:18px" data-t="salon_cta_t"></b>
+      <p style="color:var(--muted);line-height:1.6;margin:8px 0 0" data-t="salon_cta_p"></p>
+      <a class="btn" href="./business.html" data-t="salon_cta_b"></a>
+    </div>
+
+    <footer>
+      <div>© Booking Club · Montréal<br>hello@bookingclub.beauty</div>
+      <nav>
+        <a href="./index.html" data-t="ft_home"></a>
+        <a href="./business.html" data-t="ft_biz"></a>
+        <a href="./join.html" data-t="ft_join"></a>
+        <a href="./faq.html" data-t="ft_faq"></a>
+        <a href="./terms.html" data-t="ft_terms"></a>
+        <a href="./admin.html" data-t="ft_cab"></a>
+      </nav>
+    </footer>
+  </div>
+
+  <script>
+  var T = {
+  uk: {
+    h: "Питання й відповіді — <span>коротко і чесно</span>",
+    lead: "Для клієнтів — як записатись, що таке депозит і як скасувати візит. Для салонів — стислий блок унизу й повна сторінка для бізнесу.",
+    clients_h: "Для клієнтів",
+    clientFaq: [
+      ["Як записатись?","На головній обери послугу, салон і вільний час — і залиш імʼя та телефон. Запис одразу летить салону в Telegram, а ти отримуєш код запису (BK-…). Весь процес — близько хвилини, без реєстрації й застосунків."],
+      ["Чи обовʼязково мати Telegram?","Ні, запис працює і без нього. Але з Telegram краще: натисни кнопку після запису або напиши боту @pershe1012_bot свій код BK-… — тоді отримаєш підтвердження, нагадування за 24 год і 2 год, і зможеш скасувати запис командою /cancel."],
+      ["Що таке депозит $10 і кому він іде?","Це підтвердження, що ти точно прийдеш. Депозит іде салону, а не платформі. Якщо ти прийшов на візит — депозит зараховується в ціну послуги (фактично це передоплата частини суми). Зараз депозит фіксується у твоїй заявці; онлайн-оплата карткою — скоро."],
+      ["Коли депозит повертається, а коли — ні?","Якщо ти прийшов — депозит зараховано в ціну. Якщо скасував завчасно (до візиту, якомога раніше, бажано за 12+ годин) — депозит повертається або переноситься на новий запис за домовленістю із салоном. Якщо не прийшов без попередження (no-show) — депозит лишається салону як компенсація за втрачений слот."],
+      ["Як скасувати або перенести запис?","Найшвидше — у боті @pershe1012_bot командою /cancel і кодом запису BK-… — слот одразу звільниться. Або напиши салону напряму. Перенести = скасувати й записатись на новий час. Чим раніше попередиш, тим краще для всіх."],
+      ["Що, як салон скасував мій запис?","Салон має попередити тебе якомога раніше. Тоді просто обери інший час або інший салон у каталозі — депозит у такому разі повертається повністю або переноситься, як домовитесь із салоном. Якщо салон скасовує без попередження повторно — напиши нам на hello@bookingclub.beauty, ми розберемось."],
+      ["Якими мовами працює сайт і салони?","Сайт — українською, російською та англійською (перемикач угорі). У картці кожного салону вказані мови обслуговування: у нашої ніші це переважно українська та російська, часто ще англійська/французька."],
+      ["Як і де я плачу за послугу?","У салоні, після послуги — так, як звично салону (картою або готівкою). На сайті ти нічого не платиш: Booking Club не бере з клієнтів жодних комісій. Виняток — депозит, коли салон його просить (див. вище)."]
+    ],
+    salons_h: "Для салонів — стисло",
+    salonFaq: [
+      ["Скільки коштує салону?","Start — $0 назавжди. Partner — перший місяць $0, далі $30 CAD/міс, ціна зафіксована для перших салонів. Premium Top — перший місяць $0, далі $60 CAD/міс. Комісії з бронювань немає: 0%."],
+      ["Як підключитись?","Через бота @pershe1012_bot (команда /join, ~10 хвилин, фото з телефона) або форму «Додати салон». Заявку перевіряє власник платформи й публікує її."],
+      ["Де відповіді на всі питання салону?","На сторінці для бізнесу: як це працює, можливості, тарифи, порівняння з Fresha, FAQ із 12 питань і правила платформи. Кнопка — нижче."]
+    ],
+    salon_cta_t: "Ти — салон або майстер?", salon_cta_p: "Подивись повну сторінку для бізнесу: 5 кроків підключення, усі можливості, чесне порівняння з Fresha й правила без дрібного шрифту.",
+    salon_cta_b: "Сторінка для салонів →",
+    ft_home: "Каталог", ft_biz: "Для салонів", ft_join: "Додати салон", ft_faq: "FAQ", ft_terms: "Умови", ft_cab: "Кабінет"
+  },
+  ru: {
+    h: "Вопросы и ответы — <span>коротко и честно</span>",
+    lead: "Для клиентов — как записаться, что такое депозит и как отменить визит. Для салонов — краткий блок внизу и полная страница для бизнеса.",
+    clients_h: "Для клиентов",
+    clientFaq: [
+      ["Как записаться?","На главной выбери услугу, салон и свободное время — и оставь имя и телефон. Запись сразу улетает салону в Telegram, а ты получаешь код записи (BK-…). Весь процесс — около минуты, без регистрации и приложений."],
+      ["Обязательно ли иметь Telegram?","Нет, запись работает и без него. Но с Telegram лучше: нажми кнопку после записи или напиши боту @pershe1012_bot свой код BK-… — тогда получишь подтверждение, напоминания за 24 ч и 2 ч, и сможешь отменить запись командой /cancel."],
+      ["Что такое депозит $10 и кому он идёт?","Это подтверждение, что ты точно придёшь. Депозит идёт салону, а не платформе. Если ты пришёл на визит — депозит засчитывается в цену услуги (по сути, это предоплата части суммы). Сейчас депозит фиксируется в твоей заявке; онлайн-оплата картой — скоро."],
+      ["Когда депозит возвращается, а когда — нет?","Если ты пришёл — депозит засчитан в цену. Если отменил заранее (до визита, как можно раньше, желательно за 12+ часов) — депозит возвращается или переносится на новую запись по договорённости с салоном. Если не пришёл без предупреждения (no-show) — депозит остаётся салону как компенсация за потерянный слот."],
+      ["Как отменить или перенести запись?","Быстрее всего — у бота @pershe1012_bot командой /cancel и кодом записи BK-… — слот сразу освободится. Или напиши салону напрямую. Перенести = отменить и записаться на новое время. Чем раньше предупредишь, тем лучше для всех."],
+      ["Что, если салон отменил мою запись?","Салон обязан предупредить тебя как можно раньше. Тогда просто выбери другое время или другой салон в каталоге — депозит в таком случае возвращается полностью или переносится, как договоритесь с салоном. Если салон отменяет без предупреждения повторно — напиши нам на hello@bookingclub.beauty, мы разберёмся."],
+      ["На каких языках работает сайт и салоны?","Сайт — на украинском, русском и английском (переключатель вверху). В карточке каждого салона указаны языки обслуживания: в нашей нише это в основном украинский и русский, часто ещё английский/французский."],
+      ["Как и где я плачу за услугу?","В салоне, после услуги — так, как удобно салону (картой или наличными). На сайте ты ничего не платишь: Booking Club не берёт с клиентов никаких комиссий. Исключение — депозит, когда салон его просит (см. выше)."]
+    ],
+    salons_h: "Для салонов — кратко",
+    salonFaq: [
+      ["Сколько стоит салону?","Start — $0 навсегда. Partner — первый месяц $0, дальше $30 CAD/мес, цена зафиксирована для первых салонов. Premium Top — первый месяц $0, дальше $60 CAD/мес. Комиссии с бронирований нет: 0%."],
+      ["Как подключиться?","Через бота @pershe1012_bot (команда /join, ~10 минут, фото с телефона) или форму «Добавить салон». Заявку проверяет владелец платформы и публикует её."],
+      ["Где ответы на все вопросы салона?","На странице для бизнеса: как это работает, возможности, тарифы, сравнение с Fresha, FAQ из 12 вопросов и правила платформы. Кнопка — ниже."]
+    ],
+    salon_cta_t: "Ты — салон или мастер?", salon_cta_p: "Посмотри полную страницу для бизнеса: 5 шагов подключения, все возможности, честное сравнение с Fresha и правила без мелкого шрифта.",
+    salon_cta_b: "Страница для салонов →",
+    ft_home: "Каталог", ft_biz: "Для салонов", ft_join: "Добавить салон", ft_faq: "FAQ", ft_terms: "Условия", ft_cab: "Кабинет"
+  },
+  en: {
+    h: "FAQ — <span>short and honest</span>",
+    lead: "For clients — how to book, what the deposit is, and how to cancel. For salons — a short block below and a full business page.",
+    clients_h: "For clients",
+    clientFaq: [
+      ["How do I book?","On the homepage, pick a service, a salon and a free time — then leave your name and phone. The booking goes straight to the salon’s Telegram, and you get a booking code (BK-…). The whole thing takes about a minute, with no sign-up and no apps."],
+      ["Do I need Telegram?","No, booking works without it. But Telegram makes it better: tap the button after booking, or send your BK-… code to @pershe1012_bot — then you get a confirmation, reminders 24h and 2h before the visit, and you can cancel with the /cancel command."],
+      ["What is the $10 deposit, and who gets it?","It confirms that you will really show up. The deposit goes to the salon, not the platform. If you attend your visit, the deposit counts toward the service price (it is effectively a partial prepayment). Today the deposit is recorded in your booking request; online card payment is coming soon."],
+      ["When is the deposit refunded — and when is it not?","If you show up, the deposit is credited to the price. If you cancel in advance (before the visit, as early as possible — ideally 12+ hours ahead), the deposit is refunded or moved to a new booking as agreed with the salon. If you do not show up without notice (no-show), the deposit stays with the salon as compensation for the lost slot."],
+      ["How do I cancel or reschedule?","Fastest — with the @pershe1012_bot bot using /cancel and your BK-… booking code: the slot frees up immediately. Or message the salon directly. Rescheduling = cancel and book a new time. The earlier you let them know, the better for everyone."],
+      ["What if the salon cancelled my booking?","The salon must warn you as early as possible. Then just pick another time or another salon in the directory — in this case the deposit is fully refunded or moved, as agreed with the salon. If a salon repeatedly cancels without notice, write to hello@bookingclub.beauty and we will look into it."],
+      ["Which languages do the site and salons use?","The site works in Ukrainian, Russian and English (switcher at the top). Each salon card lists its service languages: in our niche that is mostly Ukrainian and Russian, often also English/French."],
+      ["How and where do I pay for the service?","At the salon, after the service — however the salon prefers (card or cash). You pay nothing on the site: Booking Club charges clients no fees at all. The only exception is the deposit, when a salon asks for one (see above)."]
+    ],
+    salons_h: "For salons — in short",
+    salonFaq: [
+      ["How much does it cost a salon?","Start — $0 forever. Partner — first month $0, then $30 CAD/mo, with the price locked for the first salons. Premium Top — first month $0, then $60 CAD/mo. There is no booking commission: 0%."],
+      ["How do I get connected?","Via the @pershe1012_bot bot (/join command, ~10 minutes, photos from your phone) or the “Add your salon” form. The platform owner reviews and publishes your application."],
+      ["Where are all the salon answers?","On the business page: how it works, features, pricing, a comparison with Fresha, a 12-question FAQ and the platform rules. The button is below."]
+    ],
+    salon_cta_t: "Are you a salon or a beauty pro?", salon_cta_p: "See the full business page: 5 connection steps, all features, an honest comparison with Fresha, and the rules with no fine print.",
+    salon_cta_b: "Page for salons →",
+    ft_home: "Directory", ft_biz: "For salons", ft_join: "Add a salon", ft_faq: "FAQ", ft_terms: "Terms", ft_cab: "Dashboard"
+  }
+  };
+
+  function renderList(id, items){
+    var box = document.getElementById(id);
+    box.innerHTML = "";
+    (items || []).forEach(function(qa){
+      var d = document.createElement("details"); d.className = "faq";
+      var s = document.createElement("summary"); s.textContent = qa[0];
+      var a = document.createElement("div"); a.className = "a"; a.textContent = qa[1];
+      d.appendChild(s); d.appendChild(a); box.appendChild(d);
+    });
+  }
+  function applyLang(lang){
+    if(!T[lang]) lang = "uk";
+    document.documentElement.lang = lang === "uk" ? "uk" : lang;
+    try{ localStorage.setItem("bb_lang", lang); }catch(e){}
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      var k = el.getAttribute("data-t"); var v = T[lang][k];
+      if(typeof v === "string") el.innerHTML = v;
+    });
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.classList.toggle("on", b.getAttribute("data-lang") === lang);
+    });
+    renderList("clientFaq", T[lang].clientFaq);
+    renderList("salonFaq", T[lang].salonFaq);
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ applyLang(b.getAttribute("data-lang")); });
+  });
+  var startLang = "uk";
+  try{ startLang = localStorage.getItem("bb_lang") || "uk"; }catch(e){}
+  applyLang(startLang);
+  </script>
+</body>
+</html>

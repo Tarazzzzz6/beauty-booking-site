@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Умови — Booking Club · Montréal</title>
+  <meta name="description" content="Умови Booking Club людською мовою: роль платформи, підписка салонів, депозит і no-show, скасування, дані й фото." />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.72);--pink:#C6A15B;--gold:#ffd27a;--r:22px;--max:880px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1200px 800px at 15% 0%, rgba(255,79,216,.15), transparent 55%),radial-gradient(900px 700px at 85% 10%, rgba(139,92,246,.15), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 90px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .back{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
+    .langs{display:flex;gap:6px}
+    .langs button{border:1px solid var(--stroke);background:var(--card);color:var(--muted);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer;font:inherit;font-size:13px}
+    .langs button.on{color:#0b0b0f;background:linear-gradient(135deg,var(--gold),var(--pink));border-color:transparent}
+    h1{font-family:"Playfair Display",serif;font-size:38px;line-height:1.08;margin:26px 0 10px}
+    h1 span{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+    h2{font-family:"Playfair Display",serif;font-size:24px;margin:34px 0 8px}
+    .lead,.sec p,.sec li{color:var(--muted);line-height:1.7}
+    .lead{font-size:16.5px;max-width:62ch}
+    .sec p{margin:0 0 10px}
+    .sec ul{margin:0 0 8px;padding-left:20px}
+    .sec li{padding:3px 0}
+    .sec b{color:var(--text)}
+    .card{border:1px solid var(--stroke);background:var(--card);border-radius:var(--r);padding:20px;margin-top:14px}
+    footer{margin-top:44px;border-top:1px solid var(--stroke);padding-top:22px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;color:var(--muted);font-size:13.5px;line-height:1.7}
+    footer nav{display:flex;gap:16px;flex-wrap:wrap}
+    footer a{font-weight:700;color:rgba(244,243,248,.85)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back" href="./index.html">← bookingclub.beauty</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="uk">UA</button>
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+
+    <h1 data-t="h"></h1>
+    <p class="lead" data-t="lead"></p>
+    <div id="sections"></div>
+
+    <div class="card">
+      <b data-t="contact_t"></b>
+      <p style="color:var(--muted);line-height:1.65;margin:8px 0 0" data-t="contact_p"></p>
+    </div>
+
+    <footer>
+      <div>© Booking Club · Montréal<br>hello@bookingclub.beauty</div>
+      <nav>
+        <a href="./index.html" data-t="ft_home"></a>
+        <a href="./business.html" data-t="ft_biz"></a>
+        <a href="./join.html" data-t="ft_join"></a>
+        <a href="./faq.html" data-t="ft_faq"></a>
+        <a href="./terms.html" data-t="ft_terms"></a>
+        <a href="./admin.html" data-t="ft_cab"></a>
+      </nav>
+    </footer>
+  </div>
+
+  <script>
+  var T = {
+  uk: {
+    h: "Умови — <span>людською мовою</span>",
+    lead: "Без юридичних джунглів: хто ми, за що відповідає салон, як працюють підписка, депозит і скасування. Якщо щось незрозуміло — напиши на hello@bookingclub.beauty, пояснимо особисто.",
+    sections: [
+      ["1. Хто ми і яка роль платформи", [
+        "Booking Club (bookingclub.beauty) — це каталог і посередник записів: ми допомагаємо клієнту знайти салон або майстра в Монреалі та записатись, а салону — отримати й підтвердити запис.",
+        "Послугу (манікюр, стрижку, масаж тощо) надає <b>салон</b>, а не платформа. Договір про послугу виникає між клієнтом і салоном у момент підтвердження запису."
+      ]],
+      ["2. Для салонів: підключення і модерація", [
+        "Салон підключається через бота @pershe1012_bot (/join) або форму на сайті. Кожну заявку перевіряє власник платформи; публікація — після підтвердження.",
+        "Салон відповідає за правдивість своїх даних: назви, цін, послуг, годин і фото. Ціни на сайті мають збігатися з цінами в салоні."
+      ]],
+      ["3. Підписка і її скасування", [
+        "Тарифи: Start — $0 назавжди; Partner — перший місяць $0, далі $30 CAD/міс (ціна зафіксована для перших салонів; звичайна ціна — $49); Premium Top — перший місяць $0, далі $60 CAD/міс. Усі ціни в CAD.",
+        "Комісії з бронювань немає: 0% — ні з нових, ні з власних клієнтів салону.",
+        "Скасувати платний тариф можна будь-коли, без штрафів: достатньо попередити власника платформи за 7 днів. Підписка зупиняється, а профіль знімається з каталогу на прохання салону.",
+        "Онлайн-оплата підписки — скоро; зараз рахунок і оплату узгоджуємо особисто з кожним салоном."
+      ]],
+      ["4. Записи клієнтів: підтвердження і скасування", [
+        "Клієнт обирає послугу, день і час на сайті; запис отримує код BK-… і надходить салону в Telegram. Зайнятий слот автоматично зникає із сайту.",
+        "Скасувати запис клієнт може в боті командою /cancel із кодом запису або напряму через салон. Салон, зі свого боку, зобовʼязується попереджати клієнта про скасування чи перенесення якомога раніше."
+      ]],
+      ["5. Депозит і no-show", [
+        "Депозит становить $10 і належить <b>салону</b>, а не платформі: під час візиту він зараховується в ціну послуги.",
+        "Якщо клієнт прийшов — депозит зараховано. Якщо клієнт скасував завчасно — депозит повертається або переноситься за домовленістю із салоном. Якщо клієнт не прийшов без попередження (no-show) — депозит лишається салону як компенсація за втрачений слот.",
+        "Зараз депозит фіксується у заявці клієнта; онлайн-оплата депозиту карткою — скоро. Оплата самої послуги відбувається в салоні."
+      ]],
+      ["6. Відповідальність за послугу", [
+        "За якість, безпеку, стерильність, результат послуги та розрахунок із клієнтом відповідає салон, який її надає.",
+        "Платформа відповідає за роботу сайту, каталогу, системи записів і Telegram-сповіщень — і за те, щоб дані салону в каталозі відповідали надісланим салоном.",
+        "Спори між клієнтом і салоном спершу вирішуються між ними; платформа допомагає звʼязатись і, за повторних порушень правил, може зняти салон із каталогу."
+      ]],
+      ["7. Дані, фото й відгуки", [
+        "Фото, описи, ціни та інші матеріали салону належать <b>салону</b>. Публікуючи їх на платформі, салон дозволяє показувати їх у каталозі, на карті та в добірках Booking Club.",
+        "На прохання салону ми видаляємо профіль і його матеріали з платформи.",
+        "Імʼя й телефон клієнта з запису передаються тільки салону, до якого зроблено запис, — для підтвердження візиту. Ми не продаємо персональні дані.",
+        "Відгуки пишуть клієнти; салон може відповісти на відгук через власника платформи. Відверто фейкові відгуки видаляємо."
+      ]],
+      ["8. Видалення з каталогу", [
+        "Салон може піти будь-коли (див. п. 3). Платформа може зняти салон із каталогу за повторні порушення правил: неправдиві ціни, систематичне ігнорування записів, скасування без попередження, дискримінацію клієнтів.",
+        "Порядок чесний: спочатку попередження й розмова — зняття лише якщо порушення повторюються."
+      ]],
+      ["9. Зміни умов", [
+        "Якщо умови зміняться суттєво (наприклад, ціни для нових салонів), ми повідомимо підключені салони заздалегідь у Telegram. Для перших салонів зафіксована ціна Partner $30 зберігається, доки салон користується платформою."
+      ]]
+    ],
+    contact_t: "Питання про умови?", contact_p: "Напиши на hello@bookingclub.beauty або боту @pershe1012_bot — відповідає власник платформи особисто.",
+    ft_home: "Каталог", ft_biz: "Для салонів", ft_join: "Додати салон", ft_faq: "FAQ", ft_terms: "Умови", ft_cab: "Кабінет"
+  },
+  ru: {
+    h: "Условия — <span>человеческим языком</span>",
+    lead: "Краткая версия на русском (полный текст — в украинской версии выше по переключателю UA). Кто мы, за что отвечает салон, как работают подписка, депозит и отмены.",
+    sections: [
+      ["1. Роль платформы", ["Booking Club — каталог и посредник записей в Монреале. Услугу оказывает <b>салон</b>, а не платформа; договор об услуге — между клиентом и салоном."]],
+      ["2. Подписка салонов", ["Start — $0 навсегда; Partner — первый месяц $0, дальше $30 CAD/мес (цена зафиксирована для первых салонов; обычная — $49); Premium Top — первый месяц $0, дальше $60 CAD/мес. Комиссии с бронирований нет: 0%. Отмена платного тарифа — в любой момент без штрафов, с предупреждением за 7 дней. Онлайн-оплата подписки — скоро; сейчас счёт согласовываем лично."]],
+      ["3. Депозит и no-show", ["Депозит $10 принадлежит <b>салону</b>: при визите засчитывается в цену услуги; при своевременной отмене возвращается или переносится по договорённости с салоном; при no-show без предупреждения остаётся салону как компенсация за слот. Сейчас депозит фиксируется в заявке; онлайн-оплата картой — скоро. Услуга оплачивается в салоне."]],
+      ["4. Отмены записей", ["Клиент отменяет запись у бота командой /cancel с кодом BK-… или напрямую через салон. Салон обязан предупреждать клиента об отмене или переносе как можно раньше."]],
+      ["5. Ответственность, данные, удаление", ["За качество и безопасность услуги отвечает салон. Фото, описания и цены принадлежат салону; по его просьбе удаляем профиль и материалы. Имя и телефон клиента передаются только салону записи. Повторные нарушения правил салона (ложные цены, игнорирование записей, отмены без предупреждения, дискриминация) — сначала предупреждение, затем снятие с каталога."]]
+    ],
+    contact_t: "Вопросы об условиях?", contact_p: "Напиши на hello@bookingclub.beauty или боту @pershe1012_bot — отвечает владелец платформы лично.",
+    ft_home: "Каталог", ft_biz: "Для салонов", ft_join: "Добавить салон", ft_faq: "FAQ", ft_terms: "Условия", ft_cab: "Кабинет"
+  },
+  en: {
+    h: "Terms — <span>in plain language</span>",
+    lead: "A short English version (the full text is the Ukrainian version — use the UA switch above). Who we are, what the salon is responsible for, and how the subscription, deposit and cancellations work.",
+    sections: [
+      ["1. The platform’s role", ["Booking Club is a directory and booking intermediary in Montréal. The service is provided by the <b>salon</b>, not the platform; the service agreement is between the client and the salon."]],
+      ["2. Salon subscription", ["Start — $0 forever; Partner — first month $0, then $30 CAD/mo (locked for the first salons; regular price $49); Premium Top — first month $0, then $60 CAD/mo. There is no booking commission: 0%. A paid plan can be cancelled at any time with no penalties, with 7 days’ notice. Online subscription payment is coming soon; for now we arrange invoices personally."]],
+      ["3. Deposit and no-shows", ["The $10 deposit belongs to the <b>salon</b>: at the visit it counts toward the service price; with timely cancellation it is refunded or moved as agreed with the salon; for a no-show without notice it stays with the salon as compensation for the lost slot. Today the deposit is recorded in the booking request; online card payment is coming soon. Services are paid at the salon."]],
+      ["4. Cancelling bookings", ["Clients cancel via the bot with /cancel and their BK-… code, or directly through the salon. Salons must warn clients about cancellations or changes as early as possible."]],
+      ["5. Responsibility, data, removal", ["The salon is responsible for the quality and safety of its service. Photos, descriptions and prices belong to the salon; on request we remove the profile and its materials. A client’s name and phone are shared only with the salon they booked. Repeated rule violations by a salon (false prices, ignored bookings, cancellations without notice, discrimination) lead first to a warning, then to removal from the directory."]]
+    ],
+    contact_t: "Questions about the terms?", contact_p: "Write to hello@bookingclub.beauty or the @pershe1012_bot bot — the platform owner replies personally.",
+    ft_home: "Directory", ft_biz: "For salons", ft_join: "Add a salon", ft_faq: "FAQ", ft_terms: "Terms", ft_cab: "Dashboard"
+  }
+  };
+
+  function renderSections(lang){
+    var box = document.getElementById("sections");
+    box.innerHTML = "";
+    (T[lang].sections || []).forEach(function(sec){
+      var wrap = document.createElement("div"); wrap.className = "sec";
+      var h = document.createElement("h2"); h.textContent = sec[0]; wrap.appendChild(h);
+      (sec[1] || []).forEach(function(p){
+        var el = document.createElement("p"); el.innerHTML = p; wrap.appendChild(el);
+      });
+      box.appendChild(wrap);
+    });
+  }
+  function applyLang(lang){
+    if(!T[lang]) lang = "uk";
+    document.documentElement.lang = lang === "uk" ? "uk" : lang;
+    try{ localStorage.setItem("bb_lang", lang); }catch(e){}
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      var k = el.getAttribute("data-t"); var v = T[lang][k];
+      if(typeof v === "string") el.innerHTML = v;
+    });
+    document.querySelectorAll(".langs button").forEach(function(b){
+      b.classList.toggle("on", b.getAttribute("data-lang") === lang);
+    });
+    renderSections(lang);
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){
+    b.addEventListener("click", function(){ applyLang(b.getAttribute("data-lang")); });
+  });
+  var startLang = "uk";
+  try{ startLang = localStorage.getItem("bb_lang") || "uk"; }catch(e){}
+  applyLang(startLang);
+  </script>
+</body>
+</html>
