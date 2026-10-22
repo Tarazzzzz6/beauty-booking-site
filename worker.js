@@ -1,5 +1,19 @@
 // ============================================================
-// Booking Club — Cloudflare Worker v4
+// Booking Club — Cloudflare Worker v5
+// ------------------------------------------------------------
+// Нове у v5:
+// 8) Самопідключення салонів: бот-майстер /join (або /start join) —
+//    покроковий діалог (назва → тип → адреса/район → послуги кнопками →
+//    ціни → години → мови → фото) → заявка pend:<id> у KV → власник
+//    затверджує інлайн-кнопками ✅/❌ у Telegram → автопублікація
+//    lst:<id>. Заявка з форми /join (salon_join) іде тим самим шляхом.
+//    GET /listings — динамічні лістинги для сайту; GET /photo/<file_id> —
+//    проксі фото з Telegram (getFile → стрім).
+// 9) Відвідуваність: у запису бронювання status booked|attended|noshow.
+//    Скан після візиту (+30 хв) питає салон кнопками ✅ Прийшов /
+//    🚫 Не прийшов (callback att:<BK-id>:y|n); ручні /done і /noshow;
+//    /stats — статистика по лістингах (тільки власник); у кабінеті
+//    власника — блок «Платформа» (GET /cabinet/data → platform).
 // ------------------------------------------------------------
 // Що вміє:
 // 1) POST /book, /join — бронювання і заявки салонів:
@@ -38,6 +52,33 @@
 const BK_PREFIX = "bk|";
 const BKI_PREFIX = "bkc|";
 const BK_TTL = 60 * 60 * 24 * 90; // 90 днів
+const WIZ_PREFIX = "wiz:";         // стан бот-майстра підключення салону
+const WIZ_TTL = 60 * 60 * 24 * 7;  // 7 днів
+const PEND_PREFIX = "pend:";       // заявки салонів на затвердження
+const LST_PREFIX = "lst:";         // опубліковані динамічні лістинги
+const WORKER_ORIGIN = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
+
+// Канонічні послуги платформи (ті самі 12, що у data.js SERVICES)
+const SVC_CATALOG = [
+  { id: "manicure", ua: "Манікюр", dur: 60 },
+  { id: "pedicure", ua: "Педикюр", dur: 75 },
+  { id: "brows", ua: "Брови", dur: 45 },
+  { id: "lashes", ua: "Вії", dur: 120 },
+  { id: "mens_haircut", ua: "Стрижка чоловіча", dur: 45 },
+  { id: "womens_haircut", ua: "Стрижка жіноча", dur: 75 },
+  { id: "coloring", ua: "Фарбування", dur: 150 },
+  { id: "barber", ua: "Барбер", dur: 50 },
+  { id: "makeup", ua: "Макіяж", dur: 60 },
+  { id: "massage", ua: "Масаж", dur: 60 },
+  { id: "cosmetology", ua: "Косметолог", dur: 60 },
+  { id: "depilation", ua: "Депіляція", dur: 35 },
+];
+const LANG_CATALOG = [
+  { code: "ua", label: "Українська" },
+  { code: "ru", label: "Російська" },
+  { code: "en", label: "English" },
+  { code: "fr", label: "Français" },
+];
 
 function getBotToken(env) { return (env && (env.TG_BOT_TOKEN || env.BOT_TOKEN)) || ""; }
 function getOwnerChat(env) { return (env && (env.TG_CHAT_ID || env.CHAT_ID)) || "7384123064"; }
@@ -52,6 +93,45 @@ async function tgSendWith(token, chatId, text) {
     });
     return resp.ok;
   } catch { return false; }
+}
+
+// Універсальний виклик Telegram Bot API (для інлайн-клавіатур і callback-ів).
+async function tgApi(token, method, body) {
+  if (!token) return null;
+  try {
+    const resp = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {}),
+    });
+    const j = await resp.json().catch(() => null);
+    return j && j.ok ? j.result : null;
+  } catch { return null; }
+}
+
+// Надіслати повідомлення з інлайн-клавіатурою (rows = [[{text, callback_data}], ...]).
+async function tgSendKb(token, chatId, text, rows) {
+  const body = { chat_id: chatId, text, disable_web_page_preview: true };
+  if (rows && rows.length) body.reply_markup = { inline_keyboard: rows };
+  const r = await tgApi(token, "sendMessage", body);
+  return !!r;
+}
+
+async function tgEditKb(token, chatId, messageId, rows) {
+  return tgApi(token, "editMessageReplyMarkup", {
+    chat_id: chatId, message_id: messageId,
+    reply_markup: { inline_keyboard: rows || [] },
+  });
+}
+
+async function tgEditText(token, chatId, messageId, text, rows) {
+  const body = { chat_id: chatId, message_id: messageId, text, disable_web_page_preview: true };
+  body.reply_markup = { inline_keyboard: rows || [] };
+  return tgApi(token, "editMessageText", body);
+}
+
+async function tgAnswerCb(token, callbackId, text) {
+  return tgApi(token, "answerCallbackQuery", { callback_query_id: callbackId, text: text || "" });
 }
 
 export default {
@@ -77,18 +157,45 @@ export default {
 
     async function tgSend(chatId, text) { return tgSendWith(BOT_TOKEN, chatId, text); }
 
-    // ---------- Telegram webhook: команди салону і клієнтів ----------
+    // ---------- Telegram webhook: команди, майстер підключення, callback-и ----------
     if (request.method === "POST") {
       let peek = null;
       try { peek = await request.clone().json(); } catch { /* not json */ }
       if (peek && typeof peek.update_id === "number") {
         if (!BOT_TOKEN) return new Response("ok", { headers: corsHeaders });
+        const wctx = { KV, token: BOT_TOKEN, ownerChat: OWNER_CHAT };
+        // Інлайн-кнопки: майстер (wiz:), публікація (pub:/rej:), відвідуваність (att:)
+        if (peek.callback_query) {
+          try { await handleCallbackQuery(peek.callback_query, wctx); } catch { /* ignore */ }
+          return new Response("ok", { headers: corsHeaders });
+        }
         const msg = peek.message || peek.edited_message;
-        if (msg && msg.chat && msg.text) {
+        if (msg && msg.chat) {
           const chatId = String(msg.chat.id);
-          const textIn = String(msg.text).trim();
-          const reply = await handleBotCommand(textIn, chatId, KV, tgSend, OWNER_CHAT);
-          if (reply) await tgSend(chatId, reply);
+          const textIn = String(msg.text || msg.caption || "").trim();
+          // Фото — крок «фото» бот-майстра підключення
+          if (Array.isArray(msg.photo) && msg.photo.length && KV) {
+            const used = await wizardPhoto(chatId, msg.photo, wctx);
+            if (used) return new Response("ok", { headers: corsHeaders });
+            if (!textIn) return new Response("ok", { headers: corsHeaders });
+          }
+          const wParts = textIn.split(/\s+/);
+          const wCmd = (wParts[0] || "").toLowerCase().replace(/@.*$/, "");
+          const wArg = (wParts[1] || "").toLowerCase();
+          // Старт майстра: /join або deep link /start join
+          if (KV && (wCmd === "/join" || (wCmd === "/start" && wArg === "join"))) {
+            await wizardStart(chatId, wctx);
+            return new Response("ok", { headers: corsHeaders });
+          }
+          // Текстові кроки майстра (звичайний текст, не команди)
+          if (KV && textIn && !textIn.startsWith("/")) {
+            const consumed = await wizardText(chatId, textIn, wctx);
+            if (consumed) return new Response("ok", { headers: corsHeaders });
+          }
+          if (msg.text) {
+            const reply = await handleBotCommand(textIn, chatId, KV, tgSend, OWNER_CHAT);
+            if (reply) await tgSend(chatId, reply);
+          }
         }
         return new Response("ok", { headers: corsHeaders });
       }
@@ -230,6 +337,43 @@ export default {
       }
     }
 
+    // ---------- Динамічні лістинги (самопідключення салонів) ----------
+    if (request.method === "GET" && url.pathname === "/listings") {
+      let out = [];
+      if (KV) {
+        try {
+          const keys = await kvListKeys(KV, LST_PREFIX);
+          for (const k of keys) {
+            const rec = await readBookingRec(KV, k);
+            if (rec && rec.id) out.push(listingForSite(rec));
+          }
+        } catch { /* ignore */ }
+      }
+      out.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+      return jsonResp(out);
+    }
+
+    // ---------- Фото салонів: проксі файлів Telegram ----------
+    if (request.method === "GET" && url.pathname.startsWith("/photo/")) {
+      const fid = url.pathname.slice("/photo/".length);
+      if (!BOT_TOKEN || !/^[A-Za-z0-9_-]{10,}$/.test(fid)) {
+        return new Response("not found", { status: 404, headers: corsHeaders });
+      }
+      try {
+        const gf = await tgApi(BOT_TOKEN, "getFile", { file_id: fid });
+        const path = gf && gf.file_path;
+        if (!path) return new Response("not found", { status: 404, headers: corsHeaders });
+        const fr = await fetch(`https://api.telegram.org/file/bot${BOT_TOKEN}/${path}`);
+        if (!fr.ok || !fr.body) return new Response("not found", { status: 404, headers: corsHeaders });
+        const headers = new Headers(corsHeaders);
+        headers.set("Content-Type", fr.headers.get("content-type") || "image/jpeg");
+        headers.set("Cache-Control", "public, max-age=86400");
+        return new Response(fr.body, { status: 200, headers });
+      } catch {
+        return new Response("not found", { status: 404, headers: corsHeaders });
+      }
+    }
+
     // ---------- OG preview ----------
     if (request.method === "GET" && (url.pathname === "/p" || url.pathname === "/p/")) {
       const site = url.searchParams.get("site") || "";
@@ -320,6 +464,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
         .map(b => ({
           id: b.id, dateISO: b.dateISO, time: b.time, serviceName: b.serviceName || "",
           name: b.name || "", phone: b.phone || "",
+          status: b.status || "booked",
           clientLinked: !!b.clientChatId, depositPaid: !!b.depositPaid,
           depositRequested: !!b.depositRequested,
         }));
@@ -335,13 +480,19 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           if (raw) overrides = JSON.parse(raw) || {};
         } catch { /* ignore */ }
       }
-      return jsonResp({ ok: true, chatId, listingId: listingId || "", bookings, closed, overrides });
+      // Власник платформи бачить агреговану статистику по всіх салонах
+      let platform = null;
+      if (chatId === OWNER_CHAT) {
+        try { platform = { listings: await platformStats(KV) }; } catch { platform = { listings: [] }; }
+      }
+      return jsonResp({ ok: true, chatId, listingId: listingId || "", bookings, closed, overrides, platform });
     }
 
-    // ---------- Нагадування: ручний запуск scan (ідемпотентний) ----------
+    // ---------- Нагадування + відвідуваність: ручний запуск scan (ідемпотентний) ----------
     if (request.method === "GET" && url.pathname === "/remind") {
       const stats = await scanReminders(env);
-      return jsonResp({ ok: true, ...stats });
+      const att = await scanAttendance(env);
+      return jsonResp({ ok: true, ...stats, attAsked: att.asked });
     }
 
     if (request.method === "GET") {
@@ -375,6 +526,25 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
     }
     if (!BOT_TOKEN) {
       return new Response("TG_BOT_TOKEN/BOT_TOKEN missing", { status: 500, headers: { ...corsHeaders } });
+    }
+
+    // ---------- Заявка салону з форми /join → pend: + кнопки власнику ----------
+    // Той самий шлях затвердження, що й у бот-майстра: власник тисне ✅/❌.
+    // Без KV — падаємо у старий флоу (просто повідомлення власнику нижче).
+    if (data?.type === "salon_join" && KV) {
+      const listing = buildListingFromForm(data);
+      const pendId = await uniqueListingId(KV, listing.name);
+      listing.id = pendId;
+      try {
+        await KV.put(PEND_PREFIX + pendId, JSON.stringify({
+          listing, chatId: listing.telegramChatId || "", source: "form",
+          submittedAt: new Date().toISOString(),
+        }));
+        await notifyOwnerApplication({ KV, token: BOT_TOKEN, ownerChat: OWNER_CHAT }, pendId, listing, "form");
+        return jsonResp({ ok: true, pending: true, id: pendId });
+      } catch {
+        return new Response("kv_error", { status: 502, headers: { ...corsHeaders } });
+      }
     }
 
     // ---------- Календар бронювань (KV): перевірка зайнятості слота ----------
@@ -427,6 +597,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           time: bk.time,
           serviceName: bk.serviceName,
           name, phone,
+          status: "booked",
           depositRequested: !!(data?.deposit && Number(data.deposit) > 0),
           createdAt: new Date().toISOString()
         };
@@ -449,9 +620,9 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
     return jsonResp({ ok: true, code: bkRecId || null });
   },
 
-  // ---------- Cron: нагадування клієнтам (див. scanReminders) ----------
+  // ---------- Cron: нагадування клієнтам + питання про відвідуваність ----------
   async scheduled(event, env, ctx) {
-    const p = scanReminders(env);
+    const p = (async () => { await scanReminders(env); await scanAttendance(env); })();
     if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(p);
     else await p;
   }
@@ -470,7 +641,10 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat) {
     "Вкажіть цей ID у формі підключення салону (bookingclub.beauty/join) — і бронювання з сайту приходитимуть прямо сюди.\n\n" +
     "Мої бронювання:\n" +
     "/bookings — найближчі записи клієнтів\n" +
-    "/cancel BK-XXXXXX — скасувати запис (слот знову стане вільним на сайті)\n\n" +
+    "/cancel BK-XXXXXX — скасувати запис (слот знову стане вільним на сайті)\n" +
+    "/done BK-XXXXXX — клієнт прийшов · /noshow BK-XXXXXX — клієнт не прийшов\n\n" +
+    "Підключити салон або майстра:\n" +
+    "/join — покроковий майстер підключення (з фото)\n\n" +
     "Керування графіком:\n" +
     "/close 2026-11-03 — закрити день (відпустка, вихідний)\n" +
     "/open 2026-11-03 — відкрити день назад\n" +
@@ -501,8 +675,8 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat) {
   if (cmd === "/start") {
     return "👋 Вітаю у Booking Club!\n\n" +
       "Якщо ви клієнт: після запису на сайті bookingclub.beauty натисніть кнопку «Підтвердження і нагадування в Telegram» — і я підключу ваше бронювання сюди.\n\n" +
-      "Якщо ви салон або майстер: ваш Telegram ID — " + chatId + ".\n" +
-      "Вкажіть його у формі bookingclub.beauty/join. Детальніше: /myid";
+      "Якщо ви салон або майстер: підключіться командою /join — бот покроково збере назву, послуги, ціни й фото.\n" +
+      "Або вкажіть свій Telegram ID (" + chatId + ") у формі bookingclub.beauty/join. Детальніше: /myid";
   }
   if (cmd === "/myid" || cmd === "/id") return ID_MSG;
   if (cmd === "/help") return ID_MSG;
@@ -567,6 +741,43 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat) {
     return "✅ Бронювання " + want + " скасовано: " + rec.dateISO + " о " + rec.time + (rec.name ? " (" + rec.name + ")" : "") + ". Слот знову вільний на сайті.";
   }
 
+  // --- Відвідуваність: /done BK-… · /noshow BK-… · /stats (власник) ---
+  if (cmd === "/done" || cmd === "/noshow") {
+    if (!KV) return "⚠️ Сховище бронювань ще не підключено власником платформи.";
+    let want = (arg || "").toUpperCase();
+    if (/^[A-Z0-9]{6}$/.test(want)) want = "BK-" + want;
+    if (!/^BK-[A-Z0-9]{6}$/.test(want)) {
+      return "Формат: " + cmd + " BK-XXXXXX — код є у повідомленні про бронювання і у /bookings";
+    }
+    const rec = await findBookingForActor(KV, want, chatId, ownerChat);
+    if (!rec) return "Не знайшов бронювання " + want + " серед ваших.";
+    const status = cmd === "/done" ? "attended" : "noshow";
+    if ((rec.status || "booked") === status) {
+      return "ℹ️ Запис " + want + " уже позначено: " + (status === "attended" ? "клієнт прийшов ✅" : "no-show 🚫");
+    }
+    await setBookingStatus(KV, rec, status);
+    if (status === "noshow" && chatId !== ownerChat) {
+      await say(ownerChat, "🚫 No-show у салоні " + (rec.listingName || rec.listingId || "") + "\n" +
+        "💅 " + (rec.serviceName || "Послуга") + " · 📅 " + rec.dateISO + " о " + rec.time + "\n" +
+        "👤 " + (rec.name || "") + (rec.phone ? " · " + rec.phone : "") + "\n🆔 " + rec.id);
+    }
+    return status === "attended"
+      ? "✅ " + want + ": клієнт прийшов. Дякуємо, що відмітили!"
+      : "🚫 " + want + ": позначено no-show. Власника платформи сповіщено.";
+  }
+
+  if (cmd === "/stats") {
+    if (!KV) return "⚠️ Сховище ще не підключено.";
+    if (chatId !== ownerChat) return "📊 Статистика платформи доступна тільки власнику.";
+    const rows = await platformStats(KV);
+    if (!rows.length) return "📊 Поки немає жодного бронювання у базі.";
+    const lines = rows.map(r =>
+      "🏠 " + (r.listingName || r.listingId) + "\n" +
+      "   записів: " + r.total + " · ✅ прийшло: " + r.attended + " · 🚫 no-show: " + r.noshow + " · 🔜 майбутніх: " + r.upcoming
+    );
+    return "📊 Booking Club — відвідуваність по салонах:\n\n" + lines.join("\n\n");
+  }
+
   const isDate = /^\d{4}-\d{2}-\d{2}$/.test(arg);
   if (cmd === "/close" || cmd === "/open" || cmd === "/closed") {
     if (!KV) {
@@ -593,7 +804,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat) {
     await KV.put(key, JSON.stringify(sched));
     return "✅ " + arg + " — день знову відкрито за звичайним графіком.";
   }
-  return "Команди Booking Club: /myid — ваш ID, /bookings — мої бронювання, /cancel BK-XXXXXX — скасувати бронювання, /close ДАТА — закрити день, /open ДАТА — відкрити, /closed — закриті дні.";
+  return "Команди Booking Club: /join — підключити салон, /myid — ваш ID, /bookings — мої бронювання, /cancel BK-XXXXXX — скасувати бронювання, /done BK-XXXXXX — клієнт прийшов, /noshow BK-XXXXXX — не прийшов, /close ДАТА — закрити день, /open ДАТА — відкрити, /closed — закриті дні.";
 }
 
 // ---------- Календар бронювань у KV ----------
@@ -786,6 +997,660 @@ async function scanReminders(env) {
     }
   }
   return stats;
+}
+
+// ============================================================
+// САМОПІДКЛЮЧЕННЯ САЛОНІВ: бот-майстер, заявки, публікація
+// ============================================================
+
+function slugifyName(name) {
+  const map = { а: "a", б: "b", в: "v", г: "h", ґ: "g", д: "d", е: "e", є: "ye", ж: "zh", з: "z", и: "y", і: "i", ї: "yi", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "kh", ц: "ts", ч: "ch", ш: "sh", щ: "shch", ю: "yu", я: "ya", ы: "y", э: "e", ъ: "", ь: "", "'": "", "’": "" };
+  const s = String(name || "").toLowerCase().split("").map(ch => map[ch] !== undefined ? map[ch] : ch).join("")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+  return s || "salon";
+}
+
+async function uniqueListingId(KV, name) {
+  const base = slugifyName(name);
+  for (let i = 0; i < 20; i++) {
+    const suffix = Math.random().toString(36).slice(2, 6);
+    const id = base + "-" + suffix;
+    const taken = (await KV.get(LST_PREFIX + id)) || (await KV.get(PEND_PREFIX + id));
+    if (!taken) return id;
+  }
+  return base + "-" + Date.now().toString(36);
+}
+
+// Парсер годин роботи з вільного тексту → тиждень {0..6: [from,to]|null}.
+// Розуміє: «Пн–Пт 10–19, Сб 11–17, Нд — вихідний», «10:00-19:00 щодня» тощо.
+// Бере перший знайдений діапазон годин; дні — зі згадок/діапазонів; «вихідний»
+// поруч із днем → null. Не парситься → null (сайт візьме дефолтний тиждень).
+const DAY_TOKENS = [
+  [/пн|понеділ|понедельник|mon/i, 1], [/вт|вівтор|вторник|tue/i, 2],
+  [/ср|серед|среда|wed/i, 3], [/чт|четвер|четверг|thu/i, 4],
+  [/пт|п.?ятниц|пятниц|fri/i, 5], [/сб|субот|суббот|sat/i, 6],
+  [/нд|вс|неділ|воскрес|sun/i, 0],
+];
+function parseWeekHours(text) {
+  const t = String(text || "").toLowerCase().replace(/ʼ|’/g, "'");
+  if (!t.trim()) return null;
+  const hm = t.match(/(\d{1,2})(?::(\d{2}))?\s*(?:-|–|—|до|to)\s*(\d{1,2})(?::(\d{2}))?/);
+  if (!hm) return null;
+  const h1 = parseInt(hm[1], 10), h2 = parseInt(hm[3], 10);
+  if (!(h1 >= 0 && h2 > h1 && h2 <= 24)) return null;
+  const hours = [h1, h2];
+  // закриті дні: день, поруч із яким «вихідн/зачинен/не працю»
+  const closed = new Set();
+  for (const [re, n] of DAY_TOKENS) {
+    const idx = t.search(re);
+    if (idx >= 0) {
+      // «вихідний» має стояти одразу після дня (до ~16 символів), інакше це чужий день
+      const after = t.slice(idx, idx + 16);
+      if (/вихідн|зачинен|не\s+працю|выходн|закрыт/.test(after)) closed.add(n);
+    }
+  }
+  // діапазон днів «пн-пт»
+  const active = new Set();
+  const spanRe = /(пн|вт|ср|чт|пт|сб|нд|вс)\s*(?:-|–|—)\s*(пн|вт|ср|чт|пт|сб|нд|вс)/;
+  const sm = t.replace(/(\d)\s*(?:-|–|—)\s*(\d)/g, "$1~$2").match(spanRe);
+  const dayOf = tok => { for (const [re, n] of DAY_TOKENS) if (re.test(tok)) return n; return null; };
+  if (sm) {
+    let a = dayOf(sm[1]), b = dayOf(sm[2]);
+    if (a !== null && b !== null) {
+      let d = a;
+      for (let i = 0; i < 8; i++) { active.add(d); if (d === b) break; d = (d + 1) % 7; }
+    }
+  }
+  for (const [re, n] of DAY_TOKENS) if (re.test(t) && !closed.has(n)) active.add(n);
+  if (!active.size) { [1, 2, 3, 4, 5, 6].forEach(d => active.add(d)); }
+  const week = {};
+  for (let d = 0; d < 7; d++) week[d] = (active.has(d) && !closed.has(d)) ? hours : null;
+  return week;
+}
+
+function svcLabel(id) {
+  const s = SVC_CATALOG.find(x => x.id === id);
+  return s ? s.ua : id;
+}
+
+function servicesKeyboard(selected) {
+  const rows = [];
+  for (let i = 0; i < SVC_CATALOG.length; i += 2) {
+    const row = [];
+    for (let j = i; j < Math.min(i + 2, SVC_CATALOG.length); j++) {
+      const s = SVC_CATALOG[j];
+      row.push({ text: (selected.includes(s.id) ? "✅ " : "") + s.ua, callback_data: "wiz:svc:" + s.id });
+    }
+    rows.push(row);
+  }
+  rows.push([{ text: "✔️ Готово — далі", callback_data: "wiz:svcdone" }]);
+  return rows;
+}
+
+function langsKeyboard(selected) {
+  const rows = [];
+  for (let i = 0; i < LANG_CATALOG.length; i += 2) {
+    const row = [];
+    for (let j = i; j < Math.min(i + 2, LANG_CATALOG.length); j++) {
+      const l = LANG_CATALOG[j];
+      row.push({ text: (selected.includes(l.code) ? "✅ " : "") + l.label, callback_data: "wiz:lang:" + l.code });
+    }
+    rows.push(row);
+  }
+  rows.push([{ text: "✔️ Готово — далі", callback_data: "wiz:langdone" }]);
+  return rows;
+}
+
+async function wizLoad(KV, chatId) {
+  try {
+    const raw = await KV.get(WIZ_PREFIX + chatId);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+async function wizSave(KV, chatId, st) {
+  try { await KV.put(WIZ_PREFIX + chatId, JSON.stringify(st), { expirationTtl: WIZ_TTL }); } catch { /* ignore */ }
+}
+async function wizClear(KV, chatId) {
+  try { await KV.delete(WIZ_PREFIX + chatId); } catch { /* ignore */ }
+}
+
+function wizFresh() {
+  return { step: "name", d: { services: [], prices: {}, priceIdx: 0, langs: [], photos: [] }, upd: Date.now() };
+}
+
+async function wizardStart(chatId, ctx) {
+  await wizSave(ctx.KV, chatId, wizFresh());
+  await tgSendKb(ctx.token, chatId,
+    "👋 Вітаю у Booking Club!\n\n" +
+    "Підключимо ваш салон або вас як майстра за кілька кроків — прямо тут, у Telegram. " +
+    "Наприкінці заявка піде власнику платформи, і після його підтвердження ви зʼявитесь на bookingclub.beauty.\n\n" +
+    "Крок 1. Як називається ваш салон / студія? (або ваше імʼя, якщо ви майстер)", null);
+}
+
+async function wizardAskKind(chatId, ctx) {
+  await tgSendKb(ctx.token, chatId, "Крок 2. Що це буде?", [[
+    { text: "🏢 Салон", callback_data: "wiz:kind:salon" },
+    { text: "🏠 Майстер на дому", callback_data: "wiz:kind:home" },
+    { text: "💈 Барбершоп", callback_data: "wiz:kind:barber" },
+  ]]);
+}
+
+async function wizardAskPrice(chatId, ctx, st) {
+  const svcId = st.d.services[st.d.priceIdx];
+  await tgSendKb(ctx.token, chatId,
+    "Крок 5. Ціна за послугу «" + svcLabel(svcId) + "» — у CAD, тільки число (наприклад 45). Це ціна «від» — діапазон можна уточнити пізніше у кабінеті.", null);
+}
+
+async function wizardSummary(chatId, ctx, st) {
+  const d = st.d;
+  const lines = [
+    "📋 Перевірте заявку:",
+    "",
+    "Назва: " + (d.name || "—"),
+    "Тип: " + (d.kind === "home" ? "Майстер на дому" : d.kind === "barber" ? "Барбершоп" : "Салон"),
+    (d.kind === "home" ? "Район: " : "Адреса: ") + (d.place || "—"),
+    "Послуги: " + d.services.map(id => svcLabel(id) + " — $" + (d.prices[id] ?? "—")).join("; "),
+    "Години: " + (d.hoursText || "за замовчуванням"),
+    "Мови: " + (d.langLabels && d.langLabels.length ? d.langLabels.join(", ") : "Українська"),
+    "Фото: " + (d.photos.length ? d.photos.length + " шт." : "немає"),
+  ];
+  await tgSendKb(ctx.token, chatId, lines.join("\n"), [[
+    { text: "📨 Надіслати заявку", callback_data: "wiz:send" },
+    { text: "🔄 Почати заново", callback_data: "wiz:restart" },
+  ]]);
+}
+
+async function wizardText(chatId, text, ctx) {
+  const st = await wizLoad(ctx.KV, chatId);
+  if (!st) return false;
+  const d = st.d;
+  const val = String(text || "").trim();
+  if (!val) return true;
+  if (st.step === "name") {
+    if (val.length < 2) { await tgSendKb(ctx.token, chatId, "Назва надто коротка — напишіть, будь ласка, повну назву.", null); return true; }
+    d.name = val.slice(0, 90);
+    st.step = "kind";
+    await wizSave(ctx.KV, chatId, st);
+    await wizardAskKind(chatId, ctx);
+    return true;
+  }
+  if (st.step === "place") {
+    d.place = val.slice(0, 160);
+    st.step = "services";
+    await wizSave(ctx.KV, chatId, st);
+    await tgSendKb(ctx.token, chatId,
+      "Крок 4. Оберіть послуги, які надаєте (можна кілька) — тисніть кнопки, потім «Готово»:",
+      servicesKeyboard(d.services));
+    return true;
+  }
+  if (st.step === "price") {
+    const n = Number(val.replace(",", ".").replace(/[^0-9.]/g, ""));
+    if (!Number.isFinite(n) || n < 1 || n > 10000) {
+      await tgSendKb(ctx.token, chatId, "Потрібне число від 1 до 10000 (CAD). Спробуйте ще раз:", null);
+      return true;
+    }
+    const svcId = d.services[d.priceIdx];
+    d.prices[svcId] = Math.round(n);
+    d.priceIdx += 1;
+    await wizSave(ctx.KV, chatId, st);
+    if (d.priceIdx < d.services.length) await wizardAskPrice(chatId, ctx, st);
+    else {
+      st.step = "hours";
+      await wizSave(ctx.KV, chatId, st);
+      await tgSendKb(ctx.token, chatId,
+        "Крок 6. Ваші години роботи — вільним текстом.\nНаприклад: Пн–Пт 10–19, Сб 11–17, Нд — вихідний", null);
+    }
+    return true;
+  }
+  if (st.step === "hours") {
+    d.hoursText = val.slice(0, 200);
+    d.week = parseWeekHours(val);
+    st.step = "langs";
+    await wizSave(ctx.KV, chatId, st);
+    await tgSendKb(ctx.token, chatId, "Крок 7. Мови обслуговування (можна кілька):", langsKeyboard(d.langs));
+    return true;
+  }
+  if (st.step === "photos" && /^готово$/i.test(val)) {
+    st.step = "summary";
+    await wizSave(ctx.KV, chatId, st);
+    await wizardSummary(chatId, ctx, st);
+    return true;
+  }
+  // Текст на кроці з кнопками — нагадаємо, що треба тиснути кнопки
+  if (["kind", "services", "langs", "photos", "summary"].includes(st.step)) {
+    await tgSendKb(ctx.token, chatId, "Тут треба натиснути кнопку вище 👆 Якщо кнопки загубились — напишіть /join, і почнемо спочатку (уже введене зникне).", null);
+    return true;
+  }
+  return false;
+}
+
+async function wizardPhoto(chatId, photos, ctx) {
+  const st = await wizLoad(ctx.KV, chatId);
+  if (!st || st.step !== "photos") return false;
+  const best = photos[photos.length - 1];
+  const fid = best && best.file_id;
+  if (fid && !st.d.photos.includes(fid) && st.d.photos.length < 6) {
+    st.d.photos.push(fid);
+    await wizSave(ctx.KV, chatId, st);
+  }
+  await tgSendKb(ctx.token, chatId,
+    "📸 Фото отримано: " + st.d.photos.length + "/6." + (st.d.photos.length >= 6 ? " Це максимум." : " Можете надіслати ще або завершити."),
+    [[{ text: "✔️ Готово — до підсумку", callback_data: "wiz:photodone" }]]);
+  return true;
+}
+
+// Лістинг у внутрішній (канонічній) формі — зберігається у pend:/lst:
+function buildListingFromWizard(chatId, d) {
+  const services = (d.services || []).map(id => {
+    const meta = SVC_CATALOG.find(x => x.id === id) || {};
+    return { serviceId: id, from: d.prices[id] ?? 40, to: null, durationMin: meta.dur || 60 };
+  });
+  return {
+    id: "", dynamic: true, source: "bot",
+    name: d.name || "Салон",
+    brand: d.name || "Салон",
+    city: "Montréal",
+    type: d.kind || "salon",
+    address: d.place || "",
+    district: d.kind === "home" ? (d.place || "") : "",
+    services,
+    languages: (d.langLabels && d.langLabels.length) ? d.langLabels : ["Українська"],
+    photoFileIds: (d.photos || []).slice(),
+    schedule: d.week || null,
+    week: d.week || null,
+    hoursText: d.hoursText || "",
+    description: "",
+    bio_ua: "",
+    telegramChatId: String(chatId),
+    phone: "", instagram: "",
+    partner: false, verified: false, sterile: false, recommended: false,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function buildListingFromForm(data) {
+  const svcIds = [];
+  const pricesText = String(data?.pricesText || data?.prices || "");
+  const priceMap = parsePricesText(pricesText);
+  const rawServices = Array.isArray(data?.services) ? data.services : [];
+  for (const s of rawServices) {
+    const name = String(s || "").trim().toLowerCase();
+    const meta = SVC_CATALOG.find(x => x.ua.toLowerCase() === name || x.id === name);
+    if (meta && !svcIds.includes(meta.id)) svcIds.push(meta.id);
+  }
+  const services = svcIds.map(id => {
+    const meta = SVC_CATALOG.find(x => x.id === id) || {};
+    return { serviceId: id, from: priceMap[id] ?? priceMap._any ?? 40, to: null, durationMin: meta.dur || 60 };
+  });
+  const address = String(data?.address || "").trim();
+  const district = String(data?.district || "").trim();
+  const hoursText = String(data?.hoursText || "").trim();
+  return {
+    id: "", dynamic: true, source: "form",
+    name: String(data?.salonName || "Салон").slice(0, 90),
+    brand: String(data?.salonName || "Салон").slice(0, 90),
+    city: "Montréal",
+    type: "salon",
+    address: address ? (district ? address + " (" + district + ")" : address) : district,
+    district,
+    services,
+    languages: Array.isArray(data?.languages) ? data.languages.map(x => String(x)) : [],
+    photoFileIds: [],
+    pricesText,
+    schedule: null, week: null,
+    hoursText,
+    description: String(data?.description || "").trim(),
+    bio_ua: String(data?.description || "").trim(),
+    telegramChatId: String(data?.telegramChatId || "").trim(),
+    phone: String(data?.phone || ""),
+    instagram: String(data?.instagram || ""),
+    contactName: String(data?.name || ""),
+    plan: String(data?.plan || ""),
+    partner: false, verified: false, sterile: false, recommended: false,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+// «Манікюр 45, Педикюр — 60» або рядки «lashes: 80» → {serviceId: price, _any}
+function parsePricesText(text) {
+  const out = {};
+  const t = String(text || "");
+  if (!t.trim()) return out;
+  for (const meta of SVC_CATALOG) {
+    const re = new RegExp(meta.ua.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[^0-9]{0,12}(\\d{1,5})", "i");
+    const m = t.match(re) || t.match(new RegExp(meta.id + "[^0-9]{0,12}(\\d{1,5})", "i"));
+    if (m) { const n = parseInt(m[1], 10); if (n >= 1 && n <= 10000) out[meta.id] = n; }
+  }
+  if (!Object.keys(out).length) {
+    const any = t.match(/(\d{1,5})/);
+    if (any) { const n = parseInt(any[1], 10); if (n >= 1 && n <= 10000) out._any = n; }
+  }
+  return out;
+}
+
+function applicationSummary(listing, source) {
+  const lines = [
+    "🆕 ЗАЯВКА САЛОНУ на Booking Club" + (source === "form" ? " (форма на сайті)" : " (через бота)"),
+    "",
+    "Назва: " + (listing.name || "—"),
+    "Тип: " + (listing.type === "home" ? "Майстер на дому" : listing.type === "barber" ? "Барбершоп" : "Салон"),
+    "Адреса/район: " + (listing.address || "—"),
+    "Послуги: " + ((listing.services || []).map(s => svcLabel(s.serviceId) + " — $" + s.from).join("; ") || "—"),
+  ];
+  if (listing.pricesText) lines.push("Ціни (текст салону): " + listing.pricesText);
+  if (listing.hoursText) lines.push("Години: " + listing.hoursText);
+  if (listing.languages && listing.languages.length) lines.push("Мови: " + listing.languages.join(", "));
+  if (listing.plan) lines.push("Тариф: " + listing.plan);
+  if (listing.phone) lines.push("Телефон: " + listing.phone);
+  if (listing.contactName) lines.push("Контакт: " + listing.contactName);
+  if (listing.instagram) lines.push("Instagram: " + listing.instagram);
+  lines.push("Фото: " + ((listing.photoFileIds || []).length ? listing.photoFileIds.length + " шт." : "немає"));
+  lines.push("Telegram ID салону: " + (listing.telegramChatId || "⚠️ НЕ ВКАЗАНО — бронювання летітимуть тільки вам"));
+  return lines.join("\n");
+}
+
+async function notifyOwnerApplication(ctx, pendId, listing, source) {
+  await tgSendKb(ctx.token, ctx.ownerChat, applicationSummary(listing, source), [[
+    { text: "✅ Опублікувати", callback_data: "pub:" + pendId },
+    { text: "❌ Відхилити", callback_data: "rej:" + pendId },
+  ]]);
+}
+
+// Форма лістинга для сайту (GET /listings): ті самі поля, що у data.js LISTINGS,
+// без rating (сайт покаже бейдж «Новий»), фото — URL-и проксі /photo/<file_id>.
+function listingForSite(rec) {
+  const bio = rec.bio_ua || rec.description || (rec.hoursText ? "🕐 " + rec.hoursText : "");
+  return {
+    id: rec.id,
+    name: rec.name || "Салон",
+    brand: rec.brand || rec.name || "Салон",
+    city: rec.city || "Montréal",
+    address: rec.address || "",
+    district: rec.district || "",
+    lat: (rec.lat != null ? rec.lat : null),
+    lng: (rec.lng != null ? rec.lng : null),
+    partner: !!rec.partner, recommended: !!rec.recommended,
+    verified: !!rec.verified, sterile: !!rec.sterile,
+    phone: rec.phone || "",
+    instagram: rec.instagram || "",
+    images: (rec.photoFileIds || []).map(fid => WORKER_ORIGIN + "/photo/" + fid),
+    bio_ua: bio,
+    services: rec.services || [],
+    schedule: rec.schedule || rec.week || null,
+    languages: rec.languages || [],
+    telegramChatId: rec.telegramChatId || "",
+    dynamic: true,
+  };
+}
+
+// ---------- Callback-и: майстер, публікація, відвідуваність ----------
+async function handleCallbackQuery(cq, ctx) {
+  const data = String(cq.data || "");
+  const fromId = String((cq.from && cq.from.id) || "");
+  const msgChat = String((cq.message && cq.message.chat && cq.message.chat.id) || fromId);
+  const msgId = cq.message && cq.message.message_id;
+  const msgText = (cq.message && cq.message.text) || "";
+  const { KV, token, ownerChat } = ctx;
+  if (!KV) { await tgAnswerCb(token, cq.id, "Сховище не підключено"); return; }
+
+  // ----- Майстер підключення -----
+  if (data.startsWith("wiz:")) {
+    const chatId = msgChat;
+    const st = await wizLoad(KV, chatId);
+    if (!st) { await tgAnswerCb(token, cq.id, "Сесія застаріла — напишіть /join, щоб почати заново"); return; }
+    const d = st.d;
+    const parts = data.split(":");
+    const action = parts[1], val = parts[2] || "";
+    if (action === "kind") {
+      d.kind = ["salon", "home", "barber"].includes(val) ? val : "salon";
+      st.step = "place";
+      await wizSave(KV, chatId, st);
+      await tgAnswerCb(token, cq.id, "");
+      if (d.kind === "home") {
+        await tgSendKb(token, chatId,
+          "Крок 3. Ваш район у Монреалі.\n\n" +
+          "🏠 Для майстрів на дому ми публічно показуємо ТІЛЬКИ район — точна домашня адреса на сайті не світиться. " +
+          "Клієнт дізнається адресу лише особисто від вас після запису.\n\nНапишіть район (наприклад: Verdun, Côte-des-Neiges, Le Plateau):", null);
+      } else {
+        await tgSendKb(token, chatId,
+          "Крок 3. Адреса у Монреалі — вулиця і номер будинку, можна одразу з районом (наприклад: 1242 Rue Stanley, Downtown):", null);
+      }
+      return;
+    }
+    if (action === "svc") {
+      const i = d.services.indexOf(val);
+      if (i >= 0) d.services.splice(i, 1); else if (SVC_CATALOG.some(x => x.id === val)) d.services.push(val);
+      await wizSave(KV, chatId, st);
+      await tgAnswerCb(token, cq.id, "");
+      if (msgId) await tgEditKb(token, chatId, msgId, servicesKeyboard(d.services));
+      return;
+    }
+    if (action === "svcdone") {
+      if (!d.services.length) { await tgAnswerCb(token, cq.id, "Оберіть хоча б одну послугу 🙏"); return; }
+      d.priceIdx = 0;
+      st.step = "price";
+      await wizSave(KV, chatId, st);
+      await tgAnswerCb(token, cq.id, "");
+      await wizardAskPrice(chatId, ctx, st);
+      return;
+    }
+    if (action === "lang") {
+      const i = d.langs.indexOf(val);
+      if (i >= 0) d.langs.splice(i, 1); else if (LANG_CATALOG.some(x => x.code === val)) d.langs.push(val);
+      await wizSave(KV, chatId, st);
+      await tgAnswerCb(token, cq.id, "");
+      if (msgId) await tgEditKb(token, chatId, msgId, langsKeyboard(d.langs));
+      return;
+    }
+    if (action === "langdone") {
+      d.langLabels = (d.langs.length ? d.langs : ["ua"]).map(c => (LANG_CATALOG.find(x => x.code === c) || {}).label || c);
+      st.step = "photos";
+      await wizSave(KV, chatId, st);
+      await tgAnswerCb(token, cq.id, "");
+      await tgSendKb(token, chatId,
+        "Крок 8. Фото 📸 Надішліть 1–6 фото ваших робіт або салону (по одному чи альбомом).\n" +
+        "З фото клієнти записуються значно охочіше. Коли закінчите — кнопка нижче.",
+        [[{ text: "✔️ Готово — до підсумку", callback_data: "wiz:photodone" }]]);
+      return;
+    }
+    if (action === "photodone") {
+      st.step = "summary";
+      await wizSave(KV, chatId, st);
+      await tgAnswerCb(token, cq.id, "");
+      await wizardSummary(chatId, ctx, st);
+      return;
+    }
+    if (action === "restart") {
+      await tgAnswerCb(token, cq.id, "Починаємо спочатку");
+      await wizardStart(chatId, ctx);
+      return;
+    }
+    if (action === "send") {
+      const listing = buildListingFromWizard(chatId, d);
+      const pendId = await uniqueListingId(KV, listing.name);
+      listing.id = pendId;
+      await KV.put(PEND_PREFIX + pendId, JSON.stringify({
+        listing, chatId: String(chatId), source: "bot", submittedAt: new Date().toISOString(),
+      }));
+      await wizClear(KV, chatId);
+      await tgAnswerCb(token, cq.id, "Заявку надіслано ✅");
+      await tgSendKb(token, chatId,
+        "📨 Заявку надіслано власнику платформи!\n\n" +
+        "Щойно він підтвердить — ваш салон зʼявиться на bookingclub.beauty, а сюди прийде повідомлення. Зазвичай це швидко.", null);
+      await notifyOwnerApplication(ctx, pendId, listing, "bot");
+      return;
+    }
+    await tgAnswerCb(token, cq.id, "");
+    return;
+  }
+
+  // ----- Публікація / відхилення заявки (тільки власник) -----
+  if (data.startsWith("pub:") || data.startsWith("rej:")) {
+    const publish = data.startsWith("pub:");
+    const pendId = data.slice(4);
+    if (fromId !== ownerChat) { await tgAnswerCb(token, cq.id, "Тільки власник платформи може затверджувати заявки"); return; }
+    const raw = await KV.get(PEND_PREFIX + pendId);
+    if (!raw) { await tgAnswerCb(token, cq.id, "Заявку не знайдено — можливо, уже оброблено"); return; }
+    let pend = null;
+    try { pend = JSON.parse(raw); } catch { /* ignore */ }
+    if (!pend || !pend.listing) { await tgAnswerCb(token, cq.id, "Пошкоджена заявка"); return; }
+    const listing = pend.listing;
+    const salonChat = String(pend.chatId || listing.telegramChatId || "");
+    await KV.delete(PEND_PREFIX + pendId);
+    if (publish) {
+      await KV.put(LST_PREFIX + listing.id, JSON.stringify(listing));
+      if (salonChat && /^\d{5,}$/.test(salonChat)) {
+        try {
+          const rawMap = await KV.get("salonmap");
+          const map = rawMap ? JSON.parse(rawMap) : {};
+          map[salonChat] = listing.id;
+          await KV.put("salonmap", JSON.stringify(map));
+        } catch { /* ignore */ }
+      }
+      await tgAnswerCb(token, cq.id, "Опубліковано ✅");
+      if (msgId) await tgEditText(token, msgChat, msgId, msgText + "\n\n✅ ОПУБЛІКОВАНО на bookingclub.beauty", null);
+      if (salonChat) {
+        await tgSendKb(token, salonChat,
+          "🎉 Вітаємо! Ваш салон уже на сайті Booking Club:\n" +
+          "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(listing.id) + "\n\n" +
+          "Бронювання приходитимуть прямо сюди, у цей чат.\n" +
+          "Корисні команди:\n" +
+          "/bookings — найближчі записи клієнтів\n" +
+          "/cancel BK-XXXXXX — скасувати запис\n" +
+          "/close 2026-11-03 — закрити день · /open — відкрити\n" +
+          "Кабінет (графік і ціни): bookingclub.beauty/admin", null);
+      }
+    } else {
+      await tgAnswerCb(token, cq.id, "Відхилено");
+      if (msgId) await tgEditText(token, msgChat, msgId, msgText + "\n\n❌ ВІДХИЛЕНО", null);
+      if (salonChat) {
+        await tgSendKb(token, salonChat,
+          "Дякуємо за заявку до Booking Club! На жаль, цього разу ми не змогли її опублікувати. " +
+          "Якщо це помилка або хочете уточнити деталі — напишіть власнику платформи або на hello@bookingclub.beauty, і ми все владнаємо.", null);
+      }
+    }
+    return;
+  }
+
+  // ----- Відвідуваність: кнопки салону -----
+  if (data.startsWith("att:")) {
+    const parts = data.split(":");
+    const code = parts[1] || "";
+    const yn = parts[2] || "";
+    const key = await KV.get(BKI_PREFIX + code);
+    const rec = key ? await readBookingRec(KV, key) : null;
+    if (!rec || !key) { await tgAnswerCb(token, cq.id, "Запис не знайдено"); return; }
+    if (fromId !== ownerChat && String(rec.chatId || "") !== fromId) {
+      await tgAnswerCb(token, cq.id, "Це бронювання іншого салону");
+      return;
+    }
+    const status = yn === "y" ? "attended" : "noshow";
+    rec._key = key;
+    await setBookingStatus(KV, rec, status);
+    await tgAnswerCb(token, cq.id, status === "attended" ? "✅ Позначено: клієнт прийшов" : "🚫 Позначено: no-show");
+    if (msgId) {
+      await tgEditText(token, msgChat, msgId,
+        msgText + "\n\n" + (status === "attended" ? "✅ Позначено: клієнт прийшов" : "🚫 Позначено: клієнт не прийшов"), null);
+    }
+    if (status === "noshow" && fromId !== ownerChat) {
+      await tgSendKb(token, ownerChat,
+        "🚫 No-show у салоні " + (rec.listingName || rec.listingId || "") + "\n" +
+        "💅 " + (rec.serviceName || "Послуга") + " · 📅 " + rec.dateISO + " о " + rec.time + "\n" +
+        "👤 " + (rec.name || "") + (rec.phone ? " · " + rec.phone : "") + "\n🆔 " + rec.id, null);
+    }
+    return;
+  }
+
+  await tgAnswerCb(token, cq.id, "");
+}
+
+// ============================================================
+// ВІДВІДУВАНІСТЬ: статуси, скан після візиту, статистика
+// ============================================================
+
+async function findBookingForActor(KV, code, chatId, ownerChat) {
+  const key = await KV.get(BKI_PREFIX + code);
+  const rec = key ? await readBookingRec(KV, key) : null;
+  if (!rec || !key) return null;
+  rec._key = key;
+  if (chatId === ownerChat) return rec;
+  if (String(rec.chatId || "") === chatId) return rec;
+  const listingId = await salonListingId(KV, chatId);
+  if (listingId && rec.listingId === listingId) return rec;
+  if (rec.listingKey === "chat-" + chatId) return rec;
+  return null;
+}
+
+async function setBookingStatus(KV, rec, status) {
+  rec.status = status;
+  rec.statusAt = new Date().toISOString();
+  const copy = { ...rec };
+  delete copy._key;
+  try { await KV.put(rec._key, JSON.stringify(copy), { expirationTtl: BK_TTL }); } catch { /* ignore */ }
+}
+
+// Після візиту (+30 хв) питаємо салон кнопками, чи прийшов клієнт.
+async function scanAttendance(env) {
+  const stats = { asked: 0 };
+  const KV = (env && env.BC_KV) || null;
+  const token = getBotToken(env);
+  if (!KV || !token) return stats;
+  const now = Date.now();
+  let keys = [];
+  try { keys = await kvListKeys(KV, BK_PREFIX); } catch { return stats; }
+  for (const k of keys) {
+    const rec = await readBookingRec(KV, k);
+    if (!rec) continue;
+    if ((rec.status || "booked") !== "booked") continue;
+    if (rec.attAsked) continue;
+    if (!rec.chatId || !/^\d{5,}$/.test(String(rec.chatId))) continue;
+    const visit = torontoVisitMs(rec.dateISO, rec.time);
+    if (visit === null || now - visit < 30 * 60000) continue;
+    const ok = await tgSendKb(token, rec.chatId,
+      "⏰ Як пройшов візит?\n\n" +
+      "👤 " + (rec.name || "Клієнт") + "\n" +
+      "💅 " + (rec.serviceName || "Послуга") + "\n" +
+      "📅 " + rec.dateISO + " о " + rec.time + "\n" +
+      "🆔 " + rec.id + "\n\nКлієнт прийшов?",
+      [[
+        { text: "✅ Прийшов", callback_data: "att:" + rec.id + ":y" },
+        { text: "🚫 Не прийшов", callback_data: "att:" + rec.id + ":n" },
+      ]]);
+    if (ok) {
+      rec.attAsked = true;
+      const copy = { ...rec };
+      delete copy._key;
+      try { await KV.put(k, JSON.stringify(copy), { expirationTtl: BK_TTL }); } catch { /* ignore */ }
+      stats.asked += 1;
+    }
+  }
+  return stats;
+}
+
+// Агрегація по лістингах: всього / прийшло / no-show / майбутніх.
+async function platformStats(KV) {
+  const byId = new Map();
+  const keys = await kvListKeys(KV, BK_PREFIX);
+  const now = Date.now();
+  for (const k of keys) {
+    const rec = await readBookingRec(KV, k);
+    if (!rec) continue;
+    const lid = rec.listingId || rec.listingKey || "—";
+    if (!byId.has(lid)) {
+      byId.set(lid, { listingId: lid, listingName: rec.listingName || lid, total: 0, attended: 0, noshow: 0, upcoming: 0 });
+    }
+    const row = byId.get(lid);
+    if (!row.listingName && rec.listingName) row.listingName = rec.listingName;
+    row.total += 1;
+    const st = rec.status || "booked";
+    if (st === "attended") row.attended += 1;
+    else if (st === "noshow") row.noshow += 1;
+    else {
+      const visit = torontoVisitMs(rec.dateISO, rec.time);
+      if (visit !== null && visit >= now) row.upcoming += 1;
+    }
+  }
+  return Array.from(byId.values()).sort((a, b) => b.total - a.total);
 }
 
 // ---------- Stripe: перевірка підпису webhook (HMAC-SHA256, вручну) ----------
