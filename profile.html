@@ -1223,10 +1223,17 @@
     const s = document.createElement("script");
     s.src = DATA_URL;
 
-    s.onload = () => {
+    s.onload = async () => {
       try{
         const id = qs("id");
-        const l = (window.LISTINGS||[]).find(x=>x.id===id) || window.LISTINGS?.[0];
+        let l = (window.LISTINGS||[]).find(x=>x.id===id);
+        // Динамічний лістинг (самопідключення салону) може ще летіти з воркера —
+        // зачекати data.js (макс. 3 с), щоб не показати чужий профіль замість нього.
+        if(!l && window.bbDynamicReady){
+          try{ await Promise.race([window.bbDynamicReady, new Promise(r=>setTimeout(r,3000))]); }catch(e){}
+          l = (window.LISTINGS||[]).find(x=>x.id===id);
+        }
+        l = l || window.LISTINGS?.[0];
         if(!l){ showErr("No listing found"); return; }
 
         // expose for booking
@@ -1243,6 +1250,7 @@
         if(l.partner) badges.push(`<span class="tag partner">💎 Partner</span>`);
         if(l.verified) badges.push(`<span class="tag good">Verified</span>`);
         if(l.sterile) badges.push(`<span class="tag good">Sterile</span>`);
+        if(!l.rating) badges.push(`<span class="tag good">🆕 Новий на Booking Club</span>`);
         document.getElementById("badges").innerHTML = badges.join("");
 
         // services list (unchanged)

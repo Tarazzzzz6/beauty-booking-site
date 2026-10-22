@@ -384,11 +384,11 @@
     "iryna-stovban-home": { 1:null, 3:null, 0:null } // домашній майстер: вт/чт/сб/нд
   };
 
-  (function generateLiveAvailability(){
+  function generateLiveAvailabilityFor(l){
     const base = new Date();
     const days = 30;
 
-    for(const l of (window.LISTINGS||[])){
+    {
       if (l.telegramChatId === undefined) l.telegramChatId = "";
       const week = Object.assign({}, DEFAULT_WEEK, WEEK_OVERRIDES[l.id] || {}, l.schedule || {});
       l.schedule = week;
@@ -427,7 +427,67 @@
       l.availabilityByService = buildAvailabilityByService(l);
       l.slots = expandAvailabilityToIso(l.availability);
     }
+  }
+
+  (function generateLiveAvailability(){
+    for(const l of (window.LISTINGS||[])) generateLiveAvailabilityFor(l);
   })();
+
+  // ===== Динамічні лістинги: координати за районом + обробка =====
+  const DISTRICT_COORDS = {
+    "le plateau-mont-royal": [45.5272, -73.5802], "plateau": [45.5272, -73.5802],
+    "rosemont": [45.5500, -73.5650],
+    "côte-des-neiges": [45.4950, -73.6250], "cote-des-neiges": [45.4950, -73.6250], "cdn": [45.4950, -73.6250],
+    "downtown": [45.5010, -73.5700], "centre-ville": [45.5010, -73.5700], "centre ville": [45.5010, -73.5700],
+    "westmount": [45.4868, -73.6012],
+    "verdun": [45.4520, -73.5700],
+    "hochelaga": [45.5450, -73.5350], "hochelaga-maisonneuve": [45.5450, -73.5350],
+    "saint-henri": [45.4750, -73.5850], "st-henri": [45.4750, -73.5850], "saint henri": [45.4750, -73.5850],
+    "griffintown": [45.4920, -73.5620],
+    "laval": [45.5600, -73.7450],
+    "longueuil": [45.5320, -73.5180], "rive-sud": [45.5320, -73.5180],
+    "villeray": [45.5450, -73.6050], "mile end": [45.5250, -73.6000],
+    "outremont": [45.5150, -73.6050], "ndg": [45.4750, -73.6250],
+    "notre-dame-de-grâce": [45.4750, -73.6250], "lachine": [45.4420, -73.6800],
+    "lasalle": [45.4300, -73.6300], "anjou": [45.6050, -73.5450],
+    "saint-laurent": [45.5100, -73.6750], "ahuntsic": [45.5550, -73.6600]
+  };
+  const MTL_CENTER = [45.5017, -73.5673];
+  function coordsForDistrict(text){
+    const t = String(text || "").toLowerCase();
+    if(!t) return MTL_CENTER.slice();
+    if(DISTRICT_COORDS[t.trim()]) return DISTRICT_COORDS[t.trim()].slice();
+    for(const k of Object.keys(DISTRICT_COORDS)){
+      if(t.includes(k)) return DISTRICT_COORDS[k].slice();
+    }
+    return MTL_CENTER.slice();
+  }
+
+  // Прибрати закриті дні (з бота/кабінету) з уже згенерованої доступності
+  function applyClosedDays(l, dates){
+    if(!l || !dates || !dates.length) return;
+    dates.forEach(function(dstr){
+      if(l.availability) delete l.availability[dstr];
+      if(l.availabilityByService){
+        Object.keys(l.availabilityByService).forEach(function(k){
+          l.availabilityByService[k] = l.availabilityByService[k].filter(function(iso){ return iso.slice(0,10) !== dstr; });
+        });
+      }
+      if(Array.isArray(l.slots)) l.slots = l.slots.filter(function(iso){ return iso.slice(0,10) !== dstr; });
+    });
+  }
+
+  // Повна обробка динамічного лістинга: координати + генерація слотів
+  function processListing(l){
+    if(!l) return l;
+    if(l.telegramChatId === undefined) l.telegramChatId = "";
+    if(l.lat == null || l.lng == null){
+      const c = coordsForDistrict(l.district || l.address || "");
+      l.lat = c[0]; l.lng = c[1];
+    }
+    generateLiveAvailabilityFor(l);
+    return l;
+  }
 
   // ===== UTIL (keeps your old behavior using date->times) =====
   function haversineKm(a,b){
@@ -653,6 +713,9 @@
     computeWhy,
     conciergeSuggest
   };
+  window.bb.processListing = processListing;
+  window.bb.applyClosedDays = applyClosedDays;
+  window.bb.coordsForDistrict = coordsForDistrict;
 })();
 
 /* ===== Календар бронювань (KV на воркері) =====
@@ -700,11 +763,10 @@
    При завантаженні підмішуємо актуальні ціни з GET /overrides?listing=<id>
    у лістинги (from/to/durationMin). Graceful fallback: помилка → базові ціни з цього файлу. */
 (function(){
-  if(!window.LISTINGS || !window.LISTINGS.length) return;
   var W = window.WORKER_URL || "";
   if(!W) return;
-  window.LISTINGS.forEach(function(l){
-    fetch(W + "/overrides?listing=" + encodeURIComponent(l.id))
+  function applyOverrides(l){
+    return fetch(W + "/overrides?listing=" + encodeURIComponent(l.id))
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(ov){
         if(!ov || typeof ov !== "object" || Array.isArray(ov)) return;
@@ -721,5 +783,60 @@
         }
       })
       .catch(function(){});
-  });
+  }
+  window.bb = window.bb || {};
+  window.bb.applyOverrides = applyOverrides;
+  (window.LISTINGS || []).forEach(applyOverrides);
+})();
+
+/* ===== Динамічні лістинги (самопідключення салонів через бота/форму) =====
+   fetch GET /listings на воркері → мердж у window.LISTINGS до рендеру сторінок:
+   кожен лістинг проходить processListing (координати за районом + слоти),
+   підтягує цінові оверрайди й закриті дні, після чого сторінки отримують
+   подію "bb:listings" і перерендерюються. window.bbDynamicReady — проміс,
+   на який чекає profile.html, щоб не показати чужий лістинг замість динамічного.
+   Graceful fallback: помилка/порожньо → сайт працює на статичних лістингах. */
+(function(){
+  var W = window.WORKER_URL || "";
+  window.LISTINGS = window.LISTINGS || [];
+  if(!W || !window.bb || !window.bb.processListing){
+    window.bbDynamicReady = Promise.resolve([]);
+    return;
+  }
+  window.bbDynamicReady = fetch(W + "/listings")
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(arr){
+      if(!Array.isArray(arr) || !arr.length) return [];
+      var fresh = [];
+      arr.forEach(function(raw){
+        if(!raw || !raw.id) return;
+        if(window.LISTINGS.some(function(x){ return x.id === raw.id; })) return;
+        var l = raw;
+        if(!Array.isArray(l.images)) l.images = [];
+        if(!Array.isArray(l.services)) l.services = [];
+        l.availability = {};
+        window.bb.processListing(l);
+        window.LISTINGS.push(l);
+        fresh.push(l);
+      });
+      if(!fresh.length) return [];
+      // закриті дні з бота + цінові оверрайди — як для статичних лістингів
+      fresh.forEach(function(l){
+        if(window.bb.applyOverrides) window.bb.applyOverrides(l);
+        if(l.telegramChatId){
+          fetch(W + "/schedule?chat=" + encodeURIComponent(l.telegramChatId))
+            .then(function(r){ return r.json(); })
+            .then(function(j){
+              if(j && Array.isArray(j.closed) && j.closed.length){
+                window.bb.applyClosedDays(l, j.closed);
+                try{ document.dispatchEvent(new CustomEvent("bb:listings", { detail: { added: [l.id] } })); }catch(e){}
+              }
+            })
+            .catch(function(){});
+        }
+      });
+      try{ document.dispatchEvent(new CustomEvent("bb:listings", { detail: { added: fresh.map(function(x){ return x.id; }) } })); }catch(e){}
+      return fresh;
+    })
+    .catch(function(){ return []; });
 })();

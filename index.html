@@ -2218,6 +2218,7 @@ function haptic(ms=12){
       if(listing.verified) tags.push({t:"Verified", cls:"good", title:"Verified salon/master"});
       if(listing.sterile) tags.push({t:"Sterile", cls:"good", title:"Sterile tools policy"});
       if(listing.rating) tags.push({t:`★ ${listing.rating} (${listing.reviews||0})`, cls:"good", title:"Rating & reviews"});
+      else tags.push({t:"🆕 Новий", cls:"good", title:"New on Booking Club"});
       try{
         if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today", title:"Has slots today"});
       }catch(e){}
@@ -2590,6 +2591,10 @@ function haptic(ms=12){
       renderNextHeroRotating(false);
       saveFilters();
     }
+
+    // Динамічні лістинги (самопідключення салонів): data.js підтягує їх із
+    // воркера після першого рендеру — перерендерити каталог, коли приїхали.
+    document.addEventListener("bb:listings", function(){ try{ renderAll(); }catch(e){} });
 
     // ===== Reset behaviors =====
     function resetAllFilters(){
@@ -3888,47 +3893,60 @@ Email: ${email}`;
   (function(){
     function go(id){ location.href = "./profile.html?id=" + encodeURIComponent(id); }
     var L0 = window.LISTINGS || [];
+    function storyItem(l){
+      var d = document.createElement("div"); d.className = "storyItem";
+      d.innerHTML = '<div class="storyRing"><img src="' + ((l.images||[])[0]||"") + '" alt=""></div><div class="storyName">' + l.name + '</div>';
+      d.addEventListener("click", function(){ go(l.id); });
+      return d;
+    }
+    function reelCard(l, i){
+      var svc = (window.SERVICES||[]).find(function(s){ return l.services && l.services[0] && s.id === l.services[0].serviceId; });
+      var d = document.createElement("div"); d.className = "reelCard";
+      d.innerHTML = '<img src="' + l.images[0] + '" alt=""><div class="reelPlay">▶</div><div class="reelMeta"><b>' + l.name + '</b><span>' + (svc ? svc.ua : "Beauty") + ' · ' + (l.rating ? "★ " + l.rating : "🆕 Новий") + ' · 0:' + (18 + i*3) + '</span></div>';
+      d.addEventListener("click", function(){ go(l.id); });
+      return d;
+    }
     // Stories
     var ss = document.getElementById("storiesStrip");
     if(ss){
       ss.innerHTML = "";
-      L0.slice().sort(function(a,b){ return (b.partner-a.partner) || ((b.rating||0)-(a.rating||0)); }).forEach(function(l){
-        var d = document.createElement("div"); d.className = "storyItem";
-        d.innerHTML = '<div class="storyRing"><img src="' + ((l.images||[])[0]||"") + '" alt=""></div><div class="storyName">' + l.name + '</div>';
-        d.addEventListener("click", function(){ go(l.id); });
-        ss.appendChild(d);
-      });
+      L0.slice().sort(function(a,b){ return (b.partner-a.partner) || ((b.rating||0)-(a.rating||0)); }).forEach(function(l){ ss.appendChild(storyItem(l)); });
     }
     // Reels
     var rs = document.getElementById("reelsStrip");
     if(rs){
       var picks = L0.filter(function(l){ return (l.images||[]).length; }).slice(0,8);
       rs.innerHTML = "";
-      picks.forEach(function(l, i){
-        var svc = (window.SERVICES||[]).find(function(s){ return l.services && l.services[0] && s.id === l.services[0].serviceId; });
-        var d = document.createElement("div"); d.className = "reelCard";
-        d.innerHTML = '<img src="' + l.images[0] + '" alt=""><div class="reelPlay">▶</div><div class="reelMeta"><b>' + l.name + '</b><span>' + (svc ? svc.ua : "Beauty") + ' · ★ ' + (l.rating||"—") + ' · 0:' + (18 + i*3) + '</span></div>';
-        d.addEventListener("click", function(){ go(l.id); });
-        rs.appendChild(d);
-      });
+      picks.forEach(function(l, i){ rs.appendChild(reelCard(l, i)); });
     }
     // Price map (Leaflet)
+    var mapRef = null;
+    function addPin(l){
+      if(!mapRef || !window.L || !l.lat || !l.lng) return;
+      var from = null;
+      (l.services||[]).forEach(function(s){ if(from===null || s.from<from) from = s.from; });
+      var icon = L.divIcon({className:"", html:'<div class="pricePin">$' + (from ?? "—") + '</div>', iconSize:null, iconAnchor:[24,16]});
+      var pop = '<b>' + l.name + '</b><br>' + (l.rating ? '★ ' + l.rating + ' (' + (l.reviews||0) + ') · ' : '🆕 Новий · ') + 'від $' + (from ?? "—") + '<br><span style="opacity:.75">' + (l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
+      L.marker([l.lat, l.lng], {icon:icon}).addTo(mapRef).bindPopup(pop);
+    }
     function initMap(){
       if(!window.L || !document.getElementById("bbMap")) return;
       var map = L.map("bbMap", {scrollWheelZoom:false}).setView([45.53, -73.62], 11);
+      mapRef = map;
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, attribution:"© OpenStreetMap"}).addTo(map);
       map.on("focus", function(){ map.scrollWheelZoom.enable(); });
       map.on("blur", function(){ map.scrollWheelZoom.disable(); });
-      L0.forEach(function(l){
-        if(!l.lat || !l.lng) return;
-        var from = null;
-        (l.services||[]).forEach(function(s){ if(from===null || s.from<from) from = s.from; });
-        var icon = L.divIcon({className:"", html:'<div class="pricePin">$' + (from ?? "—") + '</div>', iconSize:null, iconAnchor:[24,16]});
-        var pop = '<b>' + l.name + '</b><br>★ ' + (l.rating||"—") + ' (' + (l.reviews||0) + ') · від $' + (from ?? "—") + '<br><span style="opacity:.75">' + (l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
-        L.marker([l.lat, l.lng], {icon:icon}).addTo(map).bindPopup(pop);
-      });
+      (window.LISTINGS||[]).forEach(addPin);
     }
     if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMap); else initMap();
+    // Динамічні лістинги: додати сторіс/рілси/піни, коли data.js їх підтягне
+    document.addEventListener("bb:listings", function(ev){
+      var ids = (ev.detail && ev.detail.added) || [];
+      var fresh = (window.LISTINGS||[]).filter(function(l){ return ids.indexOf(l.id) >= 0; });
+      if(ss) fresh.forEach(function(l){ ss.appendChild(storyItem(l)); });
+      if(rs) fresh.filter(function(l){ return (l.images||[]).length; }).forEach(function(l, i){ rs.appendChild(reelCard(l, i)); });
+      fresh.forEach(addPin);
+    });
   })();
   </script>
 

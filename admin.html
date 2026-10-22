@@ -94,6 +94,16 @@
         <div id="linkWarn" style="margin-top:12px"></div>
       </div>
 
+      <!-- ПЛАТФОРМА (тільки власник) -->
+      <div class="card" id="platformCard" style="display:none">
+        <div class="kicker">Платформа · всі салони</div>
+        <p class="muted" style="font-size:13px;line-height:1.5">Облік по кожному салону: скільки записів, скільки клієнтів реально прийшло і скільки no-show. Салони відмічають візити кнопками в Telegram або командами /done та /noshow.</p>
+        <table>
+          <thead><tr><th>Салон</th><th>Записів</th><th>✅ Прийшло</th><th>🚫 No-show</th><th>🔜 Майбутніх</th></tr></thead>
+          <tbody id="platformBody"></tbody>
+        </table>
+      </div>
+
       <div class="tabs">
         <button class="tab on" data-tab="bookings" type="button">📖 Бронювання</button>
         <button class="tab" data-tab="schedule" type="button">🗓 Графік</button>
@@ -256,6 +266,7 @@
         '<div class="bk"><div class="t">📅 ' + esc(b.dateISO) + ' о ' + esc(b.time) + ' — ' + esc(b.serviceName || "Послуга") + '</div>' +
         '<div class="muted" style="margin-top:3px">👤 ' + esc(b.name) + (b.phone ? ' · ' + esc(b.phone) : '') + ' · 🆔 ' + esc(b.id) + '</div>' +
         '<div style="margin-top:6px">' +
+          (b.status === 'attended' ? '<span class="badge dep">✅ клієнт прийшов</span> ' : b.status === 'noshow' ? '<span class="badge" style="border-color:rgba(255,122,122,.5);color:#ff7a7a">🚫 no-show</span> ' : '') +
           (b.depositPaid ? '<span class="badge dep">💰 депозит оплачено</span> ' : (b.depositRequested ? '<span class="badge">🛡️ депозит: на місці</span> ' : '')) +
           (b.clientLinked ? '<span class="badge tg">📲 клієнт у Telegram</span>' : '') +
         '</div></div>'
@@ -274,6 +285,20 @@
       }
       closedDraft = (cab.closed || []).slice().sort();
       renderClosed();
+
+      // --- Платформа (тільки власник) ---
+      const pCard = $("platformCard");
+      const pRows = cab.platform && Array.isArray(cab.platform.listings) ? cab.platform.listings : null;
+      if(pCard){
+        if(pRows){
+          pCard.style.display = "";
+          $("platformBody").innerHTML = pRows.length ? pRows.map(r =>
+            '<tr><td><b>' + esc(r.listingName || r.listingId) + '</b></td><td>' + (r.total||0) + '</td><td>' + (r.attended||0) + '</td><td>' + (r.noshow||0) + '</td><td>' + (r.upcoming||0) + '</td></tr>'
+          ).join("") : '<tr><td colspan="5" class="muted">Поки немає жодного бронювання у базі.</td></tr>';
+        } else {
+          pCard.style.display = "none";
+        }
+      }
 
       // --- Ціни ---
       const body = $("svcBody");

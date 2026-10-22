@@ -50,6 +50,11 @@
     <p class="muted" style="max-width:60ch;line-height:1.55;margin:0">Заповни форму — заявка одразу летить нашій команді в Telegram. Додамо твій профіль на сайт протягом 24 годин і надішлемо посилання на твій кабінет. Без дзвінків і бюрократії.</p>
     <span class="free">🎉 Акція запуску: перший місяць — $0 на будь-якому тарифі</span>
 
+    <a class="card" href="https://t.me/pershe1012_bot?start=join" target="_blank" rel="noopener" style="display:block;margin-top:18px;border-color:rgba(255,210,122,.45);background:linear-gradient(135deg,rgba(255,210,122,.14),rgba(198,161,91,.10))">
+      <div style="font-size:19px;font-weight:900">🤖 Заповнити через Telegram-бота (з фото) →</div>
+      <p class="muted" style="margin:8px 0 0;line-height:1.55">Найшвидший шлях: бот @pershe1012_bot покроково запитає назву, послуги, ціни й фото — і заявка одразу піде на підтвердження. Можна з телефона, за 3 хвилини.</p>
+    </a>
+
     <form class="card" id="joinForm" novalidate>
       <div class="kicker">Твій бізнес</div>
       <label class="f">Назва салону / студії або твоє імʼя як майстра *
@@ -72,8 +77,19 @@
         <input type="text" id="instagram" placeholder="https://instagram.com/...">
       </label>
 
+      <label class="f">Опис салону (що клієнти побачать у профілі)
+        <textarea id="description" rows="3" placeholder="Напр: Затишна студія в Роземонті, стерильні інструменти, кава для клієнтів…"></textarea>
+      </label>
+
       <div class="kicker" style="margin-top:22px">Послуги</div>
       <div class="checks" id="svcChecks"></div>
+
+      <label class="f">Ціни на послуги (вільно, як зручно)
+        <textarea id="pricesText" rows="2" placeholder="Напр: Манікюр — 45, Педикюр — 60, Брови — 30"></textarea>
+      </label>
+      <label class="f">Години роботи
+        <input type="text" id="hoursText" placeholder="Напр: Пн–Пт 10–19, Сб 11–17, Нд — вихідний">
+      </label>
 
       <div class="kicker" style="margin-top:22px">Мови обслуговування</div>
       <div class="checks" id="langChecks">
@@ -124,7 +140,7 @@
 
     <div class="success" id="successBox">
       <h2>Заявку надіслано ✅</h2>
-      <p class="muted" style="line-height:1.6;margin:0">Дякуємо! Ми додамо твій салон на <b style="color:var(--text)">bookingclub.beauty</b> протягом 24 годин і зателефонуємо або напишемо у відповідь. Поки чекаєш — глянь, як виглядатиме твій кабінет:</p>
+      <p class="muted" style="line-height:1.6;margin:0">Дякуємо! Заявка вже у власника платформи в Telegram — він підтверджує її однією кнопкою, і твій салон одразу зʼявиться на <b style="color:var(--text)">bookingclub.beauty</b>. Зазвичай це швидко, максимум — протягом 24 годин. Поки чекаєш — глянь, як виглядатиме твій кабінет:</p>
       <p style="margin:14px 0 0"><a href="./admin.html" style="font-weight:900;color:var(--gold)">🔐 Відкрити демо-кабінет салону →</a> · <a href="./business.html" style="font-weight:900;color:var(--gold)">Тарифи й умови →</a></p>
     </div>
   </div>
@@ -161,6 +177,9 @@
         email: $("email").value.trim(),
         address, district,
         services, languages, plan,
+        description: $("description").value.trim(),
+        pricesText: $("pricesText").value.trim(),
+        hoursText: $("hoursText").value.trim(),
         telegramChatId: $("telegramChatId").value.trim(),
         instagram: $("instagram").value.trim(),
         comment: $("comment").value.trim(),
