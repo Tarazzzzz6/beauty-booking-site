@@ -695,3 +695,31 @@
   }
   window.bbBooked = { fetchTimes: fetchTimes, cachedTimes: cachedTimes, markBooked: markBooked };
 })();
+
+/* ===== Цінові оверрайди салонів (кабінет → KV на воркері) =====
+   При завантаженні підмішуємо актуальні ціни з GET /overrides?listing=<id>
+   у лістинги (from/to/durationMin). Graceful fallback: помилка → базові ціни з цього файлу. */
+(function(){
+  if(!window.LISTINGS || !window.LISTINGS.length) return;
+  var W = window.WORKER_URL || "";
+  if(!W) return;
+  window.LISTINGS.forEach(function(l){
+    fetch(W + "/overrides?listing=" + encodeURIComponent(l.id))
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(ov){
+        if(!ov || typeof ov !== "object" || Array.isArray(ov)) return;
+        var changed = false;
+        (l.services || []).forEach(function(s){
+          var o = ov[s.serviceId];
+          if(!o) return;
+          if(typeof o.from === "number"){ s.from = o.from; changed = true; }
+          if(typeof o.to === "number"){ s.to = o.to; changed = true; }
+          if(typeof o.durationMin === "number"){ s.durationMin = o.durationMin; changed = true; }
+        });
+        if(changed){
+          try{ document.dispatchEvent(new CustomEvent("bb:overrides", { detail: { listingId: l.id } })); }catch(e){}
+        }
+      })
+      .catch(function(){});
+  });
+})();

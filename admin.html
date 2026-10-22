@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#C6A15B;--gold:#ffd27a;--violet:#8a6d35;--ok:#20e3a5;--r:20px;--max:980px}
+    :root{--bg:#07070b;--bg2:#0b0b11;--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.10);--text:#f4f3f8;--muted:rgba(244,243,248,.68);--pink:#C6A15B;--gold:#ffd27a;--violet:#8a6d35;--ok:#20e3a5;--bad:#ff7a7a;--r:20px;--max:980px}
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(255,79,216,.14), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:var(--text);background:radial-gradient(1000px 700px at 15% 0%, rgba(198,161,91,.16), transparent 55%),linear-gradient(180deg,var(--bg),var(--bg2))}
     a{color:inherit;text-decoration:none}
     .wrap{max-width:var(--max);margin:0 auto;padding:20px 18px 80px}
     .back{display:inline-flex;padding:10px 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);font-weight:700}
@@ -23,6 +23,7 @@
     .btn{border:0;color:#0b0b0f;background:linear-gradient(135deg,var(--pink),var(--violet));border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;font:inherit}
     .btn.gold{background:linear-gradient(135deg,var(--gold),var(--pink))}
     .btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--stroke)}
+    .btn:disabled{opacity:.5;cursor:wait}
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     .stat{border:1px solid var(--stroke);border-radius:18px;padding:14px;background:rgba(0,0,0,.18)}
     .stat b{font-size:22px;display:block}
@@ -32,6 +33,17 @@
     td input{width:90px;padding:8px 10px}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .ok{color:var(--ok);font-weight:700}
+    .err{color:var(--bad);font-weight:700}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .tab{border:1px solid var(--stroke);background:var(--card);color:var(--text);border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer;font:inherit}
+    .tab.on{background:linear-gradient(135deg,var(--gold),var(--pink));color:#0b0b0f;border-color:transparent}
+    .chip{display:inline-flex;gap:8px;align-items:center;margin:0 8px 8px 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,210,122,.4);background:rgba(255,210,122,.08);font-weight:700}
+    .chip button{border:0;background:transparent;color:#ffd27a;cursor:pointer;font-weight:900;font:inherit}
+    .bk{border:1px solid var(--stroke);border-radius:16px;padding:12px 14px;margin-top:10px;background:rgba(0,0,0,.18)}
+    .bk .t{font-weight:800}
+    .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--stroke)}
+    .badge.dep{border-color:rgba(32,227,165,.5);color:var(--ok)}
+    .badge.tg{border-color:rgba(255,210,122,.5);color:var(--gold)}
     @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
@@ -39,18 +51,30 @@
   <div class="wrap">
     <a class="back" href="./index.html">← bookingclub.beauty</a>
     <h1>Кабінет салону 💎</h1>
-    <p class="muted" style="margin:0">Керуй цінами, послугами і дивись свої відгуки. Демо-версія: вхід за вибором салону + будь-який PIN з 4 цифр. У проді підключимо справжню авторизацію і збереження на сервері.</p>
+    <p class="muted" style="margin:0">Ваші бронювання, графік і ціни — усе наживо в базі Booking Club. Вхід — за одноразовим кодом, який бот надсилає у ваш Telegram.</p>
 
+    <!-- ===== ВХІД ===== -->
     <div class="card" id="loginCard">
       <div class="kicker">Вхід</div>
-      <div class="row" style="margin-top:12px">
-        <select id="salonSel" style="flex:1;min-width:220px"></select>
-        <input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="PIN ····" style="width:130px">
-        <button class="btn gold" id="loginBtn">Увійти</button>
+      <p class="muted" style="font-size:13.5px;line-height:1.55">Вкажіть свій Telegram ID (напишіть боту <b style="color:var(--text)">@pershe1012_bot</b> команду <b style="color:var(--text)">/myid</b>). Бот надішле 6-значний код — введіть його тут. Важливо: спочатку відкрийте бота і натисніть <b style="color:var(--text)">Start</b>, інакше він не зможе надіслати код.</p>
+      <div id="stepChat">
+        <div class="row" style="margin-top:12px">
+          <input id="chatIdInp" type="text" inputmode="numeric" placeholder="Telegram ID, напр. 7384123064" style="flex:1;min-width:230px">
+          <button class="btn gold" id="codeBtn" type="button">Надіслати код у Telegram</button>
+        </div>
+      </div>
+      <div id="stepCode" style="display:none">
+        <div class="row" style="margin-top:12px">
+          <input id="codeInp" type="text" inputmode="numeric" maxlength="6" placeholder="Код із Telegram ······" style="width:220px">
+          <button class="btn gold" id="loginBtn" type="button">Увійти</button>
+          <button class="btn ghost" id="backBtn" type="button">← інший ID</button>
+        </div>
+        <p class="muted" style="font-size:12.5px;margin:10px 0 0">Код діє 10 хвилин. Сесія в кабінеті триває 30 днів на цьому пристрої.</p>
       </div>
       <div id="loginMsg" style="margin-top:10px"></div>
     </div>
 
+    <!-- ===== КАБІНЕТ ===== -->
     <div id="panel" style="display:none">
       <div class="card">
         <div class="kicker">Твій салон</div>
@@ -59,38 +83,59 @@
         <div class="stats" style="margin-top:14px">
           <div class="stat"><b id="stRating">—</b><span>рейтинг ★</span></div>
           <div class="stat"><b id="stReviews">—</b><span>відгуків</span></div>
-          <div class="stat"><b id="stServices">—</b><span>послуг</span></div>
+          <div class="stat"><b id="stBookings">—</b><span>майбутніх записів</span></div>
           <div class="stat"><b id="stPartner">—</b><span>тариф</span></div>
         </div>
         <div class="row" style="margin-top:14px">
           <a class="btn ghost" id="openProfile" href="#" target="_blank" rel="noopener">Мій публічний профіль →</a>
-          <a class="btn ghost" href="./business.html">Підвищити тариф 💎</a>
+          <button class="btn ghost" id="reloadBtn" type="button">Оновити дані</button>
+          <button class="btn ghost" id="logoutBtn" type="button">Вийти</button>
+        </div>
+        <div id="linkWarn" style="margin-top:12px"></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab on" data-tab="bookings" type="button">📖 Бронювання</button>
+        <button class="tab" data-tab="schedule" type="button">🗓 Графік</button>
+        <button class="tab" data-tab="prices" type="button">💵 Ціни</button>
+      </div>
+
+      <!-- БРОНЮВАННЯ -->
+      <div class="card" id="tab-bookings">
+        <div class="kicker">Найближчі записи клієнтів</div>
+        <p class="muted" style="font-size:13px">Ті самі записи, що приходять вам у Telegram і доступні командою <b style="color:var(--text)">/bookings</b>. Скасування — командою <b style="color:var(--text)">/cancel BK-XXXXXX</b> у боті.</p>
+        <div id="bkList"></div>
+      </div>
+
+      <!-- ГРАФІК -->
+      <div class="card" id="tab-schedule" style="display:none">
+        <div class="kicker">Тижневий графік</div>
+        <div id="weekView" style="margin-top:10px"></div>
+        <div class="kicker" style="margin-top:20px">Вихідні та закриті дні</div>
+        <p class="muted" style="font-size:13px;line-height:1.5">У закриті дні сайт не показує слоти. Це той самий графік, що й у Telegram-боті (<b style="color:var(--text)">/close</b>, <b style="color:var(--text)">/open</b>) — зміни тут і в боті діють однаково.</p>
+        <div class="row" style="margin-top:10px">
+          <input type="date" id="closeDate" style="max-width:220px">
+          <button class="btn gold" id="addCloseBtn" type="button">Закрити день</button>
+        </div>
+        <div id="closedList" style="margin-top:12px"></div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="saveSchedBtn" type="button">Зберегти графік</button>
+          <span id="schedMsg"></span>
         </div>
       </div>
 
-      <div class="card">
+      <!-- ЦІНИ -->
+      <div class="card" id="tab-prices" style="display:none">
         <div class="kicker">Ціни і послуги</div>
+        <p class="muted" style="font-size:13px;line-height:1.5">Зміни зберігаються на сервері й одразу діють на сайті для всіх клієнтів.</p>
         <table>
           <thead><tr><th>Послуга</th><th>Від, $</th><th>До, $</th><th>Хв</th></tr></thead>
           <tbody id="svcBody"></tbody>
         </table>
         <div class="row" style="margin-top:14px">
-          <button class="btn" id="saveBtn">Зберегти зміни</button>
+          <button class="btn" id="saveBtn" type="button">Зберегти ціни</button>
           <span id="saveMsg"></span>
         </div>
-        <p class="muted" style="font-size:12.5px">Демо: зміни зберігаються на цьому пристрої. Наступний крок — збереження у Cloudflare, щоб ціни мінялись на сайті для всіх клієнтів.</p>
-      </div>
-
-      <div class="card">
-        <div class="kicker">Графік роботи</div>
-        <div id="weekView" style="margin-top:10px"></div>
-        <div class="kicker" style="margin-top:20px">Вихідні та закриті дні</div>
-        <p class="muted" style="font-size:13px;line-height:1.5">У закриті дні сайт не показує слоти. Те саме можна робити прямо в Telegram-боті командами <b style="color:var(--text)">/close 2026-11-03</b> та <b style="color:var(--text)">/open 2026-11-03</b> — коли власник платформи підключить сховище бота, зміни підтягнуться автоматично.</p>
-        <div class="row" style="margin-top:10px">
-          <input type="date" id="closeDate" style="max-width:220px">
-          <button class="btn gold" id="addCloseBtn" type="button">Закрити день</button>
-        </div>
-        <div id="closedList" style="margin-top:10px"></div>
       </div>
 
       <div class="card">
@@ -102,101 +147,213 @@
 
   <script src="./data.js"></script>
   <script>
-    const sel = document.getElementById("salonSel");
-    (window.LISTINGS||[]).forEach(l=>{
-      const o = document.createElement("option"); o.value = l.id; o.textContent = l.name; sel.appendChild(o);
-    });
-    const svcName = id => { const s = (window.SERVICES||[]).find(x=>x.id===id); return s ? s.ua : id; };
-    let cur = null;
-    try{ const saved = localStorage.getItem("bb_admin_salon"); if(saved) sel.value = saved; }catch(e){}
+    const W = (window.WORKER_URL || "").replace(/\/$/, "");
+    const LS_TOK = "bb_cab_token", LS_CHAT = "bb_cab_chat";
+    let token = ""; try{ token = localStorage.getItem(LS_TOK) || ""; }catch(e){}
+    let myChat = ""; try{ myChat = localStorage.getItem(LS_CHAT) || ""; }catch(e){}
+    let cab = null;   // відповідь /cabinet/data
+    let listing = null;
+    let closedDraft = [];
 
-    document.getElementById("loginBtn").addEventListener("click", ()=>{
-      const pin = document.getElementById("pin").value.trim();
-      const msg = document.getElementById("loginMsg");
-      if(!/^\d{4}$/.test(pin)){ msg.innerHTML = '<span style="color:#ffd27a;font-weight:700">Введи PIN з 4 цифр (демо: будь-який)</span>'; return; }
-      cur = (window.LISTINGS||[]).find(l=>l.id===sel.value);
-      try{ localStorage.setItem("bb_admin_salon", cur.id); }catch(e){}
-      msg.innerHTML = '<span class="ok">Вхід виконано ✓</span>';
-      renderPanel();
+    const $ = id => document.getElementById(id);
+    const svcName = id => { const s = (window.SERVICES||[]).find(x=>x.id===id); return s ? s.ua : id; };
+    const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    async function api(path, opts){
+      const r = await fetch(W + path, opts);
+      let j = null; try{ j = await r.json(); }catch(e){}
+      return { ok: r.ok, status: r.status, j };
+    }
+
+    // ===== Вхід =====
+    $("codeBtn").addEventListener("click", async ()=>{
+      const chatId = $("chatIdInp").value.trim();
+      const msg = $("loginMsg");
+      if(!/^\d{5,}$/.test(chatId)){ msg.innerHTML = '<span class="err">Вкажіть коректний Telegram ID (цифри) — його показує бот командою /myid</span>'; return; }
+      $("codeBtn").disabled = true;
+      msg.innerHTML = '<span class="muted">Надсилаю код…</span>';
+      const { ok, j } = await api("/cabinet/code", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ chatId }) });
+      $("codeBtn").disabled = false;
+      if(!ok){
+        msg.innerHTML = '<span class="err">' + (j && j.error === "rate_limited" ? "Зачекайте 30 секунд перед повторним кодом." : "Не вдалося надіслати код. " + esc(j && j.hint ? j.hint : "")) + '</span>';
+        return;
+      }
+      myChat = chatId;
+      $("stepChat").style.display = "none";
+      $("stepCode").style.display = "";
+      msg.innerHTML = '<span class="ok">Код надіслано в Telegram ✓ Перевірте чат із ботом.</span>';
+      $("codeInp").focus();
     });
+
+    $("backBtn").addEventListener("click", ()=>{
+      $("stepCode").style.display = "none";
+      $("stepChat").style.display = "";
+      $("loginMsg").innerHTML = "";
+    });
+
+    $("loginBtn").addEventListener("click", async ()=>{
+      const code = $("codeInp").value.trim();
+      const msg = $("loginMsg");
+      if(!/^\d{6}$/.test(code)){ msg.innerHTML = '<span class="err">Код — 6 цифр</span>'; return; }
+      $("loginBtn").disabled = true;
+      const { ok, j } = await api("/cabinet/login", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ chatId: myChat, code }) });
+      $("loginBtn").disabled = false;
+      if(!ok || !j || !j.token){
+        msg.innerHTML = '<span class="err">' + (j && j.error === "code_expired" ? "Код прострочений — запросіть новий." : j && j.error === "too_many_tries" ? "Забагато спроб — запросіть новий код." : "Невірний код.") + '</span>';
+        return;
+      }
+      token = j.token;
+      try{ localStorage.setItem(LS_TOK, token); localStorage.setItem(LS_CHAT, myChat); }catch(e){}
+      msg.innerHTML = "";
+      loadCabinet();
+    });
+
+    $("logoutBtn").addEventListener("click", ()=>{
+      token = ""; cab = null; listing = null;
+      try{ localStorage.removeItem(LS_TOK); localStorage.removeItem(LS_CHAT); }catch(e){}
+      $("panel").style.display = "none";
+      $("loginCard").style.display = "";
+      $("stepCode").style.display = "none";
+      $("stepChat").style.display = "";
+    });
+
+    $("reloadBtn").addEventListener("click", loadCabinet);
+
+    // ===== Дані кабінету =====
+    async function loadCabinet(){
+      if(!token) return;
+      const { ok, status, j } = await api("/cabinet/data?token=" + encodeURIComponent(token));
+      if(!ok || !j){
+        if(status === 401){
+          token = ""; try{ localStorage.removeItem(LS_TOK); }catch(e){}
+          $("loginMsg").innerHTML = '<span class="err">Сесія завершилась — увійдіть ще раз.</span>';
+        }
+        return;
+      }
+      cab = j;
+      listing = (window.LISTINGS||[]).find(l=>l.id===cab.listingId) || null;
+      $("loginCard").style.display = "none";
+      $("panel").style.display = "block";
+      renderPanel();
+    }
 
     function renderPanel(){
-      if(!cur) return;
-      document.getElementById("panel").style.display = "block";
-      document.getElementById("salonName").textContent = cur.name;
-      document.getElementById("salonAddr").textContent = cur.address || "";
-      document.getElementById("stRating").textContent = cur.rating ? "★ " + cur.rating : "—";
-      document.getElementById("stReviews").textContent = cur.reviews || 0;
-      document.getElementById("stServices").textContent = (cur.services||[]).length;
-      document.getElementById("stPartner").textContent = cur.partner ? "Partner 💎" : "Start";
-      document.getElementById("openProfile").href = "./profile.html?id=" + encodeURIComponent(cur.id);
-      let edits = {};
-      try{ edits = JSON.parse(localStorage.getItem("bb_admin_" + cur.id) || "{}"); }catch(e){}
-      const body = document.getElementById("svcBody");
+      $("salonName").textContent = listing ? listing.name : "Салон ще не привʼязано до каталогу";
+      $("salonAddr").textContent = listing ? (listing.address || "") : "";
+      $("linkWarn").innerHTML = listing ? "" :
+        '<p class="muted" style="font-size:13px">Ваш Telegram ID ще не вписано у картку салону на сайті — передайте його власнику платформи (або заповніть bookingclub.beauty/join), і тут зʼявляться ціни та профіль. Бронювання і графік уже працюють.</p>';
+      $("stRating").textContent = listing && listing.rating ? "★ " + listing.rating : "—";
+      $("stReviews").textContent = listing ? (listing.reviews || 0) : "—";
+      $("stBookings").textContent = (cab.bookings || []).length;
+      $("stPartner").textContent = listing ? (listing.partner ? "Partner 💎" : "Start") : "—";
+      $("openProfile").href = listing ? "./profile.html?id=" + encodeURIComponent(listing.id) : "#";
+      $("openProfile").style.display = listing ? "" : "none";
+
+      // --- Бронювання ---
+      const bl = $("bkList");
+      const bookings = cab.bookings || [];
+      bl.innerHTML = bookings.length ? bookings.map(b =>
+        '<div class="bk"><div class="t">📅 ' + esc(b.dateISO) + ' о ' + esc(b.time) + ' — ' + esc(b.serviceName || "Послуга") + '</div>' +
+        '<div class="muted" style="margin-top:3px">👤 ' + esc(b.name) + (b.phone ? ' · ' + esc(b.phone) : '') + ' · 🆔 ' + esc(b.id) + '</div>' +
+        '<div style="margin-top:6px">' +
+          (b.depositPaid ? '<span class="badge dep">💰 депозит оплачено</span> ' : (b.depositRequested ? '<span class="badge">🛡️ депозит: на місці</span> ' : '')) +
+          (b.clientLinked ? '<span class="badge tg">📲 клієнт у Telegram</span>' : '') +
+        '</div></div>'
+      ).join("") : '<div class="muted">Поки немає майбутніх записів. Щойно клієнт забронює на сайті — запис зʼявиться тут і в Telegram.</div>';
+
+      // --- Графік ---
+      if(listing){
+        const dayNames = ["Неділя","Понеділок","Вівторок","Середа","Четвер","Пʼятниця","Субота"];
+        const wk = listing.schedule || {};
+        $("weekView").innerHTML = [1,2,3,4,5,6,0].map(function(dn){
+          const hh = wk[dn];
+          return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)"><span>' + dayNames[dn] + '</span><b>' + (hh ? (String(hh[0]).padStart(2,"0") + ":00 – " + String(hh[1]).padStart(2,"0") + ":00") : '<span style="color:#ffd27a">вихідний</span>') + '</b></div>';
+        }).join("");
+      } else {
+        $("weekView").innerHTML = '<div class="muted">Тижневий графік зʼявиться після привʼязки салону до каталогу.</div>';
+      }
+      closedDraft = (cab.closed || []).slice().sort();
+      renderClosed();
+
+      // --- Ціни ---
+      const body = $("svcBody");
       body.innerHTML = "";
-      (cur.services||[]).forEach(s=>{
-        const e = edits[s.serviceId] || {};
+      const ovr = cab.overrides || {};
+      ((listing && listing.services) || []).forEach(s=>{
+        const o = ovr[s.serviceId] || {};
         const tr = document.createElement("tr");
-        tr.innerHTML = '<td><b>' + svcName(s.serviceId) + '</b></td>' +
-          '<td><input type="number" min="0" data-k="from" data-svc="' + s.serviceId + '" value="' + (e.from ?? s.from) + '"></td>' +
-          '<td><input type="number" min="0" data-k="to" data-svc="' + s.serviceId + '" value="' + (e.to ?? s.to ?? "") + '"></td>' +
-          '<td><input type="number" min="5" step="5" data-k="durationMin" data-svc="' + s.serviceId + '" value="' + (e.durationMin ?? s.durationMin) + '"></td>';
+        tr.innerHTML = '<td><b>' + esc(svcName(s.serviceId)) + '</b></td>' +
+          '<td><input type="number" min="0" data-k="from" data-svc="' + esc(s.serviceId) + '" value="' + (o.from ?? s.from ?? "") + '"></td>' +
+          '<td><input type="number" min="0" data-k="to" data-svc="' + esc(s.serviceId) + '" value="' + (o.to ?? s.to ?? "") + '"></td>' +
+          '<td><input type="number" min="5" step="5" data-k="durationMin" data-svc="' + esc(s.serviceId) + '" value="' + (o.durationMin ?? s.durationMin ?? "") + '"></td>';
         body.appendChild(tr);
       });
-      // Графік: тиждень + закриті дні
-      const dayNames = ["Неділя","Понеділок","Вівторок","Середа","Четвер","Пʼятниця","Субота"];
-      const wk = cur.schedule || {};
-      document.getElementById("weekView").innerHTML = [1,2,3,4,5,6,0].map(function(dn){
-        const hh = wk[dn];
-        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)"><span>' + dayNames[dn] + '</span><b>' + (hh ? (String(hh[0]).padStart(2,"0") + ":00 – " + String(hh[1]).padStart(2,"0") + ":00") : '<span style="color:#ffd27a">вихідний</span>') + '</b></div>';
-      }).join("");
-      renderClosed();
-      const revs = (window.REVIEWS && window.REVIEWS[cur.id]) || [];
-      document.getElementById("revList").innerHTML = revs.length
-        ? revs.map(r=>'<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)"><b>' + r.name + '</b> <span style="color:#ffd27a">' + "★".repeat(r.stars||5) + '</span><div class="muted" style="margin-top:3px">' + r.text + '</div></div>').join("")
+      if(!listing) body.innerHTML = '<tr><td colspan="4" class="muted">Салон ще не привʼязано до каталогу.</td></tr>';
+
+      // --- Відгуки ---
+      const revs = listing && window.REVIEWS ? (window.REVIEWS[listing.id] || []) : [];
+      $("revList").innerHTML = revs.length
+        ? revs.map(r=>'<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)"><b>' + esc(r.name) + '</b> <span style="color:#ffd27a">' + "★".repeat(r.stars||5) + '</span><div class="muted" style="margin-top:3px">' + esc(r.text) + '</div></div>').join("")
         : '<div class="muted">Поки немає відгуків.</div>';
-      document.getElementById("panel").scrollIntoView({behavior:"smooth", block:"start"});
     }
 
+    // --- Вкладки ---
+    document.querySelectorAll(".tab").forEach(t=>{
+      t.addEventListener("click", ()=>{
+        document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on", x===t));
+        ["bookings","schedule","prices"].forEach(k=>{
+          $("tab-" + k).style.display = (k === t.dataset.tab) ? "" : "none";
+        });
+      });
+    });
 
-    function closedDates(){
-      if(!cur) return [];
-      try{ const s = JSON.parse(localStorage.getItem("bb_admin_sched_" + cur.id) || "{}"); return Array.isArray(s.closed) ? s.closed : []; }catch(e){ return []; }
-    }
-    function saveClosed(list){
-      try{ localStorage.setItem("bb_admin_sched_" + cur.id, JSON.stringify({ closed: list })); }catch(e){}
-    }
+    // --- Графік: закриті дні (чернетка до збереження) ---
     function renderClosed(){
-      const box = document.getElementById("closedList");
-      if(!box || !cur) return;
-      const list = closedDates().slice().sort();
-      box.innerHTML = list.length
-        ? list.map(d=>'<span style="display:inline-flex;gap:8px;align-items:center;margin:0 8px 8px 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,210,122,.4);background:rgba(255,210,122,.08);font-weight:700">🔒 ' + d + ' <button type="button" data-open="' + d + '" style="border:0;background:transparent;color:#ffd27a;cursor:pointer;font-weight:900">✕ відкрити</button></span>').join("")
+      const box = $("closedList");
+      box.innerHTML = closedDraft.length
+        ? closedDraft.map(d=>'<span class="chip">🔒 ' + esc(d) + ' <button type="button" data-open="' + esc(d) + '">✕ відкрити</button></span>').join("")
         : '<div class="muted">Закритих днів немає.</div>';
       box.querySelectorAll("button[data-open]").forEach(b=>{
-        b.addEventListener("click", ()=>{ saveClosed(closedDates().filter(d=>d!==b.dataset.open)); renderClosed(); });
+        b.addEventListener("click", ()=>{ closedDraft = closedDraft.filter(d=>d!==b.dataset.open); renderClosed(); });
       });
     }
-    document.getElementById("addCloseBtn").addEventListener("click", ()=>{
-      if(!cur) return;
-      const v = document.getElementById("closeDate").value;
+    $("addCloseBtn").addEventListener("click", ()=>{
+      const v = $("closeDate").value;
       if(!v) return;
-      const list = closedDates();
-      if(!list.includes(v)) list.push(v);
-      saveClosed(list); renderClosed();
+      if(!closedDraft.includes(v)) closedDraft.push(v);
+      closedDraft.sort();
+      renderClosed();
+    });
+    $("saveSchedBtn").addEventListener("click", async ()=>{
+      $("saveSchedBtn").disabled = true;
+      const { ok } = await api("/cabinet/schedule", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ token, closed: closedDraft }) });
+      $("saveSchedBtn").disabled = false;
+      $("schedMsg").innerHTML = ok ? '<span class="ok">Графік збережено ✓ Сайт уже ховає слоти у ці дні.</span>' : '<span class="err">Не вдалося зберегти — спробуйте ще раз.</span>';
+      if(ok && cab) cab.closed = closedDraft.slice();
     });
 
-    document.getElementById("saveBtn").addEventListener("click", ()=>{
-      if(!cur) return;
-      const edits = {};
+    // --- Ціни ---
+    $("saveBtn").addEventListener("click", async ()=>{
+      const prices = {};
       document.querySelectorAll("#svcBody input").forEach(inp=>{
         const svc = inp.dataset.svc, k = inp.dataset.k;
-        edits[svc] = edits[svc] || {};
-        edits[svc][k] = inp.value === "" ? null : Number(inp.value);
+        if(!svc || !k) return;
+        prices[svc] = prices[svc] || {};
+        prices[svc][k] = inp.value === "" ? null : Number(inp.value);
       });
-      try{ localStorage.setItem("bb_admin_" + cur.id, JSON.stringify(edits)); }catch(e){}
-      document.getElementById("saveMsg").innerHTML = '<span class="ok">Збережено ✓ (демо — на цьому пристрої)</span>';
+      Object.keys(prices).forEach(svc=>{
+        Object.keys(prices[svc]).forEach(k=>{ if(prices[svc][k] === null) delete prices[svc][k]; });
+      });
+      $("saveBtn").disabled = true;
+      const { ok, j } = await api("/cabinet/prices", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ token, prices }) });
+      $("saveBtn").disabled = false;
+      if(ok){ $("saveMsg").innerHTML = '<span class="ok">Ціни збережено ✓ Вони вже діють на сайті.</span>'; if(cab && j) cab.overrides = j.prices || prices; }
+      else $("saveMsg").innerHTML = '<span class="err">' + (j && j.error === "listing_not_linked" ? "Салон ще не привʼязано до каталогу." : "Не вдалося зберегти.") + '</span>';
     });
+
+    // ===== Автовхід за збереженою сесією =====
+    if(token) loadCabinet();
+    else if(myChat) $("chatIdInp").value = myChat;
   </script>
 </body>
 </html>

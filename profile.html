@@ -535,6 +535,11 @@
                 <button class="bbBtn" id="bbCancel" type="button">Cancel</button>
                 <button class="bbBtn primary" id="bbConfirm" type="button">Confirm booking</button>
               </div>
+
+              <div id="bbTgBlock" style="display:none; margin-top:14px; padding:14px; border:1px solid rgba(255,210,122,.35); background:rgba(255,210,122,.07); border-radius:14px">
+                <div style="font-size:13.5px; line-height:1.5; margin-bottom:10px">✅ Запис підтверджено! Отримуйте підтвердження і нагадування про візит у Telegram:</div>
+                <a id="bbTgBtn" class="bbBtn primary" href="#" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none">📲 Підтвердження і нагадування в Telegram</a>
+              </div>
             </div>
 
             <input type="hidden" id="bbChosenServiceId">
@@ -1145,6 +1150,7 @@
         btn.textContent = "Booking…";
         btn.style.opacity = ".9";
         btn.disabled = true;
+        let bookedOk = false;
 
         try{
           const res = await fetch(WORKER_URL + "/book", {
@@ -1154,11 +1160,28 @@
           });
           if (!res.ok) throw new Error("Booking failed");
 
+          // Код бронювання з відповіді воркера (JSON v4); старий воркер відповідав текстом "ok" — fallback на null
+          let bkCode = null;
+          try{ const j = await res.json(); if(j && j.code) bkCode = j.code; }catch(e){}
+
           if (window.bbBooked) window.bbBooked.markBooked(st.listing.id, payload.dateISO, payload.time);
           stopHold();
+          bookedOk = true;
           document.getElementById("bbSub").textContent = "You're all set. We'll see you soon ✨";
           btn.textContent = "Booked ✓";
-          setTimeout(()=>{ closeModal(); }, 900);
+
+          // Клієнтський Telegram: підтвердження + нагадування через deep link бота
+          if (bkCode){
+            const blk = document.getElementById("bbTgBlock");
+            const a = document.getElementById("bbTgBtn");
+            if (blk && a){
+              a.href = "https://t.me/pershe1012_bot?start=" + encodeURIComponent(bkCode);
+              blk.style.display = "";
+            }
+            // модалку не закриваємо автоматично — клієнт встигає натиснути кнопку Telegram
+          } else {
+            setTimeout(()=>{ closeModal(); }, 900);
+          }
 
         }catch(err){
           console.error(err);
@@ -1166,7 +1189,7 @@
           btn.textContent = "Try again";
           setTimeout(()=>{ btn.textContent = prev; }, 1200);
         }finally{
-          btn.disabled = false;
+          btn.disabled = bookedOk;
           btn.style.opacity = "1";
         }
       });
@@ -1181,6 +1204,8 @@
 
       document.getElementById("bbTitle").textContent = `Book · ${l.name || "Profile"}`;
       document.getElementById("bbSub").textContent = "Pick a service, then choose a date & time.";
+      const tgBlk = document.getElementById("bbTgBlock");
+      if (tgBlk) tgBlk.style.display = "none";
 
       loadClientPrefill();
       renderServicesForBooking();

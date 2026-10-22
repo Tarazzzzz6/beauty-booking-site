@@ -1669,7 +1669,7 @@
         <label style="display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:12px; border:1px solid rgba(255,210,122,.30); background:rgba(255,210,122,.07); border-radius:16px; cursor:pointer">
           <input type="checkbox" id="depToggle" style="width:20px; height:20px; margin-top:1px; accent-color:#ffd27a">
           <span style="font-size:13px; line-height:1.45"><b>🛡️ Депозит проти no-show — $10</b><br>
-          <span style="color:var(--muted)">Apple Pay / карта. Повертається під час візиту або зараховується в ціну послуги. Салон бачить, що ти серйозно — і тримає слот тільки для тебе.</span></span>
+          <span style="color:var(--muted)">Повертається під час візиту або зараховується в ціну послуги. Салон бачить, що ти серйозно — і тримає слот тільки для тебе.</span></span>
         </label>
         <div style="margin-top:12px; color:var(--muted); font-size:12.5px">
           Підтвердження: <b style="color:rgba(244,243,248,.92)">Telegram</b> · без спаму · можна скасувати/перенести.
@@ -1757,6 +1757,11 @@
             <button class="btn" id="addIcsBtn">📅 Add to Calendar</button>
             <button class="btn secondary" id="copyDetailsBtn">Copy details</button>
           </div>
+          <div id="tgArea" style="margin-top:14px; display:none">
+            <a class="btn" id="tgConfirmBtn" href="#" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none">📲 Підтвердження і нагадування в Telegram</a>
+            <p style="margin:8px 0 0; font-size:12.5px; color:var(--muted)">Підтвердження візиту і нагадування за день та за 2 години — у нашому боті.</p>
+          </div>
+          <div id="depArea" style="margin-top:12px; display:none"></div>
         </div>
       </div>
     </div>
@@ -3151,12 +3156,53 @@ function haptic(ms=12){
 
     // ===== Success helpers =====
     function openSuccess(payload){
-      // payload: { listing, serviceName, dateISO, time, name, phone, email, mapsUrl, textDetails }
+      // payload: { listing, serviceName, dateISO, time, name, phone, email, mapsUrl, textDetails, code, deposit }
       booking._lastSuccess = payload;
       $("#successLine").textContent = (state.lang==="uk" ? "Відправлено в Telegram ✅" : "Sent to Telegram ✅");
       $("#successSub").textContent  = (state.lang==="uk"
         ? "Далі: відкрий мапу або додай в календар."
         : "Next: open maps or add to calendar.");
+      // Клієнтський Telegram: підтвердження + нагадування через deep link бота
+      const tgArea = $("#tgArea"), tgBtn = $("#tgConfirmBtn");
+      if(tgArea && tgBtn){
+        if(payload.code){
+          tgBtn.href = "https://t.me/pershe1012_bot?start=" + encodeURIComponent(payload.code);
+          tgArea.style.display = "";
+        } else {
+          tgArea.style.display = "none";
+        }
+      }
+      // Депозит $10: онлайн-оплата Stripe (якщо активна на сервері), інакше — на місці
+      const depArea = $("#depArea");
+      if(depArea){
+        depArea.style.display = "none";
+        depArea.innerHTML = "";
+        if(payload.deposit && payload.code){
+          (async ()=>{
+            let paid = false;
+            try{
+              const r = await fetch(`${WORKER_URL}/deposit/checkout`, {
+                method: "POST",
+                headers: { "Content-Type":"application/json" },
+                body: JSON.stringify({ code: payload.code })
+              });
+              if(r.ok){
+                const j = await r.json().catch(()=>null);
+                if(j && j.url){
+                  depArea.innerHTML = '<a class="btn" href="' + j.url + '" style="display:inline-block; text-decoration:none">💳 Оплатити депозит $10 онлайн</a>' +
+                    '<p style="margin:8px 0 0; font-size:12.5px; color:var(--muted)">Безпечна оплата карткою (Stripe). Депозит зарахується у вартість візиту.</p>';
+                  depArea.style.display = "";
+                  paid = true;
+                }
+              }
+            }catch(e){ /* нижче — чесний fallback */ }
+            if(!paid){
+              depArea.innerHTML = '<span style="font-size:13px; color:var(--muted)">🛡️ Депозит $10 — на місці в салоні (готівка або карта).</span>';
+              depArea.style.display = "";
+            }
+          })();
+        }
+      }
       openOverlay("successOverlay");
     }
 
@@ -3302,6 +3348,10 @@ END:VCALENDAR`;
           throw new Error("Worker error: " + res.status);
         }
 
+        // Код бронювання з відповіді воркера (JSON v4); старий воркер відповідав текстом "ok" — fallback на null
+        let bkCode = null;
+        try{ const j = await res.json(); if(j && j.code) bkCode = j.code; }catch(e){}
+
         if(window.bbBooked) window.bbBooked.markBooked(listing.id, dateISO, time);
         toast(T[state.lang].toastSent);
         closeModal();
@@ -3325,7 +3375,9 @@ Email: ${email}`;
           name, phone, email,
           mapsUrl,
           textDetails: details,
-          durationMin: dur || 60
+          durationMin: dur || 60,
+          code: bkCode,
+          deposit: payload.deposit || 0
         });
 
         renderLastBookingCard();
