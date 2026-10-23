@@ -1650,6 +1650,7 @@
               font-size:16px !important;
             "/>
             <button class="btn" id="aiGo">Підібрати</button>
+            <button type="button" class="btn" id="aiMic" aria-label="Voice input" style="padding:12px 14px">🎤</button>
           </div>
           <div id="aiChips" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
             <button type="button" class="chip aiChip" id="aiChip1">Манікюр сьогодні після 18</button>
@@ -1666,6 +1667,7 @@
             <div class="inspireItem" data-q="фарбування"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80" alt=""><span>Балаяж / фарбування</span></div>
           </div>
           <div class="note" style="margin-top:8px">Далі: завантаження свого фото — AI визначить послугу і ціну автоматично.</div>
+          <div id="aiChat" style="display:flex; flex-direction:column; gap:8px; margin-top:14px; max-height:420px; overflow:auto"></div>
           <div id="aiMsg" style="display:none; margin-top:12px; font-size:15px; line-height:1.55"></div>
           <div id="aiPicks" class="grid" style="margin-top:12px"></div>
         </div>
@@ -1741,11 +1743,10 @@
         </div>
       </div>
       <div class="trendStrip" id="trendStrip">
-        <div class="trendCard" data-service="manicure"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80" alt="Chrome Glaze nails"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Chrome Glaze</p><div class="trendSub">Дзеркальний манікюр сезону</div></div></div>
-        <div class="trendCard" data-service="womens_haircut"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=800&q=80" alt="Old Money Bob"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Old Money Bob</p><div class="trendSub">Тиха розкіш у стрижках</div></div></div>
-        <div class="trendCard" data-service="brows"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80" alt="Laminated brows"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Laminated Brows</p><div class="trendSub">Брови як після салону — щодня</div></div></div>
-        <div class="trendCard" data-service="pedicure"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=800&q=80" alt="SPA pedicure"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">SPA Ritual</p><div class="trendSub">Педикюр як ритуал догляду</div></div></div>
-        <div class="trendCard" data-service="mens_haircut"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80" alt="Classic fade"><div class="trendMeta"><span class="trendTag">Trending</span><p class="trendName">Classic Fade</p><div class="trendSub">Чоловічі стрижки без компромісів</div></div></div>
+        <div class="trendCard" data-service="manicure"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80" alt="Latte Lacquer nails"><div class="trendMeta"><span class="trendTag">+943% · Pinterest</span><p class="trendName">Latte Lacquer</p><div class="trendSub">Caramel nude nails — манікюр у кавових тонах</div></div></div>
+        <div class="trendCard" data-service="coloring"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=800&q=80" alt="Copper Waves hair"><div class="trendMeta"><span class="trendTag">+949% · Pinterest</span><p class="trendName">Copper Waves</p><div class="trendSub">Mocha balayage hair — теплі мідні хвилі</div></div></div>
+        <div class="trendCard" data-service="womens_haircut"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=800&q=80" alt="French Bob haircut"><div class="trendMeta"><span class="trendTag">+394% · Pinterest</span><p class="trendName">French Bob</p><div class="trendSub">French bob with wispy bangs — стрижка сезону</div></div></div>
+        <div class="trendCard" data-service="manicure"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=800&q=80" alt="Cat-Eye Chrome nails"><div class="trendMeta"><span class="trendTag">+1 585% · Pinterest</span><p class="trendName">Cat-Eye Chrome</p><div class="trendSub">Polka dot cat eye nails — рекорд пошуків звіту</div></div></div>
       </div>
     </section>
 
@@ -2198,6 +2199,11 @@ function haptic(ms=12){
         aiChip1: "Манікюр сьогодні після 18",
         aiChip2: "Найкращий рейтинг поруч",
         aiChip3: "Щось до $40",
+        agBookBtn: "Підтвердити запис",
+        agOtherBtn: "Інший варіант",
+        agThinking: "Думаю…",
+        agVoiceErr: "Не вдалось розпізнати голос 😔",
+        agOtherMsg: "Покажи інший варіант",
         savedTitle: "Твої збережені",
         savedNote: "Швидкий доступ до улюблених.",
         partnersTitle: "Топ салонів · партнери",
@@ -2266,6 +2272,11 @@ function haptic(ms=12){
         aiChip1: "Manicure today after 6pm",
         aiChip2: "Top rated nearby",
         aiChip3: "Something under $40",
+        agBookBtn: "Confirm booking",
+        agOtherBtn: "Another option",
+        agThinking: "Thinking…",
+        agVoiceErr: "Couldn't recognize the voice 😔",
+        agOtherMsg: "Show me another option",
         savedTitle: "Your saved",
         savedNote: "Fast access to favorites.",
         partnersTitle: "Top salons / partners",
@@ -2334,6 +2345,11 @@ function haptic(ms=12){
         aiChip1: "Маникюр сегодня после 18",
         aiChip2: "Лучший рейтинг рядом",
         aiChip3: "Что-нибудь до $40",
+        agBookBtn: "Подтвердить запись",
+        agOtherBtn: "Другой вариант",
+        agThinking: "Думаю…",
+        agVoiceErr: "Не удалось распознать голос 😔",
+        agOtherMsg: "Покажи другой вариант",
         savedTitle: "Твоё сохранённое",
         savedNote: "Быстрый доступ к любимым.",
         partnersTitle: "Топ салоны / партнёры",
@@ -2402,6 +2418,11 @@ function haptic(ms=12){
         aiChip1: "Manucure aujourd'hui après 18 h",
         aiChip2: "Meilleure note à proximité",
         aiChip3: "Quelque chose sous 40 $",
+        agBookBtn: "Confirmer la réservation",
+        agOtherBtn: "Autre option",
+        agThinking: "Je réfléchis…",
+        agVoiceErr: "Impossible de reconnaître la voix 😔",
+        agOtherMsg: "Montre-moi une autre option",
         savedTitle: "Vos enregistrés",
         savedNote: "Accès rapide à vos favoris.",
         partnersTitle: "Top salons · partenaires",
@@ -4018,6 +4039,7 @@ Email: ${email}`;
           name: l.name || "",
           district: l.district || l.city || "",
           rating: (typeof l.rating === "number") ? l.rating : null,
+          partner: !!l.partner,
           services: (l.services || []).map(s => ({
             id: s.serviceId || "",
             name: svcName[s.serviceId] || s.serviceId || "",
@@ -4073,8 +4095,154 @@ Email: ${email}`;
         toast(state.lang==="uk" ? "Напиши запит" : "Type a request");
         return;
       }
-      const handled = await runAiRemote(q);
-      if (!handled) runAiRules(q);
+      await agSend(q);
+    }
+
+    // --- AI-агент v12 (сайт): діалоговий чат поверх /ai/agent.
+    // Offer відкриває ІСНУЮЧУ модалку запису з підстановкою салону,
+    // послуги, дати й часу — контакти людина вводить у формі, як зараз.
+    // Будь-який збій агента → тихий fallback на v1 (runAiRemote → правила).
+    // Стан діалогу — тільки в памʼяті сторінки, без localStorage.
+    const agentHistory = [];
+    function agT(){ return T[state.lang] || T.uk; }
+    function agBubble(role, text){
+      const log = $("#aiChat");
+      if (!log) return null;
+      const el = document.createElement("div");
+      el.style.cssText = role === "user"
+        ? "align-self:flex-end; max-width:85%; background:var(--gold,#C9A96A); color:#14151A; padding:10px 14px; border-radius:16px 16px 4px 16px; font-size:15px; line-height:1.45; white-space:pre-wrap"
+        : "align-self:flex-start; max-width:85%; background:var(--card); border:1px solid var(--stroke2); padding:10px 14px; border-radius:16px 16px 16px 4px; font-size:15px; line-height:1.45; white-space:pre-wrap";
+      el.textContent = text;
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+      return el;
+    }
+    function agOfferCard(offer){
+      const log = $("#aiChat");
+      if (!log) return;
+      const byId = {};
+      (window.LISTINGS || []).forEach(l => { byId[l.id] = l; });
+      const l = byId[offer.listingId];
+      if (!l) return;
+      const langKey = state.lang === "uk" ? "ua" : state.lang;
+      const svc = (window.SERVICES || []).find(s => s.id === offer.serviceId);
+      const card = document.createElement("div");
+      card.style.cssText = "align-self:flex-start; width:100%; max-width:420px; background:var(--card); border:1px solid var(--gold,#C9A96A); border-radius:16px; padding:12px 14px";
+      const title = document.createElement("div");
+      title.style.cssText = "font-weight:600; font-size:16px";
+      title.textContent = l.name || offer.listingId;
+      const meta = document.createElement("div");
+      meta.style.cssText = "margin-top:4px; font-size:14px; opacity:.85";
+      meta.textContent = (svc ? (svc[langKey] || svc.en || svc.ua || offer.serviceId) : offer.serviceId) +
+        " · " + offer.dateISO + " · " + offer.time + (offer.priceFrom != null ? " · $" + offer.priceFrom : "");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn";
+      btn.style.cssText = "margin-top:10px; width:100%";
+      btn.textContent = agT().agBookBtn;
+      btn.addEventListener("click", () => {
+        haptic(12);
+        openBooking(offer.listingId, offer.serviceId, { dateISO: offer.dateISO, time: offer.time, fromPrice: offer.priceFrom });
+      });
+      const other = document.createElement("button");
+      other.type = "button";
+      other.className = "chip";
+      other.style.cssText = "margin-top:8px";
+      other.textContent = agT().agOtherBtn;
+      other.addEventListener("click", () => { agSend(agT().agOtherMsg); });
+      card.appendChild(title);
+      card.appendChild(meta);
+      card.appendChild(btn);
+      card.appendChild(other);
+      log.appendChild(card);
+      log.scrollTop = log.scrollHeight;
+    }
+    async function agSend(text){
+      const q = String(text || "").trim();
+      if (!q) return;
+      agentHistory.push({ role: "user", content: q.slice(0, 600) });
+      agBubble("user", q);
+      const inp = $("#aiInput");
+      if (inp) inp.value = "";
+      const think = agBubble("assistant", agT().agThinking);
+      let ok = false;
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 15000);
+        try {
+          const r = await fetch(`${WORKER_URL}/ai/agent`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: agentHistory.slice(-12), lang: state.lang, catalog: aiCatalogSnapshot() }),
+            signal: ctrl.signal
+          });
+          const j = await r.json().catch(() => null);
+          if (r.ok && j && j.ok && j.message) {
+            ok = true;
+            agentHistory.push({ role: "assistant", content: String(j.message).slice(0, 600) });
+            if (think) think.textContent = j.message;
+            else agBubble("assistant", j.message);
+            if (j.offer && j.offer.listingId) agOfferCard(j.offer);
+          }
+        } finally { clearTimeout(timer); }
+      } catch(e) { ok = false; }
+      if (!ok) {
+        if (think) think.remove();
+        const handled = await runAiRemote(q);
+        if (!handled) runAiRules(q);
+      }
+    }
+
+    // --- Голос: MediaRecorder → POST /ai/voice → текст у той самий чат.
+    // Без дозволів/підтримки кнопка ховається (мікрофон-фолбек).
+    let agRecorder = null, agChunks = [], agRecording = false;
+    function agInitMic(){
+      const btn = $("#aiMic");
+      if (!btn) return;
+      if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) || typeof MediaRecorder === "undefined") {
+        btn.style.display = "none";
+        return;
+      }
+      btn.addEventListener("click", async () => {
+        haptic(10);
+        if (agRecording && agRecorder) { try { agRecorder.stop(); } catch(e){} return; }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          agChunks = [];
+          const rec = new MediaRecorder(stream);
+          agRecorder = rec;
+          rec.addEventListener("dataavailable", e => { if (e.data && e.data.size) agChunks.push(e.data); });
+          rec.addEventListener("stop", async () => {
+            agRecording = false;
+            btn.style.opacity = "";
+            stream.getTracks().forEach(t => t.stop());
+            const blob = new Blob(agChunks, { type: rec.mimeType || "audio/webm" });
+            if (!blob.size) return;
+            const b64 = await new Promise(res => {
+              const fr = new FileReader();
+              fr.onload = () => res(String(fr.result || "").split(",")[1] || "");
+              fr.onerror = () => res("");
+              fr.readAsDataURL(blob);
+            });
+            if (!b64) { toast(agT().agVoiceErr); return; }
+            try {
+              const r = await fetch(`${WORKER_URL}/ai/voice`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ audio: b64, mime: blob.type, lang: state.lang })
+              });
+              const j = await r.json().catch(() => null);
+              if (r.ok && j && j.ok && j.text) agSend(j.text);
+              else toast(agT().agVoiceErr);
+            } catch(e) { toast(agT().agVoiceErr); }
+          });
+          rec.start();
+          agRecording = true;
+          btn.style.opacity = ".5";
+        } catch(e) {
+          btn.style.display = "none";
+        }
+      });
     }
 
     function runAiRules(q){
@@ -4255,6 +4423,7 @@ Email: ${email}`;
         runAi();
       }));
       $("#aiInput")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); runAi(); }});
+      agInitMic();
 
       $("#installPill")?.addEventListener("click", ()=>{ haptic(12); doInstall(); });
 

@@ -1,5 +1,24 @@
 // ============================================================
-// Booking Club — Cloudflare Worker v11 (валідація контактів)
+// Booking Club — Cloudflare Worker v12 (AI-агент бронювання)
+// ------------------------------------------------------------
+// Нове у v12:
+// A1) POST /ai/agent {messages, lang, catalog} → {state: ask|offer|ready,
+//     message, offer, missing}. LLM витягує намір із розмови; сервер
+//     валідовує offer проти РЕАЛЬНИХ слотів: генератор data.js
+//     портовано у воркер (той самий сід), мінус закриті дні sched: і
+//     зайняті bk| з KV. Невалідний слот ремонтується найближчим
+//     реальним або стан знижується до ask. Контакти в LLM не йдуть.
+// A2) POST /ai/voice {audio: base64, mime} → транскрипція OpenAI
+//     (gpt-4o-mini-transcribe, фолбек whisper-1), ліміт ~2 МБ.
+// A3) Бот: вільний текст у приватному чаті — агентний діалог (стан
+//     agent:<chatId>, TTL 30 хв): пропозиція з кнопками [Підтвердити]
+//     [Інший час] [Інший салон]; імʼя й телефон — структурованими
+//     кроками з валідацією v11 ПОЗА LLM; запис створює спільна
+//     createBooking (та сама логіка, що й POST /book), клієнт одразу
+//     привʼязаний до чату (нагадування) + кнопка депозиту за наявності
+//     Stripe. Голосові повідомлення → транскрипція → той самий діалог.
+//     Рефактор без зміни поведінки: createBooking і
+//     createDepositCheckout винесено зі спільного catch-all.
 // ------------------------------------------------------------
 // Нове у v11:
 // V1) POST /book: сервер — головний гейт валідації контактів клієнта
@@ -233,6 +252,32 @@ async function tgAnswerCb(token, callbackId, text) {
   return tgApi(token, "answerCallbackQuery", { callback_query_id: callbackId, text: text || "" });
 }
 
+function sanitizeAgentCatalog(body) {
+  const catalog = [];
+  for (const c of (Array.isArray(body && body.catalog) ? body.catalog.slice(0, 40) : [])) {
+    if (!c || typeof c !== "object") continue;
+    const id = String(c.id || "").trim().slice(0, 80);
+    if (!id) continue;
+    const services = (Array.isArray(c.services) ? c.services : []).slice(0, 12)
+      .map(sv => ({
+        id: String((sv && sv.id) || "").slice(0, 40),
+        name: String((sv && sv.name) || "").slice(0, 60),
+        priceFrom: (sv && typeof sv.priceFrom === "number" && isFinite(sv.priceFrom)) ? sv.priceFrom : null,
+      }))
+      .filter(sv => sv.id);
+    if (!services.length) continue;
+    catalog.push({
+      id,
+      name: String(c.name || "").slice(0, 80),
+      district: String(c.district || "").slice(0, 60),
+      rating: (typeof c.rating === "number" && isFinite(c.rating)) ? c.rating : null,
+      partner: !!c.partner,
+      services,
+    });
+  }
+  return catalog;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -303,6 +348,13 @@ export default {
         if (msg && msg.chat) {
           const chatId = String(msg.chat.id);
           const textIn = String(msg.text || msg.caption || "").trim();
+          // v12: голосове повідомлення → транскрипція → той самий діалог
+          let effText = textIn;
+          if (msg.voice && KV) {
+            const heard = await agentHandleVoice(msg, chatId, wctx, env);
+            if (!heard) return new Response("ok", { headers: corsHeaders });
+            effText = heard;
+          }
           // Фото — крок «фото» бот-майстра підключення
           if (Array.isArray(msg.photo) && msg.photo.length && KV) {
             const used = await wizardPhoto(chatId, msg.photo, wctx);
@@ -314,6 +366,7 @@ export default {
           const wArg = (wParts[1] || "").toLowerCase();
           // Старт майстра: /join або deep link /start join
           if (KV && (wCmd === "/join" || (wCmd === "/start" && wArg === "join"))) {
+            await agentClear(KV, chatId);
             await wizardStart(chatId, wctx);
             return new Response("ok", { headers: corsHeaders });
           }
@@ -321,6 +374,14 @@ export default {
           if (KV && textIn && !textIn.startsWith("/")) {
             const consumed = await wizardText(chatId, textIn, wctx);
             if (consumed) return new Response("ok", { headers: corsHeaders });
+          }
+          // v12: AI-агент бронювання — вільний текст у приватному чаті
+          if (KV && effText && msg.chat.type === "private") {
+            if (effText.startsWith("/")) {
+              await agentClear(KV, chatId);
+            } else if (await agentBotText(chatId, effText, wctx, env)) {
+              return new Response("ok", { headers: corsHeaders });
+            }
           }
           if (msg.text) {
             const reply = await handleBotCommand(textIn, chatId, KV, tgSend, OWNER_CHAT, tgLangOf(msg.from), (env && env.CHANNEL_ID) || "");
@@ -467,33 +528,11 @@ export default {
       // L4: ліміт спроб на код+IP — не плодити Stripe-сесії абузом.
       const depIp = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
       if (!depRateOk(code, depIp, Date.now())) return jsonResp({ error: "rate_limited" }, 429);
-      const key = await KV.get(BKI_PREFIX + code);
-      const rec = key ? await readBookingRec(KV, key) : null;
-      if (!rec || !key) return jsonResp({ error: "booking_not_found" }, 404);
-      if (rec.depositPaid) return jsonResp({ error: "already_paid" }, 409);
-      try {
-        const form = new URLSearchParams();
-        form.set("mode", "payment");
-        form.set("line_items[0][quantity]", "1");
-        form.set("line_items[0][price_data][currency]", "cad");
-        form.set("line_items[0][price_data][unit_amount]", "1000");
-        form.set("line_items[0][price_data][product_data][name]", "Booking deposit — Booking Club");
-        form.set("success_url", "https://bookingclub.beauty/?deposit=success&code=" + encodeURIComponent(code));
-        form.set("cancel_url", "https://bookingclub.beauty/?deposit=cancelled&code=" + encodeURIComponent(code));
-        form.set("client_reference_id", code);
-        form.set("metadata[booking_code]", code);
-        const resp = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-          method: "POST",
-          headers: { "Authorization": "Bearer " + stripeKey, "Content-Type": "application/x-www-form-urlencoded" },
-          body: form.toString(),
-        });
-        const sj = await resp.json().catch(() => null);
-        if (!resp.ok || !sj || !sj.url) return jsonResp({ error: "stripe_error", detail: (sj && sj.error && sj.error.message) || resp.status }, 502);
-        await updateBookingRec(KV, key, r => { r.depositSessionId = sj.id || ""; });
-        return jsonResp({ ok: true, url: sj.url });
-      } catch {
-        return jsonResp({ error: "stripe_error" }, 502);
+      const depRes = await createDepositCheckout(env, KV, code);
+      if (!depRes.url) {
+        return jsonResp(depRes.detail ? { error: depRes.error, detail: depRes.detail } : { error: depRes.error }, depRes.status);
       }
+      return jsonResp({ ok: true, url: depRes.url });
     }
 
     // --- AI-консьєрж v1: POST /ai {q, lang, catalog} → OpenAI → {picks, message} ---
@@ -570,6 +609,55 @@ export default {
       } catch {
         return jsonResp({ error: "ai_error" }, 502);
       }
+    }
+
+    // --- AI-агент v12: POST /ai/agent {messages, lang, catalog} → стан діалогу ---
+    // LLM лише витягує намір і пропонує; сервер валідовує offer проти реальних
+    // слотів (той самий генератор, що й на сайті) — невалідне не повертається.
+    if (request.method === "POST" && url.pathname === "/ai/agent") {
+      let body = null;
+      try { body = await request.json(); } catch { return jsonResp({ error: "bad_json" }, 400); }
+      const aiKey = (env && env.OPENAI_API_KEY) || "";
+      if (!aiKey) return jsonResp({ error: "ai_not_configured" }, 501);
+      const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
+      if (!rateLimit(ip, Date.now())) return jsonResp({ error: "rate_limited" }, 429);
+      const lang = ["uk", "ru", "en", "fr"].includes(String(body?.lang || "")) ? String(body.lang) : "uk";
+      const messages = (Array.isArray(body?.messages) ? body.messages : [])
+        .slice(-24)
+        .map(m => ({ role: m && m.role === "assistant" ? "assistant" : "user", content: String((m && m.content) || "").trim().slice(0, 600) }))
+        .filter(m => m.content);
+      if (!messages.length || !messages.some(m => m.role === "user")) return jsonResp({ error: "bad_messages" }, 400);
+      const catalog = sanitizeAgentCatalog(body);
+      if (!catalog.length) return jsonResp({ error: "empty_catalog" }, 400);
+      const dec = await agentDecide(env, KV, { messages, lang, catalog });
+      if (!dec) return jsonResp({ error: "ai_error" }, 502);
+      return jsonResp({ ok: true, state: dec.state, message: dec.message, offer: dec.offer, missing: dec.missing });
+    }
+
+    // --- AI-агент v12: POST /ai/voice {audio: base64, mime} → {text} ---
+    if (request.method === "POST" && url.pathname === "/ai/voice") {
+      let body = null;
+      try { body = await request.json(); } catch { return jsonResp({ error: "bad_json" }, 400); }
+      const aiKey = (env && env.OPENAI_API_KEY) || "";
+      if (!aiKey) return jsonResp({ error: "ai_not_configured" }, 501);
+      const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
+      if (!rateLimit(ip, Date.now())) return jsonResp({ error: "rate_limited" }, 429);
+      const b64 = String(body?.audio || "");
+      if (!b64 || b64.length > 2900000) return jsonResp({ error: "bad_audio" }, 400);
+      const mimeMap = { "audio/webm": "webm", "audio/mp4": "m4a", "audio/m4a": "m4a", "audio/ogg": "ogg", "audio/wav": "wav", "audio/mpeg": "mp3" };
+      const mimeRaw = String(body?.mime || "audio/webm").split(";")[0].trim().toLowerCase();
+      const ext = mimeMap[mimeRaw] || "webm";
+      const lang = ["uk", "ru", "en", "fr"].includes(String(body?.lang || "")) ? String(body.lang) : "";
+      let bytes = null;
+      try {
+        const bin = atob(b64.replace(/\s/g, ""));
+        if (!bin.length || bin.length > 2200000) return jsonResp({ error: "bad_audio" }, 400);
+        bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      } catch { return jsonResp({ error: "bad_audio" }, 400); }
+      const text = await transcribeAudio(env, bytes, "voice." + ext, mimeMap[mimeRaw] ? mimeRaw : "audio/webm", lang);
+      if (!text) return jsonResp({ error: "voice_error" }, 502);
+      return jsonResp({ ok: true, text });
     }
 
     // ---------- Динамічні лістинги (самопідключення салонів) ----------
@@ -965,140 +1053,11 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       }
     }
 
-    // ---------- Календар бронювань (KV): валідація → запис → нотифікації ----------
-    // АУДИТ-ФІКС v8 (H2): сервер валідує бронювання і пише у KV ДО
-    // Telegram-нотифікацій. Код повертаємо тільки після успішних обох
-    // put (запис + bkc-індекс), інакше 502 — кодів-«привидів» більше
-    // немає. bk===null (немає дати/часу) → 400, а не ok:true.
-    const salonChatEarly = String(data?.chatId || "").trim();
-    const bk = extractBooking(data);
-    if (!bk) {
-      return jsonResp({ error: "bad_booking" }, 400);
-    }
-    // ---------- Валідація контактів клієнта (ФІКС v11) ----------
-    // Сервер — головний гейт: форма на сайті лише перша лінія. Імʼя —
-    // з літерами, телефон нормалізуємо, email (якщо є) — валідний.
-    // Коди bad_name/bad_phone/bad_email сайт мапить на ті самі підказки.
-    if (!isValidClientName(name)) {
-      return jsonResp({ error: "bad_name" }, 400);
-    }
-    const phone = normalizePhone(phoneRaw);
-    if (!phone) {
-      return jsonResp({ error: "bad_phone" }, 400);
-    }
-    const emailIn = String(data?.email || "").trim();
-    if (emailIn && !isValidEmail(emailIn)) {
-      return jsonResp({ error: "bad_email" }, 400);
-    }
-    data.phone = phone; // нормалізований — у запис, кабінет і текст-фолбек
-    let bkKey = "", bkRecId = "", bkStored = false;
-    let salonChatResolved = /^\d{5,}$/.test(salonChatEarly) ? salonChatEarly : "";
-    if (KV) {
-      bkKey = sanitizeListingKey(data?.listingId) || (/^\d{5,}$/.test(salonChatEarly) ? "chat-" + salonChatEarly : "anon");
-      // (1) дата не в минулому (America/Toronto)
-      if (bk.dateISO < torontoTodayISO()) {
-        return jsonResp({ error: "past_date" }, 400);
-      }
-      // (2) послуга: канонічний каталог; динамічний лістинг — лише свої послуги
-      const svcIdIn = String(data?.serviceId || "").trim();
-      const lidIn = String(data?.listingId || "").trim();
-      let dynListing = null;
-      if (lidIn) dynListing = await readBookingRec(KV, LST_PREFIX + lidIn);
-      if (svcIdIn && !SVC_CATALOG.some(s => s.id === svcIdIn)) {
-        return jsonResp({ error: "bad_service" }, 400);
-      }
-      if (dynListing && svcIdIn && !(dynListing.services || []).some(s => s.serviceId === svcIdIn)) {
-        return jsonResp({ error: "bad_service" }, 400);
-      }
-      // (3) закритий день салону: sched: за chatId з payload, картки lst: або salonmap
-      if (!salonChatResolved) salonChatResolved = await salonChatForListing(KV, lidIn);
-      if (salonChatResolved) {
-        try {
-          const rawS = await KV.get("sched:" + salonChatResolved);
-          const closedDays = rawS ? (JSON.parse(rawS).closed || []) : [];
-          if (closedDays.includes(bk.dateISO)) {
-            return jsonResp({ error: "day_closed" }, 400);
-          }
-        } catch { /* ignore */ }
-      }
-      // (4) анти-дубль слота (M8: відповідь — JSON)
-      try {
-        const keys = await kvListKeys(KV, BK_PREFIX + bkKey + "|" + bk.dateISO + "|");
-        for (const k of keys) {
-          const r = await readBookingRec(KV, k);
-          if (r && r.time === bk.time) {
-            return jsonResp({ error: "slot_taken" }, 409);
-          }
-        }
-      } catch { /* KV list недоступний — бронювання не блокуємо */ }
-      // (5) запис у KV: спочатку запис, потім індекс за кодом
-      bkRecId = await makeUniqueBookingId(KV);
-      const rec = {
-        id: bkRecId,
-        listingId: String(data?.listingId || ""),
-        listingKey: bkKey,
-        listingName: String(data?.listingName || ""),
-        // v10: зберігаємо і серверно знайдений chatId салону — для динамічних
-        // лістингів сайт chatId не знає (M3), а скану відвідуваності й кнопкам
-        // att: він потрібен.
-        chatId: salonChatEarly || salonChatResolved || "",
-        dateISO: bk.dateISO,
-        time: bk.time,
-        serviceId: String(data?.serviceId || ""),
-        serviceName: bk.serviceName,
-        priceFrom: (data?.priceFrom != null && Number.isFinite(Number(data.priceFrom)) && Number(data.priceFrom) > 0)
-          ? Number(data.priceFrom) : null,
-        name, phone,
-        status: "booked",
-        depositRequested: !!(data?.deposit && Number(data.deposit) > 0),
-        createdAt: new Date().toISOString()
-      };
-      const fullKey = BK_PREFIX + bkKey + "|" + bk.dateISO + "|" + bk.time + "|" + bkRecId;
-      try {
-        await KV.put(fullKey, JSON.stringify(rec), { expirationTtl: BK_TTL });
-        await KV.put(BKI_PREFIX + bkRecId, fullKey, { expirationTtl: BK_TTL });
-        bkStored = true;
-      } catch {
-        return jsonResp({ error: "kv_error" }, 502);
-      }
-      // звʼязка chatId салону → listingId (M13: окремий ключ на салон)
-      const mapChat = salonChatEarly || salonChatResolved;
-      if (/^\d{5,}$/.test(mapChat) && data?.listingId) {
-        try { await KV.put("salonmap:" + mapChat, String(data.listingId)); } catch { /* ignore */ }
-      }
-    }
-
-    let text = (data?.message && String(data.message).trim())
-      ? String(data.message).trim()
-      : buildTextFallback(data);
-    if (bkRecId) text += "\n\n🆔 Код бронювання: " + bkRecId + "\nСкасувати: /cancel " + bkRecId;
-
-    // Маршрутизація: салону (chatId із payload або знайдений у KV) + копія власнику
-    const targets = [];
-    const salonTarget = salonChatEarly || salonChatResolved;
-    if (/^\d{5,}$/.test(salonTarget) && salonTarget !== OWNER_CHAT) targets.push(salonTarget);
-    targets.push(OWNER_CHAT);
-
-    let sent = 0;
-    for (const t of targets) {
-      // v10: сповіщення про запис — одразу з кнопками відвідуваності
-      // «✅ Був» / «🚫 Не прийшов» (att:), а не лише сканом +30 хв після візиту.
-      const okSend = bkRecId
-        ? await tgSendKb(BOT_TOKEN, t, text, [[
-            { text: "✅ Був", callback_data: "att:" + bkRecId + ":y" },
-            { text: "🚫 Не прийшов", callback_data: "att:" + bkRecId + ":n" },
-          ]])
-        : await tgSend(t, text);
-      if (okSend) sent++;
-    }
-    // Без запису в KV (легасі-середовище без KV) — стара семантика:
-    // нема доставки → 502. Із записом бронювання вже існує — код віддаємо
-    // незалежно від Telegram (салон побачить його у /bookings і кабінеті).
-    if (!bkStored && !sent) {
-      return new Response("telegram_error", { status: 502, headers: { ...corsHeaders } });
-    }
-    // Відповідь сайту: JSON із кодом бронювання (старий текст "ok" — у git-історії v3)
-    return jsonResp({ ok: true, code: bkRecId || null });
+    // ---------- Календар бронювань (KV) ----------
+    // Логіка винесена у createBooking() — її ж кличе AI-агент у боті (v12).
+    const bkRes = await createBooking({ KV, BOT_TOKEN, OWNER_CHAT }, data);
+    if (bkRes.text != null) return new Response(bkRes.text, { status: bkRes.status, headers: { ...corsHeaders } });
+    return jsonResp(bkRes.json, bkRes.status);
   },
 
   // ---------- Cron: нагадування клієнтам + питання про відвідуваність ----------
@@ -1109,6 +1068,822 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
   }
 };
 
+// ---------- Спільна логіка бронювання (HTTP POST /book і AI-агент у боті, v12) ----------
+// Повертає { status, json } для JSON-відповідей або { status, text } для
+// легасі-текстової помилки (немає KV і Telegram не доставив).
+async function createBooking(deps, data) {
+  const { KV, BOT_TOKEN, OWNER_CHAT } = deps;
+  const name = String(data?.name || "").trim();
+  const phoneRaw = String(data?.phone || "").trim();
+const salonChatEarly = String(data?.chatId || "").trim();
+const bk = extractBooking(data);
+if (!bk) {
+  return { status: 400, json: { error: "bad_booking" } };
+}
+// ---------- Валідація контактів клієнта (ФІКС v11) ----------
+// Сервер — головний гейт: форма на сайті лише перша лінія. Імʼя —
+// з літерами, телефон нормалізуємо, email (якщо є) — валідний.
+// Коди bad_name/bad_phone/bad_email сайт мапить на ті самі підказки.
+if (!isValidClientName(name)) {
+  return { status: 400, json: { error: "bad_name" } };
+}
+const phone = normalizePhone(phoneRaw);
+if (!phone) {
+  return { status: 400, json: { error: "bad_phone" } };
+}
+const emailIn = String(data?.email || "").trim();
+if (emailIn && !isValidEmail(emailIn)) {
+  return { status: 400, json: { error: "bad_email" } };
+}
+data.phone = phone; // нормалізований — у запис, кабінет і текст-фолбек
+let bkKey = "", bkRecId = "", bkStored = false;
+let salonChatResolved = /^\d{5,}$/.test(salonChatEarly) ? salonChatEarly : "";
+if (KV) {
+  bkKey = sanitizeListingKey(data?.listingId) || (/^\d{5,}$/.test(salonChatEarly) ? "chat-" + salonChatEarly : "anon");
+  // (1) дата не в минулому (America/Toronto)
+  if (bk.dateISO < torontoTodayISO()) {
+    return { status: 400, json: { error: "past_date" } };
+  }
+  // (2) послуга: канонічний каталог; динамічний лістинг — лише свої послуги
+  const svcIdIn = String(data?.serviceId || "").trim();
+  const lidIn = String(data?.listingId || "").trim();
+  let dynListing = null;
+  if (lidIn) dynListing = await readBookingRec(KV, LST_PREFIX + lidIn);
+  if (svcIdIn && !SVC_CATALOG.some(s => s.id === svcIdIn)) {
+    return { status: 400, json: { error: "bad_service" } };
+  }
+  if (dynListing && svcIdIn && !(dynListing.services || []).some(s => s.serviceId === svcIdIn)) {
+    return { status: 400, json: { error: "bad_service" } };
+  }
+  // (3) закритий день салону: sched: за chatId з payload, картки lst: або salonmap
+  if (!salonChatResolved) salonChatResolved = await salonChatForListing(KV, lidIn);
+  if (salonChatResolved) {
+    try {
+      const rawS = await KV.get("sched:" + salonChatResolved);
+      const closedDays = rawS ? (JSON.parse(rawS).closed || []) : [];
+      if (closedDays.includes(bk.dateISO)) {
+        return { status: 400, json: { error: "day_closed" } };
+      }
+    } catch { /* ignore */ }
+  }
+  // (4) анти-дубль слота (M8: відповідь — JSON)
+  try {
+    const keys = await kvListKeys(KV, BK_PREFIX + bkKey + "|" + bk.dateISO + "|");
+    for (const k of keys) {
+      const r = await readBookingRec(KV, k);
+      if (r && r.time === bk.time) {
+        return { status: 409, json: { error: "slot_taken" } };
+      }
+    }
+  } catch { /* KV list недоступний — бронювання не блокуємо */ }
+  // (5) запис у KV: спочатку запис, потім індекс за кодом
+  bkRecId = await makeUniqueBookingId(KV);
+  const rec = {
+    id: bkRecId,
+    listingId: String(data?.listingId || ""),
+    listingKey: bkKey,
+    listingName: String(data?.listingName || ""),
+    // v10: зберігаємо і серверно знайдений chatId салону — для динамічних
+    // лістингів сайт chatId не знає (M3), а скану відвідуваності й кнопкам
+    // att: він потрібен.
+    chatId: salonChatEarly || salonChatResolved || "",
+    dateISO: bk.dateISO,
+    time: bk.time,
+    serviceId: String(data?.serviceId || ""),
+    serviceName: bk.serviceName,
+    priceFrom: (data?.priceFrom != null && Number.isFinite(Number(data.priceFrom)) && Number(data.priceFrom) > 0)
+      ? Number(data.priceFrom) : null,
+    name, phone,
+    status: "booked",
+    depositRequested: !!(data?.deposit && Number(data.deposit) > 0),
+    createdAt: new Date().toISOString()
+  };
+  const fullKey = BK_PREFIX + bkKey + "|" + bk.dateISO + "|" + bk.time + "|" + bkRecId;
+  try {
+    await KV.put(fullKey, JSON.stringify(rec), { expirationTtl: BK_TTL });
+    await KV.put(BKI_PREFIX + bkRecId, fullKey, { expirationTtl: BK_TTL });
+    bkStored = true;
+  } catch {
+    return { status: 502, json: { error: "kv_error" } };
+  }
+  // звʼязка chatId салону → listingId (M13: окремий ключ на салон)
+  const mapChat = salonChatEarly || salonChatResolved;
+  if (/^\d{5,}$/.test(mapChat) && data?.listingId) {
+    try { await KV.put("salonmap:" + mapChat, String(data.listingId)); } catch { /* ignore */ }
+  }
+}
+
+let text = (data?.message && String(data.message).trim())
+  ? String(data.message).trim()
+  : buildTextFallback(data);
+if (bkRecId) text += "\n\n🆔 Код бронювання: " + bkRecId + "\nСкасувати: /cancel " + bkRecId;
+
+// Маршрутизація: салону (chatId із payload або знайдений у KV) + копія власнику
+const targets = [];
+const salonTarget = salonChatEarly || salonChatResolved;
+if (/^\d{5,}$/.test(salonTarget) && salonTarget !== OWNER_CHAT) targets.push(salonTarget);
+targets.push(OWNER_CHAT);
+
+let sent = 0;
+for (const t of targets) {
+  // v10: сповіщення про запис — одразу з кнопками відвідуваності
+  // «✅ Був» / «🚫 Не прийшов» (att:), а не лише сканом +30 хв після візиту.
+  const okSend = bkRecId
+    ? await tgSendKb(BOT_TOKEN, t, text, [[
+        { text: "✅ Був", callback_data: "att:" + bkRecId + ":y" },
+        { text: "🚫 Не прийшов", callback_data: "att:" + bkRecId + ":n" },
+      ]])
+    : await tgSendWith(BOT_TOKEN, t, text);
+  if (okSend) sent++;
+}
+// Без запису в KV (легасі-середовище без KV) — стара семантика:
+// нема доставки → 502. Із записом бронювання вже існує — код віддаємо
+// незалежно від Telegram (салон побачить його у /bookings і кабінеті).
+if (!bkStored && !sent) {
+  return { status: 502, text: "telegram_error" };
+}
+// Відповідь сайту: JSON із кодом бронювання (старий текст "ok" — у git-історії v3)
+return { status: 200, json: { ok: true, code: bkRecId || null } };
+}
+
+// ---------- Спільна логіка Stripe-чекауту депозиту (HTTP і бот-агент, v12) ----------
+// Повертає { url } або { error, status, detail? }.
+async function createDepositCheckout(env, KV, code) {
+  const stripeKey = (env && env.STRIPE_SECRET_KEY) || "";
+  if (!stripeKey) return { error: "stripe_not_configured", status: 501 };
+  if (!KV) return { error: "kv_not_configured", status: 503 };
+      const key = await KV.get(BKI_PREFIX + code);
+      const rec = key ? await readBookingRec(KV, key) : null;
+      if (!rec || !key) return { error: "booking_not_found", status: 404 };
+      if (rec.depositPaid) return { error: "already_paid", status: 409 };
+      try {
+        const form = new URLSearchParams();
+        form.set("mode", "payment");
+        form.set("line_items[0][quantity]", "1");
+        form.set("line_items[0][price_data][currency]", "cad");
+        form.set("line_items[0][price_data][unit_amount]", "1000");
+        form.set("line_items[0][price_data][product_data][name]", "Booking deposit — Booking Club");
+        form.set("success_url", "https://bookingclub.beauty/?deposit=success&code=" + encodeURIComponent(code));
+        form.set("cancel_url", "https://bookingclub.beauty/?deposit=cancelled&code=" + encodeURIComponent(code));
+        form.set("client_reference_id", code);
+        form.set("metadata[booking_code]", code);
+        const resp = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + stripeKey, "Content-Type": "application/x-www-form-urlencoded" },
+          body: form.toString(),
+        });
+        const sj = await resp.json().catch(() => null);
+        if (!resp.ok || !sj || !sj.url) return { error: "stripe_error", status: 502, detail: (sj && sj.error && sj.error.message) || resp.status };
+        await updateBookingRec(KV, key, r => { r.depositSessionId = sj.id || ""; });
+        return { url: sj.url };
+      } catch {
+        return { error: "stripe_error", status: 502 };
+      }
+}
+
+// ============================================================
+// AI-АГЕНТ БРОНЮВАННЯ v12: діалог, що не лише радить, а й бронює
+// (сайт-чат POST /ai/agent, голос POST /ai/voice, Telegram-бот).
+// Правила: бронювання — тільки після явного підтвердження людини;
+// слоти — тільки реальні (той самий генератор, що й data.js, +
+// закриті дні sched: і зайняті bk| із KV); контакти в LLM не йдуть.
+// ============================================================
+const AGENT_PREFIX = "agent:";
+const AGENT_TTL = 60 * 30; // стан діалогу — 30 хв
+const AGENT_DAYS = 14;     // горизонт слотів для агента
+
+// --- Порт генератора слотів із data.js (1-в-1: той самий сід і алгоритм) ---
+const SLOT_DEFAULT_WEEK = { 0: [11, 18], 1: [10, 20], 2: [10, 20], 3: [10, 20], 4: [10, 20], 5: [10, 20], 6: [10, 19] };
+const SLOT_WEEK_OVERRIDES = {
+  "kozak-barbershop": { 1: null },
+  "kalyna-beauty": { 0: null },
+  "iryna-stovban-home": { 1: null, 3: null, 0: null },
+};
+function pad2(n) { return String(n).padStart(2, "0"); }
+function slotSeededRand(seedStr) {
+  let h = 2166136261;
+  for (let i = 0; i < seedStr.length; i++) { h ^= seedStr.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return function () {
+    h += 0x6D2B79F5;
+    let x = h;
+    x = Math.imul(x ^ (x >>> 15), x | 1);
+    x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+// Базові часи дня (як generateLiveAvailabilityFor у data.js, без віднімання
+// зайнятих/закритих і без «сьогодні»-фільтра — їх додає agentFreeTimes).
+function agentBaseTimes(week, listingId, dateISO, partner) {
+  const dow = new Date(dateISO + "T12:00:00Z").getUTCDay();
+  const hours = week[dow];
+  if (!hours) return [];
+  const all = [];
+  for (let mins = hours[0] * 60; mins <= hours[1] * 60 - 60; mins += 30) {
+    all.push(pad2(Math.floor(mins / 60)) + ":" + pad2(mins % 60));
+  }
+  const rnd = slotSeededRand(listingId + "|" + dateISO);
+  const keepP = partner ? 0.55 : 0.45;
+  let times = all.filter(() => rnd() < keepP + 0.25);
+  if (times.length < 2) times = all.filter((_, idx) => idx % 3 === 0).slice(0, 3);
+  return times;
+}
+function agentWeekFor(ctx, entry) {
+  const week = Object.assign({}, SLOT_DEFAULT_WEEK, SLOT_WEEK_OVERRIDES[entry.id] || {});
+  const dyn = ctx && ctx.dynWeek ? ctx.dynWeek.get(entry.id) : null;
+  if (dyn) Object.assign(week, dyn);
+  return week;
+}
+// Контекст доступності з KV одним проходом: зайняті часи, закриті дні
+// салонів (через salonmap → sched:), тижневі графіки динамічних лістингів.
+async function agentContext(KV) {
+  const ctx = { booked: new Map(), closedByListing: new Map(), dynWeek: new Map(), dynListings: [] };
+  if (!KV) return ctx;
+  try {
+    for (const k of await kvListKeys(KV, BK_PREFIX)) {
+      const parts = k.split("|"); // bk|listingKey|dateISO|time|BK-id
+      if (parts.length >= 5) {
+        const key = parts[1] + "|" + parts[2];
+        if (!ctx.booked.has(key)) ctx.booked.set(key, new Set());
+        ctx.booked.get(key).add(parts[3]);
+      }
+    }
+  } catch { /* ignore */ }
+  try {
+    const map = new Map(); // chatId -> listingId
+    for (const k of await kvListKeys(KV, "salonmap:")) {
+      const v = await KV.get(k);
+      if (v) map.set(k.slice("salonmap:".length), v);
+    }
+    const rawMap = await KV.get("salonmap");
+    if (rawMap) {
+      const j = JSON.parse(rawMap) || {};
+      for (const c of Object.keys(j)) if (!map.has(c)) map.set(c, j[c]);
+    }
+    for (const [chat, lid] of map) {
+      try {
+        const sraw = await KV.get("sched:" + chat);
+        if (sraw) {
+          const closed = (JSON.parse(sraw) || {}).closed || [];
+          if (closed.length) ctx.closedByListing.set(lid, new Set(closed));
+        }
+      } catch { /* ignore */ }
+    }
+  } catch { /* ignore */ }
+  try {
+    for (const k of await kvListKeys(KV, LST_PREFIX)) {
+      const rec = await readBookingRec(KV, k);
+      if (rec && rec.id) {
+        ctx.dynListings.push(rec);
+        const w = rec.schedule || rec.week;
+        if (w) ctx.dynWeek.set(rec.id, w);
+      }
+    }
+  } catch { /* ignore */ }
+  return ctx;
+}
+// Реально вільні часи лістинга на дату: генератор − закриті дні − зайняті −
+// минулий час сьогодні (+20 хв, час America/Toronto — як у решти воркера).
+function agentFreeTimes(ctx, entry, dateISO) {
+  let times = agentBaseTimes(agentWeekFor(ctx, entry), entry.id, dateISO, !!entry.partner);
+  if (!times.length) return [];
+  const closed = ctx.closedByListing.get(entry.id);
+  if (closed && closed.has(dateISO)) return [];
+  const booked = ctx.booked.get(sanitizeListingKey(entry.id) + "|" + dateISO) || ctx.booked.get(entry.id + "|" + dateISO);
+  if (booked) times = times.filter(t => !booked.has(t));
+  if (dateISO === torontoTodayISO()) {
+    const now = Date.now();
+    times = times.filter(t => {
+      const ms = torontoVisitMs(dateISO, t);
+      return ms !== null && ms > now + 20 * 60000;
+    });
+  }
+  return times;
+}
+// Компактний знімок для LLM: перші 4 дні зі слотами, до 6 часів на день.
+function agentSnapshot(ctx, catalog) {
+  const today = torontoTodayISO();
+  return catalog.map(entry => {
+    const days = [];
+    for (let i = 0; i < AGENT_DAYS && days.length < 4; i++) {
+      const d = addDaysISO(today, i);
+      const times = agentFreeTimes(ctx, entry, d);
+      if (times.length) days.push({ date: d, times: times.slice(0, 6) });
+    }
+    return {
+      id: entry.id, name: entry.name, district: entry.district, rating: entry.rating,
+      services: entry.services, slots: days,
+    };
+  });
+}
+function validateAgentOffer(ctx, catalog, o) {
+  if (!o || typeof o !== "object") return null;
+  const entry = catalog.find(e => e.id === String(o.listingId || ""));
+  if (!entry) return null;
+  const svc = entry.services.find(s => s.id === String(o.serviceId || ""));
+  if (!svc) return null;
+  const dateISO = String(o.dateISO || "");
+  const time = String(o.time || "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateISO) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return null;
+  if (dateISO < torontoTodayISO()) return null;
+  if (!agentFreeTimes(ctx, entry, dateISO).includes(time)) return null;
+  return { listingId: entry.id, serviceId: svc.id, dateISO, time, priceFrom: (typeof svc.priceFrom === "number" ? svc.priceFrom : null) };
+}
+// Ремонт невалідної пропозиції моделі: той самий салон і послуга —
+// найближчий реальний слот (з бажаної дати або пізніше).
+function repairAgentOffer(ctx, catalog, o) {
+  if (!o || typeof o !== "object") return null;
+  const entry = catalog.find(e => e.id === String(o.listingId || ""));
+  if (!entry) return null;
+  const svc = entry.services.find(s => s.id === String(o.serviceId || ""));
+  if (!svc) return null;
+  const today = torontoTodayISO();
+  let start = String(o.dateISO || "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || start < today) start = today;
+  for (let i = 0; i < AGENT_DAYS; i++) {
+    const d = addDaysISO(start, i);
+    const times = agentFreeTimes(ctx, entry, d);
+    if (times.length) {
+      return { listingId: entry.id, serviceId: svc.id, dateISO: d, time: times[0], priceFrom: (typeof svc.priceFrom === "number" ? svc.priceFrom : null) };
+    }
+  }
+  return null;
+}
+// Ядро агента: розмова + каталог → { state, message, offer, missing }.
+// null = AI недоступний (викликач іде у фолбек).
+async function agentDecide(env, KV, input) {
+  const aiKey = (env && env.OPENAI_API_KEY) || "";
+  if (!aiKey) return null;
+  const lang = input.lang || "uk";
+  const catalog = input.catalog || [];
+  const history = (input.messages || []).slice(-10);
+  const ctx = await agentContext(KV);
+  const snap = agentSnapshot(ctx, catalog);
+  const today = torontoTodayISO();
+  const sysPrompt = [
+    "Ти — AI-агент бронювання Booking Club, сервісу онлайн-запису в салони краси Монреаля (Канада). Ти не лише радиш — ти доводиш клієнта до конкретного запису.",
+    "Відповідай ТІЛЬКИ валідним JSON-обʼєктом: {\"state\":\"ask|offer|ready\",\"message\":\"...\",\"offer\":{\"listingId\":\"...\",\"serviceId\":\"...\",\"dateISO\":\"YYYY-MM-DD\",\"time\":\"HH:MM\"}|null,\"missing\":[\"service\"|\"date\"|\"time\"|\"district\"|\"budget\"]} — без markdown і тексту поза JSON.",
+    "КАТАЛОГ нижче містить РЕАЛЬНІ вільні слоти (slots: дати й часи). offer можна робити ТІЛЬКИ зі слотів каталогу: listingId і serviceId — з каталогу, dateISO і time — із slots цього лістинга. НІКОЛИ не вигадуй салони, послуги, ціни чи час.",
+    "state: \"ask\" — бракує даних для конкретної пропозиції (заповни missing і ввічливо запитай у message); \"offer\" — пропонуєш конкретний слот (offer обовʼязковий); \"ready\" — клієнт уже погодився на попередню пропозицію (offer — та сама пропозиція).",
+    "Якщо клієнт просить інший час або інший салон — дай НОВИЙ offer зі слотів каталогу. Враховуй названі бюджет (priceFrom у CAD), район (district) і дату/час. Сьогодні — " + today + " (America/Toronto); «сьогодні/завтра/післязавтра» рахуй від цієї дати.",
+    "message — мовою клієнта (код мови: " + lang + "), 1–3 дружні речення. Якщо пропонуєш слот — назви салон, послугу, дату й час у message.",
+    "НЕ питай імʼя і телефон — платформа збере їх окремим кроком після підтвердження. Не обіцяй нічого, чого нема в каталозі.",
+  ].join("\n");
+  const dataBlock = "Дані платформи (не показувати клієнту). Каталог зі справжніми вільними слотами:\n" + JSON.stringify(snap);
+  const msgs = [{ role: "system", content: sysPrompt }];
+  for (const m of history) msgs.push({ role: m.role === "assistant" ? "assistant" : "user", content: String(m.content || "").slice(0, 600) });
+  if (msgs.length > 1 && msgs[msgs.length - 1].role === "user") {
+    msgs[msgs.length - 1] = { role: "user", content: msgs[msgs.length - 1].content + "\n\n" + dataBlock };
+  } else {
+    msgs.push({ role: "user", content: dataBlock });
+  }
+  let parsed = null;
+  try {
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + aiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.3,
+        max_tokens: 700,
+        response_format: { type: "json_object" },
+        messages: msgs,
+      }),
+    });
+    const oj = await resp.json().catch(() => null);
+    if (!resp.ok || !oj || !oj.choices || !oj.choices[0] || !oj.choices[0].message || !oj.choices[0].message.content) return null;
+    try { parsed = JSON.parse(oj.choices[0].message.content); } catch { return null; }
+  } catch { return null; }
+  if (!parsed || typeof parsed !== "object") return null;
+  const message = String(parsed.message || "").slice(0, 600);
+  if (!message) return null;
+  const missing = (Array.isArray(parsed.missing) ? parsed.missing : []).map(x => String(x).slice(0, 20)).slice(0, 5);
+  let state = ["ask", "offer", "ready"].includes(parsed.state) ? parsed.state : "ask";
+  let offer = null;
+  if (parsed.offer) {
+    offer = validateAgentOffer(ctx, catalog, parsed.offer);
+    if (!offer) offer = repairAgentOffer(ctx, catalog, parsed.offer);
+    if (!offer && state !== "ask") state = "ask";
+  } else if (state !== "ask") {
+    state = "ask";
+  }
+  if (offer && state === "ask") state = "offer";
+  return { state, message, offer, missing };
+}
+
+// Транскрипція аудіо: спершу gpt-4o-mini-transcribe, якщо модель ключу
+// недоступна — whisper-1. null = не вдалось (викликач просить текстом).
+async function transcribeAudio(env, bytes, filename, mime, lang) {
+  const aiKey = (env && env.OPENAI_API_KEY) || "";
+  if (!aiKey || !bytes || !bytes.length) return null;
+  const models = ["gpt-4o-mini-transcribe", "whisper-1"];
+  for (const model of models) {
+    try {
+      const fd = new FormData();
+      fd.append("file", new Blob([bytes], { type: mime || "audio/webm" }), filename);
+      fd.append("model", model);
+      if (["uk", "ru", "en", "fr"].includes(lang || "")) fd.append("language", lang);
+      const resp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + aiKey },
+        body: fd,
+      });
+      const j = await resp.json().catch(() => null);
+      if (resp.ok && j && typeof j.text === "string" && j.text.trim()) return j.text.trim().slice(0, 1000);
+      const emsg = String((j && j.error && j.error.message) || "");
+      if (resp.status !== 404 && !/model/i.test(emsg)) return null;
+    } catch { return null; }
+  }
+  return null;
+}
+
+// --- Каталог для бота: статичні лістинги (дзеркало data.js) + динамічні з KV ---
+const AGENT_STATIC_LISTINGS = [
+  { id: "romanukova-nails", name: "Romanukova Nail Studio", district: "", rating: 4.9, partner: true, services: [{ id: "manicure", from: 30 }, { id: "pedicure", from: 45 }, { id: "brows", from: 25 }] },
+  { id: "iryna-stovban-home", name: "Iryna Stovban · Home master", district: "", rating: 5.0, partner: false, services: [{ id: "manicure", from: 20 }] },
+  { id: "maison-atelier", name: "Maison Atelier", district: "", rating: 4.8, partner: true, services: [{ id: "womens_haircut", from: 70 }, { id: "brows", from: 35 }] },
+  { id: "golden-hour-brows", name: "Golden Hour Brows", district: "", rating: 4.9, partner: false, services: [{ id: "brows", from: 30 }, { id: "manicure", from: 35 }] },
+  { id: "atelier-nail-bar", name: "Atelier Nail Bar", district: "", rating: 4.7, partner: false, services: [{ id: "manicure", from: 35 }, { id: "pedicure", from: 50 }] },
+  { id: "gentlemen-atelier", name: "Gentlemen Atelier", district: "", rating: 4.8, partner: true, services: [{ id: "mens_haircut", from: 40 }, { id: "brows", from: 25 }] },
+  { id: "rose-quartz-studio", name: "Rose Quartz Studio", district: "", rating: 4.6, partner: false, services: [{ id: "womens_haircut", from: 60 }, { id: "manicure", from: 35 }] },
+  { id: "violet-room", name: "The Violet Room", district: "", rating: 4.7, partner: false, services: [{ id: "pedicure", from: 55 }, { id: "brows", from: 35 }] },
+  { id: "kalyna-beauty", name: "Kalyna Beauty Studio · UA", district: "", rating: 4.9, partner: true, services: [{ id: "lashes", from: 60 }, { id: "brows", from: 30 }, { id: "makeup", from: 65 }, { id: "manicure", from: 40 }] },
+  { id: "mira-beauty-lab", name: "Mira Beauty Lab · RU", district: "", rating: 4.8, partner: false, services: [{ id: "cosmetology", from: 70 }, { id: "massage", from: 60 }, { id: "depilation", from: 20 }, { id: "brows", from: 30 }] },
+  { id: "kozak-barbershop", name: "Kozak Barbershop · UA", district: "", rating: 4.9, partner: true, services: [{ id: "barber", from: 35 }, { id: "mens_haircut", from: 30 }] },
+  { id: "atelier-color-lab", name: "Atelier Color Lab · Westmount", district: "", rating: 4.8, partner: false, services: [{ id: "coloring", from: 120 }, { id: "womens_haircut", from: 75 }, { id: "makeup", from: 70 }] },
+];
+async function agentCatalogForBot(KV, lang) {
+  const out = AGENT_STATIC_LISTINGS.map(l => ({
+    id: l.id, name: l.name, district: l.district, rating: l.rating, partner: l.partner,
+    services: l.services.map(s => ({ id: s.id, name: svcLabel(s.id, lang === "fr" ? "fr" : ""), priceFrom: s.from })),
+  }));
+  if (KV) {
+    try {
+      for (const k of await kvListKeys(KV, LST_PREFIX)) {
+        const rec = await readBookingRec(KV, k);
+        if (!rec || !rec.id) continue;
+        out.push({
+          id: rec.id,
+          name: String(rec.name || "Салон"),
+          district: String(rec.district || ""),
+          rating: null,
+          partner: !!rec.partner,
+          services: (rec.services || []).map(s => ({
+            id: String(s.serviceId || ""),
+            name: svcLabel(String(s.serviceId || ""), lang === "fr" ? "fr" : ""),
+            priceFrom: (typeof s.from === "number" ? s.from : null),
+          })).filter(s => s.id),
+        });
+      }
+    } catch { /* ignore */ }
+  }
+  return out;
+}
+
+// --- Тексти агента ×4 мови ---
+const AG_T = {
+  uk: {
+    heard: "🎤 Почув: ", voiceOff: "🎤 Голосові повідомлення поки недоступні — напишіть, будь ласка, текстом 🙏",
+    voiceFail: "🎤 Не вдалось розчути 😔 Напишіть, будь ласка, текстом.",
+    askName: "Чудово! Як до вас звертатись? Напишіть ваше імʼя.",
+    askPhone: "Дякую! І номер телефону для салону — наприклад, +1 514 123-4567:",
+    badName: "Імʼя виглядає дивно 🤔 Напишіть, будь ласка, справжнє імʼя (хоча б 2 літери).",
+    badPhone: "Не схоже на номер телефону 🤔 Перевірте цифри (потрібно 10–15) і надішліть ще раз.",
+    offerQ: "Підтвердити цей запис?", btnOk: "✅ Підтвердити", btnTime: "✏️ Інший час", btnSalon: "🏠 Інший салон",
+    btnCancel: "❌ Скасувати запис", btnSalonOpen: "🏠 Відкрити салон", depositBtn: "💳 Оплатити депозит $10",
+    catalogBtn: "📱 Відкрити каталог", priceFrom: "від $",
+    booked: "✅ Готово! Ваш запис створено.\nЯ надішлю нагадування за день і за 2 години до візиту.",
+    taken: "На жаль, цей час щойно зайняли 😔", takenAlt: "Ось найближчий вільний варіант:",
+    fail: "Ой, щось пішло не так на нашому боці 😔 Спробуйте ще раз за хвилину або запишіться на сайті 👇",
+    noMoreSlots: "На жаль, інших вільних слотів у цього салону найближчим часом немає 😔 Напишіть текстом, коли вам зручно, — пошукаю ширше.",
+    noMoreSalons: "Інших салонів із цією послугою і вільними слотами не знайшов 😔 Напишіть текстом побажання — спробую інакше.",
+    sessionGone: "Сесія завершилась — напишіть ваш запит ще раз 🙏",
+    tooLong: "Наш діалог став задовгим 🙏 Почнімо заново: напишіть, яка послуга і коли потрібна. Або оберіть салон у каталозі 👇",
+    fallback: "Я допоможу записатись у салон краси 💅 Найзручніше — на сайті: там усі салони й вільні години 👇",
+  },
+  ru: {
+    heard: "🎤 Услышал: ", voiceOff: "🎤 Голосовые пока недоступны — напишите, пожалуйста, текстом 🙏",
+    voiceFail: "🎤 Не удалось расслышать 😔 Напишите, пожалуйста, текстом.",
+    askName: "Отлично! Как к вам обращаться? Напишите ваше имя.",
+    askPhone: "Спасибо! И номер телефона для салона — например, +1 514 123-4567:",
+    badName: "Имя выглядит странно 🤔 Напишите, пожалуйста, настоящее имя (минимум 2 буквы).",
+    badPhone: "Не похоже на номер телефона 🤔 Проверьте цифры (нужно 10–15) и отправьте ещё раз.",
+    offerQ: "Подтвердить эту запись?", btnOk: "✅ Подтвердить", btnTime: "✏️ Другое время", btnSalon: "🏠 Другой салон",
+    btnCancel: "❌ Отменить запись", btnSalonOpen: "🏠 Открыть салон", depositBtn: "💳 Оплатить депозит $10",
+    catalogBtn: "📱 Открыть каталог", priceFrom: "от $",
+    booked: "✅ Готово! Ваша запись создана.\nЯ пришлю напоминание за день и за 2 часа до визита.",
+    taken: "К сожалению, это время только что заняли 😔", takenAlt: "Вот ближайший свободный вариант:",
+    fail: "Ой, что-то пошло не так на нашей стороне 😔 Попробуйте ещё раз через минуту или запишитесь на сайте 👇",
+    noMoreSlots: "К сожалению, других свободных слотов у этого салона в ближайшее время нет 😔 Напишите текстом, когда удобно, — поищу шире.",
+    noMoreSalons: "Других салонов с этой услугой и свободными слотами не нашёл 😔 Напишите пожелания текстом — попробую иначе.",
+    sessionGone: "Сессия завершилась — напишите ваш запрос ещё раз 🙏",
+    tooLong: "Наш диалог стал слишком длинным 🙏 Начнём заново: напишите, какая услуга и когда нужна. Или выберите салон в каталоге 👇",
+    fallback: "Я помогу записаться в салон красоты 💅 Удобнее всего — на сайте: там все салоны и свободное время 👇",
+  },
+  en: {
+    heard: "🎤 I heard: ", voiceOff: "🎤 Voice messages aren't available yet — please type your request 🙏",
+    voiceFail: "🎤 I couldn't make that out 😔 Please type your request.",
+    askName: "Great! What's your name?",
+    askPhone: "Thanks! And a phone number for the salon — e.g. +1 514 123-4567:",
+    badName: "That name looks off 🤔 Please send your real name (at least 2 letters).",
+    badPhone: "That doesn't look like a phone number 🤔 Check the digits (10–15 needed) and send again.",
+    offerQ: "Confirm this booking?", btnOk: "✅ Confirm", btnTime: "✏️ Another time", btnSalon: "🏠 Another salon",
+    btnCancel: "❌ Cancel booking", btnSalonOpen: "🏠 Open salon", depositBtn: "💳 Pay the $10 deposit",
+    catalogBtn: "📱 Open the catalog", priceFrom: "from $",
+    booked: "✅ Done! Your booking is created.\nI'll send a reminder a day before and 2 hours before your visit.",
+    taken: "Sorry, that time was just taken 😔", takenAlt: "Here's the closest free option:",
+    fail: "Oops, something went wrong on our side 😔 Try again in a minute or book on the site 👇",
+    noMoreSlots: "Sorry, this salon has no other free slots coming up 😔 Tell me in text when suits you — I'll search wider.",
+    noMoreSalons: "I couldn't find other salons with this service and free slots 😔 Describe what you need in text — I'll try differently.",
+    sessionGone: "The session has ended — please send your request again 🙏",
+    tooLong: "Our chat got quite long 🙏 Let's restart: tell me which service you need and when. Or pick a salon in the catalog 👇",
+    fallback: "I'll help you book a beauty salon 💅 The easiest way is the site — all salons and free times are there 👇",
+  },
+  fr: {
+    heard: "🎤 J'ai entendu : ", voiceOff: "🎤 Les messages vocaux ne sont pas encore disponibles — écrivez votre demande en texte 🙏",
+    voiceFail: "🎤 Je n'ai pas réussi à comprendre 😔 Écrivez votre demande en texte, s'il vous plaît.",
+    askName: "Parfait ! Comment vous appelez-vous ?",
+    askPhone: "Merci ! Et un numéro de téléphone pour le salon — par ex. +1 514 123-4567 :",
+    badName: "Ce nom semble étrange 🤔 Indiquez votre vrai nom (au moins 2 lettres).",
+    badPhone: "Cela ne ressemble pas à un numéro de téléphone 🤔 Vérifiez les chiffres (10 à 15) et renvoyez.",
+    offerQ: "Confirmer cette réservation ?", btnOk: "✅ Confirmer", btnTime: "✏️ Autre horaire", btnSalon: "🏠 Autre salon",
+    btnCancel: "❌ Annuler la réservation", btnSalonOpen: "🏠 Voir le salon", depositBtn: "💳 Payer l'acompte de 10 $",
+    catalogBtn: "📱 Ouvrir le catalogue", priceFrom: "dès $",
+    booked: "✅ C'est fait ! Votre réservation est créée.\nJe vous enverrai un rappel la veille et 2 heures avant la visite.",
+    taken: "Désolé, cet horaire vient d'être pris 😔", takenAlt: "Voici l'option libre la plus proche :",
+    fail: "Oups, quelque chose s'est mal passé de notre côté 😔 Réessayez dans une minute ou réservez sur le site 👇",
+    noMoreSlots: "Désolé, ce salon n'a pas d'autres horaires libres prochainement 😔 Dites-moi en texte ce qui vous convient — je chercherai plus large.",
+    noMoreSalons: "Je n'ai pas trouvé d'autres salons avec ce service et des horaires libres 😔 Décrivez votre besoin en texte — j'essaierai autrement.",
+    sessionGone: "La session est terminée — renvoyez votre demande 🙏",
+    tooLong: "Notre conversation devient longue 🙏 Recommençons : dites-moi quel service et pour quand. Ou choisissez un salon dans le catalogue 👇",
+    fallback: "Je vous aide à réserver dans un salon de beauté 💅 Le plus simple : le site — tous les salons et horaires libres y sont 👇",
+  },
+};
+function agentT(lang) { return AG_T[["uk", "ru", "en", "fr"].includes(lang) ? lang : "uk"]; }
+
+// --- Стан діалогу агента в KV ---
+async function agentLoad(KV, chatId) {
+  try {
+    const raw = await KV.get(AGENT_PREFIX + chatId);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+async function agentSave(KV, chatId, st) {
+  try { await KV.put(AGENT_PREFIX + chatId, JSON.stringify(st), { expirationTtl: AGENT_TTL }); } catch { /* ignore */ }
+}
+async function agentClear(KV, chatId) {
+  try { await KV.delete(AGENT_PREFIX + chatId); } catch { /* ignore */ }
+}
+
+function agentOfferText(lang, offer, catalog) {
+  const T = agentT(lang);
+  const entry = (catalog || []).find(e => e.id === offer.listingId);
+  const lines = [
+    "💅 " + svcLabel(offer.serviceId, lang === "fr" ? "fr" : ""),
+    "🏠 " + (entry ? entry.name : offer.listingId),
+    "📅 " + offer.dateISO + " · " + offer.time,
+  ];
+  if (offer.priceFrom != null) lines.push("💵 " + T.priceFrom + offer.priceFrom);
+  lines.push("");
+  lines.push(T.offerQ);
+  return lines.join("\n");
+}
+function agentOfferKb(lang) {
+  const T = agentT(lang);
+  return [
+    [{ text: T.btnOk, callback_data: "ag:ok" }, { text: T.btnTime, callback_data: "ag:time" }],
+    [{ text: T.btnSalon, callback_data: "ag:salon" }],
+  ];
+}
+// Наступний вільний слот того самого салону ПІСЛЯ поточної пропозиції.
+function agentNextSlotAfter(ctx, catalog, offer) {
+  const entry = (catalog || []).find(e => e.id === offer.listingId);
+  if (!entry) return null;
+  const today = torontoTodayISO();
+  for (let i = 0; i < AGENT_DAYS; i++) {
+    const d = addDaysISO(offer.dateISO, i);
+    if (d < today) continue;
+    const times = agentFreeTimes(ctx, entry, d);
+    for (const t of times) {
+      if (d === offer.dateISO && t <= offer.time) continue;
+      return { listingId: entry.id, serviceId: offer.serviceId, dateISO: d, time: t, priceFrom: offer.priceFrom };
+    }
+  }
+  return null;
+}
+// Найближчий слот ІНШОГО салону з тією самою послугою.
+function agentNextSalonOffer(ctx, catalog, offer) {
+  const today = torontoTodayISO();
+  const startIdx = Math.max(0, (catalog || []).findIndex(e => e.id === offer.listingId));
+  for (let n = 1; n <= (catalog || []).length; n++) {
+    const entry = catalog[(startIdx + n) % catalog.length];
+    if (!entry || entry.id === offer.listingId) continue;
+    const svc = entry.services.find(s => s.id === offer.serviceId);
+    if (!svc) continue;
+    for (let i = 0; i < AGENT_DAYS; i++) {
+      const d = addDaysISO(today, i);
+      const times = agentFreeTimes(ctx, entry, d);
+      if (times.length) {
+        return { listingId: entry.id, serviceId: svc.id, dateISO: d, time: times[0], priceFrom: (typeof svc.priceFrom === "number" ? svc.priceFrom : null) };
+      }
+    }
+  }
+  return null;
+}
+
+// Фінальний крок бота: створюємо запис ТІЄЮ САМОЮ логікою, що й сайт
+// (createBooking), привʼязуємо клієнта до чату (нагадування) і, якщо
+// Stripe налаштовано, даємо кнопку оплати депозиту.
+async function agentFinishBooking(chatId, ctx, env, pack) {
+  const { KV, token, ownerChat } = ctx;
+  const { offer, name, phone, lang } = pack;
+  const T = agentT(lang);
+  const catalog = await agentCatalogForBot(KV, lang);
+  const entry = catalog.find(e => e.id === offer.listingId);
+  const data = {
+    name, phone,
+    listingId: offer.listingId,
+    listingName: entry ? entry.name : offer.listingId,
+    serviceId: offer.serviceId,
+    serviceName: svcLabel(offer.serviceId),
+    dateISO: offer.dateISO,
+    time: offer.time,
+    priceFrom: offer.priceFrom,
+  };
+  const res = await createBooking({ KV, BOT_TOKEN: token, OWNER_CHAT: ownerChat }, data);
+  if (res.json && res.json.ok && res.json.code) {
+    const code = res.json.code;
+    try {
+      const key = await KV.get(BKI_PREFIX + code);
+      if (key) {
+        await updateBookingRec(KV, key, r => {
+          r.clientChatId = chatId;
+          r.clientLinkedAt = new Date().toISOString();
+          if (["uk", "ru", "en", "fr"].includes(lang)) r.clientLang = lang;
+        });
+      }
+    } catch { /* ignore */ }
+    const rows = [[
+      { text: T.btnCancel, callback_data: "cx:" + code },
+      { text: T.btnSalonOpen, url: "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(offer.listingId) },
+    ]];
+    try {
+      const dep = await createDepositCheckout(env, KV, code);
+      if (dep && dep.url) rows.push([{ text: T.depositBtn, url: dep.url }]);
+    } catch { /* депозит — опція, запис уже створено */ }
+    await tgSendKb(token, chatId,
+      T.booked + "\n\n" +
+      "🏠 " + data.listingName + "\n" +
+      "💅 " + svcLabel(offer.serviceId, lang === "fr" ? "fr" : "") + "\n" +
+      "📅 " + offer.dateISO + " · " + offer.time + "\n" +
+      "🆔 " + code, rows);
+    return;
+  }
+  if (res.json && res.json.error === "slot_taken") {
+    const actx = await agentContext(KV);
+    const alt = agentNextSlotAfter(actx, catalog, offer) || agentNextSalonOffer(actx, catalog, offer);
+    if (alt) {
+      await agentSave(KV, chatId, { step: "chat", lang, history: [], offer: alt, turns: 1 });
+      await tgSendKb(token, chatId, T.taken + "\n" + T.takenAlt + "\n\n" + agentOfferText(lang, alt, catalog), agentOfferKb(lang));
+      return;
+    }
+    await tgSendKb(token, chatId, T.taken, null);
+    return;
+  }
+  await tgSendKb(token, chatId, T.fail, [[{ text: T.catalogBtn, web_app: { url: "https://bookingclub.beauty" } }]]);
+}
+
+// Один хід діалогу бота. Повертає true, якщо текст спожито агентом.
+async function agentBotText(chatId, text, ctx, env) {
+  const { KV, token } = ctx;
+  if (!KV) return false;
+  let st = await agentLoad(KV, chatId);
+  const lang = (st && st.lang) || ctx.lang || "uk";
+  const T = agentT(lang);
+  const val = String(text || "").trim().slice(0, 600);
+  if (!val) return true;
+  // --- Структурні кроки контактів: БЕЗ LLM (правило платформи) ---
+  if (st && st.step === "name") {
+    if (!isValidClientName(val)) { await tgSendKb(token, chatId, T.badName, null); return true; }
+    st.name = val;
+    st.step = "phone";
+    await agentSave(KV, chatId, st);
+    await tgSendKb(token, chatId, T.askPhone, null);
+    return true;
+  }
+  if (st && st.step === "phone") {
+    const phone = normalizePhone(val);
+    if (!phone) { await tgSendKb(token, chatId, T.badPhone, null); return true; }
+    const pack = { offer: st.offer, name: st.name, phone, lang };
+    await agentClear(KV, chatId);
+    if (!pack.offer) { await tgSendKb(token, chatId, T.sessionGone, null); return true; }
+    await agentFinishBooking(chatId, ctx, env, pack);
+    return true;
+  }
+  // --- Вільний діалог через LLM ---
+  if (!st) st = { step: "chat", lang: ctx.lang || "uk", history: [], offer: null, turns: 0 };
+  if (ctx.lang && !st.lang) st.lang = ctx.lang;
+  st.turns = (st.turns || 0) + 1;
+  if (st.turns > 20) {
+    await agentClear(KV, chatId);
+    await tgSendKb(token, chatId, T.tooLong, [[{ text: T.catalogBtn, web_app: { url: "https://bookingclub.beauty" } }]]);
+    return true;
+  }
+  if (!((env && env.OPENAI_API_KEY) || "")) {
+    await tgSendKb(token, chatId, T.fallback, [[{ text: T.catalogBtn, web_app: { url: "https://bookingclub.beauty" } }]]);
+    return true;
+  }
+  const catalog = await agentCatalogForBot(KV, st.lang || lang);
+  const history = [...(Array.isArray(st.history) ? st.history : []), { role: "user", content: val }];
+  const dec = await agentDecide(env, KV, { messages: history, lang: st.lang || lang, catalog });
+  if (!dec) {
+    await agentSave(KV, chatId, st);
+    await tgSendKb(token, chatId, T.fail, [[{ text: T.catalogBtn, web_app: { url: "https://bookingclub.beauty" } }]]);
+    return true;
+  }
+  history.push({ role: "assistant", content: dec.message });
+  st.history = history.slice(-10);
+  if (dec.offer) {
+    st.offer = dec.offer;
+    await agentSave(KV, chatId, st);
+    await tgSendKb(token, chatId, dec.message + "\n\n" + agentOfferText(st.lang || lang, dec.offer, catalog), agentOfferKb(st.lang || lang));
+  } else {
+    st.offer = null;
+    await agentSave(KV, chatId, st);
+    await tgSendKb(token, chatId, dec.message, null);
+  }
+  return true;
+}
+
+// Кнопки пропозиції агента: ag:ok / ag:time / ag:salon.
+async function agentCallback(cq, ctx, action, msgChat, msgId) {
+  const { KV, token } = ctx;
+  const chatId = msgChat;
+  const st = await agentLoad(KV, chatId);
+  const lang = (st && st.lang) || ctx.lang || "uk";
+  const T = agentT(lang);
+  if (!st || !st.offer) {
+    await tgAnswerCb(token, cq.id, T.sessionGone);
+    return;
+  }
+  if (action === "ok") {
+    st.step = "name";
+    await agentSave(KV, chatId, st);
+    await tgAnswerCb(token, cq.id, "");
+    await tgSendKb(token, chatId, T.askName, null);
+    return;
+  }
+  if (action === "time" || action === "salon") {
+    const catalog = await agentCatalogForBot(KV, lang);
+    const actx = await agentContext(KV);
+    const next = action === "time" ? agentNextSlotAfter(actx, catalog, st.offer) : agentNextSalonOffer(actx, catalog, st.offer);
+    await tgAnswerCb(token, cq.id, "");
+    if (!next) {
+      await tgSendKb(token, chatId, action === "time" ? T.noMoreSlots : T.noMoreSalons, null);
+      return;
+    }
+    st.offer = next;
+    st.step = "chat";
+    await agentSave(KV, chatId, st);
+    await tgSendKb(token, chatId, agentOfferText(lang, next, catalog), agentOfferKb(lang));
+    return;
+  }
+  await tgAnswerCb(token, cq.id, "");
+}
+
+// Голосове повідомлення: getFile → байти → транскрипція. Повертає текст
+// або "" (користувачу вже відповіли ввічливою підказкою).
+async function agentHandleVoice(msg, chatId, ctx, env) {
+  const { token } = ctx;
+  const lang = ctx.lang || "uk";
+  const T = agentT(lang);
+  if (!((env && env.OPENAI_API_KEY) || "")) {
+    await tgSendKb(token, chatId, T.voiceOff, null);
+    return "";
+  }
+  const voice = msg.voice || {};
+  if (!voice.file_id || (voice.file_size && voice.file_size > 2 * 1024 * 1024)) {
+    await tgSendKb(token, chatId, T.voiceFail, null);
+    return "";
+  }
+  let text = "";
+  try {
+    const gf = await tgApi(token, "getFile", { file_id: voice.file_id });
+    const path = gf && gf.file_path;
+    if (!path) throw new Error("no file");
+    const fr = await fetch("https://api.telegram.org/file/bot" + token + "/" + path);
+    if (!fr.ok) throw new Error("download");
+    const buf = new Uint8Array(await fr.arrayBuffer());
+    const mime = String(voice.mime_type || "audio/ogg");
+    const ext = mime.includes("mp4") ? "m4a" : mime.includes("mpeg") ? "mp3" : mime.includes("wav") ? "wav" : "ogg";
+    text = await transcribeAudio(env, buf, "voice." + ext, mime, lang) || "";
+  } catch { text = ""; }
+  if (!text) {
+    await tgSendKb(token, chatId, T.voiceFail, null);
+    return "";
+  }
+  await tgSendKb(token, chatId, T.heard + "«" + text.slice(0, 300) + "»", null);
+  return text;
+}
 // ---------- Команди бота: салони і клієнти ----------
 // notify(chatId, text) — надсилання повідомлень іншим учасникам (салону/клієнту/власнику).
 async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, channelEnv) {
@@ -2326,6 +3101,12 @@ async function handleCallbackQuery(cq, ctx) {
   const msgText = (cq.message && cq.message.text) || "";
   const { KV, token, ownerChat } = ctx;
   if (!KV) { await tgAnswerCb(token, cq.id, "Сховище не підключено"); return; }
+
+  // ----- v12: кнопки AI-агента бронювання (ag:) -----
+  if (data.startsWith("ag:")) {
+    await agentCallback(cq, ctx, data.slice(3).split(":")[0], msgChat, msgId);
+    return;
+  }
 
   // ----- Майстер підключення -----
   if (data.startsWith("wiz:")) {
