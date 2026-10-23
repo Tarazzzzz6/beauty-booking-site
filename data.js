@@ -32,18 +32,18 @@
 
   // ---- SERVICES ----
   window.SERVICES = [
-    { id:"manicure", ua:"Манікюр", en:"Manicure", ru:"Маникюр", icon:"💅" },
-    { id:"pedicure", ua:"Педикюр", en:"Pedicure", ru:"Педикюр", icon:"🦶" },
-    { id:"brows", ua:"Брови", en:"Brows", ru:"Брови", icon:"✨" },
-    { id:"lashes", ua:"Вії", en:"Lashes", ru:"Ресницы", icon:"👁️" },
-    { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", ru:"Стрижка мужская", icon:"✂️" },
-    { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", ru:"Стрижка женская", icon:"💇‍♀️" },
-    { id:"coloring", ua:"Фарбування", en:"Hair coloring", ru:"Окрашивание", icon:"🎨" },
-    { id:"barber", ua:"Барбер", en:"Barber", ru:"Барбер", icon:"💈" },
-    { id:"makeup", ua:"Макіяж", en:"Makeup", ru:"Макияж", icon:"💄" },
-    { id:"massage", ua:"Масаж", en:"Massage", ru:"Массаж", icon:"💆‍♀️" },
-    { id:"cosmetology", ua:"Косметолог", en:"Cosmetology", ru:"Косметолог", icon:"🌿" },
-    { id:"depilation", ua:"Депіляція", en:"Depilation", ru:"Депиляция", icon:"🕯️" },
+    { id:"manicure", ua:"Манікюр", en:"Manicure", ru:"Маникюр", fr:"Manucure", icon:"💅" },
+    { id:"pedicure", ua:"Педикюр", en:"Pedicure", ru:"Педикюр", fr:"Pédicure", icon:"🦶" },
+    { id:"brows", ua:"Брови", en:"Brows", ru:"Брови", fr:"Sourcils", icon:"✨" },
+    { id:"lashes", ua:"Вії", en:"Lashes", ru:"Ресницы", fr:"Cils", icon:"👁️" },
+    { id:"mens_haircut", ua:"Стрижка чоловіча", en:"Men's haircut", ru:"Стрижка мужская", fr:"Coupe homme", icon:"✂️" },
+    { id:"womens_haircut", ua:"Стрижка жіноча", en:"Women's haircut", ru:"Стрижка женская", fr:"Coupe femme", icon:"💇‍♀️" },
+    { id:"coloring", ua:"Фарбування", en:"Hair coloring", ru:"Окрашивание", fr:"Coloration", icon:"🎨" },
+    { id:"barber", ua:"Барбер", en:"Barber", ru:"Барбер", fr:"Barbier", icon:"💈" },
+    { id:"makeup", ua:"Макіяж", en:"Makeup", ru:"Макияж", fr:"Maquillage", icon:"💄" },
+    { id:"massage", ua:"Масаж", en:"Massage", ru:"Массаж", fr:"Massage", icon:"💆‍♀️" },
+    { id:"cosmetology", ua:"Косметолог", en:"Cosmetology", ru:"Косметолог", fr:"Esthétique", icon:"🌿" },
+    { id:"depilation", ua:"Депіляція", en:"Depilation", ru:"Депиляция", fr:"Épilation", icon:"🕯️" },
   ];
 
   // ===== Helpers =====
@@ -112,8 +112,8 @@
       phone:"+1 (438) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"manicure", from:30, to:55, durationMin:60 },
@@ -136,8 +136,8 @@
       phone:"+1 (438) 233-3457",
       instagram:"https://share.google/eQ0wgWkzDtTdM8v4Y0",
       images:[
-        "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=800&q=80"
       ],
       bio_ua:
 `Привіт 🌸
@@ -171,7 +171,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"womens_haircut", from:70, to:120, durationMin:75 },
@@ -193,7 +193,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"brows", from:30, to:55, durationMin:45 },
@@ -215,7 +215,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"manicure", from:35, to:65, durationMin:60 },
@@ -237,7 +237,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"mens_haircut", from:40, to:70, durationMin:45 },
@@ -259,7 +259,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"womens_haircut", from:60, to:105, durationMin:70 },
@@ -281,7 +281,7 @@
       phone:"+1 (514) 000-0000",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?auto=format&fit=crop&w=800&q=80"
       ],
       services:[
         { serviceId:"pedicure", from:55, to:95, durationMin:80 },
@@ -302,8 +302,8 @@
       phone:"+1 (514) 000-1001",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=800&q=80"
       ],
       bio_ua:"Українська студія краси в Роземонті 💛💙 Вії, брови, макіяж і манікюр. Говоримо українською, російською, англійською і французькою.",
       services:[
@@ -327,8 +327,8 @@
       phone:"+1 (514) 000-1002",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?auto=format&fit=crop&w=800&q=80"
       ],
       bio_ua:"Косметологія, масаж і депіляція. Русскоязычный персонал, стерильно, запис онлайн.",
       services:[
@@ -352,8 +352,8 @@
       phone:"+1 (514) 000-1003",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
       ],
       bio_ua:"Український барбершоп на Плато. Фейди, бороди, класика. Перша стрижка новим клієнтам — мінус 10%.",
       services:[
@@ -375,8 +375,8 @@
       phone:"+1 (514) 000-1004",
       instagram:"https://instagram.com/",
       images:[
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1400&q=80",
-        "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1400&q=80"
+        "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=800&q=80"
       ],
       bio_ua:"Premium hair color studio in Westmount. Balayage, airtouch, blond experts. EN/FR.",
       services:[
@@ -871,8 +871,8 @@
       // закриті дні з бота + цінові оверрайди — як для статичних лістингів
       fresh.forEach(function(l){
         if(window.bb.applyOverrides) window.bb.applyOverrides(l);
-        if(l.telegramChatId){
-          fetch(W + "/schedule?chat=" + encodeURIComponent(l.telegramChatId))
+        if(l.id){
+          fetch(W + "/schedule?listing=" + encodeURIComponent(l.id))
             .then(function(r){ return r.json(); })
             .then(function(j){
               if(j && Array.isArray(j.closed) && j.closed.length){

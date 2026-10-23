@@ -615,6 +615,14 @@
       return (window.SERVICES||[]).find(x=>String(x.id)===String(serviceId)) || null;
     }
 
+    // Назва послуги мовою інтерфейсу (bb_lang головної: uk/ru/en/fr)
+    const BB_LANG = (()=>{ try { return localStorage.getItem("bb_lang") || "en"; } catch(e){ return "en"; } })();
+    function bbSvcName(meta, fb){
+      if(!meta) return fb;
+      const f = { uk:"ua", ru:"ru", en:"en", fr:"fr" }[BB_LANG] || "en";
+      return meta[f] || meta.en || meta.ua || meta.name || fb;
+    }
+
     // listing availability: supports l.availability[serviceId] OR l.slots
    function getSlotsForService(l, serviceId){
   if (!l) return [];
@@ -776,7 +784,7 @@
 
       svcList.forEach((s, idx)=>{
         const meta = getSvcMeta(s.serviceId);
-        const name = meta ? (meta.ua || meta.en || meta.name || s.serviceId) : s.serviceId;
+        const name = meta ? bbSvcName(meta, s.serviceId) : s.serviceId;
         const price = `$${s.from}${s.to?`–$${s.to}`:""}`;
         const dur = `${s.durationMin} min`;
 
@@ -987,7 +995,7 @@
 
       const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
       const meta = getSvcMeta(st.serviceId);
-      const name = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+      const name = meta ? bbSvcName(meta, st.serviceId) : st.serviceId;
 
       document.getElementById("bbRService").textContent = name;
       document.getElementById("bbRWhen").textContent = fmtWhen(st.slotISO);
@@ -1114,7 +1122,7 @@
 
         const svc = (st.listing.services||[]).find(x=>String(x.serviceId)===String(st.serviceId));
         const meta = getSvcMeta(st.serviceId);
-        const svcName = meta ? (meta.ua || meta.en || meta.name || st.serviceId) : st.serviceId;
+        const svcName = meta ? bbSvcName(meta, st.serviceId) : st.serviceId;
 
         // Worker URL: use window.WORKER_URL if defined in data.js; else fallback to your saved endpoint
         const WORKER_URL = (window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev").replace(/\/$/,"");
@@ -1171,7 +1179,8 @@
         const SLOT_TAKEN_MSG = {
           uk: "Цей час щойно зайняли — оберіть інший",
           ru: "Это время только что заняли — выберите другое",
-          en: "That time was just booked — please pick another"
+          en: "That time was just booked — please pick another",
+          fr: "Ce créneau vient d'être réservé — choisissez-en un autre"
         };
 
         try{
@@ -1239,6 +1248,45 @@
       });
     }
 
+    // H4: закриті дні салону з бота/кабінету. Воркер сам резолвить chatId
+    // за listing id (публічний /listings chatId більше не віддає — M3).
+    // Graceful fallback: воркер недоступний → календар лишається як є.
+    function fetchBotClosedDays(l){
+      if(!l || !l.id) return;
+      try{
+        const schedW = (window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev").replace(/\/$/, "");
+        fetch(schedW + "/schedule?listing=" + encodeURIComponent(l.id))
+          .then(r => r.ok ? r.json() : null)
+          .then(j => {
+            if(!j || !Array.isArray(j.closed) || !j.closed.length) return;
+            if(window.bb && typeof window.bb.applyClosedDays === "function"){
+              window.bb.applyClosedDays(l, j.closed);
+            } else {
+              j.closed.forEach(dstr => {
+                if(l.availability) delete l.availability[dstr];
+                if(l.availabilityByService) Object.keys(l.availabilityByService).forEach(k => {
+                  l.availabilityByService[k] = l.availabilityByService[k].filter(iso => iso.slice(0,10) !== dstr);
+                });
+                if(Array.isArray(l.slots)) l.slots = l.slots.filter(iso => iso.slice(0,10) !== dstr);
+              });
+            }
+            // якщо віджет ініціалізовано саме для цього лістинга — перебудувати
+            if(st.listing && st.listing.id === l.id){
+              buildAvailability();
+              if(st.dayISO && !st.enabledDays.has(st.dayISO)){
+                st.dayISO = null; st.slotISO = null;
+                document.getElementById("bbChosenISO").value = "";
+                stopHold();
+              }
+              renderCalendar();
+              renderTimes();
+              renderReceipt();
+            }
+          })
+          .catch(()=>{});
+      }catch(e){}
+    }
+
     function initBookingForListing(l){
       st.listing = l;
       st.month = startOfMonth(new Date());
@@ -1261,6 +1309,9 @@
 
       // default chip none
       document.querySelectorAll("#bbChips .bbChip").forEach(x=>x.classList.remove("isActive"));
+
+      // H4: закриті дні салону з бота/кабінету (див. fetchBotClosedDays)
+      fetchBotClosedDays(l);
     }
 
     // Load data.js + render profile
@@ -1286,7 +1337,7 @@
         window.bb.currentListing = l;
 
         document.getElementById("main").style.display = "block";
-        document.getElementById("heroImg").src = safeImg((l.images||[])[0]);
+        document.getElementById("heroImg").src = safeImg((l.images||[])[0]).replace("w=800", "w=1400");
         document.getElementById("name").textContent = l.name;
         document.getElementById("address").textContent = l.address;
 
@@ -1351,6 +1402,9 @@ bookBtn.addEventListener("click", () => {
 
         // bind booking UI once
         bindBookingUI();
+
+        // H4: підтягнути закриті дні салону (бот/кабінет) за listing id
+        fetchBotClosedDays(l);
 
       }catch(e){
         showErr(e.message || String(e));
