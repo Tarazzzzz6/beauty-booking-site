@@ -1,5 +1,29 @@
 // ============================================================
-// Booking Club — Cloudflare Worker v9
+// Booking Club — Cloudflare Worker v10 (Telegram-ПРО-пакет)
+// ------------------------------------------------------------
+// Нове у v10:
+// TG1) Клієнт: у підтвердженні /start BK-… і в нагадуваннях 24г/2г —
+//      кнопки «❌ Скасувати запис» (callback cx:<код>) і «🏠 Відкрити
+//      салон» (профіль). Скасування кнопкою = той самий шлях, що й
+//      /cancel: запис видаляється, салон отримує сповіщення.
+//      clientLang зберігається повністю (uk/ru/en/fr), не лише fr.
+// TG2) Салон: сповіщення про новий запис (POST /book) одразу з
+//      кнопками «✅ Був» / «🚫 Не прийшов» (att:) — не чекаючи скану
+//      відвідуваності. rec.chatId тепер зберігає і серверно знайдений
+//      chatId салону (динамічні лістинги), а att: перевіряє доступ
+//      через findBookingForActor (chatId/salonmap/listingKey).
+// TG3) Канал: автовизначення — бота додали адміном у канал
+//      (my_chat_member) або перший channel_post → config:channel у KV
+//      + DM власнику «Канал підключено». Автопости публікацій читають
+//      config:channel → fallback env CHANNEL_ID. Команди власника:
+//      /channel (стан), /channel_off (config:channelOff — перебиває
+//      навіть env), /channel_on.
+// TG4) /unpublish <listingId> (тільки власник): видаляє lst:<id> і
+//      всі salonmap-звʼязки (окремі ключі + легасі-JSON).
+// TG5) /setup-menu реєструє команди ×4 мови (default UA, ru, en, fr);
+//      звичайний /start — ОДНЕ повідомлення з кнопкою каталогу замість
+//      двох; майстер /join — кнопка «❌ Скасувати» (wiz:cancel) на
+//      кнопкових кроках; ID_MSG і фолбек команд — FR-варіанти.
 // ------------------------------------------------------------
 // Нове у v9:
 // FR) Французька мова: POST /ai приймає lang "fr"; бот відповідає
@@ -104,7 +128,8 @@
 // - Опційно: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET; Cron Trigger (hourly)
 // - Опційно: OPENAI_API_KEY — AI-консьєрж (POST /ai); без нього сайт
 //   користується правиловим підбором
-// - Опційно: CHANNEL_ID (автопости нових салонів у Telegram-канал),
+// - Опційно: CHANNEL_ID (fallback каналу автопостів; основний шлях із
+//   v10 — автовизначення каналу config:channel у KV, команди /channel),
 //   SETUP_KEY (захист GET /setup-menu і GET /remind; /remind приймає
 //   заголовок x-setup-key або ?key=<SETUP_KEY>)
 // ============================================================
@@ -247,9 +272,18 @@ export default {
         }
         if (!BOT_TOKEN) return new Response("ok", { headers: corsHeaders });
         const wctx = { KV, token: BOT_TOKEN, ownerChat: OWNER_CHAT, channelId: (env && env.CHANNEL_ID) || "", lang: tgLangOf((peek.message && peek.message.from) || (peek.callback_query && peek.callback_query.from) || (peek.edited_message && peek.edited_message.from)) };
-        // Інлайн-кнопки: майстер (wiz:), публікація (pub:/rej:), відвідуваність (att:)
+        // Інлайн-кнопки: майстер (wiz:), публікація (pub:/rej:), відвідуваність (att:), скасування клієнта (cx:)
         if (peek.callback_query) {
           try { await handleCallbackQuery(peek.callback_query, wctx); } catch { /* ignore */ }
+          return new Response("ok", { headers: corsHeaders });
+        }
+        // v10: автовизначення каналу платформи (бота додали адміном / перший пост каналу)
+        if (peek.my_chat_member) {
+          try { await handleMyChatMember(peek.my_chat_member, wctx); } catch { /* ignore */ }
+          return new Response("ok", { headers: corsHeaders });
+        }
+        if (peek.channel_post) {
+          try { await handleChannelPost(peek.channel_post, wctx); } catch { /* ignore */ }
           return new Response("ok", { headers: corsHeaders });
         }
         const msg = peek.message || peek.edited_message;
@@ -276,15 +310,22 @@ export default {
             if (consumed) return new Response("ok", { headers: corsHeaders });
           }
           if (msg.text) {
-            const reply = await handleBotCommand(textIn, chatId, KV, tgSend, OWNER_CHAT, tgLangOf(msg.from));
-            if (reply) await tgSend(chatId, reply);
-            // Mini App: звичайний /start без параметрів — інлайн-кнопка каталогу (web_app)
-            if (wCmd === "/start" && !wArg) {
-              try {
-                await tgSendKb(BOT_TOKEN, chatId, "📱 Каталог салонів Монреаля — прямо тут, у Telegram:", [[
-                  { text: "📱 Відкрити каталог", web_app: { url: "https://bookingclub.beauty" } },
-                ]]);
-              } catch { /* ignore */ }
+            const reply = await handleBotCommand(textIn, chatId, KV, tgSend, OWNER_CHAT, tgLangOf(msg.from), (env && env.CHANNEL_ID) || "");
+            if (reply && typeof reply === "object") {
+              // v10: відповідь із кнопками (клієнтське підтвердження запису — cx:/профіль)
+              try { await tgSendKb(BOT_TOKEN, chatId, reply.text, reply.kb); } catch { /* ignore */ }
+            } else if (reply) {
+              // Mini App: звичайний /start без параметрів — ОДНЕ повідомлення:
+              // привітання + інлайн-кнопка каталогу (web_app), а не два поспіль.
+              if (wCmd === "/start" && !wArg) {
+                try {
+                  await tgSendKb(BOT_TOKEN, chatId, reply, [[
+                    { text: tgLangOf(msg.from) === "fr" ? "📱 Ouvrir le catalogue" : "📱 Відкрити каталог", web_app: { url: "https://bookingclub.beauty" } },
+                  ]]);
+                } catch { /* ignore */ }
+              } else {
+                await tgSend(chatId, reply);
+              }
             }
           }
         }
@@ -765,11 +806,59 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       const res = await tgApi(BOT_TOKEN, "setChatMenuButton", {
         menu_button: { type: "web_app", text: "Записатись", web_app: { url: "https://bookingclub.beauty" } },
       });
-      // FR: описи команд для французьких користувачів (scoped language_code —
-      // дефолтне меню інших мов не змінюється).
-      const resFr = await tgApi(BOT_TOKEN, "setMyCommands", {
-        language_code: "fr",
-        commands: [
+      // v10: команди бота реєструються ×4 мови — дефолт (UA) + scoped
+      // language_code ru/en/fr. Раніше існував лише FR-скоуп, а дефолтне
+      // меню команд у клієнтів було порожнім.
+      const CMDS = {
+        def: [
+          { command: "start", description: "Головне меню Booking Club" },
+          { command: "join", description: "Підключити салон або майстра" },
+          { command: "myid", description: "Мій Telegram ID" },
+          { command: "bookings", description: "Найближчі бронювання (салонам)" },
+          { command: "cancel", description: "Скасувати бронювання (код BK-…)" },
+          { command: "close", description: "Закрити день (салонам)" },
+          { command: "open", description: "Відкрити день назад (салонам)" },
+          { command: "closed", description: "Закриті дні (салонам)" },
+          { command: "done", description: "Клієнт прийшов (салонам)" },
+          { command: "noshow", description: "Клієнт не прийшов (салонам)" },
+          { command: "stats", description: "Статистика платформи (власник)" },
+          { command: "unpublish", description: "Зняти лістинг з публікації (власник)" },
+          { command: "channel", description: "Telegram-канал платформи (власник)" },
+          { command: "help", description: "Довідка" },
+        ],
+        ru: [
+          { command: "start", description: "Главное меню Booking Club" },
+          { command: "join", description: "Подключить салон или мастера" },
+          { command: "myid", description: "Мой Telegram ID" },
+          { command: "bookings", description: "Ближайшие бронирования (салонам)" },
+          { command: "cancel", description: "Отменить бронирование (код BK-…)" },
+          { command: "close", description: "Закрыть день (салонам)" },
+          { command: "open", description: "Открыть день обратно (салонам)" },
+          { command: "closed", description: "Закрытые дни (салонам)" },
+          { command: "done", description: "Клиент пришёл (салонам)" },
+          { command: "noshow", description: "Клиент не пришёл (салонам)" },
+          { command: "stats", description: "Статистика платформы (владелец)" },
+          { command: "unpublish", description: "Снять листинг с публикации (владелец)" },
+          { command: "channel", description: "Telegram-канал платформы (владелец)" },
+          { command: "help", description: "Справка" },
+        ],
+        en: [
+          { command: "start", description: "Booking Club home" },
+          { command: "join", description: "Register a salon or a master" },
+          { command: "myid", description: "My Telegram ID" },
+          { command: "bookings", description: "Upcoming bookings (salons)" },
+          { command: "cancel", description: "Cancel a booking (BK-… code)" },
+          { command: "close", description: "Close a day (salons)" },
+          { command: "open", description: "Reopen a day (salons)" },
+          { command: "closed", description: "Closed days (salons)" },
+          { command: "done", description: "Client attended (salons)" },
+          { command: "noshow", description: "Client did not show (salons)" },
+          { command: "stats", description: "Platform stats (owner)" },
+          { command: "unpublish", description: "Unpublish a listing (owner)" },
+          { command: "channel", description: "Platform Telegram channel (owner)" },
+          { command: "help", description: "Help" },
+        ],
+        fr: [
           { command: "start", description: "Accueil Booking Club" },
           { command: "join", description: "Inscrire un salon ou un spécialiste" },
           { command: "myid", description: "Mon identifiant Telegram" },
@@ -780,10 +869,17 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           { command: "closed", description: "Jours fermés (salons)" },
           { command: "done", description: "Le client est venu (salons)" },
           { command: "noshow", description: "Le client ne s'est pas présenté (salons)" },
+          { command: "stats", description: "Statistiques de la plateforme (propriétaire)" },
+          { command: "unpublish", description: "Retirer un salon de la publication (propriétaire)" },
+          { command: "channel", description: "Chaîne Telegram de la plateforme (propriétaire)" },
           { command: "help", description: "Aide" },
         ],
-      });
-      return jsonResp({ ok: !!res, result: res === undefined ? null : res, commands_fr: !!resFr });
+      };
+      const resCmd = await tgApi(BOT_TOKEN, "setMyCommands", { commands: CMDS.def });
+      const resCmdRu = await tgApi(BOT_TOKEN, "setMyCommands", { language_code: "ru", commands: CMDS.ru });
+      const resCmdEn = await tgApi(BOT_TOKEN, "setMyCommands", { language_code: "en", commands: CMDS.en });
+      const resFr = await tgApi(BOT_TOKEN, "setMyCommands", { language_code: "fr", commands: CMDS.fr });
+      return jsonResp({ ok: !!res, result: res === undefined ? null : res, commands: !!resCmd, commands_ru: !!resCmdRu, commands_en: !!resCmdEn, commands_fr: !!resFr });
     }
 
     // ---------- Нагадування + відвідуваність: ручний запуск scan (ідемпотентний) ----------
@@ -910,7 +1006,10 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
         listingId: String(data?.listingId || ""),
         listingKey: bkKey,
         listingName: String(data?.listingName || ""),
-        chatId: salonChatEarly,
+        // v10: зберігаємо і серверно знайдений chatId салону — для динамічних
+        // лістингів сайт chatId не знає (M3), а скану відвідуваності й кнопкам
+        // att: він потрібен.
+        chatId: salonChatEarly || salonChatResolved || "",
         dateISO: bk.dateISO,
         time: bk.time,
         serviceId: String(data?.serviceId || ""),
@@ -950,7 +1049,15 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
 
     let sent = 0;
     for (const t of targets) {
-      if (await tgSend(t, text)) sent++;
+      // v10: сповіщення про запис — одразу з кнопками відвідуваності
+      // «✅ Був» / «🚫 Не прийшов» (att:), а не лише сканом +30 хв після візиту.
+      const okSend = bkRecId
+        ? await tgSendKb(BOT_TOKEN, t, text, [[
+            { text: "✅ Був", callback_data: "att:" + bkRecId + ":y" },
+            { text: "🚫 Не прийшов", callback_data: "att:" + bkRecId + ":n" },
+          ]])
+        : await tgSend(t, text);
+      if (okSend) sent++;
     }
     // Без запису в KV (легасі-середовище без KV) — стара семантика:
     // нема доставки → 502. Із записом бронювання вже існує — код віддаємо
@@ -972,7 +1079,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
 
 // ---------- Команди бота: салони і клієнти ----------
 // notify(chatId, text) — надсилання повідомлень іншим учасникам (салону/клієнту/власнику).
-async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang) {
+async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, channelEnv) {
   const FR = lang === "fr";
   const say = async (to, text) => { if (notify && to && to !== chatId) { try { await notify(to, text); } catch { /* ignore */ } } };
   const parts = textIn.split(/\s+/);
@@ -992,6 +1099,18 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang) {
     "/close 2026-11-03 — закрити день (відпустка, вихідний)\n" +
     "/open 2026-11-03 — відкрити день назад\n" +
     "/closed — список закритих днів";
+  const ID_MSG_FR =
+    "👋 Bienvenue chez Booking Club !\n\n" +
+    "Votre identifiant Telegram : " + chatId + "\n\n" +
+    "Indiquez cet identifiant dans le formulaire d'inscription du salon (bookingclub.beauty/join) — et les réservations du site arriveront directement ici.\n\n" +
+    "Pour les salons :\n" +
+    "/bookings — prochaines réservations des clients\n" +
+    "/cancel BK-XXXXXX — annuler une réservation (le créneau redevient libre)\n" +
+    "/done BK-XXXXXX — le client est venu · /noshow BK-XXXXXX — le client ne s'est pas présenté\n\n" +
+    "Inscrire un salon ou un spécialiste :\n" +
+    "/join — assistant d'inscription pas à pas (avec photos)\n\n" +
+    "Horaire :\n" +
+    "/close 2026-11-03 — fermer un jour · /open 2026-11-03 — rouvrir · /closed — jours fermés";
 
   // --- Клієнт: /start BK-XXXXXX (deep link із сайту після бронювання) ---
   if (cmd === "/start" && /^BK-[A-Z0-9]{6}$/i.test(arg || "")) {
@@ -1004,29 +1123,35 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang) {
         ? "Je n'ai pas trouvé de réservation avec le code " + code + ". Vérifiez le code dans le message reçu après la réservation sur le site, ou réservez de nouveau sur bookingclub.beauty."
         : "Не знайшов бронювання з кодом " + code + ". Перевірте код у повідомленні після запису на сайті або забронюйте ще раз на bookingclub.beauty.";
     }
-    if (rec.chatId && rec.chatId === chatId) return ID_MSG; // салон відкрив власний лінк
+    if (rec.chatId && rec.chatId === chatId) return FR ? ID_MSG_FR : ID_MSG; // салон відкрив власний лінк
     await updateBookingRec(KV, key, r => {
       r.clientChatId = chatId;
       r.clientLinkedAt = new Date().toISOString();
-      // Мова клієнта для нагадувань (FR — якщо Telegram французькою)
-      if (FR) r.clientLang = "fr"; else if (r.clientLang) delete r.clientLang;
+      // v10: мова клієнта для нагадувань — зберігаємо повну (uk/ru/en/fr).
+      // Тексти нагадувань існують UA/FR; інші мови поводяться як раніше (UA).
+      if (["uk", "ru", "en", "fr"].includes(lang)) r.clientLang = lang;
+      else if (r.clientLang) delete r.clientLang;
     });
+    // v10: підтвердження — з кнопками «Скасувати запис» (cx:) і «Відкрити салон»;
+    // fetch надсилає обʼєктні відповіді через tgSendKb.
+    const salonBtn = { text: FR ? "🏠 Voir le salon" : "🏠 Відкрити салон", url: "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(rec.listingId || "") };
+    const cancelBtn = { text: FR ? "❌ Annuler la réservation" : "❌ Скасувати запис", callback_data: "cx:" + rec.id };
     if (FR) {
-      return "✅ C'est fait ! Votre réservation est confirmée.\n\n" +
+      return { kb: [[cancelBtn, salonBtn]], text: "✅ C'est fait ! Votre réservation est confirmée.\n\n" +
         "🏠 " + (rec.listingName || "Salon") + "\n" +
         "💅 " + (rec.serviceName || "Service") + "\n" +
         "📅 " + rec.dateISO + " à " + rec.time + "\n" +
         "🆔 Code : " + rec.id + "\n\n" +
         "Je vous enverrai un rappel la veille et 2 heures avant la visite.\n" +
-        "Si vos plans changent — annulez avec la commande : /cancel " + rec.id;
+        "Si vos plans changent — annulez avec le bouton ci-dessous ou la commande : /cancel " + rec.id };
     }
-    return "✅ Готово! Ваше бронювання підтверджено.\n\n" +
+    return { kb: [[cancelBtn, salonBtn]], text: "✅ Готово! Ваше бронювання підтверджено.\n\n" +
       "🏠 " + (rec.listingName || "Салон") + "\n" +
       "💅 " + (rec.serviceName || "Послуга") + "\n" +
       "📅 " + rec.dateISO + " о " + rec.time + "\n" +
       "🆔 Код: " + rec.id + "\n\n" +
       "Я надішлю нагадування за день і за 2 години до візиту.\n" +
-      "Якщо плани зміняться — скасувати можна командою: /cancel " + rec.id;
+      "Якщо плани зміняться — скасуйте кнопкою нижче або командою: /cancel " + rec.id };
   }
 
   if (cmd === "/start") {
@@ -1041,8 +1166,8 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang) {
       "Якщо ви салон або майстер: підключіться командою /join — бот покроково збере назву, послуги, ціни й фото.\n" +
       "Або вкажіть свій Telegram ID (" + chatId + ") у формі bookingclub.beauty/join. Детальніше: /myid";
   }
-  if (cmd === "/myid" || cmd === "/id") return ID_MSG;
-  if (cmd === "/help") return ID_MSG;
+  if (cmd === "/myid" || cmd === "/id") return FR ? ID_MSG_FR : ID_MSG;
+  if (cmd === "/help") return FR ? ID_MSG_FR : ID_MSG;
 
   if (cmd === "/bookings" || cmd === "/cancel") {
     if (!KV) {
@@ -1141,6 +1266,54 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang) {
     return "📊 Booking Club — відвідуваність по салонах:\n\n" + lines.join("\n\n");
   }
 
+  // --- v10: Telegram-канал платформи (тільки власник) ---
+  if (cmd === "/channel" || cmd === "/channel_off" || cmd === "/channel_on") {
+    if (chatId !== ownerChat) return "📣 Керування каналом доступне тільки адміністрації платформи.";
+    if (!KV) return "⚠️ Сховище ще не підключено платформою. Спробуйте пізніше.";
+    if (cmd === "/channel_off") {
+      try { await KV.put("config:channelOff", "1"); } catch { /* ignore */ }
+      return "🔕 Автопости в канал вимкнено.\nУвімкнути назад: /channel_on";
+    }
+    if (cmd === "/channel_on") {
+      try { await KV.delete("config:channelOff"); } catch { /* ignore */ }
+      return "🔔 Автопости в канал увімкнено." + (await channelStatusLine(KV, channelEnv));
+    }
+    return "📣 Telegram-канал Booking Club" + (await channelStatusLine(KV, channelEnv)) +
+      "\n\nПідключити канал: додайте бота @pershe1012_bot адміністратором у канал — підключу його автоматично.\nВимкнути автопости: /channel_off";
+  }
+
+  // --- v10: зняття лістинга з публікації (тільки власник) ---
+  if (cmd === "/unpublish") {
+    if (chatId !== ownerChat) return "Зняття з публікації доступне тільки адміністрації платформи.";
+    if (!KV) return "⚠️ Сховище ще не підключено платформою. Спробуйте пізніше.";
+    const lid = sanitizeListingKey(arg);
+    if (!lid) return "Формат: /unpublish <id лістинга>\nНаприклад: /unpublish romanukova-nails-ab12";
+    const lrec = await readBookingRec(KV, LST_PREFIX + lid);
+    if (!lrec) return "Лістинг " + lid + " не знайдено серед опублікованих.";
+    await KV.delete(LST_PREFIX + lid);
+    // Чистимо всі salonmap-звʼязки на цей лістинг: окремі ключі salonmap:<chatId>
+    // і легасі-JSON у ключі "salonmap".
+    let cleaned = 0;
+    try {
+      const mapKeys = await kvListKeys(KV, "salonmap:");
+      for (const k of mapKeys) {
+        if ((await KV.get(k)) === lid) { await KV.delete(k); cleaned++; }
+      }
+      const rawMap = await KV.get("salonmap");
+      if (rawMap) {
+        const map = JSON.parse(rawMap) || {};
+        let changed = false;
+        for (const c of Object.keys(map)) {
+          if (map[c] === lid) { delete map[c]; changed = true; cleaned++; }
+        }
+        if (changed) await KV.put("salonmap", JSON.stringify(map));
+      }
+    } catch { /* ignore */ }
+    return "🗑 Лістинг «" + (lrec.name || lid) + "» (" + lid + ") знято з публікації." +
+      (cleaned ? "\nОчищено звʼязків salonmap: " + cleaned + "." : "") +
+      "\nСайт оновиться протягом хвилини.";
+  }
+
   const isDate = /^\d{4}-\d{2}-\d{2}$/.test(arg);
   if (cmd === "/close" || cmd === "/open" || cmd === "/closed") {
     if (!KV) {
@@ -1167,7 +1340,90 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang) {
     await KV.put(key, JSON.stringify(sched));
     return "✅ " + arg + " — день знову відкрито за звичайним графіком.";
   }
+  if (FR) return "Commandes Booking Club : /join — inscrire un salon, /myid — votre identifiant, /bookings — réservations du salon, /cancel BK-XXXXXX — annuler une réservation, /done BK-XXXXXX — le client est venu, /noshow BK-XXXXXX — absent, /close DATE — fermer un jour, /open DATE — rouvrir, /closed — jours fermés.";
   return "Команди Booking Club: /join — підключити салон, /myid — ваш ID, /bookings — мої бронювання, /cancel BK-XXXXXX — скасувати бронювання, /done BK-XXXXXX — клієнт прийшов, /noshow BK-XXXXXX — не прийшов, /close ДАТА — закрити день, /open ДАТА — відкрити, /closed — закриті дні.";
+}
+
+// v10: рядок стану каналу для відповідей /channel і /channel_on.
+async function channelStatusLine(KV, channelEnv) {
+  try {
+    if (await KV.get("config:channelOff")) return "\nСтан: автопости вимкнено вручну. Увімкнути: /channel_on";
+    const raw = await KV.get("config:channel");
+    if (raw) {
+      const c = JSON.parse(raw);
+      if (c && c.id) return "\nСтан: підключено — " + (c.title || "канал") + " (" + c.id + ").\nАвтопости нових салонів ідуть у цей канал.";
+    }
+  } catch { /* ignore */ }
+  if (channelEnv) return "\nСтан: автопости ідуть у канал із налаштувань воркера (CHANNEL_ID).";
+  return "\nСтан: канал ще не підключено.";
+}
+
+// v10: ефективний канал автопостів: ручне вимкнення (config:channelOff)
+// → config:channel (автовизначення) → env CHANNEL_ID (сумісність v6–v9).
+async function resolveChannelId(KV, envChannelId) {
+  if (KV) {
+    try {
+      if (await KV.get("config:channelOff")) return "";
+      const raw = await KV.get("config:channel");
+      if (raw) {
+        const c = JSON.parse(raw);
+        if (c && c.id) return String(c.id);
+      }
+    } catch { /* ignore */ }
+  }
+  return envChannelId || "";
+}
+
+// v10: зберегти канал у config:channel і повідомити власника (один раз на
+// канал; якщо автопости вимкнено вручну — фіксуємо мовчки, без DM).
+async function saveDetectedChannel(KV, token, ownerChat, chat) {
+  if (!KV || !chat || chat.type !== "channel") return false;
+  const id = String(chat.id);
+  try {
+    const raw = await KV.get("config:channel");
+    const cur = raw ? JSON.parse(raw) : null;
+    if (cur && String(cur.id) === id) return false;
+    await KV.put("config:channel", JSON.stringify({ id, title: String(chat.title || ""), at: new Date().toISOString() }));
+    if (await KV.get("config:channelOff")) return true;
+  } catch { return false; }
+  await tgSendWith(token, ownerChat,
+    "📣 Канал підключено: " + (chat.title || "Telegram-канал") + "\n\n" +
+    "Автопости нових салонів на Booking Club тепер ітимуть у цей канал.\n" +
+    "Стан каналу: /channel · Вимкнути автопости: /channel_off");
+  return true;
+}
+
+// v10: бота додали/прибрали у каналі (my_chat_member).
+async function handleMyChatMember(upd, ctx) {
+  const chat = upd && upd.chat;
+  if (!chat || chat.type !== "channel") return;
+  const nm = upd.new_chat_member || {};
+  const botId = String(ctx.token || "").split(":")[0];
+  if (!botId || String((nm.user && nm.user.id) || "") !== botId) return;
+  if (nm.status === "administrator") {
+    await saveDetectedChannel(ctx.KV, ctx.token, ctx.ownerChat, chat);
+    return;
+  }
+  if ((nm.status === "left" || nm.status === "kicked") && ctx.KV) {
+    try {
+      const raw = await ctx.KV.get("config:channel");
+      const cur = raw ? JSON.parse(raw) : null;
+      if (cur && String(cur.id) === String(chat.id)) {
+        await ctx.KV.delete("config:channel");
+        await tgSendWith(ctx.token, ctx.ownerChat,
+          "📣 Бота прибрано з каналу «" + (chat.title || "") + "» — автопости туди зупинено.\nПоточний стан: /channel");
+      }
+    } catch { /* ignore */ }
+  }
+}
+
+// v10: перший channel_post із каналу, де бот — адмін, теж підключає канал
+// (якщо його ще не зафіксовано і автопости не вимкнено вручну).
+async function handleChannelPost(post, ctx) {
+  const chat = post && post.chat;
+  if (!chat || chat.type !== "channel" || !ctx.KV) return;
+  try { if (await ctx.KV.get("config:channelOff")) return; } catch { /* ignore */ }
+  await saveDetectedChannel(ctx.KV, ctx.token, ctx.ownerChat, chat);
 }
 
 // ---------- Календар бронювань у KV ----------
@@ -1496,30 +1752,38 @@ async function scanReminders(env) {
     const diff = visit - now;
     let sent24ok = false, sent2ok = false;
     const clientFR = rec.clientLang === "fr";
+    // v10: нагадування — з кнопками «Скасувати запис» (cx:) і «Відкрити салон»,
+    // а не лише текстом із командою /cancel.
+    const remKb = [[
+      { text: clientFR ? "❌ Annuler la réservation" : "❌ Скасувати запис", callback_data: "cx:" + rec.id },
+    ]];
+    if (rec.listingId) {
+      remKb[0].push({ text: clientFR ? "🏠 Voir le salon" : "🏠 Відкрити салон", url: "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(rec.listingId) });
+    }
     if (!rec.r24 && diff >= 24 * H - WIN && diff <= 24 * H + WIN) {
-      const ok = await tgSendWith(token, rec.clientChatId, clientFR
+      const ok = await tgSendKb(token, rec.clientChatId, clientFR
         ? "⏰ Rappel de Booking Club\n\n" +
           "Demain, " + rec.dateISO + " à " + rec.time + " — votre rendez-vous :\n" +
           "💅 " + (rec.serviceName || "Service") + " — " + (rec.listingName || "salon") + "\n" +
           "🆔 Code : " + rec.id + "\n\n" +
-          "Si vos plans ont changé — annulez avec la commande : /cancel " + rec.id
+          "Si vos plans ont changé — annulez avec le bouton ci-dessous ou la commande : /cancel " + rec.id
         : "⏰ Нагадування від Booking Club\n\n" +
         "Завтра, " + rec.dateISO + " о " + rec.time + " — ваш запис:\n" +
         "💅 " + (rec.serviceName || "Послуга") + " — " + (rec.listingName || "салон") + "\n" +
         "🆔 Код: " + rec.id + "\n\n" +
-        "Якщо плани змінились — скасувати можна командою: /cancel " + rec.id);
+        "Якщо плани змінились — скасуйте кнопкою нижче або командою: /cancel " + rec.id, remKb);
       if (ok) { sent24ok = true; stats.sent24 += 1; }
     }
     if (!rec.r2 && diff >= 2 * H - WIN && diff <= 2 * H + WIN) {
-      const ok = await tgSendWith(token, rec.clientChatId, clientFR
+      const ok = await tgSendKb(token, rec.clientChatId, clientFR
         ? "⏰ C'est bientôt ! Aujourd'hui à " + rec.time + " — votre rendez-vous :\n" +
           "💅 " + (rec.serviceName || "Service") + " — " + (rec.listingName || "salon") + "\n" +
           "🆔 Code : " + rec.id + "\n\n" +
-          "Si vos plans ont changé — annulez avec la commande : /cancel " + rec.id
+          "Si vos plans ont changé — annulez avec le bouton ci-dessous ou la commande : /cancel " + rec.id
         : "⏰ Уже скоро! Сьогодні о " + rec.time + " — ваш запис:\n" +
         "💅 " + (rec.serviceName || "Послуга") + " — " + (rec.listingName || "салон") + "\n" +
         "🆔 Код: " + rec.id + "\n\n" +
-        "Якщо плани змінились — скасувати можна командою: /cancel " + rec.id);
+        "Якщо плани змінились — скасуйте кнопкою нижче або командою: /cancel " + rec.id, remKb);
       if (ok) { sent2ok = true; stats.sent2 += 1; }
     }
     if (sent24ok || sent2ok) {
@@ -1610,10 +1874,15 @@ function svcLabel(id, lang) {
 
 // Мова користувача бота з Telegram language_code. Французька вмикає
 // FR-варіанти клієнтських і майстерних рядків; усі інші мови поводяться
-// рівно як раніше (українська) — існуючу логіку не чіпаємо.
+// рівно як раніше (українська) — існуючу логіку не чіпаємо. v10: uk/ru/en
+// теж повертаємо (для clientLang у записі бронювання).
 function tgLangOf(from) {
   const lc = String((from && from.language_code) || "").toLowerCase();
-  return lc.startsWith("fr") ? "fr" : "";
+  if (lc.startsWith("fr")) return "fr";
+  if (lc.startsWith("ru")) return "ru";
+  if (lc.startsWith("en")) return "en";
+  if (lc.startsWith("uk")) return "uk";
+  return "";
 }
 // true, якщо майстер/клієнт — французькою (стан майстра або ctx вебхука)
 function wizFr(ctx, st) {
@@ -1631,6 +1900,7 @@ function servicesKeyboard(selected, lang) {
     rows.push(row);
   }
   rows.push([{ text: lang === "fr" ? "✔️ Terminé — continuer" : "✔️ Готово — далі", callback_data: "wiz:svcdone" }]);
+  rows.push([{ text: lang === "fr" ? "❌ Annuler" : "❌ Скасувати", callback_data: "wiz:cancel" }]);
   return rows;
 }
 
@@ -1645,6 +1915,7 @@ function langsKeyboard(selected, lang) {
     rows.push(row);
   }
   rows.push([{ text: lang === "fr" ? "✔️ Terminé — continuer" : "✔️ Готово — далі", callback_data: "wiz:langdone" }]);
+  rows.push([{ text: lang === "fr" ? "❌ Annuler" : "❌ Скасувати", callback_data: "wiz:cancel" }]);
   return rows;
 }
 
@@ -1691,14 +1962,14 @@ async function wizardAskKind(chatId, ctx) {
       { text: "🏢 Salon", callback_data: "wiz:kind:salon" },
       { text: "🏠 Spécialiste à domicile", callback_data: "wiz:kind:home" },
       { text: "💈 Barbier", callback_data: "wiz:kind:barber" },
-    ]]);
+    ], [{ text: "❌ Annuler", callback_data: "wiz:cancel" }]]);
     return;
   }
   await tgSendKb(ctx.token, chatId, "Крок 2. Що це буде?", [[
     { text: "🏢 Салон", callback_data: "wiz:kind:salon" },
     { text: "🏠 Майстер на дому", callback_data: "wiz:kind:home" },
     { text: "💈 Барбершоп", callback_data: "wiz:kind:barber" },
-  ]]);
+  ], [{ text: "❌ Скасувати", callback_data: "wiz:cancel" }]]);
 }
 
 async function wizardAskPrice(chatId, ctx, st) {
@@ -1729,7 +2000,7 @@ async function wizardSummary(chatId, ctx, st) {
     await tgSendKb(ctx.token, chatId, linesFr.join("\n"), [[
       { text: "📨 Envoyer la demande", callback_data: "wiz:send" },
       { text: "🔄 Recommencer", callback_data: "wiz:restart" },
-    ]]);
+    ], [{ text: "❌ Annuler la demande", callback_data: "wiz:cancel" }]]);
     return;
   }
   const lines = [
@@ -1746,7 +2017,7 @@ async function wizardSummary(chatId, ctx, st) {
   await tgSendKb(ctx.token, chatId, lines.join("\n"), [[
     { text: "📨 Надіслати заявку", callback_data: "wiz:send" },
     { text: "🔄 Почати заново", callback_data: "wiz:restart" },
-  ]]);
+  ], [{ text: "❌ Скасувати заявку", callback_data: "wiz:cancel" }]]);
 }
 
 async function wizardText(chatId, text, ctx) {
@@ -1828,12 +2099,12 @@ async function wizardPhoto(chatId, photos, ctx) {
   if (wizFr(ctx, st)) {
     await tgSendKb(ctx.token, chatId,
       "📸 Photo reçue : " + st.d.photos.length + "/6." + (st.d.photos.length >= 6 ? " C'est le maximum." : " Vous pouvez en envoyer d'autres ou terminer."),
-      [[{ text: "✔️ Terminé — au résumé", callback_data: "wiz:photodone" }]]);
+      [[{ text: "✔️ Terminé — au résumé", callback_data: "wiz:photodone" }], [{ text: "❌ Annuler", callback_data: "wiz:cancel" }]]);
     return true;
   }
   await tgSendKb(ctx.token, chatId,
     "📸 Фото отримано: " + st.d.photos.length + "/6." + (st.d.photos.length >= 6 ? " Це максимум." : " Можете надіслати ще або завершити."),
-    [[{ text: "✔️ Готово — до підсумку", callback_data: "wiz:photodone" }]]);
+    [[{ text: "✔️ Готово — до підсумку", callback_data: "wiz:photodone" }], [{ text: "❌ Скасувати", callback_data: "wiz:cancel" }]]);
   return true;
 }
 
@@ -2003,6 +2274,16 @@ async function handleCallbackQuery(cq, ctx) {
     const d = st.d;
     const parts = data.split(":");
     const action = parts[1], val = parts[2] || "";
+    if (action === "cancel") {
+      // v10: явне скасування майстра (раніше вихід був лише через /join заново)
+      const frW = wizFr(ctx, st);
+      await wizClear(KV, chatId);
+      await tgAnswerCb(token, cq.id, frW ? "Demande annulée" : "Заявку скасовано");
+      await tgSendKb(token, chatId, frW
+        ? "❌ Demande annulée. Si vous changez d'avis — envoyez /join et nous recommencerons."
+        : "❌ Заявку скасовано. Якщо передумаєте — напишіть /join, і почнемо заново.", null);
+      return;
+    }
     if (action === "kind") {
       d.kind = ["salon", "home", "barber"].includes(val) ? val : "salon";
       st.step = "place";
@@ -2063,12 +2344,12 @@ async function handleCallbackQuery(cq, ctx) {
         await tgSendKb(token, chatId,
           "Étape 8. Photos 📸 Envoyez de 1 à 6 photos de vos travaux ou de votre salon (une à la fois ou en album).\n" +
           "Avec des photos, les clients réservent beaucoup plus volontiers. Quand vous avez terminé — le bouton ci-dessous.",
-          [[{ text: "✔️ Terminé — au résumé", callback_data: "wiz:photodone" }]]);
+          [[{ text: "✔️ Terminé — au résumé", callback_data: "wiz:photodone" }], [{ text: "❌ Annuler", callback_data: "wiz:cancel" }]]);
       } else {
         await tgSendKb(token, chatId,
           "Крок 8. Фото 📸 Надішліть 1–6 фото ваших робіт або салону (по одному чи альбомом).\n" +
           "З фото клієнти записуються значно охочіше. Коли закінчите — кнопка нижче.",
-          [[{ text: "✔️ Готово — до підсумку", callback_data: "wiz:photodone" }]]);
+          [[{ text: "✔️ Готово — до підсумку", callback_data: "wiz:photodone" }], [{ text: "❌ Скасувати", callback_data: "wiz:cancel" }]]);
       }
       return;
     }
@@ -2155,8 +2436,11 @@ async function handleCallbackQuery(cq, ctx) {
             "Кабінет (графік і ціни): bookingclub.beauty/admin", null);
         }
       }
-      // Автопост у Telegram-канал платформи (тільки якщо задано CHANNEL_ID)
-      if (ctx.channelId) {
+      // Автопост у Telegram-канал платформи: config:channel (v10,
+      // автовизначення) → env CHANNEL_ID (сумісність із v6–v9);
+      // config:channelOff вимикає повністю.
+      const channelId = await resolveChannelId(KV, ctx.channelId);
+      if (channelId) {
         try {
           const placeLine = listing.type === "home"
             ? (listing.district || listing.address || "")
@@ -2164,7 +2448,7 @@ async function handleCallbackQuery(cq, ctx) {
           const svcLines = (listing.services || [])
             .map(s => "• " + svcLabel(s.serviceId) + " — $" + (s.from != null ? s.from : "—"))
             .join("\n");
-          await tgSendKb(token, ctx.channelId,
+          await tgSendKb(token, channelId,
             "🆕 Новий салон на Booking Club!\n\n" +
             "🏠 " + (listing.name || "Салон") +
             (placeLine ? "\n📍 " + placeLine + ", Montréal" : "") +
@@ -2192,20 +2476,56 @@ async function handleCallbackQuery(cq, ctx) {
     return;
   }
 
+  // ----- v10: клієнт скасовує власний запис кнопкою (підтвердження/нагадування) -----
+  if (data.startsWith("cx:")) {
+    const code = data.slice(3).toUpperCase();
+    const frCb = ctx.lang === "fr";
+    const key = await KV.get(BKI_PREFIX + code);
+    const rec = key ? await readBookingRec(KV, key) : null;
+    if (!rec || !key) {
+      await tgAnswerCb(token, cq.id, frCb ? "Réservation introuvable — elle a peut-être déjà été annulée" : "Запис не знайдено — можливо, його вже скасовано");
+      return;
+    }
+    if (fromId !== ownerChat && String(rec.clientChatId || "") !== fromId) {
+      await tgAnswerCb(token, cq.id, frCb ? "Ce n'est pas votre réservation" : "Це не ваше бронювання");
+      return;
+    }
+    try {
+      await KV.delete(key);
+      await KV.delete(BKI_PREFIX + rec.id);
+    } catch {
+      await tgAnswerCb(token, cq.id, frCb ? "Échec de l'annulation — réessayez un peu plus tard" : "Не вдалось скасувати — спробуйте трохи пізніше");
+      return;
+    }
+    await tgAnswerCb(token, cq.id, frCb ? "Réservation annulée ✅" : "Запис скасовано ✅");
+    if (msgId) {
+      await tgEditText(token, msgChat, msgId,
+        msgText + (frCb ? "\n\n❌ Annulée par vous." : "\n\n❌ Скасовано вами."), null);
+    }
+    // Сповіщення салону — той самий текст, що й у командному /cancel клієнта.
+    const salonNote = "❌ Клієнт скасував бронювання " + rec.id + "\n" +
+      "🏠 " + (rec.listingName || "") + "\n💅 " + (rec.serviceName || "Послуга") + "\n" +
+      "📅 " + rec.dateISO + " о " + rec.time + "\n👤 " + (rec.name || "") + "\nСлот знову вільний на сайті.";
+    if (rec.chatId && rec.chatId !== msgChat) await tgSendKb(token, rec.chatId, salonNote, null);
+    else if (ownerChat && ownerChat !== msgChat) await tgSendKb(token, ownerChat, salonNote, null);
+    return;
+  }
+
   // ----- Відвідуваність: кнопки салону -----
   if (data.startsWith("att:")) {
     const parts = data.split(":");
     const code = parts[1] || "";
     const yn = parts[2] || "";
-    const key = await KV.get(BKI_PREFIX + code);
-    const rec = key ? await readBookingRec(KV, key) : null;
-    if (!rec || !key) { await tgAnswerCb(token, cq.id, "Запис не знайдено"); return; }
-    if (fromId !== ownerChat && String(rec.chatId || "") !== fromId) {
-      await tgAnswerCb(token, cq.id, "Це бронювання іншого салону");
+    // v10: доступ перевіряємо через findBookingForActor (chatId запису,
+    // salonmap, listingKey) — для динамічних лістингів rec.chatId у записі
+    // історично міг бути порожнім, і салон отримував хибне «чужий запис».
+    const rec = await findBookingForActor(KV, code, fromId, ownerChat);
+    if (!rec) {
+      const exists = await KV.get(BKI_PREFIX + code);
+      await tgAnswerCb(token, cq.id, exists ? "Це бронювання іншого салону" : "Запис не знайдено");
       return;
     }
     const status = yn === "y" ? "attended" : "noshow";
-    rec._key = key;
     await setBookingStatus(KV, rec, status);
     await tgAnswerCb(token, cq.id, status === "attended" ? "✅ Позначено: клієнт прийшов" : "🚫 Позначено: no-show");
     if (msgId) {
