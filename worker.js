@@ -1,5 +1,26 @@
 // ============================================================
-// Booking Club — Cloudflare Worker v7
+// Booking Club — Cloudflare Worker v8
+// ------------------------------------------------------------
+// Нове у v8 (пакет за аудитом 22.10.2026):
+// H2) POST /book: валідація (минулі дати, закриті дні sched:, послуга
+//     за канонічним каталогом / послугами динамічного лістинга) і
+//     порядок «запис у KV → нотифікації»; bk===null → 400, помилка
+//     запису → 502, код — тільки після успішних put.
+// H3) GET /remind: із заданим SETUP_KEY — тільки з ключем
+//     (заголовок x-setup-key або ?key=); без секрету — перехідний
+//     відкритий режим, як у C2. Крон ходить із ключем.
+// M1) Коди кабінету: crypto.getRandomValues; ліміти видачі — у KV
+//     (cabrl:); перегенерація НЕ скидає лічильник спроб входу.
+// M3) GET /listings більше не віддає phone і telegramChatId;
+//     chatId за listingId воркер бере сам із KV (lst:/salonmap:).
+// M4) CORS: allowlist тільки https://bookingclub.beauty (+www).
+// M8) 409 slot_taken — JSON {error:"slot_taken"}.
+// M13) salonmap — окремі ключі salonmap:<chatId> (легасі-JSON ще
+//     читається); правки записів — перечитування+мердж, TTL від
+//     createdAt; коди BK — цикл із перевіркою колізії bkc:.
+// L2) /photo: тільки file_id з опублікованих lst: записів.
+// L4) /deposit/checkout: rate-limit на код+IP.
+// L11) pend: заявки мають TTL 30 діб.
 // ------------------------------------------------------------
 // Нове у v7:
 // 13) AI-консьєрж: POST /ai {q, lang, catalog} → OpenAI (gpt-4o-mini).
@@ -72,7 +93,8 @@
 // - Опційно: OPENAI_API_KEY — AI-консьєрж (POST /ai); без нього сайт
 //   користується правиловим підбором
 // - Опційно: CHANNEL_ID (автопости нових салонів у Telegram-канал),
-//   SETUP_KEY (захист GET /setup-menu; без нього — ?owner=<chatId власника>)
+//   SETUP_KEY (захист GET /setup-menu і GET /remind; /remind приймає
+//   заголовок x-setup-key або ?key=<SETUP_KEY>)
 // ============================================================
 
 const BK_PREFIX = "bk|";
@@ -81,6 +103,7 @@ const BK_TTL = 60 * 60 * 24 * 90; // 90 днів
 const WIZ_PREFIX = "wiz:";         // стан бот-майстра підключення салону
 const WIZ_TTL = 60 * 60 * 24 * 7;  // 7 днів
 const PEND_PREFIX = "pend:";       // заявки салонів на затвердження
+const PEND_TTL = 60 * 60 * 24 * 30; // L11: заявки живуть 30 діб
 const LST_PREFIX = "lst:";         // опубліковані динамічні лістинги
 const WORKER_ORIGIN = "https://snowy-shadow-0b58.irafarm2000.workers.dev";
 
@@ -164,11 +187,22 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // АУДИТ-ФІКС v8 (M4): CORS-allowlist замість "*". Дзеркалимо Origin лише
+    // для власного домену; без Origin (Telegram/серверні виклики) —
+    // дефолтний домен; чужий Origin заголовка не отримує — браузер сам
+    // заблокує відповідь. Для /p (OG-превʼю) поведінка не змінюється:
+    // скрапери Origin не шлють і отримують HTML як раніше.
+    const reqOrigin = request.headers.get("Origin") || "";
     const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
+      "Vary": "Origin",
     };
+    if (reqOrigin === "https://bookingclub.beauty" || reqOrigin === "https://www.bookingclub.beauty") {
+      corsHeaders["Access-Control-Allow-Origin"] = reqOrigin;
+    } else if (!reqOrigin) {
+      corsHeaders["Access-Control-Allow-Origin"] = "https://bookingclub.beauty";
+    }
     const jsonResp = (obj, status = 200) =>
       new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", ...corsHeaders } });
     if (request.method === "OPTIONS") {
@@ -261,12 +295,13 @@ export default {
         if (code && KV) {
           try {
             const key = await KV.get(BKI_PREFIX + code);
-            const rec = key ? await readBookingRec(KV, key) : null;
+            // M13: перечитуємо свіжий запис і мерджимо лише свої поля.
+            const rec = key ? await updateBookingRec(KV, key, r => {
+              r.depositPaid = true;
+              r.depositSessionId = sess.id || r.depositSessionId || "";
+              r.depositPaidAt = new Date().toISOString();
+            }) : null;
             if (rec && key) {
-              rec.depositPaid = true;
-              rec.depositSessionId = sess.id || rec.depositSessionId || "";
-              rec.depositPaidAt = new Date().toISOString();
-              await KV.put(key, JSON.stringify(rec), { expirationTtl: BK_TTL });
               const note = "💰 Депозит $10 оплачено (" + rec.id + ")\n" +
                 "🏠 " + (rec.listingName || "") + "\n💅 " + (rec.serviceName || "Послуга") + "\n" +
                 "📅 " + rec.dateISO + " о " + rec.time + "\n👤 " + (rec.name || "");
@@ -290,9 +325,20 @@ export default {
       if (url.pathname === "/cabinet/code") {
         const chatId = String(body?.chatId || "").trim();
         if (!/^\d{5,}$/.test(chatId)) return jsonResp({ error: "bad_chat_id" }, 400);
-        if (!codeRateOk(chatId, Date.now())) return jsonResp({ error: "rate_limited" }, 429);
-        const code = String(Math.floor(100000 + Math.random() * 900000));
-        await KV.put("cabcode:" + chatId, JSON.stringify({ code, exp: Date.now() + 10 * 60 * 1000, tries: 0 }), { expirationTtl: 600 });
+        // M1: ліміти видачі — у KV (cabrl:), код — CSPRNG, а лічильник
+        // спроб входу перегенерація НЕ скидає (інакше захист обходився
+        // запитом нового коду).
+        if (!(await codeRateOkKv(KV, chatId, Date.now()))) return jsonResp({ error: "rate_limited" }, 429);
+        let prevTries = 0;
+        try {
+          const prevRaw = await KV.get("cabcode:" + chatId);
+          if (prevRaw) {
+            const prev = JSON.parse(prevRaw);
+            if (prev && Date.now() <= (prev.exp || 0)) prevTries = prev.tries || 0;
+          }
+        } catch { /* ignore */ }
+        const code = cryptoCode6();
+        await KV.put("cabcode:" + chatId, JSON.stringify({ code, exp: Date.now() + 10 * 60 * 1000, tries: prevTries }), { expirationTtl: 600 });
         const sentOk = await tgSend(chatId, "🔐 Код входу в кабінет Booking Club: " + code + "\nДіє 10 хвилин. Нікому його не пересилайте.");
         if (!sentOk) return jsonResp({ error: "telegram_error", hint: "Спочатку відкрийте бота @pershe1012_bot і натисніть Start" }, 502);
         return jsonResp({ ok: true });
@@ -352,6 +398,9 @@ export default {
       if (!KV) return jsonResp({ error: "kv_not_configured" }, 503);
       const code = String(body?.code || "").trim().toUpperCase();
       if (!/^BK-[A-Z0-9]{6}$/.test(code)) return jsonResp({ error: "bad_code" }, 400);
+      // L4: ліміт спроб на код+IP — не плодити Stripe-сесії абузом.
+      const depIp = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
+      if (!depRateOk(code, depIp, Date.now())) return jsonResp({ error: "rate_limited" }, 429);
       const key = await KV.get(BKI_PREFIX + code);
       const rec = key ? await readBookingRec(KV, key) : null;
       if (!rec || !key) return jsonResp({ error: "booking_not_found" }, 404);
@@ -374,8 +423,7 @@ export default {
         });
         const sj = await resp.json().catch(() => null);
         if (!resp.ok || !sj || !sj.url) return jsonResp({ error: "stripe_error", detail: (sj && sj.error && sj.error.message) || resp.status }, 502);
-        rec.depositSessionId = sj.id || "";
-        await KV.put(key, JSON.stringify(rec), { expirationTtl: BK_TTL });
+        await updateBookingRec(KV, key, r => { r.depositSessionId = sj.id || ""; });
         return jsonResp({ ok: true, url: sj.url });
       } catch {
         return jsonResp({ error: "stripe_error" }, 502);
@@ -477,7 +525,13 @@ export default {
     // ---------- Фото салонів: проксі файлів Telegram ----------
     if (request.method === "GET" && url.pathname.startsWith("/photo/")) {
       const fid = url.pathname.slice("/photo/".length);
-      if (!BOT_TOKEN || !/^[A-Za-z0-9_-]{10,}$/.test(fid)) {
+      if (!BOT_TOKEN || !KV || !/^[A-Za-z0-9_-]{10,}$/.test(fid)) {
+        return new Response("not found", { status: 404, headers: corsHeaders });
+      }
+      // L2: проксі віддає ТІЛЬКИ фото опублікованих лістингів (lst:),
+      // а не будь-який файл бота за відомим file_id.
+      const allowedPhotos = await publishedPhotoIds(KV);
+      if (!allowedPhotos.has(fid)) {
         return new Response("not found", { status: 404, headers: corsHeaders });
       }
       try {
@@ -695,7 +749,15 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
     }
 
     // ---------- Нагадування + відвідуваність: ручний запуск scan (ідемпотентний) ----------
+    // АУДИТ-ФІКС v8 (H3): із заданим SETUP_KEY доступ — тільки з ключем:
+    // заголовок x-setup-key: <SETUP_KEY> або ?key=<SETUP_KEY> (так ходить
+    // щогодинний крон). Без заданого секрету — перехідний відкритий режим.
     if (request.method === "GET" && url.pathname === "/remind") {
+      const setupKey = (env && env.SETUP_KEY) || "";
+      if (setupKey) {
+        const provided = request.headers.get("x-setup-key") || url.searchParams.get("key") || "";
+        if (!constTimeEq(provided, setupKey)) return jsonResp({ error: "forbidden" }, 403);
+      }
       const stats = await scanReminders(env);
       const att = await scanAttendance(env);
       return jsonResp({ ok: true, ...stats, attAsked: att.asked });
@@ -745,7 +807,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
         await KV.put(PEND_PREFIX + pendId, JSON.stringify({
           listing, chatId: listing.telegramChatId || "", source: "form",
           submittedAt: new Date().toISOString(),
-        }));
+        }), { expirationTtl: PEND_TTL });
         await notifyOwnerApplication({ KV, token: BOT_TOKEN, ownerChat: OWNER_CHAT }, pendId, listing, "form");
         return jsonResp({ ok: true, pending: true, id: pendId });
       } catch {
@@ -753,22 +815,88 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       }
     }
 
-    // ---------- Календар бронювань (KV): перевірка зайнятості слота ----------
+    // ---------- Календар бронювань (KV): валідація → запис → нотифікації ----------
+    // АУДИТ-ФІКС v8 (H2): сервер валідує бронювання і пише у KV ДО
+    // Telegram-нотифікацій. Код повертаємо тільки після успішних обох
+    // put (запис + bkc-індекс), інакше 502 — кодів-«привидів» більше
+    // немає. bk===null (немає дати/часу) → 400, а не ok:true.
     const salonChatEarly = String(data?.chatId || "").trim();
     const bk = extractBooking(data);
-    let bkKey = "", bkRecId = "";
-    if (bk && KV) {
-      bkRecId = makeBookingId();
+    if (!bk) {
+      return jsonResp({ error: "bad_booking" }, 400);
+    }
+    let bkKey = "", bkRecId = "", bkStored = false;
+    let salonChatResolved = /^\d{5,}$/.test(salonChatEarly) ? salonChatEarly : "";
+    if (KV) {
       bkKey = sanitizeListingKey(data?.listingId) || (/^\d{5,}$/.test(salonChatEarly) ? "chat-" + salonChatEarly : "anon");
+      // (1) дата не в минулому (America/Toronto)
+      if (bk.dateISO < torontoTodayISO()) {
+        return jsonResp({ error: "past_date" }, 400);
+      }
+      // (2) послуга: канонічний каталог; динамічний лістинг — лише свої послуги
+      const svcIdIn = String(data?.serviceId || "").trim();
+      const lidIn = String(data?.listingId || "").trim();
+      let dynListing = null;
+      if (lidIn) dynListing = await readBookingRec(KV, LST_PREFIX + lidIn);
+      if (svcIdIn && !SVC_CATALOG.some(s => s.id === svcIdIn)) {
+        return jsonResp({ error: "bad_service" }, 400);
+      }
+      if (dynListing && svcIdIn && !(dynListing.services || []).some(s => s.serviceId === svcIdIn)) {
+        return jsonResp({ error: "bad_service" }, 400);
+      }
+      // (3) закритий день салону: sched: за chatId з payload, картки lst: або salonmap
+      if (!salonChatResolved) salonChatResolved = await salonChatForListing(KV, lidIn);
+      if (salonChatResolved) {
+        try {
+          const rawS = await KV.get("sched:" + salonChatResolved);
+          const closedDays = rawS ? (JSON.parse(rawS).closed || []) : [];
+          if (closedDays.includes(bk.dateISO)) {
+            return jsonResp({ error: "day_closed" }, 400);
+          }
+        } catch { /* ignore */ }
+      }
+      // (4) анти-дубль слота (M8: відповідь — JSON)
       try {
         const keys = await kvListKeys(KV, BK_PREFIX + bkKey + "|" + bk.dateISO + "|");
         for (const k of keys) {
           const r = await readBookingRec(KV, k);
           if (r && r.time === bk.time) {
-            return new Response("slot_taken", { status: 409, headers: { ...corsHeaders } });
+            return jsonResp({ error: "slot_taken" }, 409);
           }
         }
-      } catch { /* KV недоступний — бронювання не блокуємо */ }
+      } catch { /* KV list недоступний — бронювання не блокуємо */ }
+      // (5) запис у KV: спочатку запис, потім індекс за кодом
+      bkRecId = await makeUniqueBookingId(KV);
+      const rec = {
+        id: bkRecId,
+        listingId: String(data?.listingId || ""),
+        listingKey: bkKey,
+        listingName: String(data?.listingName || ""),
+        chatId: salonChatEarly,
+        dateISO: bk.dateISO,
+        time: bk.time,
+        serviceId: String(data?.serviceId || ""),
+        serviceName: bk.serviceName,
+        priceFrom: (data?.priceFrom != null && Number.isFinite(Number(data.priceFrom)) && Number(data.priceFrom) > 0)
+          ? Number(data.priceFrom) : null,
+        name, phone,
+        status: "booked",
+        depositRequested: !!(data?.deposit && Number(data.deposit) > 0),
+        createdAt: new Date().toISOString()
+      };
+      const fullKey = BK_PREFIX + bkKey + "|" + bk.dateISO + "|" + bk.time + "|" + bkRecId;
+      try {
+        await KV.put(fullKey, JSON.stringify(rec), { expirationTtl: BK_TTL });
+        await KV.put(BKI_PREFIX + bkRecId, fullKey, { expirationTtl: BK_TTL });
+        bkStored = true;
+      } catch {
+        return jsonResp({ error: "kv_error" }, 502);
+      }
+      // звʼязка chatId салону → listingId (M13: окремий ключ на салон)
+      const mapChat = salonChatEarly || salonChatResolved;
+      if (/^\d{5,}$/.test(mapChat) && data?.listingId) {
+        try { await KV.put("salonmap:" + mapChat, String(data.listingId)); } catch { /* ignore */ }
+      }
     }
 
     let text = (data?.message && String(data.message).trim())
@@ -776,54 +904,21 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       : buildTextFallback(data);
     if (bkRecId) text += "\n\n🆔 Код бронювання: " + bkRecId + "\nСкасувати: /cancel " + bkRecId;
 
-    // Маршрутизація: салону (якщо є його chatId) + завжди копія власнику
+    // Маршрутизація: салону (chatId із payload або знайдений у KV) + копія власнику
     const targets = [];
-    const salonChat = String(data?.chatId || "").trim();
-    if (/^\d{5,}$/.test(salonChat) && salonChat !== OWNER_CHAT) targets.push(salonChat);
+    const salonTarget = salonChatEarly || salonChatResolved;
+    if (/^\d{5,}$/.test(salonTarget) && salonTarget !== OWNER_CHAT) targets.push(salonTarget);
     targets.push(OWNER_CHAT);
 
     let sent = 0;
     for (const t of targets) {
       if (await tgSend(t, text)) sent++;
     }
-    if (!sent) {
+    // Без запису в KV (легасі-середовище без KV) — стара семантика:
+    // нема доставки → 502. Із записом бронювання вже існує — код віддаємо
+    // незалежно від Telegram (салон побачить його у /bookings і кабінеті).
+    if (!bkStored && !sent) {
       return new Response("telegram_error", { status: 502, headers: { ...corsHeaders } });
-    }
-
-    // Зберігаємо бронювання у KV-календар: слот стає зайнятим для інших клієнтів
-    if (bk && KV && bkKey && bkRecId) {
-      try {
-        const rec = {
-          id: bkRecId,
-          listingId: String(data?.listingId || ""),
-          listingKey: bkKey,
-          listingName: String(data?.listingName || ""),
-          chatId: salonChatEarly,
-          dateISO: bk.dateISO,
-          time: bk.time,
-          serviceId: String(data?.serviceId || ""),
-          serviceName: bk.serviceName,
-          priceFrom: (data?.priceFrom != null && Number.isFinite(Number(data.priceFrom)) && Number(data.priceFrom) > 0)
-            ? Number(data.priceFrom) : null,
-          name, phone,
-          status: "booked",
-          depositRequested: !!(data?.deposit && Number(data.deposit) > 0),
-          createdAt: new Date().toISOString()
-        };
-        const fullKey = BK_PREFIX + bkKey + "|" + bk.dateISO + "|" + bk.time + "|" + bkRecId;
-        await KV.put(fullKey, JSON.stringify(rec), { expirationTtl: BK_TTL });
-        // індекс за кодом: клієнтський deep link /start, /cancel, Stripe-депозит
-        await KV.put(BKI_PREFIX + bkRecId, fullKey, { expirationTtl: BK_TTL });
-        // звʼязка chatId салону → listingId (для команд /bookings і /cancel)
-        if (/^\d{5,}$/.test(salonChatEarly) && data?.listingId) {
-          try {
-            const raw = await KV.get("salonmap");
-            const map = raw ? JSON.parse(raw) : {};
-            map[salonChatEarly] = String(data.listingId);
-            await KV.put("salonmap", JSON.stringify(map));
-          } catch { /* ignore */ }
-        }
-      } catch { /* ignore */ }
     }
     // Відповідь сайту: JSON із кодом бронювання (старий текст "ok" — у git-історії v3)
     return jsonResp({ ok: true, code: bkRecId || null });
@@ -869,9 +964,10 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat) {
       return "Не знайшов бронювання з кодом " + code + ". Перевірте код у повідомленні після запису на сайті або забронюйте ще раз на bookingclub.beauty.";
     }
     if (rec.chatId && rec.chatId === chatId) return ID_MSG; // салон відкрив власний лінк
-    rec.clientChatId = chatId;
-    rec.clientLinkedAt = new Date().toISOString();
-    try { await KV.put(key, JSON.stringify(rec), { expirationTtl: BK_TTL }); } catch { /* ignore */ }
+    await updateBookingRec(KV, key, r => {
+      r.clientChatId = chatId;
+      r.clientLinkedAt = new Date().toISOString();
+    });
     return "✅ Готово! Ваше бронювання підтверджено.\n\n" +
       "🏠 " + (rec.listingName || "Салон") + "\n" +
       "💅 " + (rec.serviceName || "Послуга") + "\n" +
@@ -1033,6 +1129,62 @@ function makeBookingId() {
   return "BK-" + s;
 }
 
+// M13: код бронювання — із перевіркою колізії bkc-індексу, а не наосліп.
+async function makeUniqueBookingId(KV) {
+  let id = makeBookingId();
+  for (let i = 0; i < 12; i++) {
+    try { if (!(await KV.get(BKI_PREFIX + id))) return id; } catch { return id; }
+    id = makeBookingId();
+  }
+  return id;
+}
+
+// Константно-часове порівняння рядків (ключі/секрети).
+function constTimeEq(a, b) {
+  const x = String(a || ""), y = String(b || "");
+  let diff = x.length ^ y.length;
+  const n = Math.max(x.length, y.length);
+  for (let i = 0; i < n; i++) diff |= (x.charCodeAt(i) || 0) ^ (y.charCodeAt(i) || 0);
+  return diff === 0;
+}
+
+// M1: 6-значний код кабінету на CSPRNG (rejection sampling — без bias mod 1e6).
+function cryptoCode6() {
+  const buf = new Uint32Array(1);
+  let n = 0;
+  do { crypto.getRandomValues(buf); n = buf[0]; } while (n >= 4294000000);
+  return String(n % 1000000).padStart(6, "0");
+}
+
+// L4: rate-limit /deposit/checkout на пару код+IP (in-memory, як решта RL).
+const DEP_RL = new Map();
+function depRateOk(code, ip, now) {
+  const W = 600000, MAX = 8; // 8 спроб на 10 хв на код з одного IP
+  const k = code + "|" + ip;
+  const v = DEP_RL.get(k);
+  if (!v || now - v.t0 > W) { DEP_RL.set(k, { t0: now, n: 1 }); return true; }
+  if (v.n >= MAX) return false;
+  v.n += 1; DEP_RL.set(k, v);
+  return true;
+}
+
+// L2: множина file_id фото опублікованих лістингів (кеш на ізолят, 60 с).
+let photoAllowCache = { at: 0, set: null };
+async function publishedPhotoIds(KV) {
+  const now = Date.now();
+  if (photoAllowCache.set && now - photoAllowCache.at < 60000) return photoAllowCache.set;
+  const set = new Set();
+  try {
+    const keys = await kvListKeys(KV, LST_PREFIX);
+    for (const k of keys) {
+      const rec = await readBookingRec(KV, k);
+      for (const fid of (rec && rec.photoFileIds) || []) if (fid) set.add(String(fid));
+    }
+    photoAllowCache = { at: now, set };
+  } catch { /* лишаємо попередній кеш / порожній набір */ }
+  return photoAllowCache.set || set;
+}
+
 // Витягує дату/час бронювання з payload сайту (dateISO+time або datetimeISO).
 // Для заявок салонів (salon_join) і некоректних даних повертає null.
 function extractBooking(d) {
@@ -1085,10 +1237,61 @@ async function salonBookings(KV, chatId) {
 
 async function salonListingId(KV, chatId) {
   try {
+    // M13: окремі ключі salonmap:<chatId> — без read-modify-write усього мапа.
+    const v = await KV.get("salonmap:" + chatId);
+    if (v) return v;
+    // Легасі: до v8 мапінг жив одним JSON у ключі "salonmap".
     const raw = await KV.get("salonmap");
     if (raw) return (JSON.parse(raw) || {})[chatId] || "";
   } catch { /* ignore */ }
   return "";
+}
+
+// chatId салону за listingId: картка динамічного лістинга (lst:), далі —
+// зворотний пошук у salonmap:<chatId> і легасі-JSON. Треба воркеру там,
+// де публічний API listingId знає, а chatId більше не світить (M3/H2).
+async function salonChatForListing(KV, listingId) {
+  const lid = String(listingId || "").trim();
+  if (!lid) return "";
+  try {
+    const lrec = await readBookingRec(KV, LST_PREFIX + lid);
+    const fromLst = String((lrec && lrec.telegramChatId) || "").trim();
+    if (/^\d{5,}$/.test(fromLst)) return fromLst;
+  } catch { /* ignore */ }
+  try {
+    const keys = await kvListKeys(KV, "salonmap:");
+    for (const k of keys) {
+      const v = await KV.get(k);
+      if (v === lid) return k.slice("salonmap:".length);
+    }
+    const raw = await KV.get("salonmap");
+    if (raw) {
+      const map = JSON.parse(raw) || {};
+      for (const chat of Object.keys(map)) if (map[chat] === lid) return chat;
+    }
+  } catch { /* ignore */ }
+  return "";
+}
+
+// M13: TTL запису бронювання — від createdAt (90 діб життя запису),
+// а не від моменту кожної правки; правки більше не «омолоджують» запис.
+function bookingTtl(rec) {
+  const created = Date.parse((rec && rec.createdAt) || "");
+  if (!Number.isFinite(created)) return BK_TTL;
+  const left = Math.floor((created + BK_TTL * 1000 - Date.now()) / 1000);
+  return Math.min(BK_TTL, Math.max(60, left));
+}
+
+// M13: безпечна правка запису — перечитати свіжий стан, застосувати
+// мутацію лише до своїх полів, записати з TTL від createdAt.
+async function updateBookingRec(KV, key, mutate) {
+  const fresh = await readBookingRec(KV, key);
+  if (!fresh) return null;
+  const out = mutate(fresh) || fresh;
+  const copy = { ...out };
+  delete copy._key;
+  try { await KV.put(key, JSON.stringify(copy), { expirationTtl: bookingTtl(copy) }); } catch { /* ignore */ }
+  return copy;
 }
 
 // ---------- Кабінет: ціна візиту, дати (America/Toronto) ----------
@@ -1169,14 +1372,24 @@ function sanitizePrices(p) {
   return Object.keys(out).length ? out : null;
 }
 
-const CODE_RL = new Map(); // chatId -> { last, count, hourStart }
-function codeRateOk(chatId, now) {
-  const v = CODE_RL.get(chatId);
-  if (!v) { CODE_RL.set(chatId, { last: now, count: 1, hourStart: now }); return true; }
-  if (now - v.last < 30000) return false;                 // не частіше ніж раз на 30 с
-  if (now - v.hourStart > 3600000) { CODE_RL.set(chatId, { last: now, count: 1, hourStart: now }); return true; }
-  if (v.count >= 5) return false;                          // до 5 кодів на годину
-  v.last = now; v.count += 1; CODE_RL.set(chatId, v);
+// M1: ліміти видачі кодів кабінету — у KV (cabrl:<chatId>), а не in-memory
+// Map на ізолят: ліміт глобальний між усіма ізолятами воркера.
+// Правила як раніше: не частіше ніж раз на 30 с, до 5 кодів на годину.
+async function codeRateOkKv(KV, chatId, now) {
+  const key = "cabrl:" + chatId;
+  let rec = null;
+  try {
+    const raw = await KV.get(key);
+    if (raw) rec = JSON.parse(raw);
+  } catch { /* ignore — помилка KV не блокує вхід */ }
+  if (rec) {
+    if (now - (rec.last || 0) < 30000) return false;
+    if (now - (rec.w || 0) <= 3600000 && (rec.n || 0) >= 5) return false;
+  }
+  const fresh = (!rec || now - (rec.w || 0) > 3600000)
+    ? { n: 1, w: now, last: now }
+    : { n: (rec.n || 0) + 1, w: rec.w, last: now };
+  try { await KV.put(key, JSON.stringify(fresh), { expirationTtl: 3700 }); } catch { /* ignore */ }
   return true;
 }
 
@@ -1223,7 +1436,7 @@ async function scanReminders(env) {
     const visit = torontoVisitMs(rec.dateISO, rec.time);
     if (visit === null) continue;
     const diff = visit - now;
-    let changed = false;
+    let sent24ok = false, sent2ok = false;
     if (!rec.r24 && diff >= 24 * H - WIN && diff <= 24 * H + WIN) {
       const ok = await tgSendWith(token, rec.clientChatId,
         "⏰ Нагадування від Booking Club\n\n" +
@@ -1231,7 +1444,7 @@ async function scanReminders(env) {
         "💅 " + (rec.serviceName || "Послуга") + " — " + (rec.listingName || "салон") + "\n" +
         "🆔 Код: " + rec.id + "\n\n" +
         "Якщо плани змінились — скасувати можна командою: /cancel " + rec.id);
-      if (ok) { rec.r24 = true; stats.sent24 += 1; changed = true; }
+      if (ok) { sent24ok = true; stats.sent24 += 1; }
     }
     if (!rec.r2 && diff >= 2 * H - WIN && diff <= 2 * H + WIN) {
       const ok = await tgSendWith(token, rec.clientChatId,
@@ -1239,12 +1452,14 @@ async function scanReminders(env) {
         "💅 " + (rec.serviceName || "Послуга") + " — " + (rec.listingName || "салон") + "\n" +
         "🆔 Код: " + rec.id + "\n\n" +
         "Якщо плани змінились — скасувати можна командою: /cancel " + rec.id);
-      if (ok) { rec.r2 = true; stats.sent2 += 1; changed = true; }
+      if (ok) { sent2ok = true; stats.sent2 += 1; }
     }
-    if (changed) {
-      const copy = { ...rec };
-      delete copy._key;
-      try { await KV.put(k, JSON.stringify(copy), { expirationTtl: BK_TTL }); } catch { /* ignore */ }
+    if (sent24ok || sent2ok) {
+      // M13: прапорці — у свіжий запис (перечитування+мердж), TTL від createdAt.
+      await updateBookingRec(KV, k, r => {
+        if (sent24ok) r.r24 = true;
+        if (sent2ok) r.r2 = true;
+      });
     }
   }
   return stats;
@@ -1625,14 +1840,15 @@ function listingForSite(rec) {
     lng: (rec.lng != null ? rec.lng : null),
     partner: !!rec.partner, recommended: !!rec.recommended,
     verified: !!rec.verified, sterile: !!rec.sterile,
-    phone: rec.phone || "",
+    // M3: phone і telegramChatId публічно НЕ віддаємо — Telegram ID майстра
+    // не для публіки (ціль для спаму/атак на кабінет); де воркеру треба
+    // chatId за listingId, він бере його сам із KV (lst:/salonmap:).
     instagram: rec.instagram || "",
     images: (rec.photoFileIds || []).map(fid => WORKER_ORIGIN + "/photo/" + fid),
     bio_ua: bio,
     services: rec.services || [],
     schedule: rec.schedule || rec.week || null,
     languages: rec.languages || [],
-    telegramChatId: rec.telegramChatId || "",
     dynamic: true,
   };
 }
@@ -1725,7 +1941,7 @@ async function handleCallbackQuery(cq, ctx) {
       listing.id = pendId;
       await KV.put(PEND_PREFIX + pendId, JSON.stringify({
         listing, chatId: String(chatId), source: "bot", submittedAt: new Date().toISOString(),
-      }));
+      }), { expirationTtl: PEND_TTL });
       await wizClear(KV, chatId);
       await tgAnswerCb(token, cq.id, "Заявку надіслано ✅");
       await tgSendKb(token, chatId,
@@ -1754,12 +1970,8 @@ async function handleCallbackQuery(cq, ctx) {
     if (publish) {
       await KV.put(LST_PREFIX + listing.id, JSON.stringify(listing));
       if (salonChat && /^\d{5,}$/.test(salonChat)) {
-        try {
-          const rawMap = await KV.get("salonmap");
-          const map = rawMap ? JSON.parse(rawMap) : {};
-          map[salonChat] = listing.id;
-          await KV.put("salonmap", JSON.stringify(map));
-        } catch { /* ignore */ }
+        // M13: окремий ключ на салон — паралельні публікації не затирають одна одну.
+        try { await KV.put("salonmap:" + salonChat, listing.id); } catch { /* ignore */ }
       }
       await tgAnswerCb(token, cq.id, "Опубліковано ✅");
       if (msgId) await tgEditText(token, msgChat, msgId, msgText + "\n\n✅ ОПУБЛІКОВАНО на bookingclub.beauty", null);
@@ -1855,11 +2067,12 @@ async function findBookingForActor(KV, code, chatId, ownerChat) {
 }
 
 async function setBookingStatus(KV, rec, status) {
-  rec.status = status;
-  rec.statusAt = new Date().toISOString();
-  const copy = { ...rec };
-  delete copy._key;
-  try { await KV.put(rec._key, JSON.stringify(copy), { expirationTtl: BK_TTL }); } catch { /* ignore */ }
+  // M13: статус пишемо у свіжий запис (перечитування+мердж), а не у
+  // потенційно застарілий знімок викликача.
+  await updateBookingRec(KV, rec._key, r => {
+    r.status = status;
+    r.statusAt = new Date().toISOString();
+  });
 }
 
 // Після візиту (+30 хв) питаємо салон кнопками, чи прийшов клієнт.
@@ -1890,10 +2103,7 @@ async function scanAttendance(env) {
         { text: "🚫 Не прийшов", callback_data: "att:" + rec.id + ":n" },
       ]]);
     if (ok) {
-      rec.attAsked = true;
-      const copy = { ...rec };
-      delete copy._key;
-      try { await KV.put(k, JSON.stringify(copy), { expirationTtl: BK_TTL }); } catch { /* ignore */ }
+      await updateBookingRec(KV, k, r => { r.attAsked = true; });
       stats.asked += 1;
     }
   }
