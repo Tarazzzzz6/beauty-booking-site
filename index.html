@@ -2221,6 +2221,9 @@ function haptic(ms=12){
         toastErr: "Перевір поля та час",
         toastSent: "Надіслано в Telegram",
         toastSlotTaken: "Цей час щойно зайняли — оберіть інший",
+        errName: "Вкажіть ім’я",
+        errPhone: "Вкажіть коректний номер телефону",
+        errEmail: "Перевірте електронну пошту",
         toastDraft: "Чернетку збережено",
         toastCopied: "Скопійовано",
         toastFilters: "Filters reset",
@@ -2286,6 +2289,9 @@ function haptic(ms=12){
         toastErr: "Check fields and time",
         toastSent: "Sent to Telegram",
         toastSlotTaken: "That time was just booked — pick another",
+        errName: "Please enter your name",
+        errPhone: "Please enter a valid phone number",
+        errEmail: "Please check the email address",
         toastDraft: "Draft saved",
         toastCopied: "Copied",
         toastFilters: "Filters reset",
@@ -2351,6 +2357,9 @@ function haptic(ms=12){
         toastErr: "Проверь поля и время",
         toastSent: "Отправлено в Telegram",
         toastSlotTaken: "Это время только что заняли — выберите другое",
+        errName: "Укажите имя",
+        errPhone: "Укажите корректный номер телефона",
+        errEmail: "Проверьте электронную почту",
         toastDraft: "Черновик сохранён",
         toastCopied: "Скопировано",
         toastFilters: "Фильтры сброшены",
@@ -2416,6 +2425,9 @@ function haptic(ms=12){
         toastErr: "Vérifiez les champs et l'heure",
         toastSent: "Envoyé à Telegram",
         toastSlotTaken: "Ce créneau vient d'être réservé — choisissez-en un autre",
+        errName: "Veuillez indiquer votre nom",
+        errPhone: "Veuillez indiquer un numéro de téléphone valide",
+        errEmail: "Veuillez vérifier l'adresse e-mail",
         toastDraft: "Brouillon enregistré",
         toastCopied: "Copié",
         toastFilters: "Filtres réinitialisés",
@@ -3205,15 +3217,40 @@ function haptic(ms=12){
       }));
     }
 
+    // Валідація контактів (ФІКС v11) — ті самі правила, що й на воркері:
+    // імʼя — 2–60 символів і ≥2 літери (Unicode), телефон — нормалізація
+    // до +цифри (10–15), email — форма a@b.cc.
+    function isValidClientName(v){
+      v = (v || "").trim();
+      if(v.length < 2 || v.length > 60) return false;
+      return ((v.match(/\p{L}/gu) || []).length >= 2);
+    }
+    function normalizePhoneValue(v){
+      const s = (v || "").replace(/[\s()\-]/g, "");
+      return /^\+?\d{10,15}$/.test(s) ? s : null;
+    }
+    function isValidEmailValue(v){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || "").trim());
+    }
+
     function validateBooking(){
       const name = ($("#fName")?.value || "").trim();
       const phone = ($("#fPhone")?.value || "").trim();
       const email = ($("#fEmail")?.value || "").trim();
-      const ok = !!(name && phone && email && booking.dateISO && booking.time && booking.listing);
+      const nameOk = isValidClientName(name);
+      const phoneOk = !!normalizePhoneValue(phone);
+      const emailOk = isValidEmailValue(email);
+      const ok = !!(nameOk && phoneOk && emailOk && booking.dateISO && booking.time && booking.listing);
 
-      $("#fNameWrap")?.classList.toggle("err", !name);
-      $("#fPhoneWrap")?.classList.toggle("err", !phone);
-      $("#fEmailWrap")?.classList.toggle("err", !email);
+      $("#fNameWrap")?.classList.toggle("err", !nameOk);
+      $("#fPhoneWrap")?.classList.toggle("err", !phoneOk);
+      $("#fEmailWrap")?.classList.toggle("err", !emailOk);
+
+      // Підписи помилок — мовою інтерфейсу (словник T, паритет ×4)
+      const L = T[state.lang] || {};
+      const hN = $("#fNameWrap .hintErr"); if(hN && L.errName) hN.textContent = L.errName;
+      const hP = $("#fPhoneWrap .hintErr"); if(hP && L.errPhone) hP.textContent = L.errPhone;
+      const hE = $("#fEmailWrap .hintErr"); if(hE && L.errEmail) hE.textContent = L.errEmail;
 
       const btn = $("#submitBooking");
       if(btn) btn.disabled = !ok;
@@ -3742,7 +3779,8 @@ END:VCALENDAR`;
       const svcName = serviceLabel(svcId) || svcId || (state.lang==="uk"?"Послуга":"Service");
 
       const name = ($("#fName")?.value || "").trim();
-      const phone = ($("#fPhone")?.value || "").trim();
+      const phoneIn = ($("#fPhone")?.value || "").trim();
+      const phone = normalizePhoneValue(phoneIn) || phoneIn; // у салон летить нормалізований номер
       const email = ($("#fEmail")?.value || "").trim();
 
       const dateISO = booking.dateISO;
@@ -3835,6 +3873,29 @@ END:VCALENDAR`;
         }
 
         if(!res.ok){
+          // ФІКС v11: серверна валідація контактів → та сама підказка,
+          // що й клієнтська (bad_name/bad_phone/bad_email), не generic error.
+          if(res.status === 400){
+            let sErr = "";
+            try{ const j = await res.json(); sErr = (j && j.error) || ""; }catch(e){}
+            const L = T[state.lang] || {};
+            const map = {
+              bad_name: ["#fNameWrap", L.errName],
+              bad_phone: ["#fPhoneWrap", L.errPhone],
+              bad_email: ["#fEmailWrap", L.errEmail]
+            };
+            const m = map[sErr];
+            if(m && m[1]){
+              const wrap = $(m[0]);
+              if(wrap){
+                wrap.classList.add("err");
+                const h = $(m[0] + " .hintErr");
+                if(h) h.textContent = m[1];
+              }
+              toast(m[1]);
+              return;
+            }
+          }
           throw new Error("Worker error: " + res.status);
         }
 

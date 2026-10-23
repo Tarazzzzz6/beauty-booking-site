@@ -1110,6 +1110,22 @@
         renderReceipt();
       });
 
+      // Валідація контактів (ФІКС v11) — ті самі правила, що й на воркері:
+      // імʼя — 2–60 символів і ≥2 літери (Unicode), телефон — нормалізація
+      // до +цифри (10–15), email — форма a@b.cc.
+      function isValidClientName(v){
+        v = (v || "").trim();
+        if (v.length < 2 || v.length > 60) return false;
+        return ((v.match(/\p{L}/gu) || []).length >= 2);
+      }
+      function normalizePhoneValue(v){
+        const s = (v || "").replace(/[\s()\-]/g, "");
+        return /^\+?\d{10,15}$/.test(s) ? s : null;
+      }
+      function isValidEmailValue(v){
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v || "").trim());
+      }
+
       document.getElementById("bbConfirm").addEventListener("click", async ()=>{
         const name = (document.getElementById("bbName").value||"").trim();
         const email = (document.getElementById("bbEmail").value||"").trim();
@@ -1119,10 +1135,32 @@
           shake(document.getElementById("bbConfirm"));
           return;
         }
-        if (!name || !phone){
-          shake(document.querySelector(".bbForm"));
+        // Контакти: сміття замість імені/телефона/пошти не пропускаємо;
+        // повідомлення — мовою інтерфейсу (bb_lang), як і тост слота (M8).
+        const bbLangV = (()=>{ try { return localStorage.getItem("bb_lang") || "en"; } catch(e){ return "en"; } })();
+        const CONTACT_MSG = {
+          uk: { name: "Вкажіть ім’я", phone: "Вкажіть коректний номер телефону", email: "Перевірте електронну пошту" },
+          ru: { name: "Укажите имя", phone: "Укажите корректный номер телефона", email: "Проверьте электронную почту" },
+          en: { name: "Please enter your name", phone: "Please enter a valid phone number", email: "Please check the email address" },
+          fr: { name: "Veuillez indiquer votre nom", phone: "Veuillez indiquer un numéro de téléphone valide", email: "Veuillez vérifier l'adresse e-mail" }
+        };
+        const cMsg = CONTACT_MSG[bbLangV] || CONTACT_MSG.en;
+        if (!isValidClientName(name)){
+          shake(document.getElementById("bbName"));
+          bbToast(cMsg.name);
           return;
         }
+        if (!normalizePhoneValue(phone)){
+          shake(document.getElementById("bbPhone"));
+          bbToast(cMsg.phone);
+          return;
+        }
+        if (email && !isValidEmailValue(email)){
+          shake(document.getElementById("bbEmail"));
+          bbToast(cMsg.email);
+          return;
+        }
+        const phoneOut = normalizePhoneValue(phone) || phone;
 
         saveClientPrefill();
         try{ localStorage.setItem("bb.lastServiceId", String(st.serviceId)); }catch(_){}
@@ -1135,7 +1173,7 @@
         const WORKER_URL = (window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev").replace(/\/$/,"");
 
         const payload = {
-          name, email, phone,
+          name, email, phone: phoneOut,
           serviceId: st.serviceId,
           serviceName: svcName,
           durationMin: svc?.durationMin ?? null,
@@ -1153,7 +1191,7 @@
             "📅 " + String(st.slotISO || "").replace("T", " ") + "\n" +
             "💵 Ціна від: $" + (svc?.from ?? "—") + "\n" +
             "👤 Клієнт: " + name + "\n" +
-            "📞 " + phone + (email ? "\n✉️ " + email : "") + "\n" +
+            "📞 " + phoneOut + (email ? "\n✉️ " + email : "") + "\n" +
             "📍 " + st.listing.address + "\n" +
             "🔗 Профіль: " + location.href,
           address: st.listing.address,
@@ -1218,7 +1256,21 @@
             }
             return;
           }
-          if (!res.ok) throw new Error("Booking failed");
+          if (!res.ok){
+            // ФІКС v11: серверна валідація контактів → локалізоване
+            // повідомлення (bad_name/bad_phone/bad_email), не generic.
+            if (res.status === 400){
+              let sErr = "";
+              try{ const j = await res.json(); sErr = (j && j.error) || ""; }catch(e){}
+              const key = sErr === "bad_name" ? "name" : sErr === "bad_phone" ? "phone" : sErr === "bad_email" ? "email" : "";
+              if (key){
+                bbToast(cMsg[key]);
+                btn.textContent = prev;
+                return;
+              }
+            }
+            throw new Error("Booking failed");
+          }
 
           // Код бронювання з відповіді воркера (JSON v4); старий воркер відповідав текстом "ok" — fallback на null
           let bkCode = null;

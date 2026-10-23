@@ -1,5 +1,18 @@
 // ============================================================
-// Booking Club — Cloudflare Worker v10 (Telegram-ПРО-пакет)
+// Booking Club — Cloudflare Worker v11 (валідація контактів)
+// ------------------------------------------------------------
+// Нове у v11:
+// V1) POST /book: сервер — головний гейт валідації контактів клієнта
+//     (форма приймала сміття замість імені/телефона/пошти): імʼя —
+//     2–60 символів і ≥2 літери Unicode (кирилиця/діакритика) →
+//     400 bad_name; телефон — нормалізація (пробіли/дужки/дефіси геть)
+//     до ^\+?\d{10,15}$ → 400 bad_phone, у запис і кабінет іде
+//     нормалізований; email — необовʼязковий, але валідний за формою
+//     a@b.cc, якщо вказаний → 400 bad_email. Перевірки стоять ДО
+//     валідації v8 (past_date/bad_service/day_closed/slot_taken).
+// V2) Заявки салонів (форма /join): телефон мʼяко нормалізується
+//     тим самим normalizePhone (невалідний — лишається як є, заявку
+//     не губимо; бот-майстер телефон текстом не збирає).
 // ------------------------------------------------------------
 // Нове у v10:
 // TG1) Клієнт: у підтвердженні /start BK-… і в нагадуваннях 24г/2г —
@@ -915,8 +928,11 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
     }
 
     const name = String(data?.name || "").trim();
-    const phone = String(data?.phone || "").trim();
-    if (!name || !phone) {
+    const phoneRaw = String(data?.phone || "").trim();
+    // ФІКС v11: для бронювань порожні контакти відбиває валідація нижче
+    // (bad_name/bad_phone, JSON) — з кодами, які сайт мапить на підказки
+    // полів. Для решти payload-ів (заявки салонів) — легасі-поведінка.
+    if (!extractBooking(data) && (!name || !phoneRaw)) {
       return new Response("name+phone required", { status: 400, headers: { ...corsHeaders } });
     }
     if (String(data?.hp || "").trim()) {
@@ -959,6 +975,22 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
     if (!bk) {
       return jsonResp({ error: "bad_booking" }, 400);
     }
+    // ---------- Валідація контактів клієнта (ФІКС v11) ----------
+    // Сервер — головний гейт: форма на сайті лише перша лінія. Імʼя —
+    // з літерами, телефон нормалізуємо, email (якщо є) — валідний.
+    // Коди bad_name/bad_phone/bad_email сайт мапить на ті самі підказки.
+    if (!isValidClientName(name)) {
+      return jsonResp({ error: "bad_name" }, 400);
+    }
+    const phone = normalizePhone(phoneRaw);
+    if (!phone) {
+      return jsonResp({ error: "bad_phone" }, 400);
+    }
+    const emailIn = String(data?.email || "").trim();
+    if (emailIn && !isValidEmail(emailIn)) {
+      return jsonResp({ error: "bad_email" }, 400);
+    }
+    data.phone = phone; // нормалізований — у запис, кабінет і текст-фолбек
     let bkKey = "", bkRecId = "", bkStored = false;
     let salonChatResolved = /^\d{5,}$/.test(salonChatEarly) ? salonChatEarly : "";
     if (KV) {
@@ -1497,6 +1529,30 @@ async function publishedPhotoIds(KV) {
     photoAllowCache = { at: now, set };
   } catch { /* лишаємо попередній кеш / порожній набір */ }
   return photoAllowCache.set || set;
+}
+
+// ---------- Валідація контактів клієнта (ФІКС v11) ----------
+// Імʼя: 2–60 символів і щонайменше 2 літери (Unicode \p{L}: кирилиця,
+// латиниця з діакритикою — «Марія», «Élise»). Суцільні цифри, символи
+// й емодзі літер не мають — відхиляються.
+function isValidClientName(v) {
+  const s = String(v || "").trim();
+  if (s.length < 2 || s.length > 60) return false;
+  const letters = s.match(/\p{L}/gu);
+  return !!letters && letters.length >= 2;
+}
+
+// Телефон: прибираємо пробіли/дужки/дефіси → ^\+?\d{10,15}$ (Канада:
+// 10 цифр або +1…; міжнародні — до 15 цифр). Повертає нормалізований
+// рядок або null (літери в номері → null).
+function normalizePhone(v) {
+  const s = String(v || "").replace(/[\s()\-]/g, "");
+  return /^\+?\d{10,15}$/.test(s) ? s : null;
+}
+
+// Email (у бронюванні необовʼязковий): базова форма a@b.cc.
+function isValidEmail(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || "").trim());
 }
 
 // Витягує дату/час бронювання з payload сайту (dateISO+time або datetimeISO).
@@ -2138,6 +2194,11 @@ function buildListingFromWizard(chatId, d) {
 }
 
 function buildListingFromForm(data) {
+  // ФІКС v11 (мʼяко): телефон заявки нормалізуємо тим самим
+  // normalizePhone, якщо він валідний; невалідний лишаємо як є —
+  // заявку не губимо, власник бачить оригінал у картці заявки.
+  const rawPhone = String(data?.phone || "").trim();
+  const phone = normalizePhone(rawPhone) || rawPhone;
   const svcIds = [];
   const pricesText = String(data?.pricesText || data?.prices || "");
   const priceMap = parsePricesText(pricesText);
@@ -2174,7 +2235,7 @@ function buildListingFromForm(data) {
     description: String(data?.description || "").trim(),
     bio_ua: String(data?.description || "").trim(),
     telegramChatId: String(data?.telegramChatId || "").trim(),
-    phone: String(data?.phone || ""),
+    phone,
     instagram: String(data?.instagram || ""),
     contactName: String(data?.name || ""),
     plan: String(data?.plan || ""),
