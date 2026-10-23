@@ -278,7 +278,7 @@
       $("salonName").textContent = listing ? listing.name : "Салон ще не привʼязано до каталогу";
       $("salonAddr").textContent = listing ? (listing.address || "") : "";
       $("linkWarn").innerHTML = listing ? "" :
-        '<p class="muted" style="font-size:13px">Ваш Telegram ID ще не вписано у картку салону на сайті — передайте його власнику платформи (або заповніть bookingclub.beauty/join), і тут зʼявляться ціни та профіль. Бронювання і графік уже працюють.</p>';
+        '<p class="muted" style="font-size:13px">Ваш Telegram ID ще не вписано у картку салону на сайті — передайте його команді Booking Club (або заповніть bookingclub.beauty/join), і тут зʼявляться ціни та профіль. Бронювання і графік уже працюють.</p>';
       $("stRating").textContent = listing && listing.rating ? "★ " + listing.rating : "—";
       $("stReviews").textContent = listing ? (listing.reviews || 0) : "—";
       $("stBookings").textContent = (cab.bookings || []).length;
