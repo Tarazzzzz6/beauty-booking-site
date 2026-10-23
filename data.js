@@ -729,11 +729,32 @@
     ]
   };
 
+  // АУДИТ-ФІКС: index.html кличе bb.util.maxPriceFor/durationFor, яких не існувало —
+  // цінова стрічка в модалці ніколи не показувала ціну й тривалість.
+  function maxPriceFor(listing, serviceId){
+    if(serviceId){
+      const s=listingService(listing, serviceId);
+      return s? (s.to ?? s.from ?? null) : null;
+    }
+    let m=null;
+    for(const s of (listing.services||[])){
+      const v = (s.to ?? s.from);
+      if(v!=null && (m==null || v>m)) m=v;
+    }
+    return m;
+  }
+  function durationFor(listing, serviceId){
+    const s = serviceId ? listingService(listing, serviceId) : (listing.services||[])[0];
+    return s? (s.durationMin ?? null) : null;
+  }
+
   window.bb = window.bb || {};
   window.bb.util = {
     haversineKm,
     listingService,
     minPriceFor,
+    maxPriceFor,
+    durationFor,
     nextAvailable,
     isTodaySlot,
     smartRecommend,

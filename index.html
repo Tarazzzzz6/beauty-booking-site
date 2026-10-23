@@ -3,12 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <!-- ✅ iOS/PWA: stop input-zoom + keep app-like scale -->
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#14151A" />
   <title>Booking Club · Montréal — запис у салони краси</title>
 
   <meta property="og:title" content="Booking Club · Montréal" />
   <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
+  <meta name="description" content="Booking Club — онлайн-запис у салони краси й до майстрів Монреаля: манікюр, стрижки, вії, брови, масаж. Підтвердження в Telegram, депозит онлайн, 0% комісії для салонів." />
+  <link rel="canonical" href="https://bookingclub.beauty/" />
+  <meta property="og:url" content="https://bookingclub.beauty/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
 
@@ -1235,6 +1238,8 @@
     border-color:var(--p-line2) !important; color:var(--p-ink) !important; background:var(--p-surface) !important;
   }
   .stickyChips .chip.on, #serviceChipsSticky .chip.on{background:var(--gold) !important; border-color:var(--gold) !important; color:var(--graphite) !important}
+  /* АУДИТ-ФІКС: ховер чіпсів на світлій липкій смузі давав білий текст на кістці (≈1.1:1) */
+  .stickyChips .chip:hover, #serviceChipsSticky .chip:hover{border-color:var(--gold) !important; color:var(--graphite) !important; background:var(--gold) !important}
   .stickyBar{
     background:color-mix(in srgb, var(--p-bg) 90%, transparent) !important;
     border-bottom:1px solid var(--p-line) !important; box-shadow:0 10px 30px rgba(20,21,26,.06) !important;
@@ -1646,6 +1651,11 @@
             "/>
             <button class="btn" id="aiGo">Підібрати</button>
           </div>
+          <div id="aiChips" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+            <button type="button" class="chip aiChip" id="aiChip1">Манікюр сьогодні після 18</button>
+            <button type="button" class="chip aiChip" id="aiChip2">Найкращий рейтинг поруч</button>
+            <button type="button" class="chip aiChip" id="aiChip3">Щось до $40</button>
+          </div>
           <div style="margin-top:14px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)">Або обери фото — AI знайде, хто так вміє</div>
           <div class="inspireStrip" id="inspireStrip">
             <div class="inspireItem" data-q="манікюр"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=400&q=80" alt=""><span>Chrome / нюд манікюр</span></div>
@@ -1656,6 +1666,7 @@
             <div class="inspireItem" data-q="фарбування"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80" alt=""><span>Балаяж / фарбування</span></div>
           </div>
           <div class="note" style="margin-top:8px">Далі: завантаження свого фото — AI визначить послугу і ціну автоматично.</div>
+          <div id="aiMsg" style="display:none; margin-top:12px; font-size:15px; line-height:1.55"></div>
           <div id="aiPicks" class="grid" style="margin-top:12px"></div>
         </div>
       </div>
@@ -2184,6 +2195,9 @@ function haptic(ms=12){
         aiNote: "Напиши, що потрібно — підберу 3 варіанти.",
         aiPh: "Напр: манікюр сьогодні після 18 до 60$ недалеко",
         aiGo: "Підібрати",
+        aiChip1: "Манікюр сьогодні після 18",
+        aiChip2: "Найкращий рейтинг поруч",
+        aiChip3: "Щось до $40",
         savedTitle: "Твої збережені",
         savedNote: "Швидкий доступ до улюблених.",
         partnersTitle: "Топ салонів · партнери",
@@ -2245,6 +2259,9 @@ function haptic(ms=12){
         aiNote: "Tell me what you need — I’ll pick 3 options.",
         aiPh: "e.g. brows today after 6pm under $60 nearby",
         aiGo: "Suggest",
+        aiChip1: "Manicure today after 6pm",
+        aiChip2: "Top rated nearby",
+        aiChip3: "Something under $40",
         savedTitle: "Your saved",
         savedNote: "Fast access to favorites.",
         partnersTitle: "Top salons / partners",
@@ -2306,6 +2323,9 @@ function haptic(ms=12){
         aiNote: "Напиши, что нужно — подберу 3 варианта.",
         aiPh: "Напр: маникюр сегодня после 18 до $60 недалеко",
         aiGo: "Подобрать",
+        aiChip1: "Маникюр сегодня после 18",
+        aiChip2: "Лучший рейтинг рядом",
+        aiChip3: "Что-нибудь до $40",
         savedTitle: "Твоё сохранённое",
         savedNote: "Быстрый доступ к любимым.",
         partnersTitle: "Топ салоны / партнёры",
@@ -2460,6 +2480,9 @@ function haptic(ms=12){
       safeSetText("aiNote", t.aiNote);
       safeSetAttr("aiInput","placeholder", t.aiPh);
       safeSetText("aiGo", t.aiGo);
+      safeSetText("aiChip1", t.aiChip1);
+      safeSetText("aiChip2", t.aiChip2);
+      safeSetText("aiChip3", t.aiChip3);
 
       safeSetText("savedTitle", t.savedTitle);
       safeSetText("savedNote", t.savedNote);
@@ -3081,9 +3104,9 @@ function haptic(ms=12){
         if(from == null || dur == null){
           const s = (listing.services||[]).find(x=>x.serviceId===serviceId) || (listing.services||[])[0];
           if(s){
-            if(from == null) from = s.priceFrom ?? s.price ?? null;
-            if(to == null) to = s.priceTo ?? null;
-            if(dur == null) dur = s.duration ?? null;
+            if(from == null) from = s.from ?? s.priceFrom ?? s.price ?? null;
+            if(to == null) to = s.to ?? s.priceTo ?? null;
+            if(dur == null) dur = s.durationMin ?? s.duration ?? null;
           }
         }
 
@@ -3195,34 +3218,12 @@ function haptic(ms=12){
         .sort();
       if(legacy.length) return minusBooked(legacy);
 
-      // (4) Demo fallback: always give a few random times so UX never looks broken
-      const pad = (n)=> String(n).padStart(2,"0");
-      const uniqSorted = (arr)=> Array.from(new Set(arr)).sort();
-      const randInt = (a,b)=> Math.floor(a + Math.random()*(b-a+1));
-      const makeTimes = ()=>{
-        const count = randInt(3,7);
-        const out = [];
-        for(let i=0;i<count;i++){
-          const h = randInt(10,20);
-          const m = [0,10,20,30,40,50][randInt(0,5)];
-          out.push(`${pad(h)}:${pad(m)}`);
-        }
-        return uniqSorted(out);
-      };
-      const times = makeTimes();
-
-      // persist into availability (so changing back doesn't "lose" it)
-      listing.availability = listing.availability || {};
-      listing.availability[dateISO] = times;
-
-      // keep availabilityByService in sync if present
-      if(listing.availabilityByService && sid){
-        listing.availabilityByService[sid] = listing.availabilityByService[sid] || [];
-        for(const t of times){
-          listing.availabilityByService[sid].push(`${dateISO}T${t}:00`);
-        }
-      }
-      return minusBooked(times);
+      // (4) АУДИТ-ФІКС (був demo-fallback): раніше для днів без слотів тут
+      // вигадувались випадкові часи й записувались назад у availability —
+      // через це закриті дні салонів (вихідні, /close) на головній бронювались
+      // на фейкові години, а календар позначав усі дні доступними.
+      // Тепер чесно: немає реальних слотів — немає часу для бронювання.
+      return [];
     }
 
     function renderTimeGrid(){
@@ -3687,8 +3688,8 @@ END:VCALENDAR`;
       if(dur == null || priceFrom == null){
         const s = (listing.services||[]).find(x=>x.serviceId===svcId) || (listing.services||[])[0];
         if(s){
-          if(dur == null) dur = s.duration ?? null;
-          if(priceFrom == null) priceFrom = s.priceFrom ?? s.price ?? null;
+          if(dur == null) dur = s.durationMin ?? s.duration ?? null;
+          if(priceFrom == null) priceFrom = s.from ?? s.priceFrom ?? s.price ?? null;
         }
       }
 
@@ -3851,12 +3852,83 @@ Email: ${email}`;
       return out;
     }
 
-    function runAi(){
+    // --- AI-консьєрж v1: спершу справжній AI на воркері (POST /ai),
+    // каталог знімаємо з window.LISTINGS (після мерджу динамічних).
+    // Будь-яка помилка → тихий fallback на правила нижче (runAiRules).
+    function aiCatalogSnapshot(){
+      const langKey = state.lang === "uk" ? "ua" : state.lang;
+      const svcName = {};
+      (window.SERVICES || []).forEach(s => { svcName[s.id] = s[langKey] || s.en || s.ua || s.id; });
+      return (window.LISTINGS || []).slice(0, 40).map(l => {
+        let slot = null;
+        try { slot = window.bb?.util?.nextAvailable ? window.bb.util.nextAvailable(l) : null; } catch(e){}
+        return {
+          id: l.id,
+          name: l.name || "",
+          district: l.district || l.city || "",
+          rating: (typeof l.rating === "number") ? l.rating : null,
+          services: (l.services || []).map(s => ({
+            id: s.serviceId || "",
+            name: svcName[s.serviceId] || s.serviceId || "",
+            priceFrom: (typeof s.from === "number") ? s.from : null
+          })),
+          nextSlot: slot ? { date: slot.dateISO, time: slot.time } : null
+        };
+      });
+    }
+
+    async function runAiRemote(q){
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 6000);
+      try {
+        const r = await fetch(`${WORKER_URL}/ai`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q, lang: state.lang, catalog: aiCatalogSnapshot() }),
+          signal: ctrl.signal
+        });
+        if (!r.ok) return false;
+        const j = await r.json().catch(() => null);
+        if (!j || !j.ok || !Array.isArray(j.picks)) return false;
+        const byId = {};
+        (window.LISTINGS || []).forEach(l => { byId[l.id] = l; });
+        const picks = j.picks.map(id => byId[id]).filter(Boolean).slice(0, 3);
+        const grid = $("#aiPicks");
+        if (!grid) return false;
+        const msgEl = $("#aiMsg");
+        if (msgEl) {
+          msgEl.textContent = j.message || "";
+          msgEl.style.display = j.message ? "" : "none";
+        }
+        grid.innerHTML = "";
+        if (!picks.length) {
+          // AI відповів чесно «немає варіантів» — показуємо його текст, а не правила
+          if (j.message) { $("#aiSection")?.scrollIntoView({behavior:"smooth", block:"start"}); return true; }
+          return false;
+        }
+        picks.forEach(l => grid.appendChild(buildCard(l, false)));
+        $("#aiSection")?.scrollIntoView({behavior:"smooth", block:"start"});
+        return true;
+      } catch(e) {
+        return false;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function runAi(){
       const q = ($("#aiInput")?.value || "").trim();
       if(!q){
         toast(state.lang==="uk" ? "Напиши запит" : "Type a request");
         return;
       }
+      const handled = await runAiRemote(q);
+      if (!handled) runAiRules(q);
+    }
+
+    function runAiRules(q){
+      const msgEl = $("#aiMsg");
+      if (msgEl) { msgEl.textContent = ""; msgEl.style.display = "none"; }
 
       const p = parseAiQuery(q);
 
@@ -4025,6 +4097,12 @@ Email: ${email}`;
       });
 
       $("#aiGo")?.addEventListener("click", ()=>{ haptic(12); runAi(); });
+      document.querySelectorAll(".aiChip").forEach(el => el.addEventListener("click", ()=>{
+        haptic(10);
+        const inp = $("#aiInput");
+        if (inp) inp.value = el.textContent.trim();
+        runAi();
+      }));
       $("#aiInput")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); runAi(); }});
 
       $("#installPill")?.addEventListener("click", ()=>{ haptic(12); doInstall(); });
@@ -4301,17 +4379,21 @@ Email: ${email}`;
   /* Features: Stories, Reels, Price map */
   (function(){
     function go(id){ location.href = "./profile.html?id=" + encodeURIComponent(id); }
+    // АУДИТ-ФІКС (Critical, stored XSS): назви/адреси/фото динамічних салонів
+    // раніше вставлялись у innerHTML сирими — салон міг виконати JS у
+    // відвідувачів головної. Тепер усе екранується.
+    function escH(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
     var L0 = window.LISTINGS || [];
     function storyItem(l){
       var d = document.createElement("div"); d.className = "storyItem";
-      d.innerHTML = '<div class="storyRing"><img src="' + ((l.images||[])[0]||"") + '" alt=""></div><div class="storyName">' + l.name + '</div>';
+      d.innerHTML = '<div class="storyRing"><img loading="lazy" decoding="async" src="' + escH((l.images||[])[0]||"") + '" alt="' + escH(l.name||"") + '"></div><div class="storyName">' + escH(l.name||"") + '</div>';
       d.addEventListener("click", function(){ go(l.id); });
       return d;
     }
     function reelCard(l, i){
       var svc = (window.SERVICES||[]).find(function(s){ return l.services && l.services[0] && s.id === l.services[0].serviceId; });
       var d = document.createElement("div"); d.className = "reelCard";
-      d.innerHTML = '<img src="' + l.images[0] + '" alt=""><div class="reelPlay">▶</div><div class="reelMeta"><b>' + l.name + '</b><span>' + (svc ? svc.ua : "Beauty") + ' · ' + (l.rating ? "★ " + l.rating : "Новий") + ' · 0:' + (18 + i*3) + '</span></div>';
+      d.innerHTML = '<img loading="lazy" decoding="async" src="' + escH(l.images[0]||"") + '" alt="' + escH(l.name||"") + '"><div class="reelPlay">▶</div><div class="reelMeta"><b>' + escH(l.name||"") + '</b><span>' + escH(svc ? svc.ua : "Beauty") + ' · ' + (l.rating ? "★ " + escH(l.rating) : "Новий") + ' · 0:' + (18 + i*3) + '</span></div>';
       d.addEventListener("click", function(){ go(l.id); });
       return d;
     }
@@ -4335,7 +4417,7 @@ Email: ${email}`;
       var from = null;
       (l.services||[]).forEach(function(s){ if(from===null || s.from<from) from = s.from; });
       var icon = L.divIcon({className:"", html:'<div class="pricePin">$' + (from ?? "—") + '</div>', iconSize:null, iconAnchor:[24,16]});
-      var pop = '<b>' + l.name + '</b><br>' + (l.rating ? '★ ' + l.rating + ' (' + (l.reviews||0) + ') · ' : 'Новий · ') + 'від $' + (from ?? "—") + '<br><span style="opacity:.75">' + (l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
+      var pop = '<b>' + escH(l.name||"") + '</b><br>' + (l.rating ? '★ ' + escH(l.rating) + ' (' + escH(l.reviews||0) + ') · ' : 'Новий · ') + 'від $' + (from ?? "—") + '<br><span style="opacity:.75">' + escH(l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
       L.marker([l.lat, l.lng], {icon:icon}).addTo(mapRef).bindPopup(pop);
     }
     function initMap(){
@@ -4362,6 +4444,8 @@ Email: ${email}`;
   <script>
   /* Features 2: Happy hours + Loyalty counter */
   (function(){
+    // АУДИТ-ФІКС (stored XSS): назва/адреса салону екранується перед innerHTML.
+    function escH(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
     // Happy hours
     var strip = document.getElementById("happyStrip");
     if(strip && window.bb && window.bb.util){
@@ -4379,8 +4463,8 @@ Email: ${email}`;
         items.slice(0,8).forEach(function(it){
           var d = document.createElement("div"); d.className = "happyCard";
           d.innerHTML = '<span class="happyBadge">−20% · сьогодні ' + it.slot.time + '</span>' +
-            '<div style="font-weight:900; margin-top:10px; font-size:15px">' + it.l.name + '</div>' +
-            '<div style="color:var(--muted); font-size:12.5px; margin-top:3px">' + (it.l.address||"") + '</div>' +
+            '<div style="font-weight:900; margin-top:10px; font-size:15px">' + escH(it.l.name||"") + '</div>' +
+            '<div style="color:var(--muted); font-size:12.5px; margin-top:3px">' + escH(it.l.address||"") + '</div>' +
             '<div class="happyPrice"><s>$' + it.from + '</s>$' + it.disc + '</div>' +
             '<div style="color:var(--ok); font-size:12px; font-weight:800; margin-top:4px">⚡ Забронювати зі знижкою →</div>';
           d.addEventListener("click", function(){

@@ -1277,8 +1277,11 @@
         maps.href = `https://www.google.com/maps/search/?api=1&query=${q}`;
 
         const ig = document.getElementById("igBtn");
-        ig.href = l.instagram || "#";
-        ig.style.opacity = l.instagram ? "1" : ".5";
+        // АУДИТ-ФІКС: раніше сюди без перевірки потрапляв рядок із заявки салону —
+        // можливий javascript:-URL або фішинговий лінк під виглядом Instagram.
+        const igUrl = /^https:\/\/(www\.)?instagram\.com\//i.test(String(l.instagram || "")) ? l.instagram : "";
+        ig.href = igUrl || "#";
+        ig.style.opacity = igUrl ? "1" : ".5";
 
         // map embed
         document.getElementById("map").src = `https://www.google.com/maps?q=${q}&output=embed`;
