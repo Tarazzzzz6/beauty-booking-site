@@ -1,4 +1,4 @@
-/* Beauty Booking — data.js (global, LIVE + backward compatible) */
+/* Booking Club — data.js (global, LIVE + backward compatible) */
 (function(){
   // ===== Worker endpoint (fallback used by profile booking) =====
   window.WORKER_URL = window.WORKER_URL || "https://snowy-shadow-0b58.irafarm2000.workers.dev";

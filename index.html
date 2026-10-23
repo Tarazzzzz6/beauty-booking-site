@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <!-- ✅ iOS/PWA: stop input-zoom + keep app-like scale -->
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0b0f" />
-  <title>Beauty Booking</title>
+  <meta name="theme-color" content="#14151A" />
+  <title>Booking Club · Montréal — запис у салони краси</title>
 
-  <meta property="og:title" content="Beauty Booking" />
+  <meta property="og:title" content="Booking Club · Montréal" />
   <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
@@ -18,8 +18,8 @@
   <!-- PWA / iOS standalone -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Beauty Booking">
-  <link rel="apple-touch-icon" href="./icons/icon-180.png">
+  <meta name="apple-mobile-web-app-title" content="Booking Club">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1147,124 +1147,354 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-  /* ===== BOOKING CLUB — ÉDITORIAL NOIR (premium redesign) ===== */
+  /* ===== BOOKING CLUB — ÉDITORIAL (Fresha-clean redesign) =====
+     Палітра: графіт #14151A · слонова кістка #F7F3EC · шампань-золото #C9A96A.
+     Світла тема — основна: секції на кістці, білі картки, графіт лише hero-смуга і футер.
+     Темна тема — той самий дизайн на графіті. Жодного фіолету/рожевого. */
   :root{
-    --bc-ivory:#F4EFE6; --bc-ink:#0A0A0C; --bc-gold:#C6A15B; --bc-gold2:#E5C97E;
-    --bc-line:rgba(244,239,230,.14); --bc-panel:#101013;
+    --gold:#C9A96A; --gold2:#E5C97E; --gold-deep:#8A6D35;
+    --graphite:#14151A; --ivory:#F7F3EC;
+    --pink:#C9A96A; --violet:#8A6D35; /* легасі-змінні → у палітру */
+  }
+  body[data-theme="light"]{
+    --p-bg:#F7F3EC; --p-bg2:#F1EADF;
+    --p-surface:#FFFFFF; --p-surface2:#FBF8F1;
+    --p-ink:#17181D; --p-muted:rgba(23,24,29,.64); --p-faint:rgba(23,24,29,.45);
+    --p-line:rgba(23,24,29,.10); --p-line2:rgba(23,24,29,.18);
+    --p-shadow:0 18px 44px rgba(23,24,29,.10); --p-shadow2:0 8px 24px rgba(23,24,29,.08);
+    --p-chip:rgba(23,24,29,.05);
+  }
+  body[data-theme="dark"]{
+    --p-bg:#101014; --p-bg2:#0C0C0F;
+    --p-surface:#1A1B21; --p-surface2:#21222A;
+    --p-ink:#F4EFE6; --p-muted:rgba(244,239,230,.66); --p-faint:rgba(244,239,230,.45);
+    --p-line:rgba(244,239,230,.13); --p-line2:rgba(244,239,230,.22);
+    --p-shadow:0 18px 44px rgba(0,0,0,.42); --p-shadow2:0 8px 24px rgba(0,0,0,.32);
+    --p-chip:rgba(244,239,230,.06);
   }
   body{
-    background:
-      radial-gradient(1100px 500px at 50% -80px, rgba(198,161,91,.10), transparent 60%),
-      linear-gradient(180deg, #08080A, #0A0A0C 40%, #08080A) !important;
-    color:var(--bc-ivory);
+    background:linear-gradient(180deg, var(--p-bg), var(--p-bg2)) !important;
+    color:var(--p-ink) !important;
   }
-  ::selection{background:var(--bc-gold); color:#0A0A0C}
-  .brand .logo, .brandName{font-family:"Playfair Display",serif !important; letter-spacing:.14em; text-transform:uppercase}
+  ::selection{background:var(--gold); color:var(--graphite)}
+
+  /* ===== Topbar ===== */
+  .topbar{
+    background:color-mix(in srgb, var(--p-bg) 88%, transparent) !important;
+    border-bottom:1px solid var(--p-line) !important;
+    box-shadow:0 10px 34px rgba(20,21,26,.06) !important;
+  }
+  .brand h1{
+    font-family:"Playfair Display",serif !important; font-weight:600 !important;
+    font-size:27px !important; color:var(--p-ink) !important; letter-spacing:.01em;
+    text-shadow:none !important; white-space:nowrap;
+  }
+  .brand h1 .w2{font-style:italic; color:var(--gold-deep)}
+  body[data-theme="dark"] .brand h1 .w2{color:var(--gold2)}
+  .logo{
+    width:52px !important; height:52px !important; border-radius:16px !important;
+    background:var(--graphite) !important;
+    box-shadow:inset 0 0 0 1px rgba(201,169,106,.45), 0 12px 28px rgba(20,21,26,.25) !important;
+    display:grid !important; place-items:center; overflow:hidden;
+  }
+  .logo span{
+    font-family:"Playfair Display",serif; font-weight:700; font-size:21px;
+    letter-spacing:.06em; color:var(--gold2); line-height:1;
+  }
+  .logo:after{display:none !important}
+  .search{
+    background:var(--p-surface) !important; border:1px solid var(--p-line) !important;
+    box-shadow:var(--p-shadow2) !important; color:var(--p-ink);
+  }
+  .search input{color:var(--p-ink) !important}
+  .sug{background:var(--p-surface) !important; border:1px solid var(--p-line2) !important; box-shadow:var(--p-shadow) !important}
+  .sugItem{border-top:1px solid var(--p-line) !important}
+  .sugItem:hover{background:var(--p-chip) !important}
+  .sugTag{background:var(--p-chip) !important; border-color:var(--p-line) !important; color:var(--p-ink)}
+  .iconbtn{
+    background:var(--p-surface) !important; border:1px solid var(--p-line) !important;
+    color:var(--p-ink) !important; box-shadow:var(--p-shadow2);
+    font-size:16px !important; font-weight:700;
+  }
+  .badge{background:var(--gold) !important; color:var(--graphite) !important; box-shadow:0 8px 20px rgba(20,21,26,.25) !important}
+  #langBtn{font-size:13px !important; letter-spacing:.06em}
+
+  /* ===== Pills & chips (без емодзі, активна — золото) ===== */
+  .pill{
+    background:var(--p-surface) !important; border:1px solid var(--p-line) !important;
+    color:var(--p-ink) !important; font-weight:700; box-shadow:none;
+  }
+  .pill:hover{border-color:rgba(201,169,106,.6) !important; background:var(--p-surface) !important}
+  .pill.on{background:var(--gold) !important; border-color:var(--gold) !important; color:var(--graphite) !important; box-shadow:none !important}
+  #installPill{border-color:rgba(201,169,106,.5) !important; background:var(--p-surface) !important; color:var(--p-ink) !important; box-shadow:none !important}
+  #aiBtn{border-color:rgba(201,169,106,.55) !important; background:var(--p-surface) !important; color:var(--p-ink) !important}
+  .chip{
+    background:transparent !important; border:1px solid rgba(247,243,236,.28) !important;
+    color:rgba(247,243,236,.88) !important; font-weight:600; box-shadow:none !important;
+  }
+  .chip:hover{border-color:var(--gold) !important; color:#fff !important; background:transparent !important}
+  .chip.on{background:var(--gold) !important; border-color:var(--gold) !important; color:var(--graphite) !important; box-shadow:none !important}
+  .stickyChips .chip, #serviceChipsSticky .chip{
+    border-color:var(--p-line2) !important; color:var(--p-ink) !important; background:var(--p-surface) !important;
+  }
+  .stickyChips .chip.on, #serviceChipsSticky .chip.on{background:var(--gold) !important; border-color:var(--gold) !important; color:var(--graphite) !important}
+  .stickyBar{
+    background:color-mix(in srgb, var(--p-bg) 90%, transparent) !important;
+    border-bottom:1px solid var(--p-line) !important; box-shadow:0 10px 30px rgba(20,21,26,.06) !important;
+  }
+
+  /* ===== Buttons ===== */
+  .btn{
+    background:var(--gold) !important; color:var(--graphite) !important;
+    border:1px solid var(--gold) !important; border-radius:999px !important;
+    font-weight:800 !important; box-shadow:0 12px 30px rgba(138,109,53,.28) !important;
+  }
+  .btn:hover{transform:translateY(-1px); filter:none !important; box-shadow:0 16px 36px rgba(138,109,53,.34) !important}
+  .btn.secondary{
+    background:transparent !important; color:var(--p-ink) !important;
+    border:1px solid var(--p-line2) !important; box-shadow:none !important;
+  }
+  .btn.gold{background:var(--gold) !important; color:var(--graphite) !important}
+  .floatbar .inner{background:color-mix(in srgb, var(--p-surface) 82%, transparent) !important; border:1px solid var(--p-line) !important; box-shadow:var(--p-shadow) !important}
+  .floatCTA{
+    background:var(--gold) !important; color:var(--graphite) !important;
+    box-shadow:0 14px 34px rgba(138,109,53,.35) !important;
+  }
+  .topBtn{background:var(--p-surface) !important; border:1px solid var(--p-line) !important; color:var(--p-ink) !important}
+  .miniBtn{
+    background:var(--graphite) !important; color:var(--ivory) !important;
+    border:1px solid var(--graphite) !important; border-radius:999px !important; font-weight:800;
+  }
+  .miniBtn:hover{background:#23242c !important; border-color:#23242c !important}
+  .fav{
+    background:var(--p-surface) !important; border:1px solid var(--p-line) !important;
+    color:var(--p-faint) !important; font-size:17px; filter:none !important; opacity:1 !important;
+  }
+  .fav:hover{border-color:rgba(201,169,106,.6) !important}
+  .fav.on{background:rgba(201,169,106,.16) !important; border-color:var(--gold) !important; color:var(--gold-deep) !important; box-shadow:none !important}
+  body[data-theme="dark"] .fav.on{color:var(--gold2) !important}
+
+  /* ===== HERO (графітова смуга) ===== */
+  .hero{padding:14px 0 4px}
   .heroCard{
-    background:transparent !important; border:0 !important; box-shadow:none !important;
-    border-bottom:1px solid var(--bc-line) !important; border-radius:0 !important;
+    background:
+      radial-gradient(900px 480px at 50% -10%, rgba(201,169,106,.20), transparent 62%),
+      linear-gradient(180deg, #191A20, var(--graphite)) !important;
+    border:1px solid rgba(201,169,106,.22) !important;
+    border-radius:28px !important; box-shadow:0 30px 80px rgba(20,21,26,.28) !important;
+    overflow:hidden;
   }
-  .heroInner{padding:64px 8px 44px !important}
+  .heroCard:before{display:none !important}
+  .heroInner{
+    display:block !important; padding:56px 26px 40px !important;
+    max-width:880px; margin:0 auto; text-align:center;
+  }
+  .heroKicker{
+    font-size:11.5px; letter-spacing:.26em; text-transform:uppercase;
+    color:var(--gold2); font-weight:700; margin:0 0 18px;
+  }
   .heroTitle{
     font-family:"Playfair Display",serif !important; font-weight:600 !important;
-    font-size:clamp(46px, 7.2vw, 88px) !important; line-height:1.02 !important; letter-spacing:-.01em;
-    color:var(--bc-ivory) !important; max-width:12ch;
+    font-size:clamp(44px, 7vw, 80px) !important; line-height:1.04 !important; letter-spacing:-.01em;
+    color:var(--ivory) !important; margin:0 auto 16px !important; max-width:14ch;
   }
   .heroTitle span{
     font-style:italic; font-weight:500;
-    background:linear-gradient(92deg, var(--bc-gold2), var(--bc-gold)) !important;
+    background:linear-gradient(92deg, var(--gold2), var(--gold)) !important;
     -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important;
   }
-  .heroDesc{font-size:17px !important; line-height:1.65 !important; color:rgba(244,239,230,.72) !important; max-width:52ch}
-  .kicker{color:var(--bc-gold) !important; letter-spacing:.22em !important; font-size:11px !important; font-weight:700 !important}
-  .btn{
-    background:var(--bc-ivory) !important; color:#0A0A0C !important;
-    border:1px solid var(--bc-ivory) !important; border-radius:999px !important;
-    font-weight:800 !important; letter-spacing:.01em;
-    box-shadow:0 10px 30px rgba(0,0,0,.35) !important;
+  .heroDesc{
+    font-size:16.5px !important; line-height:1.6 !important;
+    color:rgba(247,243,236,.72) !important; max-width:54ch; margin:0 auto 26px !important;
   }
-  .btn:hover{transform:translateY(-1px); box-shadow:0 16px 38px rgba(0,0,0,.45) !important}
-  .btn:after{display:none !important}
-  .btn.secondary, .btn.ghost{
-    background:transparent !important; color:var(--bc-ivory) !important;
-    border:1px solid var(--bc-line) !important; box-shadow:none !important;
+
+  /* Пошукова пігулка (Fresha-style) */
+  .searchPill{
+    display:flex; align-items:stretch; gap:0; text-align:left;
+    background:#fff; border-radius:999px; padding:6px; margin:0 auto;
+    max-width:760px; box-shadow:0 24px 60px rgba(0,0,0,.35);
   }
-  .btn.gold{background:linear-gradient(135deg, var(--bc-gold2), var(--bc-gold)) !important; border-color:transparent !important; color:#0A0A0C !important}
-  .pill, .chip{
-    border:1px solid var(--bc-line) !important; background:rgba(244,239,230,.03) !important;
-    color:rgba(244,239,230,.85) !important; border-radius:999px !important; font-weight:600;
+  .pillField{
+    display:flex; flex-direction:column; justify-content:center; gap:1px;
+    padding:6px 16px; min-width:0; flex:0 1 auto;
   }
-  .pill:hover, .chip:hover{border-color:rgba(198,161,91,.55) !important; color:var(--bc-ivory) !important}
-  .chip.on, .chip[aria-pressed="true"], .pill.on{background:var(--bc-ivory) !important; color:#0A0A0C !important; border-color:var(--bc-ivory) !important}
-  .glass{
-    background:rgba(244,239,230,.028) !important; border:1px solid var(--bc-line) !important;
-    border-radius:18px !important; box-shadow:none !important; backdrop-filter:blur(10px);
+  .pillField.grow{flex:1 1 auto}
+  .pillField + .pillField{border-left:1px solid rgba(23,24,29,.10)}
+  .pillLabel{
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:rgba(23,24,29,.48); font-weight:700; white-space:nowrap;
   }
-  .bigLine{font-family:"Playfair Display",serif; font-size:21px !important}
-  .section{margin-top:72px !important}
+  .pillField select, .pillField input{
+    border:0 !important; outline:0; background:transparent; color:#17181D;
+    font-size:15px !important; font-weight:600; padding:0; width:100%;
+    appearance:none; -webkit-appearance:none; cursor:pointer;
+  }
+  .pillField input{cursor:text}
+  .pillField select{
+    background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23C9A96A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right center; padding-right:16px;
+  }
+  .pillGo{
+    border:0; cursor:pointer; flex:0 0 auto; align-self:center;
+    background:var(--graphite); color:var(--ivory);
+    font-weight:800; font-size:15px; padding:14px 26px; border-radius:999px;
+    transition:transform .18s ease, background .18s ease;
+  }
+  .pillGo:hover{transform:translateY(-1px); background:#23242c}
+  .hero .chips{justify-content:center; margin-top:22px}
+  .heroTrust{
+    margin-top:22px; padding-top:18px; border-top:1px solid rgba(247,243,236,.14);
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:rgba(247,243,236,.62); font-weight:600; line-height:1.9;
+  }
+  .heroTrust b{color:var(--gold2); font-weight:800}
+
+  /* ===== Швидкий доступ під hero ===== */
+  .quickGrid{display:grid; grid-template-columns:1fr 1fr auto; gap:14px; align-items:stretch}
+  .quickCtas{display:flex; flex-direction:column; gap:10px; justify-content:center}
+  @media(max-width:860px){ .quickGrid{grid-template-columns:1fr} .quickCtas{flex-direction:row; flex-wrap:wrap} }
+
+  /* ===== Секції та картки ===== */
+  .section{margin-top:56px !important}
+  .sectionHead{margin:0 2px 16px !important}
   .sectionTitle{
     font-family:"Playfair Display",serif !important; font-weight:600 !important;
-    font-size:clamp(28px, 3.6vw, 40px) !important; color:var(--bc-ivory) !important; letter-spacing:0 !important;
+    font-size:clamp(27px, 3.4vw, 38px) !important; color:var(--p-ink) !important; letter-spacing:0 !important;
   }
-  .sectionTitle:after{background:linear-gradient(90deg, var(--bc-gold), transparent) !important; height:1px !important}
-  .sectionNote{color:rgba(244,239,230,.6) !important; font-size:14.5px !important}
+  .sectionTitle:after{background:linear-gradient(90deg, var(--gold), transparent) !important; height:1px !important}
+  .sectionNote{color:var(--p-muted) !important; font-size:14px !important}
+  .glass{
+    background:var(--p-surface) !important; border:1px solid var(--p-line) !important;
+    border-radius:22px !important; box-shadow:var(--p-shadow2) !important; backdrop-filter:none;
+  }
+  .kicker{color:var(--gold-deep) !important; letter-spacing:.2em !important; font-size:11px !important; font-weight:700 !important}
+  body[data-theme="dark"] .kicker{color:var(--gold2) !important}
+  .bigLine{font-family:"Playfair Display",serif; font-size:20px !important; color:var(--p-ink)}
+  .smallLine{color:var(--p-muted) !important}
   .card, .stripCard{
-    background:var(--bc-panel) !important; border:1px solid var(--bc-line) !important;
-    border-radius:18px !important; overflow:hidden; box-shadow:0 18px 44px rgba(0,0,0,.35) !important;
+    background:var(--p-surface) !important; border:1px solid var(--p-line) !important;
+    border-radius:22px !important; box-shadow:var(--p-shadow2) !important;
   }
-  .card:hover, .stripCard:hover{border-color:rgba(198,161,91,.45) !important; transform:translateY(-4px)}
-  .card .media, .stripCard .stripMedia{aspect-ratio:4/3; overflow:hidden}
-  .card .media img, .stripCard .stripMedia img{width:100%; height:100%; object-fit:cover; transition:transform 1.2s cubic-bezier(.16,1,.3,1); filter:saturate(.92)}
+  .card:hover, .stripCard:hover{
+    transform:translateY(-4px); border-color:rgba(201,169,106,.55) !important;
+    background:var(--p-surface) !important; box-shadow:var(--p-shadow) !important;
+  }
+  .card .media, .stripCard .stripMedia{aspect-ratio:4/3; height:auto}
+  .card .media img, .stripCard .stripMedia img{filter:saturate(.95)}
   .card:hover .media img, .stripCard:hover .stripMedia img{transform:scale(1.05)}
   .card .shine, .microShimmer{display:none !important}
-  .card .name, .stripCard .name{font-family:"Playfair Display",serif !important; font-size:20px !important; font-weight:600 !important; color:var(--bc-ivory) !important}
-  .card .addr, .stripCard .addr{color:rgba(244,239,230,.55) !important; font-size:12.5px !important}
+  .card .name, .stripCard .name{
+    font-family:"Playfair Display",serif !important; font-size:19px !important;
+    font-weight:600 !important; color:var(--p-ink) !important;
+  }
+  .card .addr, .stripCard .addr{color:var(--p-muted) !important; font-size:12.5px !important}
   .tag{
-    border:1px solid var(--bc-line) !important; background:rgba(244,239,230,.04) !important;
-    color:rgba(244,239,230,.8) !important; border-radius:999px !important; font-size:11px !important; font-weight:600;
+    border:1px solid var(--p-line) !important; background:var(--p-chip) !important;
+    color:var(--p-ink) !important; border-radius:999px !important; font-size:11px !important; font-weight:600;
+    box-shadow:none !important;
   }
-  .why{color:rgba(244,239,230,.55) !important} .why span{color:var(--bc-gold) !important}
-  .miniBtn{
-    background:var(--bc-ivory) !important; color:#0A0A0C !important; border-radius:999px !important;
-    font-weight:800 !important; border:0 !important;
-  }
-  .fav{filter:grayscale(1); opacity:.55} .fav.on{filter:none; opacity:1}
+  .tag.good{border-color:rgba(201,169,106,.45) !important; background:rgba(201,169,106,.10) !important}
+  .tag.today{border-color:rgba(201,169,106,.55) !important; background:rgba(201,169,106,.16) !important}
+  .tag.partner{border-color:rgba(201,169,106,.55) !important; background:rgba(201,169,106,.14) !important}
+  .why{color:var(--p-muted) !important} .why span{color:var(--gold-deep) !important}
+  body[data-theme="dark"] .why span{color:var(--gold2) !important}
   .partnerBadge{
-    background:rgba(10,10,12,.72) !important; color:var(--bc-gold2) !important;
-    border:1px solid rgba(198,161,91,.55) !important; backdrop-filter:blur(6px); border-radius:999px !important;
-    font-size:11px !important; letter-spacing:.08em; text-transform:uppercase;
+    background:rgba(20,21,26,.78) !important; color:var(--gold2) !important;
+    border:1px solid rgba(201,169,106,.55) !important; backdrop-filter:blur(6px);
+    border-radius:999px !important; font-size:11px !important; letter-spacing:.08em; text-transform:uppercase;
+    box-shadow:none !important;
   }
-  .lux-marquee{border-top:1px solid var(--bc-line) !important; border-bottom:1px solid var(--bc-line) !important; background:transparent !important}
-  .lux-marquee-track{animation-duration:46s !important}
-  .lux-marquee-track span{color:rgba(198,161,91,.75) !important; font-style:italic; text-transform:none !important; letter-spacing:.12em !important; font-size:16px !important}
-  .storyRing{background:conic-gradient(from 210deg, var(--bc-gold), #5c4c26, var(--bc-gold2), var(--bc-gold)) !important; padding:2px !important}
-  .storyRing img{border-color:#0A0A0C !important}
-  .reelCard, .trendCard{border-radius:18px !important; border-color:var(--bc-line) !important}
-  .trendTag{background:rgba(10,10,12,.7) !important; color:var(--bc-gold2) !important; border:1px solid rgba(198,161,91,.5) !important}
+  .empty{background:var(--p-surface) !important; border:1px solid var(--p-line) !important; border-radius:22px !important; box-shadow:var(--p-shadow2) !important}
+  .empty h3{color:var(--p-ink)} .empty p{color:var(--p-muted) !important}
+  mark{background:rgba(201,169,106,.28) !important; box-shadow:0 0 0 1px rgba(201,169,106,.25) !important}
+
+  /* ===== Stories / Trends / Reels / Happy / Map ===== */
+  .storyRing{background:conic-gradient(from 210deg, var(--gold), #5c4c26, var(--gold2), var(--gold)) !important; padding:2px !important}
+  .storyRing img{border-color:var(--p-bg) !important}
+  .storyName{color:var(--p-ink) !important}
+  .trendCard, .reelCard{border-radius:20px !important; border:1px solid var(--p-line) !important; box-shadow:var(--p-shadow2)}
+  .trendTag{background:rgba(20,21,26,.72) !important; color:var(--gold2) !important; border:1px solid rgba(201,169,106,.5) !important}
   .trendName{font-family:"Playfair Display",serif !important}
-  .happyCard{border-color:rgba(198,161,91,.4) !important; background:linear-gradient(180deg, rgba(198,161,91,.09), rgba(244,239,230,.02)) !important; border-radius:18px !important}
-  .happyBadge{background:rgba(198,161,91,.14) !important; border-color:rgba(198,161,91,.45) !important; color:var(--bc-gold2) !important}
-  .loyalBar i{background:linear-gradient(90deg, var(--bc-gold), var(--bc-gold2)) !important}
-  .pricePin{background:var(--bc-ivory) !important; color:#0A0A0C !important; border:2px solid #0A0A0C !important; box-shadow:0 10px 24px rgba(0,0,0,.5) !important}
-  .sheet{background:#101013 !important; border:1px solid var(--bc-line) !important}
-  #luxPre{background:#08080A !important}
+  .happyCard{
+    background:var(--p-surface) !important; border:1px solid rgba(201,169,106,.4) !important;
+    border-radius:20px !important; box-shadow:var(--p-shadow2); color:var(--p-ink) !important;
+  }
+  .happyBadge{background:rgba(201,169,106,.14) !important; border:1px solid rgba(201,169,106,.45) !important; color:var(--gold-deep) !important}
+  body[data-theme="dark"] .happyBadge{color:var(--gold2) !important}
+  .loyalBar i{background:linear-gradient(90deg, var(--gold), var(--gold2)) !important}
+  .mapFrame{border-radius:22px !important; border:1px solid var(--p-line) !important; box-shadow:var(--p-shadow2); overflow:hidden}
+  .pricePin{
+    background:#fff !important; color:var(--graphite) !important;
+    border:2px solid var(--graphite) !important; box-shadow:0 10px 24px rgba(20,21,26,.35) !important;
+  }
+  .lux-marquee{border-top:1px solid var(--p-line) !important; border-bottom:1px solid var(--p-line) !important; background:transparent !important}
+  .lux-marquee-track{animation-duration:46s !important}
+  .lux-marquee-track span{color:rgba(138,109,53,.8) !important; font-style:italic; text-transform:none !important; letter-spacing:.12em !important; font-size:16px !important}
+  body[data-theme="dark"] .lux-marquee-track span{color:rgba(201,169,106,.75) !important}
+
+  /* ===== Відгуки (стрічка у стилі Fresha) ===== */
+  .revStrip{display:flex; gap:14px; overflow:auto; padding:4px 2px 12px; scroll-snap-type:x mandatory}
+  .revStrip::-webkit-scrollbar{height:8px}
+  .revStrip::-webkit-scrollbar-thumb{background:rgba(201,169,106,.35); border-radius:999px}
+  .revCard{
+    min-width:300px; max-width:340px; flex:1 0 300px; scroll-snap-align:start;
+    background:var(--p-surface); border:1px solid var(--p-line); border-radius:22px;
+    box-shadow:var(--p-shadow2); padding:20px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .revStars{color:var(--gold); font-size:15px; letter-spacing:3px; line-height:1}
+  .revStars .off{color:var(--p-line2)}
+  .revText{margin:0; font-size:14.5px; line-height:1.55; color:var(--p-ink)}
+  .revWho{margin-top:auto; font-size:12.5px; color:var(--p-muted); font-weight:600}
+  .revWho b{color:var(--p-ink); font-weight:800}
+
+  /* ===== Модалки / шити ===== */
+  .sheet{
+    background:var(--p-surface) !important; border:1px solid var(--p-line2) !important;
+    box-shadow:var(--p-shadow) !important; color:var(--p-ink);
+  }
+  .sheetHead{border-bottom:1px solid var(--p-line) !important}
+  .sheetHead h3{font-family:"Playfair Display",serif; font-size:17px !important; color:var(--p-ink)}
+  .x{background:var(--p-chip) !important; border:1px solid var(--p-line) !important; color:var(--p-ink) !important}
+  .toast{background:var(--graphite) !important; color:var(--ivory) !important; border:1px solid rgba(201,169,106,.4) !important}
+
+  /* ===== Футер ===== */
+  .bc-footer{
+    margin-top:70px; background:linear-gradient(180deg, #191A20, var(--graphite));
+    border-top:1px solid rgba(201,169,106,.25); color:rgba(247,243,236,.78);
+  }
+  .bc-footer .fin{max-width:var(--max); margin:0 auto; padding:38px 18px 110px}
+  .bc-footer .frow{display:flex; justify-content:space-between; gap:22px; flex-wrap:wrap; align-items:flex-start}
+  .bc-footer .flogo{display:flex; align-items:center; gap:12px}
+  .bc-footer .flogo .logo{width:44px !important; height:44px !important; box-shadow:inset 0 0 0 1px rgba(201,169,106,.45) !important}
+  .bc-footer .flogo .logo span{font-size:17px}
+  .bc-footer .fname{font-family:"Playfair Display",serif; font-size:22px; color:var(--ivory); font-weight:600}
+  .bc-footer .fname i{color:var(--gold2)}
+  .bc-footer nav{display:flex; gap:8px 18px; flex-wrap:wrap; font-size:13.5px; font-weight:600}
+  .bc-footer nav a{color:rgba(247,243,236,.78)}
+  .bc-footer nav a:hover{color:var(--gold2)}
+  .bc-footer .fbot{
+    margin-top:26px; padding-top:16px; border-top:1px solid rgba(247,243,236,.12);
+    font-size:12px; color:rgba(247,243,236,.5); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+
+  /* ===== Preloader ===== */
+  #luxPre{background:#0C0C0F !important}
   #luxPre .luxPreLogo{
     font-family:"Playfair Display",serif !important; letter-spacing:.3em !important;
-    background:linear-gradient(92deg, var(--bc-gold2), var(--bc-gold)) !important;
+    background:linear-gradient(92deg, var(--gold2), var(--gold)) !important;
     -webkit-background-clip:text !important; background-clip:text !important; color:transparent !important;
   }
-  .bc-heroArt{display:grid; grid-template-columns:1.5fr 1fr 1.5fr; gap:12px; margin-top:34px}
-  .bc-heroArt figure{margin:0; border-radius:18px; overflow:hidden; border:1px solid var(--bc-line); position:relative}
-  .bc-heroArt img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(.92)}
-  .bc-heroArt .tall{height:340px} .bc-heroArt .short{height:164px}
-  .bc-heroArt .stack{display:grid; gap:12px}
-  .bc-heroArt figcaption{position:absolute; left:14px; bottom:12px; font-family:"Playfair Display",serif; font-style:italic; font-size:15px; color:#fff; text-shadow:0 2px 14px rgba(0,0,0,.6)}
-  .bc-stats{display:flex; gap:0; flex-wrap:wrap; border-top:1px solid var(--bc-line); margin-top:26px}
-  .bc-stats div{flex:1; min-width:150px; padding:18px 14px 4px; border-right:1px solid var(--bc-line)}
-  .bc-stats div:last-child{border-right:0}
-  .bc-stats b{display:block; font-family:"Playfair Display",serif; font-size:30px; font-weight:600; color:var(--bc-ivory)}
-  .bc-stats span{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,239,230,.5)}
-  @media(max-width:760px){ .bc-heroArt{grid-template-columns:1fr 1fr} .bc-heroArt .tall{height:230px} .bc-heroArt .short{height:109px} .heroInner{padding:40px 4px 30px !important} }
+  @keyframes luxPulse{0%,100%{box-shadow:0 18px 50px rgba(201,169,106,.22), 0 12px 34px rgba(20,21,26,.28)} 50%{box-shadow:0 18px 60px rgba(201,169,106,.45), 0 12px 34px rgba(20,21,26,.34)}}
+  .field.err{border-color:rgba(178,84,60,.55) !important; box-shadow:0 0 0 1px rgba(178,84,60,.22) !important}
+  .miniBtn2.danger{border-color:rgba(178,84,60,.4) !important; background:rgba(178,84,60,.10) !important}
+  @media(max-width:760px){
+    .heroInner{padding:38px 16px 30px !important}
+    .searchPill{flex-wrap:wrap; border-radius:26px; padding:10px}
+    .pillField{flex:1 1 42%; padding:8px 10px}
+    .pillField + .pillField{border-left:0}
+    .pillGo{width:100%; margin-top:6px}
+  }
   </style>
 </head>
 
@@ -1273,10 +1503,10 @@
   <div id="luxPre" aria-hidden="true"><div class="luxPreInner"><div class="luxPreLogo">Booking <span>Club</span></div><div class="luxPreBar"><i></i></div></div></div>
   <div class="topbar">
     <div class="inner">
-      <a class="brand" href="./index.html" aria-label="Beauty Booking home">
-        <div class="logo" aria-hidden="true" title="Beauty Booking"></div>
+      <a class="brand" href="./index.html" aria-label="Booking Club — home">
+        <div class="logo" aria-hidden="true" title="Booking Club"><span>BC</span></div>
         <div>
-          <h1><span class="w1">Beauty</span> <span class="w2">Booking</span></h1>
+          <h1><span class="w1">Booking</span> <span class="w2">Club</span></h1>
           <div class="sub"></div>
         </div>
       </a>
@@ -1288,23 +1518,23 @@
       </div>
 
       <div class="top-actions">
-        <button id="installPill" class="pill" title="Install app">⬇️ Install</button>
+        <button id="installPill" class="pill" title="Install app">Install</button>
 
         <div id="favOnly" class="pill" role="button" tabindex="0" title="Only favorites">
-          <span id="favOnlyLabel" style="font-weight:900">Only ❤️</span>
+          <span id="favOnlyLabel" style="font-weight:900">Only ♥</span>
         </div>
 
-        <button id="aiBtn" class="pill" title="AI help" style="border-color:rgba(255,210,122,.22); background:rgba(255,210,122,.08)">
-          <span>✨</span><span style="font-weight:900">AI help</span>
+        <button id="aiBtn" class="pill" title="AI help">
+          <span style="color:#C9A96A">✦</span><span style="font-weight:900">AI help</span>
         </button>
 
-        <button id="cartBtn" class="iconbtn" title="Saved drafts (1-tap)">
-          🧾
+        <button id="cartBtn" class="iconbtn" title="Saved drafts (1-tap)" aria-label="Saved drafts">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1" fill="currentColor" stroke="none"/></svg>
           <span id="cartBadge" class="badge" style="display:none">0</span>
         </button>
 
-        <button id="themeBtn" class="iconbtn" title="Dark / Light">🌙</button>
-        <button id="langBtn" class="iconbtn" title="UA / RU / EN">🌐</button>
+        <button id="themeBtn" class="iconbtn" title="Dark / Light">☾</button>
+        <button id="langBtn" class="iconbtn" title="UA / RU / EN">UA</button>
       </div>
     </div>
   </div>
@@ -1315,7 +1545,7 @@
         <div id="serviceChipsSticky" class="stickyChips"></div>
       </div>
       <div class="stickyRight">
-        <button class="pill" id="stickyQuick" title="Quick booking">⚡ <span id="stickyQuickLabel" style="font-weight:900">Quick</span></button>
+        <button class="pill" id="stickyQuick" title="Quick booking"><span id="stickyQuickLabel" style="font-weight:900">Quick</span></button>
         <button class="pill" id="stickyReset" title="Reset active filters">↺ <span id="stickyResetLabel" style="font-weight:900">Reset</span></button>
       </div>
     </div>
@@ -1325,81 +1555,72 @@
     <section class="hero">
       <div class="heroCard">
         <div class="heroInner">
-          <div>
-            <h2 class="heroTitle">Book beauty in <span>seconds</span>.</h2>
-            <p class="heroDesc" id="heroDesc">
-              Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.
-            </p>
+          <p class="heroKicker" id="heroKicker">Montréal · Салони та майстри</p>
+          <h2 class="heroTitle" id="heroTitle">Бронюй красу за <span>лічені секунди</span></h2>
+          <p class="heroDesc" id="heroDesc">Перевірені салони й майстри Монреаля. Стерильно, швидко, без спаму — підтвердження приходить у Telegram.</p>
 
-            <div class="chips" id="serviceChips"></div>
+          <form class="searchPill" id="searchPill">
+            <label class="pillField">
+              <span class="pillLabel" id="pillSvcLabel">Послуга</span>
+              <select id="pillService" aria-label="Service"></select>
+            </label>
+            <label class="pillField grow">
+              <span class="pillLabel" id="pillAreaLabel">Район або салон</span>
+              <input id="pillQ" type="text" autocomplete="off" />
+            </label>
+            <label class="pillField">
+              <span class="pillLabel" id="pillWhenLabel">Коли</span>
+              <select id="pillWhen" aria-label="When">
+                <option value="any">Будь-коли</option>
+                <option value="today">Сьогодні</option>
+                <option value="tomorrow">Завтра</option>
+                <option value="after18">Після 18:00</option>
+              </select>
+            </label>
+            <button class="pillGo" id="pillGo" type="submit">Знайти</button>
+          </form>
 
-            <div class="ctaRow">
-              <button class="btn" id="openQuick">⚡ Quick booking <span style="opacity:.85; font-weight:800">today</span></button>
-              <button class="btn secondary" id="resetBtn">Скинути фільтри</button>
-            </div>
+          <div class="chips" id="serviceChips"></div>
 
-            <div style="margin-top:12px; color:rgba(244,243,248,.70); font-size:12.5px; line-height:1.35">
-              <span style="color:rgba(255,210,122,.95); font-weight:900">Tip:</span>
-              вибери послугу — ми одразу покажемо доступні слоти.<span class="mbr"><br></span>
-              <span style="opacity:.92">Далі — 1 клік і підтвердження в Telegram.</span>
-            </div>
-          </div>
-
-          <div class="heroSide">
-            <div class="glass" id="nextAvailCard" role="button" tabindex="0" title="Next available">
-              <div class="pad">
-                <div class="kicker" id="nextKicker">Next available near you</div>
-                <div class="bigLine" id="nextLine">—</div>
-                <div class="smallLine" id="nextSub">Tap to book instantly</div>
-              </div>
-            </div>
-
-            <div class="glass" id="lastCard" style="display:none">
-              <div class="pad">
-                <div class="kicker" id="lastKicker">Your last booking</div>
-                <div class="bigLine" id="lastLine">—</div>
-                <div class="smallLine" id="lastSub">Tap to book again</div>
-              </div>
-            </div>
-
-            <div class="glass" id="trustCard" style="opacity:.95">
-              <div class="pad">
-                <div class="kicker" id="trustKicker">Trust</div>
-                <div class="smallLine" id="trustLine" style="margin-top:6px">
-                  ✅ Verified · 🧼 Sterile tools · ⚡ Instant confirmation · 🔒 No spam
-                </div>
-              </div>
-            </div>
-
-          </div>
+          <div class="heroTrust" id="heroTrust"></div>
         </div>
       </div>
     </section>
 
-    <div class="bc-heroArt" aria-hidden="true">
-      <figure class="tall"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80" alt=""><figcaption>Atelier Color Lab — Westmount</figcaption></figure>
-      <div class="stack">
-        <figure class="short"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80" alt=""></figure>
-        <figure class="short"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80" alt=""></figure>
+    <section class="section" id="quickStrip" style="margin-top:26px">
+      <div class="quickGrid">
+        <div class="glass" id="nextAvailCard" role="button" tabindex="0" title="Next available">
+          <div class="pad">
+            <div class="kicker" id="nextKicker">Найближчий вільний час</div>
+            <div class="bigLine" id="nextLine">—</div>
+            <div class="smallLine" id="nextSub">Натисни — і відкриється запис</div>
+          </div>
+        </div>
+
+        <div class="glass" id="lastCard" style="display:none">
+          <div class="pad">
+            <div class="kicker" id="lastKicker">Твій останній запис</div>
+            <div class="bigLine" id="lastLine">—</div>
+            <div class="smallLine" id="lastSub">Натисни, щоб повторити</div>
+          </div>
+        </div>
+
+        <div class="quickCtas">
+          <button class="btn" id="openQuick">Швидкий запис <span style="opacity:.85; font-weight:800">сьогодні</span></button>
+          <button class="btn secondary" id="resetBtn">Скинути фільтри</button>
+        </div>
       </div>
-      <figure class="tall"><img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1200&q=80" alt=""><figcaption>Kalyna Beauty Studio</figcaption></figure>
-    </div>
-    <div class="bc-stats">
-      <div><b>12</b><span>салонів і майстрів</span></div>
-      <div><b>12</b><span>категорій послуг</span></div>
-      <div><b>4.9</b><span>середній рейтинг</span></div>
-      <div><b>0%</b><span>комісії з бронювань</span></div>
-    </div>
+    </section>
 
     <section class="section" id="loyaltySection" style="margin-top:16px">
       <div class="glass"><div class="pad" style="display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:space-between">
         <div style="flex:1; min-width:240px">
-          <div class="kicker">🎁 Booking Club · Лояльність</div>
+          <div class="kicker">Booking Club · Лояльність</div>
           <div class="bigLine" id="loyalLine">Твої візити рахуються автоматично</div>
           <div class="smallLine" id="loyalSub">Кожен 6-й візит — зі знижкою 50% на послугу до $60.</div>
           <div class="loyalBar"><i id="loyalFill" style="width:0%"></i></div>
         </div>
-        <a class="btn secondary" href="./gift.html" style="text-decoration:none">🎁 Подарункові сертифікати</a>
+        <a class="btn secondary" href="./gift.html" style="text-decoration:none">Подарункові сертифікати</a>
       </div></div>
     </section>
 
@@ -1426,9 +1647,9 @@
               outline:none;
               font-size:16px !important;
             "/>
-            <button class="btn" id="aiGo">✨ Підібрати</button>
+            <button class="btn" id="aiGo">Підібрати</button>
           </div>
-          <div style="margin-top:14px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)">📸 Або обери фото — AI знайде, хто так вміє</div>
+          <div style="margin-top:14px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)">Або обери фото — AI знайде, хто так вміє</div>
           <div class="inspireStrip" id="inspireStrip">
             <div class="inspireItem" data-q="манікюр"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=400&q=80" alt=""><span>Chrome / нюд манікюр</span></div>
             <div class="inspireItem" data-q="стрижка жіноча"><img src="https://images.unsplash.com/photo-1522338140262-f46f5913618a?auto=format&fit=crop&w=400&q=80" alt=""><span>Боб / укладка</span></div>
@@ -1507,7 +1728,7 @@
     <section class="section" id="trendsSection">
       <div class="sectionHead">
         <div>
-          <h3 class="sectionTitle">Тренди 2026 ✨</h3>
+          <h3 class="sectionTitle">Тренди 2026</h3>
           <p class="sectionNote">Натисни на тренд — одразу покажемо майстрів, які це роблять у Монреалі.</p>
         </div>
       </div>
@@ -1540,10 +1761,20 @@
       <div class="reelsStrip" id="reelsStrip"></div>
     </section>
 
+    <section class="section" id="reviewsSection">
+      <div class="sectionHead">
+        <div>
+          <h3 class="sectionTitle" id="revTitle">Відгуки клієнтів</h3>
+          <p class="sectionNote" id="revNote">Враження після візитів у салони й до майстрів Монреаля.</p>
+        </div>
+      </div>
+      <div class="revStrip" id="revStrip"></div>
+    </section>
+
     <section class="section" id="mapSection">
       <div class="sectionHead">
         <div>
-          <h3 class="sectionTitle">Салони на карті · Montréal 🗺️</h3>
+          <h3 class="sectionTitle">Салони на карті · Montréal</h3>
           <p class="sectionNote">Українські та російськомовні б'юті-заклади поруч із тобою.</p>
         </div>
         <a class="pill" href="https://www.google.com/maps/search/beauty+salon+Montreal" target="_blank" rel="noopener">Відкрити в Google Maps →</a>
@@ -1566,12 +1797,12 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap">
             <a class="pill" href="./profile.html?id=romanukova-nails" target="_blank" rel="noopener">Open sample profile →</a>
-            <a class="pill" href="./join.html">➕ Додати свій салон</a>
-            <a class="pill" href="./business.html">💎 Для салонів — тарифи</a>
-            <a class="pill" href="./admin.html">🔐 Кабінет салону</a>
-            <a class="pill" href="./gift.html">🎁 Сертифікат у подарунок</a>
-            <a class="pill" href="./faq.html">❓ FAQ</a>
-            <a class="pill" href="./terms.html">📄 Умови</a>
+            <a class="pill" href="./join.html">Додати свій салон</a>
+            <a class="pill" href="./business.html">Для салонів — тарифи</a>
+            <a class="pill" href="./admin.html">Кабінет салону</a>
+            <a class="pill" href="./gift.html">Сертифікат у подарунок</a>
+            <a class="pill" href="./faq.html">FAQ</a>
+            <a class="pill" href="./terms.html">Умови</a>
             <a class="pill" href="#" id="policiesBtn">Policies</a>
           </div>
         </div>
@@ -1579,9 +1810,36 @@
     </section>
   </div>
 
+  <footer class="bc-footer">
+    <div class="fin">
+      <div class="frow">
+        <div class="flogo">
+          <div class="logo" aria-hidden="true"><span>BC</span></div>
+          <div>
+            <div class="fname">Booking <i>Club</i></div>
+            <div style="font-size:12.5px; color:rgba(247,243,236,.55)">Салони та майстри Монреаля — запис за хвилину, підтвердження в Telegram.</div>
+          </div>
+        </div>
+        <nav>
+          <a href="./business.html">Для салонів</a>
+          <a href="./join.html">Додати салон</a>
+          <a href="./gift.html">Сертифікати</a>
+          <a href="./faq.html">FAQ</a>
+          <a href="./terms.html">Умови</a>
+          <a href="./privacy.html">Приватність</a>
+          <a href="./admin.html">Кабінет салону</a>
+        </nav>
+      </div>
+      <div class="fbot">
+        <span>© 2026 Booking Club · Montréal</span>
+        <span>hello@bookingclub.beauty</span>
+      </div>
+    </div>
+  </footer>
+
   <div class="floatbar">
     <div class="inner">
-      <button class="floatCTA" id="floatQuick">⚡ Quick book</button>
+      <button class="floatCTA" id="floatQuick">Quick book</button>
       <button class="topBtn" id="toTop" title="Back to top">↑</button>
     </div>
   </div>
@@ -1600,9 +1858,9 @@
         <div style="font-weight:900" id="bkWhereName"></div>
         <div style="font-size:12px; opacity:.78" id="bkWhereAddr"></div>
         <div id="bkWhereActions">
-          <a class="miniLink" id="bkWhereProfile" href="#" target="_blank" rel="noopener">👤 Profile</a>
-          <a class="miniLink" id="bkWhereMaps" href="#" target="_blank" rel="noopener">🗺️ Maps</a>
-          <span class="miniLink" id="bkWhereEta" style="display:none; cursor:default">⏱️ —</span>
+          <a class="miniLink" id="bkWhereProfile" href="#" target="_blank" rel="noopener">Profile</a>
+          <a class="miniLink" id="bkWhereMaps" href="#" target="_blank" rel="noopener">Maps</a>
+          <span class="miniLink" id="bkWhereEta" style="display:none; cursor:default">—</span>
         </div>
       </div>
 
@@ -1669,7 +1927,7 @@
         </div>
 
         <label style="display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:12px; border:1px solid rgba(255,210,122,.30); background:rgba(255,210,122,.07); border-radius:16px; cursor:pointer">
-          <input type="checkbox" id="depToggle" style="width:20px; height:20px; margin-top:1px; accent-color:#ffd27a">
+          <input type="checkbox" id="depToggle" style="width:20px; height:20px; margin-top:1px; accent-color:#C9A96A">
           <span style="font-size:13px; line-height:1.45"><b>🛡️ Депозит проти no-show — $10</b><br>
           <span style="color:var(--muted)">Повертається під час візиту або зараховується в ціну послуги. Салон бачить, що ти серйозно — і тримає слот тільки для тебе.</span></span>
         </label>
@@ -1849,10 +2107,11 @@
       q: "",
       serviceId: null,
       favOnly: false,
+      when: "any",
       userLoc: null,
       favs: new Set(JSON.parse(localStorage.getItem(LS.favs) || "[]")),
       drafts: JSON.parse(localStorage.getItem(LS.cart) || "[]"),
-      theme: localStorage.getItem(LS.theme) || "dark",
+      theme: localStorage.getItem(LS.theme) || "light",
 
       _scrollY: 0,
       _lockCount: 0
@@ -1919,60 +2178,76 @@ function haptic(ms=12){
     const T = {
       uk: {
         searchPh: "Пошук салону, району, адреси…",
-        heroDesc: "Verified salons & masters. стерильно · швидко · без спаму. Підтвердження — в Telegram.",
-        quick: "⚡ Quick booking",
+        heroDesc: "Перевірені салони й майстри Монреаля. Стерильно, швидко, без спаму — підтвердження приходить у Telegram.",
+        quick: "Швидкий запис",
         reset: "Скинути фільтри",
-        nextNear: "Next available near you",
-        tapBook: "Tap to book instantly",
-        aiTitle: "AI concierge",
+        nextNear: "Найближчий вільний час",
+        tapBook: "Натисни — і відкриється запис",
+        aiTitle: "AI-консьєрж",
         aiNote: "Напиши, що потрібно — підберу 3 варіанти.",
         aiPh: "Напр: манікюр сьогодні після 18 до 60$ недалеко",
-        aiGo: "✨ Підібрати",
-        savedTitle: "Your saved",
+        aiGo: "Підібрати",
+        savedTitle: "Твої збережені",
         savedNote: "Швидкий доступ до улюблених.",
-        partnersTitle: "Top salons / partners",
+        partnersTitle: "Топ салонів · партнери",
         partnersNote: "Платні партнери (показуються тільки якщо відповідають фільтрам).",
-        recTitle: "Recommended",
+        recTitle: "Рекомендовано",
         recNote: "Підібрано під доступність, ціну та близькість.",
-        allTitle: "All others",
+        allTitle: "Усі салони",
         allNote: "Усі інші варіанти в місті.",
         emptyTitle: "Немає результатів",
         emptyText: "Спробуй послабити фільтри — або ось швидкі варіанти.",
         emptyReset: "Скинути фільтри",
         emptyPartners: "Показати партнерів",
         emptyNearest: "Показати найближчі",
-        booking: "Booking",
-        confirm: "Confirm in Telegram",
-        profile: "Profile",
-        chooseTime: "Choose time",
-        chooseDate: "Choose date",
-        only: "Only ❤️",
+        booking: "Бронювання",
+        confirm: "Підтвердити в Telegram",
+        profile: "Профіль",
+        chooseTime: "Обери час",
+        chooseDate: "Обери дату",
+        only: "Лише ♥",
         toastSaved: "Saved",
         toastErr: "Перевір поля та час",
-        toastSent: "Sent to Telegram ✅",
-        toastDraft: "Draft saved ✅",
-        toastCopied: "Copied ✅",
+        toastSent: "Надіслано в Telegram",
+        toastDraft: "Чернетку збережено",
+        toastCopied: "Скопійовано",
         toastFilters: "Filters reset",
         toastA2HS: "Tip: Add to Home Screen for app mode",
         draftsTitle: "Saved drafts",
-        lastKicker: "Your last booking",
-        lastSub: "Tap to book again",
+        lastKicker: "Твій останній запис",
+        lastSub: "Натисни, щоб повторити",
         stickyQuick: "Quick",
         stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
-        install: "Install"
+        heroKicker: "Montréal · Салони та майстри",
+        heroTitle: "Бронюй красу за <span>лічені секунди</span>",
+        pillSvc: "Послуга",
+        pillArea: "Район або салон",
+        pillAreaPh: "Напр.: Plateau, Rosemont…",
+        pillWhen: "Коли",
+        pillGo: "Знайти",
+        whenAny: "Будь-коли",
+        whenToday: "Сьогодні",
+        whenTomorrow: "Завтра",
+        whenAfter18: "Після 18:00",
+        allServices: "Усі послуги",
+        quickToday: "сьогодні",
+        revTitle: "Відгуки клієнтів",
+        revNote: "Враження після візитів у салони й до майстрів Монреаля.",
+        trustFmt: (n, r) => `${n} салонів і майстрів · рейтинг ${r} · комісія 0% · підтвердження в Telegram`,
+        install: "Встановити"
       },
       en: {
         searchPh: "Search salon, area, address…",
         heroDesc: "Verified salons & masters. sterile · fast · spam-free. Confirmation via Telegram.",
-        quick: "⚡ Quick booking",
+        quick: "Quick booking",
         reset: "Reset filters",
         nextNear: "Next available near you",
         tapBook: "Tap to book instantly",
         aiTitle: "AI concierge",
         aiNote: "Tell me what you need — I’ll pick 3 options.",
         aiPh: "e.g. brows today after 6pm under $60 nearby",
-        aiGo: "✨ Suggest",
+        aiGo: "Suggest",
         savedTitle: "Your saved",
         savedNote: "Fast access to favorites.",
         partnersTitle: "Top salons / partners",
@@ -1991,12 +2266,12 @@ function haptic(ms=12){
         profile: "Profile",
         chooseTime: "Choose time",
         chooseDate: "Choose date",
-        only: "Only ❤️",
+        only: "Only ♥",
         toastSaved: "Saved",
         toastErr: "Check fields and time",
-        toastSent: "Sent to Telegram ✅",
-        toastDraft: "Draft saved ✅",
-        toastCopied: "Copied ✅",
+        toastSent: "Sent to Telegram",
+        toastDraft: "Draft saved",
+        toastCopied: "Copied",
         toastFilters: "Filters reset",
         toastA2HS: "Tip: Add to Home Screen for app mode",
         draftsTitle: "Saved drafts",
@@ -2005,19 +2280,35 @@ function haptic(ms=12){
         stickyQuick: "Quick",
         stickyReset: "Reset",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
+        heroKicker: "Montréal · Salons & masters",
+        heroTitle: "Book beauty in <span>seconds</span>",
+        pillSvc: "Service",
+        pillArea: "Area or salon",
+        pillAreaPh: "e.g. Plateau, Rosemont…",
+        pillWhen: "When",
+        pillGo: "Search",
+        whenAny: "Any time",
+        whenToday: "Today",
+        whenTomorrow: "Tomorrow",
+        whenAfter18: "After 6 PM",
+        allServices: "All services",
+        quickToday: "today",
+        revTitle: "Client reviews",
+        revNote: "Impressions after visits to Montréal salons and masters.",
+        trustFmt: (n, r) => `${n} salons & masters · ${r} average rating · 0% commission · Telegram confirmation`,
         install: "Install"
       },
       ru: {
         searchPh: "Поиск салона, района, адреса…",
         heroDesc: "Проверенные салоны и мастера. Стерильно · быстро · без спама. Подтверждение — в Telegram.",
-        quick: "⚡ Быстрое бронирование",
+        quick: "Быстрая запись",
         reset: "Сбросить фильтры",
         nextNear: "Ближайшее свободное время рядом",
         tapBook: "Нажми, чтобы забронировать сразу",
         aiTitle: "AI-консьерж",
         aiNote: "Напиши, что нужно — подберу 3 варианта.",
         aiPh: "Напр: маникюр сегодня после 18 до $60 недалеко",
-        aiGo: "✨ Подобрать",
+        aiGo: "Подобрать",
         savedTitle: "Твоё сохранённое",
         savedNote: "Быстрый доступ к любимым.",
         partnersTitle: "Топ салоны / партнёры",
@@ -2036,12 +2327,12 @@ function haptic(ms=12){
         profile: "Профиль",
         chooseTime: "Выбери время",
         chooseDate: "Выбери дату",
-        only: "Только ❤️",
+        only: "Только ♥",
         toastSaved: "Сохранено",
         toastErr: "Проверь поля и время",
-        toastSent: "Отправлено в Telegram ✅",
-        toastDraft: "Черновик сохранён ✅",
-        toastCopied: "Скопировано ✅",
+        toastSent: "Отправлено в Telegram",
+        toastDraft: "Черновик сохранён",
+        toastCopied: "Скопировано",
         toastFilters: "Фильтры сброшены",
         toastA2HS: "Совет: добавь на главный экран для режима приложения",
         draftsTitle: "Сохранённые черновики",
@@ -2050,6 +2341,22 @@ function haptic(ms=12){
         stickyQuick: "Быстро",
         stickyReset: "Сброс",
         priceLine: (svc, from, to, dur) => `${svc} · from $${from}${to?`–$${to}`:""} · ${dur} min`,
+        heroKicker: "Montréal · Салоны и мастера",
+        heroTitle: "Бронируй красоту за <span>считанные секунды</span>",
+        pillSvc: "Услуга",
+        pillArea: "Район или салон",
+        pillAreaPh: "Напр.: Plateau, Rosemont…",
+        pillWhen: "Когда",
+        pillGo: "Найти",
+        whenAny: "В любое время",
+        whenToday: "Сегодня",
+        whenTomorrow: "Завтра",
+        whenAfter18: "После 18:00",
+        allServices: "Все услуги",
+        quickToday: "сегодня",
+        revTitle: "Отзывы клиентов",
+        revNote: "Впечатления после визитов в салоны и к мастерам Монреаля.",
+        trustFmt: (n, r) => `${n} салонов и мастеров · рейтинг ${r} · комиссия 0% · подтверждение в Telegram`,
         install: "Установить"
       }
     };
@@ -2057,7 +2364,7 @@ function haptic(ms=12){
     function applyTheme(){
       document.body.dataset.theme = state.theme === "light" ? "light" : "dark";
       const btn = $("#themeBtn");
-      if(btn) btn.textContent = (state.theme === "light") ? "☀️" : "🌙";
+      if(btn) btn.textContent = (state.theme === "light") ? "☀" : "☾";
       localStorage.setItem(LS.theme, state.theme);
     }
 
@@ -2078,6 +2385,64 @@ function haptic(ms=12){
       }));
     }
 
+    // ===== Hero search pill: options sync + trust line =====
+    function renderPillOptions(){
+      const t = T[state.lang] || T.uk;
+      const sel = document.getElementById("pillService");
+      if(sel){
+        sel.innerHTML = "";
+        const o0 = document.createElement("option");
+        o0.value = ""; o0.textContent = t.allServices;
+        sel.appendChild(o0);
+        (window.SERVICES||[]).forEach(s=>{
+          const o = document.createElement("option");
+          o.value = s.id;
+          o.textContent = state.lang==="uk" ? s.ua : state.lang==="ru" ? (s.ru||s.en) : s.en;
+          sel.appendChild(o);
+        });
+        sel.value = state.serviceId || "";
+      }
+      const w = document.getElementById("pillWhen");
+      if(w){
+        const labels = { any: t.whenAny, today: t.whenToday, tomorrow: t.whenTomorrow, after18: t.whenAfter18 };
+        Array.from(w.options).forEach(o=>{ if(labels[o.value]) o.textContent = labels[o.value]; });
+        w.value = state.when || "any";
+      }
+      const q = document.getElementById("pillQ");
+      if(q && q.value !== (state.q || "")) q.value = state.q || "";
+    }
+
+    function renderTrustLine(){
+      const el = document.getElementById("heroTrust");
+      if(!el) return;
+      const t = T[state.lang] || T.uk;
+      const list = window.LISTINGS || [];
+      const rated = list.filter(l=>l.rating);
+      const avg = rated.length ? (rated.reduce((a,l)=>a + (l.rating||0), 0) / rated.length) : 0;
+      el.textContent = t.trustFmt(list.length, avg ? avg.toFixed(1) : "—");
+    }
+
+    function applyPill(scroll){
+      const sel = document.getElementById("pillService");
+      const w = document.getElementById("pillWhen");
+      const q = document.getElementById("pillQ");
+      if(sel) state.serviceId = sel.value || null;
+      if(w) state.when = w.value || "any";
+      if(q){
+        state.q = q.value || "";
+        const tq = document.getElementById("q");
+        if(tq) tq.value = state.q;
+      }
+      haptic(10);
+      saveFilters();
+      renderServiceChips();
+      renderAll();
+      if(scroll){
+        const sec = document.getElementById("partnersSection");
+        if(sec) sec.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    }
+
     function renderTexts(){
       const get = (id)=> document.getElementById(id);
       const safeSetText = (id, txt)=>{ const el=get(id); if(el) el.textContent = (txt ?? ""); };
@@ -2088,7 +2453,7 @@ function haptic(ms=12){
 
       safeSetAttr("q","placeholder", t.searchPh);
       safeSetText("heroDesc", t.heroDesc);
-      safeSetHTML("openQuick", `${t.quick} <span style="opacity:.85; font-weight:800">today</span>`);
+      safeSetHTML("openQuick", `${t.quick} <span style="opacity:.85; font-weight:800">${t.quickToday}</span>`);
       safeSetText("resetBtn", t.reset);
 
       safeSetText("nextKicker", t.nextNear);
@@ -2127,16 +2492,30 @@ function haptic(ms=12){
       safeSetText("draftsTitle", t.draftsTitle);
       safeSetText("lastKicker", t.lastKicker);
       safeSetText("lastSub", t.lastSub);
-      safeSetText("installPill", "⬇️ " + t.install);
+      safeSetText("installPill", t.install);
 
       safeSetText("stickyQuickLabel", t.stickyQuick);
       safeSetText("stickyResetLabel", t.stickyReset);
+
+      safeSetText("heroKicker", t.heroKicker);
+      safeSetHTML("heroTitle", t.heroTitle);
+      safeSetText("pillSvcLabel", t.pillSvc);
+      safeSetText("pillAreaLabel", t.pillArea);
+      safeSetAttr("pillQ", "placeholder", t.pillAreaPh);
+      safeSetText("pillWhenLabel", t.pillWhen);
+      safeSetText("pillGo", t.pillGo);
+      safeSetText("revTitle", t.revTitle);
+      safeSetText("revNote", t.revNote);
+      safeSetText("langBtn", state.lang === "uk" ? "UA" : state.lang.toUpperCase());
+      renderPillOptions();
+      renderTrustLine();
     }
 
     function setLang(next){
       state.lang = next;
       localStorage.setItem(LS.lang, next);
       renderTexts();
+      renderServiceChips();
       renderAll();
       renderNextHeroRotating(true);
       renderLastBookingCard();
@@ -2192,9 +2571,22 @@ function haptic(ms=12){
       return state.lang === "uk" ? m.ua : state.lang === "ru" ? (m.ru || m.en) : m.en;
     }
 
+    function matchesWhen(listing){
+      const w = state.when || "any";
+      if(w === "any") return true;
+      const av = listing.availability || {};
+      if(w === "today") return (av[isoLocal(new Date())] || []).length > 0;
+      if(w === "tomorrow") return (av[isoLocal(new Date(Date.now() + 86400000))] || []).length > 0;
+      if(w === "after18"){
+        const slots = (state.serviceId && listing.availabilityByService && listing.availabilityByService[state.serviceId]) || listing.slots || [];
+        return slots.some(iso => parseInt(String(iso).slice(11,13) || "0", 10) >= 18);
+      }
+      return true;
+    }
+
     function filteredListings(){
       const all = (window.LISTINGS||[]).slice();
-      let out = all.filter(l => matchesQuery(l, state.q) && matchesService(l, state.serviceId));
+      let out = all.filter(l => matchesQuery(l, state.q) && matchesService(l, state.serviceId) && matchesWhen(l));
       if(state.favOnly) out = out.filter(l => state.favs.has(l.id));
       return out;
     }
@@ -2204,7 +2596,7 @@ function haptic(ms=12){
       const rest = list.filter(l => !l.partner);
       const ranked = window.bb?.util?.smartRecommend ? window.bb.util.smartRecommend(rest, state.userLoc, state.serviceId) : rest;
       const rec = ranked.filter(l => !!l.recommended).slice(0, 6);
-      const other = ranked.filter(l => !l.recommended);
+      const other = ranked.filter(l => !rec.includes(l));
       return { partners, rec, other };
     }
 
@@ -2220,7 +2612,7 @@ function haptic(ms=12){
       if(listing.verified) tags.push({t:"Verified", cls:"good", title:"Verified salon/master"});
       if(listing.sterile) tags.push({t:"Sterile", cls:"good", title:"Sterile tools policy"});
       if(listing.rating) tags.push({t:`★ ${listing.rating} (${listing.reviews||0})`, cls:"good", title:"Rating & reviews"});
-      else tags.push({t:"🆕 Новий", cls:"good", title:"New on Booking Club"});
+      else tags.push({t:(state.lang==="en" ? "New" : state.lang==="ru" ? "Новый" : "Новий"), cls:"good", title:"New on Booking Club"});
       try{
         if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today", title:"Has slots today"});
       }catch(e){}
@@ -2260,7 +2652,7 @@ function haptic(ms=12){
         div.innerHTML = `
           <div class="stripMedia">
             <img src="${img}" alt="">
-            <div class="partnerBadge">💎 Partner</div>
+            <div class="partnerBadge">Partner</div>
             <div class="microShimmer"></div>
           </div>
           <div class="meta">
@@ -2273,8 +2665,8 @@ function haptic(ms=12){
             <div class="tags">${tagHtml}</div>
             ${whyLine}
             <div class="miniCTA" style="opacity:1; transform:none; pointer-events:auto; position:static; margin-top:10px">
-              <button class="miniBtn" data-action="book" title="Book next slot">⚡ ${whenLine}</button>
-              <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
+              <button class="miniBtn" data-action="book" title="Book next slot">${whenLine}</button>
+              <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">♥</div>
             </div>
           </div>
         `;
@@ -2295,8 +2687,8 @@ function haptic(ms=12){
             ${whyLine}
           </div>
           <div class="miniCTA">
-            <button class="miniBtn" data-action="book" title="Book next slot">⚡ ${whenLine}</button>
-            <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">❤️</div>
+            <button class="miniBtn" data-action="book" title="Book next slot">${whenLine}</button>
+            <div class="fav ${state.favs.has(listing.id)?"on":""}" data-action="fav" title="Favorite">♥</div>
           </div>
         `;
       }
@@ -2367,7 +2759,7 @@ function haptic(ms=12){
         targets.forEach((box)=>{
           const chip = document.createElement("div");
           chip.className = "chip" + (state.serviceId===s.id ? " on":"");
-          chip.innerHTML = `<span>${s.icon||"✨"}</span><span>${state.lang==="uk"?s.ua:state.lang==="ru"?(s.ru||s.en):s.en}</span>`;
+          chip.textContent = state.lang==="uk" ? s.ua : state.lang==="ru" ? (s.ru||s.en) : s.en;
           chip.title = "Filter by service";
           chip.addEventListener("click", ()=>{
             haptic(10);
@@ -2444,7 +2836,7 @@ function haptic(ms=12){
       const card = $("#nextAvailCard");
 
       if(!heroRot.list.length){
-        if(lineEl) lineEl.textContent = state.lang==="uk" ? "Немає слотів поруч" : "No nearby slots";
+        if(lineEl) lineEl.textContent = state.lang==="uk" ? "Немає слотів поруч" : state.lang==="ru" ? "Нет слотов рядом" : "No nearby slots";
         if(card){ card.onclick = null; card.onkeydown = null; }
         return;
       }
@@ -2456,11 +2848,11 @@ function haptic(ms=12){
       if(!slot) return;
 
       const todayISO = isoLocal(new Date());
-      const day = (slot.dateISO === todayISO) ? (state.lang==="uk"?"Сьогодні":"Today") : formatDateShort(slot.dateISO);
+      const day = (slot.dateISO === todayISO) ? (state.lang==="uk" ? "Сьогодні" : state.lang==="ru" ? "Сегодня" : "Today") : formatDateShort(slot.dateISO);
       const svc = serviceLabel(state.serviceId || (listing.services?.[0]?.serviceId || "")) || (state.lang==="uk"?"Послуга":"Service");
       const from = (slot.fromPrice != null) ? ` · from $${slot.fromPrice}` : "";
       const txt = `${day} ${slot.time} · ${listing.name}${from}`;
-      const sub = state.lang==="uk" ? `Tap to book: ${svc}` : `Tap to book: ${svc}`;
+      const sub = state.lang==="uk" ? `Записатись: ${svc}` : state.lang==="ru" ? `Записаться: ${svc}` : `Tap to book: ${svc}`;
 
       if(animate) setHeroCardAnimated(txt, sub);
       else{
@@ -2591,6 +2983,8 @@ function haptic(ms=12){
       renderSaved();
       refreshHeroCandidates(true);
       renderNextHeroRotating(false);
+      renderPillOptions();
+      renderTrustLine();
       saveFilters();
     }
 
@@ -2602,6 +2996,7 @@ function haptic(ms=12){
     function resetAllFilters(){
       state.serviceId = null;
       state.q = "";
+      state.when = "any";
       state.favOnly = false;
       const q = $("#q");
       if(q) q.value = "";
@@ -3227,7 +3622,7 @@ function haptic(ms=12){
       const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Beauty Booking//EN
+PRODID:-//Booking Club//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
@@ -3580,6 +3975,21 @@ Email: ${email}`;
         renderSearchSuggestions(false);
       });
       $("#q")?.addEventListener("focus", ()=> renderSearchSuggestions(false));
+
+      // Hero search pill → той самий шлях фільтрів, що й чіпси/пошук
+      const pillForm = $("#searchPill");
+      if(pillForm){
+        pillForm.addEventListener("submit", (e)=>{ e.preventDefault(); applyPill(true); });
+        $("#pillService")?.addEventListener("change", ()=> applyPill(false));
+        $("#pillWhen")?.addEventListener("change", ()=> applyPill(false));
+        $("#pillQ")?.addEventListener("input", (e)=>{
+          state.q = e.target.value || "";
+          const tq = $("#q");
+          if(tq) tq.value = state.q;
+          saveFilters();
+          renderAll();
+        });
+      }
       document.addEventListener("click", (e)=>{
         const inSearch = e.target?.closest?.(".search");
         if(!inSearch) renderSearchSuggestions(true);
@@ -3742,7 +4152,7 @@ Email: ${email}`;
         haptic(10);
         const startISO = `${p.dateISO}T${p.time}`;
         makeICS({
-          title: `Beauty Booking — ${p.serviceName}`,
+          title: `Booking Club — ${p.serviceName}`,
           location: p.listing?.address || p.listing?.name || "",
           startISO,
           durationMin: p.durationMin || 60,
@@ -3904,7 +4314,7 @@ Email: ${email}`;
     function reelCard(l, i){
       var svc = (window.SERVICES||[]).find(function(s){ return l.services && l.services[0] && s.id === l.services[0].serviceId; });
       var d = document.createElement("div"); d.className = "reelCard";
-      d.innerHTML = '<img src="' + l.images[0] + '" alt=""><div class="reelPlay">▶</div><div class="reelMeta"><b>' + l.name + '</b><span>' + (svc ? svc.ua : "Beauty") + ' · ' + (l.rating ? "★ " + l.rating : "🆕 Новий") + ' · 0:' + (18 + i*3) + '</span></div>';
+      d.innerHTML = '<img src="' + l.images[0] + '" alt=""><div class="reelPlay">▶</div><div class="reelMeta"><b>' + l.name + '</b><span>' + (svc ? svc.ua : "Beauty") + ' · ' + (l.rating ? "★ " + l.rating : "Новий") + ' · 0:' + (18 + i*3) + '</span></div>';
       d.addEventListener("click", function(){ go(l.id); });
       return d;
     }
@@ -3928,7 +4338,7 @@ Email: ${email}`;
       var from = null;
       (l.services||[]).forEach(function(s){ if(from===null || s.from<from) from = s.from; });
       var icon = L.divIcon({className:"", html:'<div class="pricePin">$' + (from ?? "—") + '</div>', iconSize:null, iconAnchor:[24,16]});
-      var pop = '<b>' + l.name + '</b><br>' + (l.rating ? '★ ' + l.rating + ' (' + (l.reviews||0) + ') · ' : '🆕 Новий · ') + 'від $' + (from ?? "—") + '<br><span style="opacity:.75">' + (l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
+      var pop = '<b>' + l.name + '</b><br>' + (l.rating ? '★ ' + l.rating + ' (' + (l.reviews||0) + ') · ' : 'Новий · ') + 'від $' + (from ?? "—") + '<br><span style="opacity:.75">' + (l.address||"") + '</span><br><a href="./profile.html?id=' + encodeURIComponent(l.id) + '">Дивитись і бронювати →</a>';
       L.marker([l.lat, l.lng], {icon:icon}).addTo(mapRef).bindPopup(pop);
     }
     function initMap(){
@@ -4026,6 +4436,38 @@ Email: ${email}`;
       var sec = document.getElementById("aiSection");
       if(sec) sec.scrollIntoView({behavior:"smooth", block:"start"});
     });
+  })();
+  </script>
+  <script>
+  /* Reviews strip — дані window.REVIEWS з data.js (нічого не вигадуємо) */
+  (function(){
+    function render(){
+      var strip = document.getElementById("revStrip");
+      if(!strip || !window.REVIEWS) return;
+      var byId = {};
+      (window.LISTINGS||[]).forEach(function(l){ byId[l.id] = l; });
+      var cards = [];
+      Object.keys(window.REVIEWS).forEach(function(id){
+        (window.REVIEWS[id]||[]).forEach(function(r){
+          cards.push({ r: r, salon: byId[id] ? byId[id].name : "" });
+        });
+      });
+      var sec = document.getElementById("reviewsSection");
+      if(!cards.length){ if(sec) sec.style.display = "none"; return; }
+      strip.innerHTML = "";
+      cards.forEach(function(c){
+        var n = Math.max(0, Math.min(5, c.r.stars || 5));
+        var stars = "";
+        for(var i = 0; i < 5; i++) stars += (i < n) ? "★" : '<span class="off">★</span>';
+        var d = document.createElement("div");
+        d.className = "revCard";
+        d.innerHTML = '<div class="revStars">' + stars + '</div><p class="revText"></p><div class="revWho"><b></b> · Montréal</div>';
+        d.querySelector(".revText").textContent = c.r.text || "";
+        d.querySelector(".revWho b").textContent = (c.r.name || "") + (c.salon ? " · " + c.salon : "");
+        strip.appendChild(d);
+      });
+    }
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", render); else render();
   })();
   </script>
 </body>
