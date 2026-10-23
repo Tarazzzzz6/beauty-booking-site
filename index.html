@@ -2220,6 +2220,7 @@ function haptic(ms=12){
         toastSaved: "Saved",
         toastErr: "Перевір поля та час",
         toastSent: "Надіслано в Telegram",
+        toastSlotTaken: "Цей час щойно зайняли — оберіть інший",
         toastDraft: "Чернетку збережено",
         toastCopied: "Скопійовано",
         toastFilters: "Filters reset",
@@ -2284,6 +2285,7 @@ function haptic(ms=12){
         toastSaved: "Saved",
         toastErr: "Check fields and time",
         toastSent: "Sent to Telegram",
+        toastSlotTaken: "That time was just booked — pick another",
         toastDraft: "Draft saved",
         toastCopied: "Copied",
         toastFilters: "Filters reset",
@@ -2348,6 +2350,7 @@ function haptic(ms=12){
         toastSaved: "Сохранено",
         toastErr: "Проверь поля и время",
         toastSent: "Отправлено в Telegram",
+        toastSlotTaken: "Это время только что заняли — выберите другое",
         toastDraft: "Черновик сохранён",
         toastCopied: "Скопировано",
         toastFilters: "Фильтры сброшены",
@@ -3743,6 +3746,26 @@ END:VCALENDAR`;
           headers: { "Content-Type":"application/json" },
           body: JSON.stringify(payload)
         });
+
+        if(res.status === 409){
+          // M8: слот щойно зайняли — оновити зайняті часи з KV, скинути
+          // вибраний час (якщо він уже чужий) і чесно сказати клієнту.
+          toast(T[state.lang].toastSlotTaken);
+          if(window.bbBooked){
+            window.bbBooked.fetchTimes(listing.id, dateISO, true).then(function(){
+              booking.times = listAvailableTimes(listing, svcId, dateISO);
+              if(booking.time && booking.times.indexOf(booking.time) === -1){
+                booking.time = null;
+                const tv = $("#timeVal");
+                if(tv) tv.textContent = (state.lang === "uk" ? "Tap to choose" : "Tap to choose");
+              }
+              const ov = document.getElementById("timeOverlay");
+              if(ov && ov.classList.contains("on")) renderTimeGrid();
+              validateBooking();
+            }).catch(function(){});
+          }
+          return;
+        }
 
         if(!res.ok){
           throw new Error("Worker error: " + res.status);

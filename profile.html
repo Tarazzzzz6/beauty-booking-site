@@ -1152,12 +1152,56 @@
         btn.disabled = true;
         let bookedOk = false;
 
+        // M8: тост «час щойно зайняли» — 3 мови (мова головної, bb_lang)
+        function bbToast(msg){
+          let el = document.getElementById("bbToast");
+          if (!el){
+            el = document.createElement("div");
+            el.id = "bbToast";
+            el.style.cssText = "position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#14151A;color:#F7F3EC;padding:12px 18px;border-radius:14px;font:500 14px/1.4 system-ui,sans-serif;box-shadow:0 12px 32px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:9999;max-width:88vw;text-align:center";
+            document.body.appendChild(el);
+          }
+          el.textContent = msg;
+          el.style.opacity = "1";
+          el.style.transform = "translateX(-50%) translateY(0)";
+          clearTimeout(el._t);
+          el._t = setTimeout(()=>{ el.style.opacity = "0"; el.style.transform = "translateX(-50%) translateY(20px)"; }, 3400);
+        }
+        const bbLang = (()=>{ try { return localStorage.getItem("bb_lang") || "en"; } catch(e){ return "en"; } })();
+        const SLOT_TAKEN_MSG = {
+          uk: "Цей час щойно зайняли — оберіть інший",
+          ru: "Это время только что заняли — выберите другое",
+          en: "That time was just booked — please pick another"
+        };
+
         try{
           const res = await fetch(WORKER_URL + "/book", {
             method:"POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify(payload)
           });
+          if (res.status === 409){
+            // M8: слот щойно зайняли — оновити зайняті часи й перебудувати
+            // календар, щоб клієнт одразу обрав інший час.
+            bbToast(SLOT_TAKEN_MSG[bbLang] || SLOT_TAKEN_MSG.en);
+            btn.textContent = prev;
+            if (window.bbBooked && st.listing){
+              const lid2 = st.listing.id, dISO2 = payload.dateISO;
+              window.bbBooked.fetchTimes(lid2, dISO2, true).then(()=>{
+                const bt2 = window.bbBooked.cachedTimes(lid2, dISO2) || [];
+                if (st.slotISO && bt2.includes(st.slotISO.slice(11,16))){
+                  st.slotISO = null;
+                  document.getElementById("bbChosenISO").value = "";
+                  stopHold();
+                }
+                buildAvailability();
+                renderCalendar();
+                renderTimes();
+                renderReceipt();
+              }).catch(()=>{});
+            }
+            return;
+          }
           if (!res.ok) throw new Error("Booking failed");
 
           // Код бронювання з відповіді воркера (JSON v4); старий воркер відповідав текстом "ok" — fallback на null
