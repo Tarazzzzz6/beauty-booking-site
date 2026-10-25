@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0b0f" />
-  <title>Подарунковий сертифікат — Beauty Booking Club · Montréal</title>
-  <meta name="description" content="Подаруй красу: сертифікат Beauty Booking Club на послуги салонів-партнерів Монреаля — манікюр, вії, стрижки, масаж." />
-  <meta property="og:title" content="Подарунковий сертифікат — Beauty Booking Club · Montréal" />
-  <meta property="og:description" content="Подаруй красу: сертифікат Beauty Booking Club на послуги салонів-партнерів Монреаля — манікюр, вії, стрижки, масаж." />
+  <title>Подарунковий сертифікат — Booking Club · Montréal</title>
+  <meta name="description" content="Подаруй красу: сертифікат Booking Club на послуги салонів-партнерів Монреаля — манікюр, вії, стрижки, масаж." />
+  <meta property="og:title" content="Подарунковий сертифікат — Booking Club · Montréal" />
+  <meta property="og:description" content="Подаруй красу: сертифікат Booking Club на послуги салонів-партнерів Монреаля — манікюр, вії, стрижки, масаж." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bookingclub.beauty/gift.html" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" />
@@ -43,7 +43,7 @@
 <body>
   <div class="wrap">
     <a class="back" href="./index.html">← bookingclub.beauty</a>
-    <h1>Подаруй красу<br><span>Сертифікат Beauty Booking Club</span></h1>
+    <h1>Подаруй красу<br><span>Сертифікат Booking Club</span></h1>
     <p class="muted" style="max-width:58ch;line-height:1.55">Працює у всіх салонах-партнерах Монреаля на сайті. Обираєш суму — отримуєш красивий сертифікат з кодом, який можна надіслати подрузі, мамі чи коханій у Telegram за хвилину.</p>
 
     <div class="amounts" id="amounts">
@@ -60,7 +60,7 @@
     </div>
 
     <div class="cert" style="margin-top:20px">
-      <div class="brand">Beauty Booking Club · Montréal</div>
+      <div class="brand">Booking Club · Montréal</div>
       <div class="sum" id="certSum">$50</div>
       <div class="muted">на будь-які б'юті-послуги партнерів · діє 12 місяців</div>
       <div style="margin-top:16px;font-size:16px">Для: <b id="certTo">—</b> · Від: <b id="certFrom">—</b></div>
@@ -108,7 +108,7 @@
     });
     $("shareBtn").addEventListener("click", ()=>{
       if(!code) $("buyBtn").click();
-      const text = "🎁 Подарунковий сертифікат Beauty Booking Club на $" + amount + " — код " + code + ". Обери салон і забронюй тут:";
+      const text = "🎁 Подарунковий сертифікат Booking Club на $" + amount + " — код " + code + ". Обери салон і забронюй тут:";
       window.open("https://t.me/share/url?url=" + encodeURIComponent("https://bookingclub.beauty") + "&text=" + encodeURIComponent(text), "_blank");
     });
     $("copyBtn").addEventListener("click", async ()=>{

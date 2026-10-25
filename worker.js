@@ -466,7 +466,7 @@ export default {
         } catch { /* ignore */ }
         const code = cryptoCode6();
         await KV.put("cabcode:" + chatId, JSON.stringify({ code, exp: Date.now() + 10 * 60 * 1000, tries: prevTries }), { expirationTtl: 600 });
-        const sentOk = await tgSend(chatId, "🔐 Код входу в кабінет Beauty Booking Club: " + code + "\nДіє 10 хвилин. Нікому його не пересилайте.");
+        const sentOk = await tgSend(chatId, "🔐 Код входу в кабінет Booking Club: " + code + "\nДіє 10 хвилин. Нікому його не пересилайте.");
         if (!sentOk) return jsonResp({ error: "telegram_error", hint: "Спочатку відкрийте бота @pershe1012_bot і натисніть Start" }, 502);
         return jsonResp({ ok: true });
       }
@@ -574,7 +574,7 @@ export default {
       }
       if (!catalog.length) return jsonResp({ error: "empty_catalog" }, 400);
       const sysPrompt = [
-        "Ти — AI-консьєрж Beauty Booking Club, сервісу онлайн-запису в салони краси Монреаля (Канада) для українсько- та російськомовної діаспори.",
+        "Ти — AI-консьєрж Booking Club, сервісу онлайн-запису в салони краси Монреаля (Канада) для українсько- та російськомовної діаспори.",
         "За запитом клієнта підбери до 3 найкращих варіантів ВИКЛЮЧНО з наданого нижче каталогу.",
         "Відповідай ТІЛЬКИ валідним JSON-обʼєктом: {\"picks\":[\"<id>\", ...], \"message\":\"...\"} — без markdown і без тексту поза JSON.",
         "picks — тільки id, що є в каталозі, не більше 3, у порядку релевантності.",
@@ -712,10 +712,10 @@ export default {
       if (site && !site.endsWith("/")) site += "/";
       const id = url.searchParams.get("id") || "";
       const OG = {
-        "iryna-stovban": { title: "Iryna Stovban — Beauty Booking Club", desc: "Манікюр для моделей • стерильно • делікатно", img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" },
-        "romanukova-nails": { title: "Romanukova Nail Studio — Beauty Booking Club", desc: "Преміум манікюр • педикюр • швидкі слоти", img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80" }
+        "iryna-stovban": { title: "Iryna Stovban — Booking Club", desc: "Манікюр для моделей • стерильно • делікатно", img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" },
+        "romanukova-nails": { title: "Romanukova Nail Studio — Booking Club", desc: "Преміум манікюр • педикюр • швидкі слоти", img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1400&q=80" }
       };
-      const p = OG[id] || { title: "Beauty Booking Club — Montréal", desc: "Book beauty in seconds — verified salons & masters in Montréal.", img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" };
+      const p = OG[id] || { title: "Booking Club — Montréal", desc: "Book beauty in seconds — verified salons & masters in Montréal.", img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1400&q=80" };
       const redirect = site ? `${site}profile.html?id=${encodeURIComponent(id)}` : "";
       const html = `<!doctype html><html><head><meta charset="utf-8" />
 <meta property="og:title" content="${escapeHtml(p.title)}" />
@@ -912,7 +912,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
       // меню команд у клієнтів було порожнім.
       const CMDS = {
         def: [
-          { command: "start", description: "Головне меню Beauty Booking Club" },
+          { command: "start", description: "Головне меню Booking Club" },
           { command: "join", description: "Підключити салон або майстра" },
           { command: "myid", description: "Мій Telegram ID" },
           { command: "bookings", description: "Найближчі бронювання (салонам)" },
@@ -928,7 +928,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           { command: "help", description: "Довідка" },
         ],
         ru: [
-          { command: "start", description: "Главное меню Beauty Booking Club" },
+          { command: "start", description: "Главное меню Booking Club" },
           { command: "join", description: "Подключить салон или мастера" },
           { command: "myid", description: "Мой Telegram ID" },
           { command: "bookings", description: "Ближайшие бронирования (салонам)" },
@@ -944,7 +944,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           { command: "help", description: "Справка" },
         ],
         en: [
-          { command: "start", description: "Beauty Booking Club home" },
+          { command: "start", description: "Booking Club home" },
           { command: "join", description: "Register a salon or a master" },
           { command: "myid", description: "My Telegram ID" },
           { command: "bookings", description: "Upcoming bookings (salons)" },
@@ -960,7 +960,7 @@ ${redirect ? `<script>location.replace(${JSON.stringify(redirect)});</script>` :
           { command: "help", description: "Help" },
         ],
         fr: [
-          { command: "start", description: "Accueil Beauty Booking Club" },
+          { command: "start", description: "Accueil Booking Club" },
           { command: "join", description: "Inscrire un salon ou un spécialiste" },
           { command: "myid", description: "Mon identifiant Telegram" },
           { command: "bookings", description: "Prochaines réservations (salons)" },
@@ -1420,7 +1420,7 @@ async function agentDecide(env, KV, input) {
   const snap = agentSnapshot(ctx, catalog);
   const today = torontoTodayISO();
   const sysPrompt = [
-    "Ти — AI-агент бронювання Beauty Booking Club, сервісу онлайн-запису в салони краси Монреаля (Канада). Ти не лише радиш — ти доводиш клієнта до конкретного запису.",
+    "Ти — AI-агент бронювання Booking Club, сервісу онлайн-запису в салони краси Монреаля (Канада). Ти не лише радиш — ти доводиш клієнта до конкретного запису.",
     "Відповідай ТІЛЬКИ валідним JSON-обʼєктом: {\"state\":\"ask|offer|ready\",\"message\":\"...\",\"offer\":{\"listingId\":\"...\",\"serviceId\":\"...\",\"dateISO\":\"YYYY-MM-DD\",\"time\":\"HH:MM\"}|null,\"missing\":[\"service\"|\"date\"|\"time\"|\"district\"|\"budget\"]} — без markdown і тексту поза JSON.",
     "КАТАЛОГ нижче містить РЕАЛЬНІ вільні слоти (slots: дати й часи). offer можна робити ТІЛЬКИ зі слотів каталогу: listingId і serviceId — з каталогу, dateISO і time — із slots цього лістинга. НІКОЛИ не вигадуй салони, послуги, ціни чи час.",
     "state: \"ask\" — бракує даних для конкретної пропозиції (заповни missing і ввічливо запитай у message); \"offer\" — пропонуєш конкретний слот (offer обовʼязковий); \"ready\" — клієнт уже погодився на попередню пропозицію (offer — та сама пропозиція).",
@@ -1893,7 +1893,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
   const cmd = (parts[0] || "").toLowerCase().replace(/@.*$/, "");
   const arg = parts[1] || "";
   const ID_MSG =
-    "👋 Вітаю у Beauty Booking Club!\n\n" +
+    "👋 Вітаю у Booking Club!\n\n" +
     "Ваш Telegram ID: " + chatId + "\n\n" +
     "Вкажіть цей ID у формі підключення салону (bookingclub.beauty/join) — і бронювання з сайту приходитимуть прямо сюди.\n\n" +
     "Мої бронювання:\n" +
@@ -1907,7 +1907,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
     "/open 2026-11-03 — відкрити день назад\n" +
     "/closed — список закритих днів";
   const ID_MSG_FR =
-    "👋 Bienvenue chez Beauty Booking Club !\n\n" +
+    "👋 Bienvenue chez Booking Club !\n\n" +
     "Votre identifiant Telegram : " + chatId + "\n\n" +
     "Indiquez cet identifiant dans le formulaire d'inscription du salon (bookingclub.beauty/join) — et les réservations du site arriveront directement ici.\n\n" +
     "Pour les salons :\n" +
@@ -1963,12 +1963,12 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
 
   if (cmd === "/start") {
     if (FR) {
-      return "👋 Bienvenue chez Beauty Booking Club !\n\n" +
+      return "👋 Bienvenue chez Booking Club !\n\n" +
         "Si vous êtes client : après avoir réservé sur bookingclub.beauty, touchez le bouton « Confirmation et rappels dans Telegram » — et je lierai votre réservation ici.\n\n" +
         "Si vous êtes un salon ou un spécialiste : inscrivez-vous avec la commande /join — le bot recueillera étape par étape le nom, les services, les prix et les photos.\n" +
         "Ou indiquez votre identifiant Telegram (" + chatId + ") dans le formulaire bookingclub.beauty/join. Détails : /myid";
     }
-    return "👋 Вітаю у Beauty Booking Club!\n\n" +
+    return "👋 Вітаю у Booking Club!\n\n" +
       "Якщо ви клієнт: після запису на сайті bookingclub.beauty натисніть кнопку «Підтвердження і нагадування в Telegram» — і я підключу ваше бронювання сюди.\n\n" +
       "Якщо ви салон або майстер: підключіться командою /join — бот покроково збере назву, послуги, ціни й фото.\n" +
       "Або вкажіть свій Telegram ID (" + chatId + ") у формі bookingclub.beauty/join. Детальніше: /myid";
@@ -1978,7 +1978,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
 
   if (cmd === "/bookings" || cmd === "/cancel") {
     if (!KV) {
-      return "⚠️ Сховище бронювань ще не підключено платформою. Ваш ID: " + chatId + " — передайте його команді Beauty Booking Club — ми завершимо налаштування.";
+      return "⚠️ Сховище бронювань ще не підключено платформою. Ваш ID: " + chatId + " — передайте його команді Booking Club — ми завершимо налаштування.";
     }
     if (cmd === "/bookings") {
       const mine = await salonBookings(KV, chatId);
@@ -2070,7 +2070,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
       "🏠 " + (r.listingName || r.listingId) + "\n" +
       "   записів: " + r.total + " · ✅ прийшло: " + r.attended + " · 🚫 no-show: " + r.noshow + " · 🔜 майбутніх: " + r.upcoming
     );
-    return "📊 Beauty Booking Club — відвідуваність по салонах:\n\n" + lines.join("\n\n");
+    return "📊 Booking Club — відвідуваність по салонах:\n\n" + lines.join("\n\n");
   }
 
   // --- v10: Telegram-канал платформи (тільки власник) ---
@@ -2085,7 +2085,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
       try { await KV.delete("config:channelOff"); } catch { /* ignore */ }
       return "🔔 Автопости в канал увімкнено." + (await channelStatusLine(KV, channelEnv));
     }
-    return "📣 Telegram-канал Beauty Booking Club" + (await channelStatusLine(KV, channelEnv)) +
+    return "📣 Telegram-канал Booking Club" + (await channelStatusLine(KV, channelEnv)) +
       "\n\nПідключити канал: додайте бота @pershe1012_bot адміністратором у канал — підключу його автоматично.\nВимкнути автопости: /channel_off";
   }
 
@@ -2124,7 +2124,7 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
   const isDate = /^\d{4}-\d{2}-\d{2}$/.test(arg);
   if (cmd === "/close" || cmd === "/open" || cmd === "/closed") {
     if (!KV) {
-      return "⚠️ Сховище графіків ще не підключено платформою. Ваш ID: " + chatId + " — передайте його команді Beauty Booking Club — ми завершимо налаштування.";
+      return "⚠️ Сховище графіків ще не підключено платформою. Ваш ID: " + chatId + " — передайте його команді Booking Club — ми завершимо налаштування.";
     }
     const key = "sched:" + chatId;
     let sched = { closed: [] };
@@ -2147,8 +2147,8 @@ async function handleBotCommand(textIn, chatId, KV, notify, ownerChat, lang, cha
     await KV.put(key, JSON.stringify(sched));
     return "✅ " + arg + " — день знову відкрито за звичайним графіком.";
   }
-  if (FR) return "Commandes Beauty Booking Club : /join — inscrire un salon, /myid — votre identifiant, /bookings — réservations du salon, /cancel BK-XXXXXX — annuler une réservation, /done BK-XXXXXX — le client est venu, /noshow BK-XXXXXX — absent, /close DATE — fermer un jour, /open DATE — rouvrir, /closed — jours fermés.";
-  return "Команди Beauty Booking Club: /join — підключити салон, /myid — ваш ID, /bookings — мої бронювання, /cancel BK-XXXXXX — скасувати бронювання, /done BK-XXXXXX — клієнт прийшов, /noshow BK-XXXXXX — не прийшов, /close ДАТА — закрити день, /open ДАТА — відкрити, /closed — закриті дні.";
+  if (FR) return "Commandes Booking Club : /join — inscrire un salon, /myid — votre identifiant, /bookings — réservations du salon, /cancel BK-XXXXXX — annuler une réservation, /done BK-XXXXXX — le client est venu, /noshow BK-XXXXXX — absent, /close DATE — fermer un jour, /open DATE — rouvrir, /closed — jours fermés.";
+  return "Команди Booking Club: /join — підключити салон, /myid — ваш ID, /bookings — мої бронювання, /cancel BK-XXXXXX — скасувати бронювання, /done BK-XXXXXX — клієнт прийшов, /noshow BK-XXXXXX — не прийшов, /close ДАТА — закрити день, /open ДАТА — відкрити, /closed — закриті дні.";
 }
 
 // v10: рядок стану каналу для відповідей /channel і /channel_on.
@@ -2195,7 +2195,7 @@ async function saveDetectedChannel(KV, token, ownerChat, chat) {
   } catch { return false; }
   await tgSendWith(token, ownerChat,
     "📣 Канал підключено: " + (chat.title || "Telegram-канал") + "\n\n" +
-    "Автопости нових салонів на Beauty Booking Club тепер ітимуть у цей канал.\n" +
+    "Автопости нових салонів на Booking Club тепер ітимуть у цей канал.\n" +
     "Стан каналу: /channel · Вимкнути автопости: /channel_off");
   return true;
 }
@@ -2593,12 +2593,12 @@ async function scanReminders(env) {
     }
     if (!rec.r24 && diff >= 24 * H - WIN && diff <= 24 * H + WIN) {
       const ok = await tgSendKb(token, rec.clientChatId, clientFR
-        ? "⏰ Rappel de Beauty Booking Club\n\n" +
+        ? "⏰ Rappel de Booking Club\n\n" +
           "Demain, " + rec.dateISO + " à " + rec.time + " — votre rendez-vous :\n" +
           "💅 " + (rec.serviceName || "Service") + " — " + (rec.listingName || "salon") + "\n" +
           "🆔 Code : " + rec.id + "\n\n" +
           "Si vos plans ont changé — annulez avec le bouton ci-dessous ou la commande : /cancel " + rec.id
-        : "⏰ Нагадування від Beauty Booking Club\n\n" +
+        : "⏰ Нагадування від Booking Club\n\n" +
         "Завтра, " + rec.dateISO + " о " + rec.time + " — ваш запис:\n" +
         "💅 " + (rec.serviceName || "Послуга") + " — " + (rec.listingName || "салон") + "\n" +
         "🆔 Код: " + rec.id + "\n\n" +
@@ -2773,16 +2773,16 @@ async function wizardStart(chatId, ctx) {
   await wizSave(ctx.KV, chatId, fresh);
   if (fresh.lang === "fr") {
     await tgSendKb(ctx.token, chatId,
-      "👋 Bienvenue chez Beauty Booking Club !\n\n" +
+      "👋 Bienvenue chez Booking Club !\n\n" +
       "Inscrivons votre salon — ou vous-même comme spécialiste — en quelques étapes, directement ici, dans Telegram. " +
-      "À la fin, la demande partira à l'équipe Beauty Booking Club et, après confirmation, vous apparaîtrez sur bookingclub.beauty.\n\n" +
+      "À la fin, la demande partira à l'équipe Booking Club et, après confirmation, vous apparaîtrez sur bookingclub.beauty.\n\n" +
       "Étape 1. Comment s'appelle votre salon / studio ? (ou votre nom, si vous êtes spécialiste)", null);
     return;
   }
   await tgSendKb(ctx.token, chatId,
-    "👋 Вітаю у Beauty Booking Club!\n\n" +
+    "👋 Вітаю у Booking Club!\n\n" +
     "Підключимо ваш салон або вас як майстра за кілька кроків — прямо тут, у Telegram. " +
-    "Наприкінці заявка піде команді Beauty Booking Club, і після підтвердження ви зʼявитесь на bookingclub.beauty.\n\n" +
+    "Наприкінці заявка піде команді Booking Club, і після підтвердження ви зʼявитесь на bookingclub.beauty.\n\n" +
     "Крок 1. Як називається ваш салон / студія? (або ваше імʼя, якщо ви майстер)", null);
 }
 
@@ -3038,7 +3038,7 @@ function parsePricesText(text) {
 
 function applicationSummary(listing, source) {
   const lines = [
-    "🆕 ЗАЯВКА САЛОНУ на Beauty Booking Club" + (source === "form" ? " (форма на сайті)" : " (через бота)"),
+    "🆕 ЗАЯВКА САЛОНУ на Booking Club" + (source === "form" ? " (форма на сайті)" : " (через бота)"),
     "",
     "Назва: " + (listing.name || "—"),
     "Тип: " + (listing.type === "home" ? "Майстер на дому" : listing.type === "barber" ? "Барбершоп" : "Салон"),
@@ -3219,12 +3219,12 @@ async function handleCallbackQuery(cq, ctx) {
       if (wizFr(ctx, st)) {
         await tgAnswerCb(token, cq.id, "Demande envoyée ✅");
         await tgSendKb(token, chatId,
-          "📨 Demande envoyée à l'équipe Beauty Booking Club !\n\n" +
+          "📨 Demande envoyée à l'équipe Booking Club !\n\n" +
           "Dès qu'elle sera confirmée — votre salon apparaîtra sur bookingclub.beauty et un message arrivera ici. C'est habituellement rapide.", null);
       } else {
         await tgAnswerCb(token, cq.id, "Заявку надіслано ✅");
         await tgSendKb(token, chatId,
-          "📨 Заявку надіслано команді Beauty Booking Club!\n\n" +
+          "📨 Заявку надіслано команді Booking Club!\n\n" +
           "Щойно він підтвердить — ваш салон зʼявиться на bookingclub.beauty, а сюди прийде повідомлення. Зазвичай це швидко.", null);
       }
       await notifyOwnerApplication(ctx, pendId, listing, "bot");
@@ -3238,7 +3238,7 @@ async function handleCallbackQuery(cq, ctx) {
   if (data.startsWith("pub:") || data.startsWith("rej:")) {
     const publish = data.startsWith("pub:");
     const pendId = data.slice(4);
-    if (fromId !== ownerChat) { await tgAnswerCb(token, cq.id, "Заявки затверджує тільки команда Beauty Booking Club"); return; }
+    if (fromId !== ownerChat) { await tgAnswerCb(token, cq.id, "Заявки затверджує тільки команда Booking Club"); return; }
     const raw = await KV.get(PEND_PREFIX + pendId);
     if (!raw) { await tgAnswerCb(token, cq.id, "Заявку не знайдено — можливо, уже оброблено"); return; }
     let pend = null;
@@ -3258,7 +3258,7 @@ async function handleCallbackQuery(cq, ctx) {
       if (salonChat) {
         if (pend.lang === "fr") {
           await tgSendKb(token, salonChat,
-            "🎉 Félicitations ! Votre salon est déjà sur le site Beauty Booking Club :\n" +
+            "🎉 Félicitations ! Votre salon est déjà sur le site Booking Club :\n" +
             "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(listing.id) + "\n\n" +
             "Les réservations arriveront directement ici, dans ce chat.\n" +
             "Commandes utiles :\n" +
@@ -3268,7 +3268,7 @@ async function handleCallbackQuery(cq, ctx) {
             "Espace salon (horaire et prix) : bookingclub.beauty/admin", null);
         } else {
           await tgSendKb(token, salonChat,
-            "🎉 Вітаємо! Ваш салон уже на сайті Beauty Booking Club:\n" +
+            "🎉 Вітаємо! Ваш салон уже на сайті Booking Club:\n" +
             "https://bookingclub.beauty/profile.html?id=" + encodeURIComponent(listing.id) + "\n\n" +
             "Бронювання приходитимуть прямо сюди, у цей чат.\n" +
             "Корисні команди:\n" +
@@ -3291,7 +3291,7 @@ async function handleCallbackQuery(cq, ctx) {
             .map(s => "• " + svcLabel(s.serviceId) + " — $" + (s.from != null ? s.from : "—"))
             .join("\n");
           await tgSendKb(token, channelId,
-            "🆕 Новий салон на Beauty Booking Club!\n\n" +
+            "🆕 Новий салон на Booking Club!\n\n" +
             "🏠 " + (listing.name || "Салон") +
             (placeLine ? "\n📍 " + placeLine + ", Montréal" : "") +
             (svcLines ? "\n\n💅 Послуги:\n" + svcLines : "") +
@@ -3306,12 +3306,12 @@ async function handleCallbackQuery(cq, ctx) {
       if (salonChat) {
         if (pend.lang === "fr") {
           await tgSendKb(token, salonChat,
-            "Merci pour votre demande à Beauty Booking Club ! Malheureusement, nous n'avons pas pu la publier cette fois. " +
-            "Si c'est une erreur ou si vous voulez préciser des détails — écrivez à l'équipe Beauty Booking Club ou à hello@bookingclub.beauty, et nous arrangerons tout.", null);
+            "Merci pour votre demande à Booking Club ! Malheureusement, nous n'avons pas pu la publier cette fois. " +
+            "Si c'est une erreur ou si vous voulez préciser des détails — écrivez à l'équipe Booking Club ou à hello@bookingclub.beauty, et nous arrangerons tout.", null);
         } else {
           await tgSendKb(token, salonChat,
-            "Дякуємо за заявку до Beauty Booking Club! На жаль, цього разу ми не змогли її опублікувати. " +
-            "Якщо це помилка або хочете уточнити деталі — напишіть команді Beauty Booking Club або на hello@bookingclub.beauty, і ми все владнаємо.", null);
+            "Дякуємо за заявку до Booking Club! На жаль, цього разу ми не змогли її опублікувати. " +
+            "Якщо це помилка або хочете уточнити деталі — напишіть команді Booking Club або на hello@bookingclub.beauty, і ми все владнаємо.", null);
         }
       }
     }
@@ -3519,7 +3519,7 @@ function rateLimit(ip, now) {
 function buildTextFallback(d) {
   if (d?.type === "salon_join") {
     const lines = [];
-    lines.push("🆕 ЗАЯВКА САЛОНУ на Beauty Booking Club");
+    lines.push("🆕 ЗАЯВКА САЛОНУ на Booking Club");
     lines.push("");
     lines.push(`Салон: ${d?.salonName || "—"}`);
     lines.push(`Контакт: ${d?.name || ""}`);

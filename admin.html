@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0b0f" />
-  <title>Кабінет салону — Beauty Booking Club</title>
+  <title>Кабінет салону — Booking Club</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
@@ -51,7 +51,7 @@
   <div class="wrap">
     <a class="back" href="./index.html">← bookingclub.beauty</a>
     <h1>Кабінет салону 💎</h1>
-    <p class="muted" style="margin:0">Ваші бронювання, графік і ціни — усе наживо в базі Beauty Booking Club. Вхід — за одноразовим кодом, який бот надсилає у ваш Telegram.</p>
+    <p class="muted" style="margin:0">Ваші бронювання, графік і ціни — усе наживо в базі Booking Club. Вхід — за одноразовим кодом, який бот надсилає у ваш Telegram.</p>
 
     <!-- ===== ВХІД ===== -->
     <div class="card" id="loginCard">
@@ -278,7 +278,7 @@
       $("salonName").textContent = listing ? listing.name : "Салон ще не привʼязано до каталогу";
       $("salonAddr").textContent = listing ? (listing.address || "") : "";
       $("linkWarn").innerHTML = listing ? "" :
-        '<p class="muted" style="font-size:13px">Ваш Telegram ID ще не вписано у картку салону на сайті — передайте його команді Beauty Booking Club (або заповніть bookingclub.beauty/join), і тут зʼявляться ціни та профіль. Бронювання і графік уже працюють.</p>';
+        '<p class="muted" style="font-size:13px">Ваш Telegram ID ще не вписано у картку салону на сайті — передайте його команді Booking Club (або заповніть bookingclub.beauty/join), і тут зʼявляться ціни та профіль. Бронювання і графік уже працюють.</p>';
       $("stRating").textContent = listing && listing.rating ? "★ " + listing.rating : "—";
       $("stReviews").textContent = listing ? (listing.reviews || 0) : "—";
       $("stBookings").textContent = (cab.bookings || []).length;
