@@ -5,11 +5,11 @@
   <!-- ✅ iOS/PWA: stop input-zoom + keep app-like scale -->
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#14151A" />
-  <title>Booking Club · Montréal — запис у салони краси</title>
+  <title>Beauty Booking Club · Montréal — запис у салони краси</title>
 
-  <meta property="og:title" content="Booking Club · Montréal" />
+  <meta property="og:title" content="Beauty Booking Club · Montréal" />
   <meta property="og:description" content="Book beauty services in seconds — verified salons & masters." />
-  <meta name="description" content="Booking Club — онлайн-запис у салони краси й до майстрів Монреаля: манікюр, стрижки, вії, брови, масаж. Підтвердження в Telegram, депозит онлайн, 0% комісії для салонів." />
+  <meta name="description" content="Beauty Booking Club — онлайн-запис у салони краси й до майстрів Монреаля: манікюр, стрижки, вії, брови, масаж. Підтвердження в Telegram, депозит онлайн, 0% комісії для салонів." />
   <link rel="canonical" href="https://bookingclub.beauty/" />
   <meta property="og:url" content="https://bookingclub.beauty/" />
   <meta property="og:type" content="website" />
@@ -1505,8 +1505,8 @@
   <div id="luxPre" aria-hidden="true"><div class="luxPreInner"><div class="luxPreLogo">Booking <span>Club</span></div><div class="luxPreBar"><i></i></div></div></div>
   <div class="topbar">
     <div class="inner">
-      <a class="brand" href="./index.html" aria-label="Booking Club — home">
-        <div class="logo" aria-hidden="true" title="Booking Club"><span>BC</span></div>
+      <a class="brand" href="./index.html" aria-label="Beauty Booking Club — home">
+        <div class="logo" aria-hidden="true" title="Beauty Booking Club"><span>BC</span></div>
         <div>
           <h1><span class="w1">Booking</span> <span class="w2">Club</span></h1>
           <div class="sub"></div>
@@ -1617,7 +1617,7 @@
     <section class="section" id="loyaltySection" style="margin-top:16px">
       <div class="glass"><div class="pad" style="display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:space-between">
         <div style="flex:1; min-width:240px">
-          <div class="kicker">Booking Club · Лояльність</div>
+          <div class="kicker">Beauty Booking Club · Лояльність</div>
           <div class="bigLine" id="loyalLine">Твої візити рахуються автоматично</div>
           <div class="smallLine" id="loyalSub">Кожен 6-й візит — зі знижкою 50% на послугу до $60.</div>
           <div class="loyalBar"><i id="loyalFill" style="width:0%"></i></div>
@@ -1626,7 +1626,7 @@
       </div></div>
     </section>
 
-    <div class="lux-marquee" aria-hidden="true"><div class="lux-marquee-track"><span>Manicure <b>✦</b> Pedicure <b>✦</b> Brows <b>✦</b> Lashes <b>✦</b> Hair <b>✦</b> Montréal <b>✦</b> Booking Club <b>✦</b>&nbsp;</span><span>Manicure <b>✦</b> Pedicure <b>✦</b> Brows <b>✦</b> Lashes <b>✦</b> Hair <b>✦</b> Montréal <b>✦</b> Booking Club <b>✦</b>&nbsp;</span></div></div>
+    <div class="lux-marquee" aria-hidden="true"><div class="lux-marquee-track"><span>Manicure <b>✦</b> Pedicure <b>✦</b> Brows <b>✦</b> Lashes <b>✦</b> Hair <b>✦</b> Montréal <b>✦</b> Beauty Booking Club <b>✦</b>&nbsp;</span><span>Manicure <b>✦</b> Pedicure <b>✦</b> Brows <b>✦</b> Lashes <b>✦</b> Hair <b>✦</b> Montréal <b>✦</b> Beauty Booking Club <b>✦</b>&nbsp;</span></div></div>
 
     <section class="section" id="aiSection" style="display:none">
       <div class="sectionHead">
@@ -1840,7 +1840,7 @@
         </nav>
       </div>
       <div class="fbot">
-        <span>© 2026 Booking Club · Montréal</span>
+        <span>© 2026 Beauty Booking Club · Montréal</span>
         <span>hello@bookingclub.beauty</span>
       </div>
     </div>
@@ -2733,7 +2733,7 @@ function haptic(ms=12){
       if(listing.verified) tags.push({t:"Verified", cls:"good", title:"Verified salon/master"});
       if(listing.sterile) tags.push({t:"Sterile", cls:"good", title:"Sterile tools policy"});
       if(listing.rating) tags.push({t:`★ ${listing.rating} (${listing.reviews||0})`, cls:"good", title:"Rating & reviews"});
-      else tags.push({t:(state.lang==="en" ? "New" : state.lang==="ru" ? "Новый" : "Новий"), cls:"good", title:"New on Booking Club"});
+      else tags.push({t:(state.lang==="en" ? "New" : state.lang==="ru" ? "Новый" : "Новий"), cls:"good", title:"New on Beauty Booking Club"});
       try{
         if(slot && window.bb.util.isTodaySlot(slot)) tags.push({t:"Today", cls:"today", title:"Has slots today"});
       }catch(e){}
@@ -4547,7 +4547,7 @@ Email: ${email}`;
         haptic(10);
         const startISO = `${p.dateISO}T${p.time}`;
         makeICS({
-          title: `Booking Club — ${p.serviceName}`,
+          title: `Beauty Booking Club — ${p.serviceName}`,
           location: p.listing?.address || p.listing?.name || "",
           startISO,
           durationMin: p.durationMin || 60,
@@ -4802,7 +4802,7 @@ Email: ${email}`;
       var line = document.getElementById("loyalLine"); var sub = document.getElementById("loyalSub"); var fill = document.getElementById("loyalFill");
       if(!line) return;
       var inCycle = n % 6;
-      line.textContent = n === 0 ? "Твої візити рахуються автоматично" : ("У тебе вже " + n + " візит(и) з Booking Club 🎉");
+      line.textContent = n === 0 ? "Твої візити рахуються автоматично" : ("У тебе вже " + n + " візит(и) з Beauty Booking Club 🎉");
       sub.textContent = inCycle === 0 && n > 0 ? "Наступний візит — зі знижкою 50%! 🎁" : ("До знижки 50% на 6-й візит залишилось: " + (6 - inCycle) + ".");
       if(fill) fill.style.width = Math.round((inCycle === 0 && n > 0 ? 6 : inCycle) / 6 * 100) + "%";
     }
